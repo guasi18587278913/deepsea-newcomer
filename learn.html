@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 学习</title>
+<style>
+:root {
+  --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  --bg: #f7f8fa;
+  --white: #ffffff;
+  --teal: #14b8a6;
+  --teal-light: #e6f7f5;
+  --teal-dark: #0d9488;
+  --text1: #1a1a2e;
+  --text2: #666666;
+  --text3: #999999;
+  --border: #e8eaed;
+  --success: #22c55e;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; min-height:100vh; }
+a { color:inherit; text-decoration:none; }
+
+/* Top bar - minimal, no tab nav */
+.topbar { position:sticky; top:0; z-index:50; background:rgba(247,248,250,.9); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; }
+.tb-inner { max-width:1200px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.logo { font-size:17px; font-weight:700; color:var(--teal); }
+.breadcrumb { flex:1; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text3); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.breadcrumb a { color:var(--text3); transition:color .2s; }
+.breadcrumb a:hover { color:var(--teal); }
+.breadcrumb .sep { opacity:.4; }
+.breadcrumb .current { color:var(--text1); font-weight:500; }
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; flex-shrink:0; cursor:pointer; transition:transform .2s; }
+.avatar:hover { transform:scale(1.05); }
+
+/* Layout */
+.main { display:grid; grid-template-columns:260px 1fr 320px; max-width:1280px; margin:0 auto; padding:0 32px; gap:0; }
+.main.sidebar-collapsed { grid-template-columns:0 1fr 320px; }
+.main.discuss-collapsed { grid-template-columns:260px 1fr 0; }
+.main.both-collapsed { grid-template-columns:0 1fr 0; }
+
+/* Sidebar */
+.sidebar { padding:32px 16px 48px 0; border-right:1px solid var(--border); overflow:hidden; transition:all .25s; }
+.main.sidebar-collapsed .sidebar { padding:0; }
+.sidebar-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:0 12px; }
+.sidebar-title { font-size:12px; font-weight:600; color:var(--text3); letter-spacing:.5px; }
+.side-toggle { border:none; background:transparent; color:var(--text3); cursor:pointer; padding:4px; border-radius:6px; font-size:14px; }
+.side-toggle:hover { background:var(--border); color:var(--text1); }
+.course-list { list-style:none; display:flex; flex-direction:column; gap:2px; }
+.course-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer; font-size:13px; color:var(--text2); transition:all .15s; }
+.course-item:hover { background:var(--white); color:var(--text1); }
+.course-item.active { background:var(--teal-light); color:var(--teal-dark); font-weight:500; }
+.course-item.done { color:var(--text3); }
+.course-item.done .course-name { text-decoration:line-through; opacity:.7; }
+.check { width:16px; height:16px; border-radius:50%; border:1.5px solid var(--text3); flex-shrink:0; display:grid; place-items:center; font-size:9px; }
+.check.done { background:var(--success); border-color:var(--success); color:#fff; }
+.course-item.active .check { border-color:var(--teal); border-width:3px; }
+
+/* Sidebar open button (when collapsed) */
+.open-sidebar { position:fixed; left:16px; top:72px; width:36px; height:36px; border-radius:8px; background:var(--white); border:1px solid var(--border); display:none; place-items:center; cursor:pointer; color:var(--text2); z-index:40; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+.main.sidebar-collapsed ~ .open-sidebar { display:grid; }
+
+/* Content */
+.content { padding:40px 48px 80px; min-width:0; }
+.content-meta { font-size:12px; color:var(--text3); margin-bottom:12px; letter-spacing:.3px; }
+.content-meta .dot { display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--text3); margin:0 8px; vertical-align:middle; }
+.content-title { font-size:32px; font-weight:700; letter-spacing:-.5px; line-height:1.3; margin-bottom:32px; }
+
+.article { font-size:15px; line-height:1.9; color:var(--text1); }
+.article p { margin-bottom:20px; color:var(--text2); }
+.article h2 { font-size:22px; font-weight:600; margin:40px 0 16px; color:var(--text1); letter-spacing:-.3px; }
+.article h3 { font-size:17px; font-weight:600; margin:28px 0 10px; color:var(--text1); }
+.article strong { color:var(--text1); font-weight:600; }
+.article ul { margin:0 0 20px 20px; }
+.article ul li { margin-bottom:8px; color:var(--text2); }
+.article .callout { background:var(--teal-light); border-left:3px solid var(--teal); padding:16px 20px; border-radius:8px; margin:24px 0; font-size:14px; color:var(--text1); }
+.article .callout strong { color:var(--teal-dark); }
+.article .code { background:#1a1a2e; color:#a5f3e7; font-family:var(--mono); font-size:13px; padding:16px 20px; border-radius:8px; margin:20px 0; overflow-x:auto; line-height:1.7; }
+.article img-placeholder { display:block; background:linear-gradient(135deg,#e8f4f2 0%,#f7f8fa 100%); border:1px solid var(--border); border-radius:8px; height:240px; margin:24px 0; display:grid; place-items:center; color:var(--text3); font-size:13px; }
+
+/* Nav bottom */
+.content-nav { display:flex; justify-content:space-between; gap:16px; margin-top:64px; padding-top:32px; border-top:1px solid var(--border); }
+.nav-btn { flex:1; padding:16px 20px; border:1px solid var(--border); border-radius:10px; background:var(--white); cursor:pointer; transition:all .2s; display:flex; flex-direction:column; gap:4px; text-align:left; max-width:280px; }
+.nav-btn:hover { border-color:var(--teal); }
+.nav-btn.next { text-align:right; }
+.nav-btn-label { font-size:11px; color:var(--text3); }
+.nav-btn-name { font-size:14px; font-weight:500; color:var(--text1); }
+
+/* Discussion panel */
+.discuss { border-left:1px solid var(--border); padding:0; display:flex; flex-direction:column; max-height:calc(100vh - 52px); position:sticky; top:52px; transition:all .25s; overflow:hidden; }
+.main.discuss-collapsed .discuss, .main.both-collapsed .discuss { padding:0; border-left:none; }
+.discuss-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.discuss-title { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+.pulse { width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.discuss-feed { flex:1; overflow-y:auto; padding:12px; }
+.msg { padding:10px 12px; border-radius:8px; margin-bottom:8px; font-size:13px; line-height:1.55; }
+.msg-done { background:#f0fdf4; border-left:3px solid var(--success); }
+.msg-q { background:#fef6ee; border-left:3px solid #e07830; }
+.msg-reply { background:#f0f4ff; border-left:3px solid var(--blue); }
+.msg-user { font-weight:600; color:var(--text1); }
+.msg-tag { font-size:10px; font-weight:600; padding:1px 6px; border-radius:3px; margin-left:4px; background:var(--teal-light); color:var(--teal-dark); }
+.msg-text { color:var(--text2); }
+.msg-time { font-size:11px; color:var(--text3); margin-top:3px; }
+.discuss-input { border-top:1px solid var(--border); padding:12px; }
+.discuss-input textarea { width:100%; min-height:60px; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--font); font-size:13px; resize:none; outline:none; background:var(--white); }
+.discuss-input textarea:focus { border-color:var(--teal); }
+.discuss-input-footer { display:flex; justify-content:flex-end; margin-top:8px; }
+.send-btn { background:var(--teal); color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:12px; font-weight:500; cursor:pointer; }
+.send-btn:hover { background:var(--teal-dark); }
+
+/* Discussion collapsed button */
+.open-discuss { position:fixed; right:16px; bottom:32px; width:48px; height:48px; border-radius:50%; background:var(--teal); color:#fff; border:none; cursor:pointer; display:none; place-items:center; box-shadow:0 4px 16px rgba(20,184,166,.3); z-index:40; font-size:20px; }
+.open-discuss:hover { background:var(--teal-dark); }
+.main.discuss-collapsed ~ .open-discuss, .main.both-collapsed ~ .open-discuss { display:grid; }
+
+@media (max-width:900px) {
+  .main { grid-template-columns:1fr; }
+  .sidebar, .discuss { display:none; }
+}
+
+var[--blue] { color: var(--blue); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-inner">
+    <a href="index.html" class="logo">深海圈</a>
+    <div class="breadcrumb">
+      <a href="roadmap.html">← 返回路线图</a>
+      <span class="sep">/</span>
+      <a href="roadmap.html">快速入门</a>
+      <span class="sep">/</span>
+      <span class="current">这套课程有什么不同？</span>
+    </div>
+    <a href="profile.html" class="avatar">瓜</a>
+  </div>
+</div>
+
+<div class="main" id="main">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">快速入门 · 共 12 节</div>
+      <button class="side-toggle" onclick="toggleSidebar()" title="收起">‹</button>
+    </div>
+    <ul class="course-list">
+      <li class="course-item active" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">这套课程有什么不同？</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">我祖上十八代都不会编程</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">开挂式学习：用 AI 来学 AI</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">AI 到底是什么？它就是个超级实习生</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">10 分钟，做出你的第一个网站</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">跟 AI 讨论需求</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">什么是 AI 产品？</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">预制菜思维 + 积木思维</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">第一个 AI 产品：互联网黑话翻译器</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">第二个：哄哄模拟器</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">第三个：纸片人男友</span></li>
+      <li class="course-item" onclick="selectLesson(this)"><div class="check"></div><span class="course-name">入门篇总结</span></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <div class="content-meta">图文课程<span class="dot"></span>约 15 分钟<span class="dot"></span>快速入门 · 第 1 节</div>
+    <h1 class="content-title">这套课程有什么不同？</h1>
+
+    <article class="article">
+      <p>哈喽，欢迎来到刘小排的 AI 编程课 —— <strong>Idea to Business</strong>。</p>
+
+      <h2>第 1 个不同：做 AI 产品生意，我是拿过结果的人</h2>
+      <p>过去两年市场上出现过很多种 AI 课程，江湖传言说"做 AI 产品的没赚钱，做 AI 课程的赚钱了"，在一定程度上是真的，因为大部分人还没有能力使用 AI 做出产品并靠产品赚到钱。</p>
+      <p>AI 编程课到处都是。区别在于：<strong>大多数老师做的是自媒体，自己根本不是靠产品吃饭的</strong>。</p>
+      <p>我不同。我的产品长期出现在各类"AIGC 出海产品排行榜"Top 100 里，偶尔还有 Top 50 和 Top 30。</p>
+
+      <div class="callout">
+        <strong>案例：Raphael</strong><br>
+        2025 年 1 月 17 日上线，一款典型的 AI 产品 · raphael.app。<br>
+        开发周期 1 周，我一个人。上线第一个月就累计 100 万月活用户，每天有 3-4 万用户使用。<br>
+        到现在最新数据，月活用户已经超过 <strong>200 万</strong>，每天超过 6 万人使用它。
+      </div>
+
+      <p>此外我还有数十款其他产品，比如 Fast3D（3D 模型生成）、AnyVoice（AI 语音克隆，Google 英文关键词搜索结果前 5）等等。</p>
+
+      <h2>第 2 个不同：不只教编程，教你从想法到商业化的完整链路</h2>
+      <p>市面上 90% 的 AI 编程教程，教完写代码就结束了。</p>
+      <p>但写代码是最简单的一步，AI 几分钟就能帮你搞定。真正卡住你的是其他所有事——不知道做什么方向，做出来了不会部署，上线了没有用户，有用户了收不到钱。</p>
+      <p>这门课覆盖完整链路：<strong>找方向 → 做产品 → 部署上线 → 获取用户 → 收款变现</strong>。从 Idea 到 Business，不走半截路。</p>
+
+      <h2>第 3 个不同：AI 编程 + 全品类项目实战</h2>
+      <p>网站、自动化工作流、微信小程序、微信小游戏、手机 App、桌面应用——国内海外主流产品类型，这次课程全部覆盖。</p>
+      <p>每种类型都有对应的课程模块和实战项目。你不用再东拼西凑学一堆碎片课程，AI 编程的底层方法是通的，学会一套方法，什么产品都能做。</p>
+
+      <h2>第 4 个不同：AI 日新月异，好的课程必须是一个活社区</h2>
+      <p>2025 年我们已经开了两期课程，第一期的时候工具以 Cursor 为主，现在才一年过去，Cursor 已经比较落伍了。</p>
+      <p>我们意识到：<strong>课程必须是活的</strong>。</p>
+      <ul>
+        <li>全年深海圈航海持续推出，新工具、新玩法第一时间跟进</li>
+        <li>有助教答疑，卡你三天的问题，或许别人一句话就能解开</li>
+        <li>拥有专属官网，集手册、直播与社区交流于一体</li>
+      </ul>
+
+      <h2>第 5 个不同：有大量的成功案例</h2>
+      <p>这些都是真实的学员：</p>
+      <ul>
+        <li><strong>良辰美</strong> · 完全不懂代码，用 AI 做了 100 个网站，日入千刀</li>
+        <li><strong>钢铁的铁</strong> · 58 岁零基础，做出"机构动作雷达"，上线两小时订阅金额超 $2000</li>
+        <li><strong>井然</strong> · 土木工程师裸辞，零基础 3 个月跨界 AI，实现万刀美金收入</li>
+        <li><strong>包子</strong> · 一人公司，利用 AI 编程优化直播，月入 10w</li>
+        <li><strong>Neo</strong> · 零基础新手做的开源项目 Agent-Reach，上线一周 GitHub 5000+ star</li>
+      </ul>
+
+      <h2>学完你能获得什么？</h2>
+      <ul>
+        <li><strong>自己做产品的能力</strong> — 脑子里有个想法？打开电脑就能干</li>
+        <li><strong>一套走完全程的打法</strong> — 每一步都有验证过的做法，不用摸黑</li>
+        <li><strong>海外国内都能做</strong> — 从 Stripe 收美金到微信支付收人民币，全覆盖</li>
+        <li><strong>不会过时的内容</strong> — 工具月月变，课程跟着变</li>
+        <li><strong>一年的持续陪伴</strong> — 卡住了有人答，新工具第一时间跟上</li>
+        <li><strong>一次身份切换</strong> — 从不会编程到指挥 AI 干活。AI 是你的员工，不是你的门槛</li>
+      </ul>
+
+      <p style="margin-top:32px;font-size:15px;color:var(--text2);">期待与你相遇，课程里见。</p>
+    </article>
+
+    <div class="content-nav">
+      <button class="nav-btn" onclick="prevLesson()" style="opacity:0.4;pointer-events:none;">
+        <span class="nav-btn-label">已是第一节</span>
+        <span class="nav-btn-name">—</span>
+      </button>
+      <button class="nav-btn next" onclick="nextLesson()">
+        <span class="nav-btn-label">下一课 →</span>
+        <span class="nav-btn-name">我祖上十八代都不会编程</span>
+      </button>
+    </div>
+  </main>
+
+  <aside class="discuss" id="discuss">
+    <div class="discuss-header">
+      <div class="discuss-title">
+        <span class="pulse"></span>
+        讨论
+      </div>
+      <button class="side-toggle" onclick="toggleDiscuss()" title="收起">›</button>
+    </div>
+    <div class="discuss-feed">
+      <div class="msg msg-done">
+        <span class="msg-user">张小鱼</span>
+        <span class="msg-text"> 看完了，感觉被治愈了 😄 之前一直觉得"我不是技术的料"，现在有点信心了</span>
+        <div class="msg-time">5 分钟前</div>
+      </div>
+      <div class="msg msg-q">
+        <span class="msg-user">王大锤</span>
+        <span class="msg-text"> 想问小排老师，您的 Raphael 那款产品上线第一个月是怎么冷启动的？</span>
+        <div class="msg-time">12 分钟前</div>
+      </div>
+      <div class="msg msg-reply">
+        <span class="msg-user">助教小安</span><span class="msg-tag">助教</span>
+        <span class="msg-text"> 冷启动的内容在「增长篇」会专门讲，这节课先不展开。你可以先把这个问题记下来，学到增长篇再回来看</span>
+        <div class="msg-time">8 分钟前</div>
+      </div>
+      <div class="msg msg-done">
+        <span class="msg-user">赵一一</span>
+        <span class="msg-text"> 学完第一节，已经开始期待做第一个网站了！</span>
+        <div class="msg-time">20 分钟前</div>
+      </div>
+      <div class="msg msg-q">
+        <span class="msg-user">陈小飞</span>
+        <span class="msg-text"> 完全零基础，看这节课的案例感觉差距好大，怕自己跟不上怎么办？</span>
+        <div class="msg-time">35 分钟前</div>
+      </div>
+      <div class="msg msg-reply">
+        <span class="msg-user">小排</span><span class="msg-tag" style="background:#f5f2ff;color:#7c5cbf">讲师</span>
+        <span class="msg-text"> 放心，案例都是普通人，58 岁的钢铁的铁、纯文科的良辰美都做到了。课程第一周就是让你做出第一个网站，一步一步来</span>
+        <div class="msg-time">30 分钟前</div>
+      </div>
+    </div>
+    <div class="discuss-input">
+      <textarea placeholder="分享你的想法或提问..."></textarea>
+      <div class="discuss-input-footer">
+        <button class="send-btn">发送</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<button class="open-sidebar" onclick="toggleSidebar()" title="打开目录">☰</button>
+<button class="open-discuss" onclick="toggleDiscuss()" title="打开讨论">💬</button>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('main').classList.toggle('sidebar-collapsed');
+}
+function toggleDiscuss() {
+  document.getElementById('main').classList.toggle('discuss-collapsed');
+}
+function selectLesson(el) {
+  document.querySelectorAll('.course-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// demo：learn.html 当前固定展示 A1 这节课的内容
+// 实际产品里会根据 url query 切换课程
+const CURRENT_CODE = 'A1';
+
+function markCurrentDone() {
+  const completed = JSON.parse(localStorage.getItem('ds_completed_demo') || '[]');
+  if (!completed.includes(CURRENT_CODE)) {
+    completed.push(CURRENT_CODE);
+    localStorage.setItem('ds_completed_demo', JSON.stringify(completed));
+  }
+  localStorage.setItem('ds_started', 'true');
+}
+
+function showToast(text) {
+  let toast = document.getElementById('learnToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'learnToast';
+    toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#14b8a6;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:200;box-shadow:0 4px 20px rgba(20,184,166,.3);opacity:0;transition:opacity .3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  requestAnimationFrame(() => toast.style.opacity = '1');
+}
+
+function prevLesson() {
+  // 第一节没有上一节，直接返回路线图
+  location.href = 'roadmap.html';
+}
+
+function nextLesson() {
+  // demo：标记完成 → toast → 1.2 秒后回 roadmap 看进度
+  markCurrentDone();
+  showToast('✓ 已完成 ' + CURRENT_CODE + ' · 这套课程有什么不同？');
+  setTimeout(() => {
+    location.href = 'roadmap.html';
+  }, 1200);
+}
+</script>
+
+</body>
+</html>
