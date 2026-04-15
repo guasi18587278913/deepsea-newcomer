@@ -3,814 +3,409 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>深海圈 · 我的登山路线</title>
+<title>深海圈 · 你的学习路线</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
 <style>
 /* =====================================================
-   LIGHT TEAL ASCENT · Light Cyan-Teal Expedition Map
-   Color tokens strictly match welcome.html teal palette
-===================================================== */
+   DESIGN TOKENS · per DESIGN.md
+   ===================================================== */
 :root {
-  --font-sans: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
-  --font-serif: 'Fraunces', 'PingFang SC', Georgia, serif;
+  --font-sans: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Fraunces', 'Songti SC', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 
-  /* Surfaces — pale teal into white */
+  /* Surface */
   --bg: #f5fafa;
   --bg-gradient: linear-gradient(180deg, #e8f4f5 0%, #f5fafa 40%, #ffffff 100%);
   --surface: #ffffff;
-  --surface-sunk: #f0f7f7;
 
   /* Brand */
-  --deep-blue: #1e3a52;      /* trust / high density text */
-  --teal: #0d9488;           /* primary accent */
+  --teal: #0d9488;
   --teal-hover: #0a7a70;
-  --teal-light: #7dd3cc;     /* decorative ridge */
-  --teal-bg: #e8f6f5;        /* soft tile */
-  --gold: #c89854;           /* summit / warm milestone */
+  --teal-active: #065e57;
+  --teal-light: #7dd3cc;
+  --teal-bg: #e8f6f5;
+  --gold: #c89854;
   --gold-bright: #d4a666;
-  --warm-flag: #d97857;      /* big assignment orange */
-  --warm-flag-soft: #f3c7b5;
+  --gold-soft: rgba(200, 152, 84, 0.18);
 
   /* Text */
-  --text-1: #1a2942;
+  --deep-blue: #1a2942;
   --text-2: #5c7a8a;
   --text-3: #94a3b8;
   --text-4: #b8c5d0;
 
-  /* Lines */
+  /* Line */
   --border: #dde7ea;
-  --border-soft: #e8eef0;
   --hairline: rgba(13, 148, 136, 0.08);
-  --hairline-strong: rgba(13, 148, 136, 0.18);
 
+  /* Shadow */
   --shadow-card: 0 1px 2px rgba(30, 58, 82, 0.04), 0 8px 28px -12px rgba(30, 58, 82, 0.08);
-  --shadow-card-hover: 0 1px 2px rgba(30, 58, 82, 0.06), 0 12px 36px -10px rgba(30, 58, 82, 0.14);
-  --radius-card: 14px;
-  --radius-pill: 999px;
 }
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html, body { background: var(--bg); }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: var(--bg); }
 body {
   font-family: var(--font-sans);
   background: var(--bg-gradient);
   background-attachment: fixed;
-  color: var(--text-1);
+  color: var(--deep-blue);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01","cv11","cv02";
-  min-height: 100vh;
   line-height: 1.5;
+  overflow: hidden;
 }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
 
+/* =====================================================
+   APP SHELL · three rows, full viewport, no scroll on desktop
+   ===================================================== */
+.km-app {
+  display: grid;
+  grid-template-rows: 52px 1fr 84px;
+  height: 100vh;
+  width: 100%;
+}
+
 /* ============ TOPBAR ============ */
-.topbar {
-  position: sticky; top: 0; z-index: 50;
-  height: 56px;
-  background: rgba(245, 250, 250, 0.82);
+.km-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(245, 250, 250, 0.85);
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  border-bottom: 1px solid var(--border-soft);
-  display: flex; align-items: center; padding: 0 40px;
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
 }
-.tb-inner {
-  max-width: 1280px; width: 100%; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.tb-left { display: flex; align-items: center; gap: 22px; }
-.logo {
-  font-size: 16px; font-weight: 700; color: var(--teal);
+.tb-group { display: flex; align-items: center; gap: 18px; }
+.tb-logo {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--teal);
   letter-spacing: -0.01em;
 }
-.back-link {
-  font-size: 13px; color: var(--text-2);
-  transition: color 0.18s cubic-bezier(0.2,0,0,1);
-}
-.back-link:hover { color: var(--teal); }
-.avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal) 0%, var(--deep-blue) 100%);
-  color: #fff;
-  display: grid; place-items: center;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
-  transition: transform 0.18s cubic-bezier(0.2,0,0,1);
-}
-.avatar:hover { transform: scale(1.06); }
-
-/* ============ HERO STRIP · compact single-row ============ */
-.hero {
-  padding: 14px 40px 10px;
-  min-height: 88px;
-  max-height: 120px;
-}
-.hero-inner {
-  max-width: min(1600px, 96vw); margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 28px;
-  align-items: center;
-}
-.hero-left { min-width: 0; }
-.hero-eyebrow {
-  display: none;
-}
-.hero-eyebrow .pulse {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--teal);
-  box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5);
-  animation: pulseRing 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-@keyframes pulseRing {
-  0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5); }
-  70% { box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
-}
-.hero-title {
-  font-family: var(--font-serif);
-  font-size: clamp(22px, 2vw, 28px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.1;
-  color: var(--deep-blue);
-  text-wrap: balance;
-  margin-bottom: 4px;
-}
-.hero-title .glyph {
-  font-style: italic;
-  color: var(--gold);
-  font-weight: 500;
-  margin-right: 4px;
-}
-.hero-sub {
+.tb-back {
   font-size: 13px;
   color: var(--text-2);
-  line-height: 1.45;
-  text-wrap: pretty;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  transition: color 0.18s ease;
 }
-.hero-sub strong { color: var(--text-1); font-weight: 600; }
-.hero-sub .day-accent {
-  color: var(--teal);
-  font-weight: 700;
-  font-family: var(--font-mono);
-  font-size: 13.5px;
+.tb-back:hover { color: var(--teal); }
+
+.tb-center { display: flex; align-items: center; gap: 16px; }
+.tb-center .sep { color: var(--text-4); font-size: 11px; }
+.tb-cohort {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-2);
+}
+.tb-day {
+  font-size: 13px;
+  color: var(--text-2);
   font-variant-numeric: tabular-nums;
 }
-.hero-sub .frag {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--deep-blue);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 1px 6px;
-  border-radius: 4px;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  margin-left: 4px;
-}
-
-.hero-right {
-  display: flex; flex-direction: row;
-  align-items: center; gap: 14px;
-  flex-shrink: 0;
-}
-.pace-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.2,0,0,1);
-  white-space: nowrap;
-}
-.pace-chip:hover {
-  border-color: var(--teal);
-  color: var(--teal);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-card);
-}
-.pace-chip:active { transform: translateY(0); }
-.pace-chip strong { color: var(--text-1); font-weight: 600; }
-.pace-chip svg { width: 12px; height: 12px; }
-
-.progress-inline {
+.tb-day strong { color: var(--deep-blue); font-weight: 600; }
+.tb-progress {
   display: flex; align-items: center; gap: 10px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.progress-inline strong { color: var(--deep-blue); font-weight: 600; }
-.progress-bar {
-  width: 180px;
-  height: 4px;
+.tb-progress strong { color: var(--deep-blue); font-weight: 600; }
+.tb-progress-bar {
+  width: 120px; height: 3px;
   background: var(--teal-bg);
   border-radius: 2px;
   overflow: hidden;
 }
-.progress-fill {
+.tb-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 100%);
   border-radius: 2px;
   transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-/* ============ MAIN PAGE ============ */
-.page {
-  max-width: min(1600px, 96vw);
-  margin: 0 auto;
-  padding: 6px 20px 48px;
+.tb-progress em {
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
 }
+.tb-pace {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-variant-numeric: tabular-nums;
+}
+.tb-pace:hover { border-color: var(--teal); color: var(--teal); }
+.tb-pace strong { color: var(--deep-blue); font-weight: 600; }
+.tb-pace svg { width: 11px; height: 11px; stroke: currentColor; }
+.tb-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--deep-blue) 100%);
+  color: #fff;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  transition: transform 0.18s ease;
+}
+.tb-avatar:hover { transform: scale(1.08); }
 
-/* ============ ASCENT MAP · Swiss Cartography in Teal ============ */
-/* 地图容器：占据大部分视口高度，让登山图成为视觉主角 */
-/* 核心策略：width 100% + 通过 clamp() 让高度主动占据视口 */
-.ascent-map-wrap {
+/* ============ MAIN CANVAS ============ */
+.km-main {
   position: relative;
-  width: 100%;
-  /* 高度：至少 480px，最大 78vh，理想为宽度的一半（保持 2:1 比例） */
-  height: clamp(480px, min(78vh, 50vw), 860px);
-  margin-bottom: 14px;
-  background: #f5fafa;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 0 0 1px rgba(13, 148, 136, 0.15),
-    0 24px 60px -24px rgba(30, 58, 82, 0.18);
   overflow: hidden;
-  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 32px;
 }
-.map-corner { display: none; }
-
-.ascent-svg {
+.km-canvas {
   display: block;
   width: 100%;
   height: 100%;
-  position: relative;
-  z-index: 1;
+  max-height: 100%;
+  user-select: none;
 }
-.ascent-svg text { font-family: 'Helvetica Neue', 'PingFang SC', sans-serif; }
-.ascent-svg .t-mono { font-family: 'SF Mono', 'JetBrains Mono', 'Menlo', monospace; }
-.ascent-svg .t-serif { font-family: 'Songti SC', 'Noto Serif SC', Georgia, serif; }
-.ascent-svg .t-display {
-  font-family: 'Fraunces', 'Cormorant Garamond', 'Songti SC', Georgia, serif;
+.km-canvas text {
+  font-family: var(--font-sans);
 }
+.km-canvas .t-serif { font-family: var(--font-serif); }
+.km-canvas .t-mono { font-family: var(--font-mono); }
 
-.ascent-svg .waypoint {
-  transition: transform 0.24s cubic-bezier(0.2,0.9,0.35,1.2);
+.km-comp {
   cursor: pointer;
-  transform-box: fill-box;
+  transition: filter 0.18s ease;
   transform-origin: center;
+  transform-box: fill-box;
 }
-.ascent-svg .waypoint:hover { transform: scale(1.32); }
+.km-comp-locked { cursor: not-allowed; }
+.km-comp-box {
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+.km-comp-done:hover .km-comp-box { fill: #dbeeec; }
+.km-comp-current:hover .km-comp-box { filter: brightness(1.02); }
+.km-comp-done:hover, .km-comp-current:hover { filter: drop-shadow(0 4px 12px rgba(30,58,82,0.08)); }
 
-.ascent-svg .peak-hit {
-  fill: transparent;
-  cursor: pointer;
+@keyframes pulseRing {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  75%  { transform: scale(1.18); opacity: 0;   }
+  100% { transform: scale(1.18); opacity: 0;   }
 }
-.ascent-svg .peak-hit:hover {
-  fill: rgba(13, 148, 136, 0.035);
+.km-pulse-ring {
+  animation: pulseRing 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: center;
+  transform-box: fill-box;
 }
 
-.ascent-svg .leader-label {
-  cursor: pointer;
-  transition: opacity 0.18s ease;
+@keyframes grow {
+  from { opacity: 0; transform: translateY(6px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-.ascent-svg .leader-label:hover { opacity: 0.82; }
-.ascent-svg .leader-label rect { transition: fill 0.18s ease, stroke 0.18s ease; }
-.ascent-svg .leader-label:hover rect { fill: #e8f6f5; stroke: #0d9488; }
+.km-canvas > g {
+  animation: grow 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.km-canvas > .km-stage-group-1 { animation-delay: 0ms; }
+.km-canvas > .km-stage-group-2 { animation-delay: 100ms; }
+.km-canvas > .km-stage-group-3 { animation-delay: 200ms; }
+.km-canvas > .km-stage-group-4 { animation-delay: 300ms; }
+.km-canvas > .km-ai-foundation { animation-delay: 400ms; }
 
-/* YOU ARE HERE fade-in + CTA hover */
-@keyframes youFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .km-pulse-ring { animation: none; opacity: 0.45; }
+  .km-canvas > g { animation: none; }
 }
-.ascent-svg .you-are-here {
-  animation: youFadeIn 0.7s 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-}
-.ascent-svg .you-cta rect {
-  transition: fill 0.18s ease;
-}
-.ascent-svg .you-cta:hover rect { fill: #0a7a70; }
-.ascent-svg .you-cta:active rect { fill: #065e57; }
 
-/* ---- Tooltip ---- */
-.ascent-tooltip {
+/* ============ TOOLTIP ============ */
+.km-tooltip {
   position: absolute;
   pointer-events: none;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 11px 14px;
+  border-radius: 8px;
+  padding: 10px 14px;
   font-size: 12.5px;
-  color: var(--text-1);
-  line-height: 1.55;
-  max-width: 260px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 14px 36px -8px rgba(30, 58, 82, 0.18),
-    0 0 0 1px var(--hairline);
+  color: var(--deep-blue);
+  line-height: 1.5;
+  max-width: 240px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 12px 32px -8px rgba(30,58,82,0.18);
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.16,1,0.3,1);
-  z-index: 20;
-  white-space: normal;
+  transition: opacity 0.18s cubic-bezier(0.16,1,0.3,1), transform 0.18s cubic-bezier(0.16,1,0.3,1);
+  z-index: 30;
 }
-.ascent-tooltip.show { opacity: 1; transform: translateY(0); }
-.ascent-tooltip .tt-label {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  color: var(--teal);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 5px;
+.km-tooltip.show { opacity: 1; transform: translateY(0); }
+.km-tt-title {
   font-weight: 600;
-}
-.ascent-tooltip .tt-title {
   font-size: 13px;
-  font-weight: 600;
   color: var(--deep-blue);
   margin-bottom: 3px;
-  letter-spacing: -0.01em;
-  line-height: 1.35;
 }
-.ascent-tooltip .tt-meta {
+.km-tt-title .en {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  color: var(--text-2);
+  font-weight: 500;
+  color: var(--teal);
+  margin-left: 5px;
 }
-.ascent-tooltip .tt-progress {
+.km-tt-body {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.km-tt-meta {
   margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
   font-family: var(--font-mono);
   font-size: 10.5px;
   color: var(--text-3);
 }
-.ascent-tooltip .tt-progress strong {
-  color: var(--teal);
-  font-weight: 600;
-}
-.ascent-tooltip .tt-cta {
-  margin-top: 8px; padding-top: 7px;
-  border-top: 1px dashed var(--border);
-  font-size: 11px;
+.km-tt-cta {
+  margin-top: 5px;
+  font-size: 11.5px;
   color: var(--teal);
   font-weight: 500;
 }
 
-/* ============ CORNER PANELS ============ */
-.ascent-panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-@media (max-width: 820px) {
-  .ascent-panels { grid-template-columns: 1fr; }
-}
-.ascent-panel {
+/* ============ ACTIONBAR · 单行精简 ============ */
+.km-actionbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 40px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: 18px 22px;
-  position: relative;
-  box-shadow: var(--shadow-card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 24px -8px rgba(30, 58, 82, 0.05);
+}
+.ab-next-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
   overflow: hidden;
 }
-.ascent-panel::before {
-  content: ''; position: absolute; top: 0; left: 0;
-  width: 40px; height: 1px;
-  background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+.ab-next-block .dot {
+  flex-shrink: 0;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulseSmall 1.8s ease-in-out infinite;
 }
-.panel-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 14px;
+@keyframes pulseSmall {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--gold-soft); }
+  50% { opacity: 0.85; box-shadow: 0 0 0 5px rgba(200,152,84,0); }
 }
-.panel-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+.ab-label {
+  font-size: 12px;
   color: var(--text-3);
-  display: flex; align-items: center; gap: 6px;
-}
-.panel-eyebrow .accent { color: var(--gold); font-size: 9px; }
-.panel-num {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-4);
-  letter-spacing: 0.08em;
-}
-
-/* --- LEGEND --- */
-.legend-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 12px 20px;
-}
-.legend-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 12.5px;
-  color: var(--text-1);
-}
-.legend-glyph {
-  width: 24px; height: 24px;
-  display: grid; place-items: center;
+  font-weight: 500;
   flex-shrink: 0;
 }
-.legend-label { display: flex; flex-direction: column; gap: 1px; line-height: 1.3; }
-.legend-label .zh { color: var(--text-1); font-weight: 500; font-size: 12.5px; }
-.legend-label .en {
-  font-family: var(--font-mono); font-size: 9.5px;
-  color: var(--text-3);
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-
-/* --- SQUAD --- */
-.squad-wrap {
-  display: flex; flex-direction: column; gap: 14px;
-}
-.squad-bars {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  height: 108px;
-  align-items: end;
-}
-.squad-bar {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 5px;
-  height: 100%; justify-content: flex-end;
-  position: relative;
-}
-.squad-bar .bar-fill {
-  width: 100%; max-width: 42px;
-  background: linear-gradient(180deg, var(--teal-light) 0%, var(--teal) 100%);
-  border-radius: 3px 3px 0 0;
-  transition: height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  opacity: 0.55;
-}
-.squad-bar.you .bar-fill {
-  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
-  opacity: 1;
-  box-shadow: 0 0 18px rgba(200, 152, 84, 0.35);
-}
-.squad-bar.you::before {
-  content: 'YOU';
-  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.18em;
-  color: var(--gold);
-}
-.squad-bar .bar-pct {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
+.ab-next-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
   color: var(--deep-blue);
-  font-variant-numeric: tabular-nums;
-}
-.squad-bar .bar-label {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  color: var(--text-3);
-  letter-spacing: 0.08em;
-  text-align: center;
-  line-height: 1.2;
-}
-.squad-footnote {
-  font-size: 11.5px;
-  color: var(--text-2);
-  line-height: 1.55;
-  padding-top: 10px;
-  border-top: 1px dashed var(--border);
-}
-.squad-footnote strong { color: var(--teal); font-weight: 600; }
-
-/* ============ TIMELINE ============ */
-.ascent-timeline {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: 22px 24px 30px;
-  margin-bottom: 28px;
-  box-shadow: var(--shadow-card);
-}
-.timeline-head {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 26px;
-}
-.timeline-head .lbl {
-  font-family: var(--font-mono);
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--text-3);
-  display: flex; align-items: center; gap: 6px;
-}
-.timeline-head .lbl .accent { color: var(--gold); font-size: 9px; }
-.timeline-head .range {
-  font-family: var(--font-mono);
-  font-size: 11px; color: var(--text-2); letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-}
-.timeline-track {
-  position: relative;
-  height: 2px;
-  background: var(--border);
-  border-radius: 1px;
-  margin: 0 12px;
-}
-.timeline-track::before {
-  content: ''; position: absolute;
-  left: 0; top: 0;
-  height: 100%;
-  width: var(--prog, 0%);
-  background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 100%);
-  border-radius: 1px;
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.timeline-marker {
-  position: absolute; top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center;
-}
-.timeline-marker .tm-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--surface);
-  border: 2px solid var(--text-4);
-  box-shadow: 0 0 0 3px var(--surface);
-}
-.timeline-marker.done .tm-dot { background: var(--teal); border-color: var(--teal); }
-.timeline-marker.you .tm-dot {
-  background: var(--gold);
-  border-color: var(--gold-bright);
-  width: 12px; height: 12px;
-  box-shadow: 0 0 0 3px var(--surface), 0 0 14px rgba(200, 152, 84, 0.5);
-  animation: youBeacon 2.4s ease-in-out infinite;
-}
-@keyframes youBeacon {
-  0%, 100% { box-shadow: 0 0 0 3px var(--surface), 0 0 14px rgba(200, 152, 84, 0.5); }
-  50% { box-shadow: 0 0 0 3px var(--surface), 0 0 24px rgba(200, 152, 84, 0.8); }
-}
-.timeline-marker.finish .tm-dot {
-  background: var(--gold);
-  border-color: var(--gold);
-}
-.timeline-marker .tm-label {
-  position: absolute; top: 16px;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 1px;
-  white-space: nowrap;
-}
-.timeline-marker .tm-date {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--deep-blue);
-  font-variant-numeric: tabular-nums;
-}
-.timeline-marker .tm-caption {
-  font-family: var(--font-mono);
-  font-size: 8.5px;
-  color: var(--text-3);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.timeline-marker.you .tm-date { color: var(--gold); font-weight: 600; }
-.timeline-marker.you .tm-caption { color: var(--gold); }
-.timeline-marker.finish .tm-caption { color: var(--gold); font-weight: 600; }
-
-/* ============ QUICK CARDS · compact row below map ============ */
-.quick-section {
-  margin-top: 10px;
-}
-.quick-section-head {
-  display: none;
-}
-.quick-section-head .accent {
-  font-family: var(--font-mono);
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--text-3);
-  display: flex; align-items: center; gap: 6px;
-}
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-@media (max-width: 960px) {
-  .quick-grid { grid-template-columns: 1fr; }
-}
-.quick-card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 10px;
-  padding: 10px 14px;
-  box-shadow: var(--shadow-card);
-  position: relative;
+  letter-spacing: -0.01em;
   overflow: hidden;
-  display: flex; align-items: center; gap: 12px;
-  min-height: 78px;
-  max-height: 88px;
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.22s;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
-.quick-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--hairline-strong);
-  box-shadow: var(--shadow-card-hover);
-}
-.quick-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0;
-  width: 36px; height: 2px;
-  background: var(--teal);
-  border-radius: 0 0 2px 0;
-}
-.quick-card.primary::before {
-  background: linear-gradient(90deg, var(--gold) 0%, var(--teal) 100%);
-  width: 56px;
-}
-.qc-main { flex: 1; min-width: 0; }
-.qc-eyebrow {
+.ab-next-dur {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--text-3);
-  margin-bottom: 3px;
-  display: flex; align-items: center; gap: 6px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  background: var(--teal-bg);
+  color: var(--teal);
+  border-radius: 999px;
+  flex-shrink: 0;
+  font-weight: 500;
 }
-.qc-eyebrow .ico {
-  width: 11px; height: 11px; color: var(--teal);
+.ab-eta-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
-.qc-title {
+.ab-eta-block strong { color: var(--deep-blue); font-weight: 600; }
+.ab-eta-block .ab-arrow {
+  color: var(--text-4);
+  margin: 0 2px;
+  font-size: 13px;
+}
+.ab-unlock-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f6fbfb;
+  border: 1px solid rgba(13, 148, 136, 0.38);
+  color: var(--teal);
+  letter-spacing: 0.03em;
+}
+/* 已毕业时隐藏 eta block */
+.ab-eta-block.graduated { display: none; }
+.ab-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 24px;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 999px;
   font-family: var(--font-serif);
   font-size: 15px;
   font-weight: 600;
-  color: var(--deep-blue);
-  letter-spacing: -0.01em;
-  margin-bottom: 2px;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.qc-subtitle {
-  font-size: 12px;
-  color: var(--text-2);
-  line-height: 1.35;
-  text-wrap: pretty;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.qc-subtitle strong { color: var(--text-1); font-weight: 600; }
-.qc-body { display: none; }
-
-.qc-course-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px dashed var(--border);
-}
-.qc-course-row:last-child { border-bottom: none; }
-.qc-course-row .code {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
-  color: var(--teal);
-  background: var(--teal-bg);
-  padding: 2px 7px;
-  border-radius: 4px;
-  min-width: 32px; text-align: center;
+  font-style: italic;
   letter-spacing: 0.02em;
-}
-.qc-course-row .title {
-  font-size: 13px; color: var(--text-1);
-  flex: 1;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.qc-course-row .dur {
-  font-family: var(--font-mono);
-  font-size: 10.5px; color: var(--text-3);
-  font-variant-numeric: tabular-nums;
+  transition: background 0.18s ease, transform 0.14s ease, box-shadow 0.18s ease;
+  box-shadow: 0 4px 14px -4px rgba(13, 148, 136, 0.4);
   white-space: nowrap;
-}
-
-.qc-live-row {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px dashed var(--border);
-}
-.qc-live-row:last-child { border-bottom: none; padding-bottom: 0; }
-.qc-live-row .ico-wrap {
-  flex-shrink: 0;
-  width: 30px; height: 30px;
-  display: grid; place-items: center;
-  background: var(--teal-bg);
-  border-radius: 50%;
-  color: var(--teal);
-}
-.qc-live-row .live-main {
-  flex: 1; min-width: 0;
-}
-.qc-live-row .live-title {
-  font-size: 13px; font-weight: 500; color: var(--text-1);
-  margin-bottom: 2px;
-  line-height: 1.4;
-}
-.qc-live-row .live-meta {
-  font-family: var(--font-mono);
-  font-size: 10.5px; color: var(--text-3);
-  letter-spacing: 0.02em;
-}
-
-.qc-milestone-body {
-  padding: 14px 16px;
-  background: linear-gradient(180deg, var(--teal-bg) 0%, rgba(232, 246, 245, 0.4) 100%);
-  border-radius: 10px;
-  border: 1px solid var(--hairline);
-  margin-bottom: 14px;
-}
-.qc-mile-main {
-  font-size: 13px; color: var(--text-1); line-height: 1.6;
-}
-.qc-mile-main strong { color: var(--deep-blue); font-weight: 600; }
-.qc-mile-main .num {
-  font-family: var(--font-mono);
-  color: var(--teal);
-  font-weight: 600;
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-  padding: 0 2px;
-}
-.qc-mile-meta {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--text-3);
-  margin-top: 6px;
-  letter-spacing: 0.02em;
-}
-
-.qc-footer {
-  display: flex; align-items: center;
-  gap: 8px;
   flex-shrink: 0;
 }
-.qc-btn {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 7px 12px;
-  background: var(--teal);
-  color: #fff;
-  font-size: 12px; font-weight: 500;
-  border-radius: 7px;
-  transition: all 0.18s cubic-bezier(0.2,0,0,1);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.qc-btn:hover {
+.ab-cta:hover {
   background: var(--teal-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px -4px rgba(13, 148, 136, 0.4);
+  box-shadow: 0 8px 20px -6px rgba(13, 148, 136, 0.5);
 }
-.qc-btn:active { transform: translateY(0); }
-.qc-btn svg { width: 11px; height: 11px; }
-.qc-btn-ghost {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 7px 10px;
-  color: var(--teal);
-  font-size: 12px; font-weight: 500;
-  border-radius: 7px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  transition: all 0.18s cubic-bezier(0.2,0,0,1);
-  white-space: nowrap;
-}
-.qc-btn-ghost:hover {
-  border-color: var(--teal);
-  background: var(--teal-bg);
-}
-.qc-btn-ghost svg { width: 11px; height: 11px; }
-.qc-aside { display: none; }
-.qc-milestone-body { display: none; }
-.qc-live-row { display: none; }
-.qc-course-row { display: none; }
+.ab-cta:active { transform: translateY(0); background: var(--teal-active); }
+.ab-cta svg { width: 14px; height: 14px; }
 
 /* ============ PACE MODAL ============ */
 .modal-mask {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(30, 58, 82, 0.28);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 200;
+  background: rgba(26, 41, 66, 0.32);
+  backdrop-filter: blur(6px);
+  z-index: 100;
   align-items: center; justify-content: center;
   padding: 20px;
 }
@@ -818,402 +413,694 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 @keyframes modalFade { from { opacity: 0; } to { opacity: 1; } }
 .modal {
   background: var(--surface);
-  border-radius: 16px;
-  padding: 32px;
+  border-radius: 14px;
+  padding: 28px 30px;
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
   border: 1px solid var(--border);
   box-shadow: 0 24px 60px -12px rgba(30, 58, 82, 0.24);
-  animation: modalRise 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: modalRise 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
-@keyframes modalRise {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+@keyframes modalRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .modal h3 {
   font-family: var(--font-serif);
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 20px; font-weight: 600;
   color: var(--deep-blue);
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
+  margin-bottom: 4px;
 }
-.modal > p {
-  font-size: 13.5px;
-  color: var(--text-2);
-  line-height: 1.55;
-  margin-bottom: 20px;
+.modal p {
+  font-size: 13px; color: var(--text-2); margin-bottom: 18px;
 }
-.pace-opts { display: flex; flex-direction: column; gap: 10px; }
+.pace-opts { display: flex; flex-direction: column; gap: 8px; }
 .pace-opt {
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid var(--border); border-radius: 10px;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.2,0,0,1);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.16s ease;
 }
-.pace-opt:hover { border-color: var(--teal); background: var(--teal-bg); }
-.pace-opt.selected {
-  border-color: var(--teal);
+.pace-opt:hover { border-color: var(--teal); }
+.pace-opt.selected { border-color: var(--teal); background: var(--teal-bg); }
+.pace-opt-label { font-weight: 500; font-size: 14px; color: var(--deep-blue); }
+.pace-opt-eta { font-size: 11.5px; color: var(--text-3); font-family: var(--font-mono); }
+.modal-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end; }
+.modal-btn {
+  padding: 8px 18px;
+  font-size: 13px; font-weight: 500;
+  border-radius: 999px; cursor: pointer;
+}
+.modal-btn.primary { background: var(--teal); color: #fff; }
+.modal-btn.primary:hover { background: var(--teal-hover); }
+.modal-btn.ghost { color: var(--text-2); }
+.modal-btn.ghost:hover { color: var(--deep-blue); }
+
+/* ============ CALLOUT · 锚定卡（in-map anchored card）============ */
+/* 地图 dim · 卡片弹出时地图保持可见但降到 0.35 让卡片焦点清晰 */
+.km-canvas.km-dim,
+.km-mobile-stack.km-dim {
+  opacity: 0.35;
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+.km-canvas, .km-mobile-stack {
+  transition: opacity 0.26s ease, filter 0.26s ease;
+}
+
+/* 引出线 SVG 覆盖层 */
+.km-leader-svg {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+.km-leader-svg.show { opacity: 0.9; }
+.km-leader-svg path {
+  stroke-dasharray: 5 4;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+}
+.km-leader-svg circle { fill: var(--gold); opacity: 0.9; }
+
+/* 锚定卡本体 */
+.km-callout {
+  position: absolute;
+  width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(30,58,82,0.04), 0 24px 60px -14px rgba(30,58,82,0.24);
+  padding: 22px 24px;
+  overflow-y: auto;
+  z-index: 30;
+  opacity: 0;
+  transform: scale(0.96);
+  transform-origin: center;
+  transition: opacity 0.28s cubic-bezier(0.22,1,0.36,1),
+              transform 0.28s cubic-bezier(0.22,1,0.36,1);
+  pointer-events: none;
+}
+.km-callout.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* 当前选中的组件高亮（点击源）*/
+.km-comp.km-comp-source .km-comp-box {
+  stroke: #c89854;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 8px rgba(200,152,84,0.45));
+}
+
+.kd-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 50%;
   background: var(--teal-bg);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
+  color: var(--teal);
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.14s ease;
+  z-index: 10;
 }
-.pace-opt-main {
-  font-size: 14px; font-weight: 600;
-  color: var(--text-1);
+.kd-close:hover { background: var(--teal); color: #fff; transform: rotate(90deg); }
+.kd-close svg { width: 14px; height: 14px; }
+
+/* ---- Header ---- */
+.kd-header {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.kd-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--gold);
+  color: #fff;
+  margin-bottom: 12px;
+}
+.kd-badge.done { background: var(--teal); }
+.kd-badge.locked { background: #f6fbfb; border: 1px solid rgba(13,148,136,0.38); color: var(--teal); }
+.kd-stage-num {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-2);
+  letter-spacing: 0.02em;
   margin-bottom: 2px;
 }
-.pace-opt-sub {
-  font-size: 12px; color: var(--text-2);
+.kd-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--deep-blue);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 4px;
 }
-.modal-actions {
-  margin-top: 22px;
-  display: flex; gap: 10px; justify-content: flex-end;
-}
-.btn-ghost {
-  padding: 9px 16px;
-  background: transparent;
+.kd-promise {
+  font-size: 14px;
   color: var(--text-2);
-  font-size: 13px;
-  border-radius: 8px;
-  transition: all 0.18s;
+  line-height: 1.5;
 }
-.btn-ghost:hover { background: var(--surface-sunk); color: var(--text-1); }
-.btn-primary-sm {
-  padding: 9px 20px;
+.kd-clicked {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+.kd-clicked strong { color: var(--deep-blue); font-weight: 600; }
+
+/* ---- Section ---- */
+.kd-section {
+  margin-bottom: 26px;
+}
+.kd-section:last-child { margin-bottom: 0; }
+.kd-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.kd-icon {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--teal-bg);
+  color: var(--teal);
+  flex-shrink: 0;
+}
+.kd-icon svg { width: 16px; height: 16px; }
+.kd-icon-live { background: rgba(200,152,84,0.12); color: var(--gold); }
+.kd-icon-task { background: rgba(13,148,136,0.1); color: var(--teal); }
+.kd-icon-community { background: rgba(26,41,66,0.08); color: var(--deep-blue); }
+.kd-heading {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--deep-blue);
+  letter-spacing: -0.01em;
+}
+.kd-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.kd-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+/* ---- Course item ---- */
+.kd-course {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.14s ease;
+  border: 1px solid transparent;
+  position: relative;
+}
+.kd-course:hover { background: var(--teal-bg); transform: translateX(2px); }
+.kd-course:active { transform: translateX(0); }
+.kd-course-arrow {
+  flex-shrink: 0;
+  width: 12px; height: 12px;
+  color: var(--text-4);
+  opacity: 0;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  transform: translateX(-4px);
+}
+.kd-course:hover .kd-course-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--teal);
+}
+.kd-course.done:hover .kd-course-arrow { color: var(--teal); }
+.kd-course.current:hover .kd-course-arrow { color: var(--gold); }
+.kd-course.locked:hover .kd-course-arrow { color: var(--text-3); }
+.kd-course-mark {
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1.2px solid var(--border);
+  display: grid; place-items: center;
+  background: var(--surface);
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+.kd-course.done .kd-course-mark {
   background: var(--teal);
+  border-color: var(--teal);
   color: #fff;
-  font-size: 13px; font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.18s cubic-bezier(0.2,0,0,1);
 }
-.btn-primary-sm:hover { background: var(--teal-hover); }
+.kd-course.current .kd-course-mark {
+  border-color: var(--gold);
+  background: #fffcf5;
+  color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(200,152,84,0.15);
+}
+.kd-course-code {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 26px;
+}
+.kd-course-title {
+  flex: 1;
+  font-size: 13px;
+  color: var(--deep-blue);
+  line-height: 1.4;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kd-course.done .kd-course-title { color: var(--text-2); }
+.kd-course.locked .kd-course-title { color: var(--text-3); }
+.kd-course-dur {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Live item ---- */
+.kd-live {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.18s ease;
+}
+.kd-live:hover { border-color: var(--gold); }
+.kd-live-date {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--gold);
+  font-weight: 600;
+  min-width: 44px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.kd-live-title {
+  font-size: 13px;
+  color: var(--deep-blue);
+  flex: 1;
+}
+.kd-live-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.kd-live.past { opacity: 0.6; }
+.kd-live.past .kd-live-date { color: var(--text-3); }
+.kd-empty {
+  padding: 14px 16px;
+  background: var(--teal-bg);
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  text-align: center;
+  font-style: italic;
+}
+
+/* ---- Assignment ---- */
+.kd-assignment {
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(200,152,84,0.06) 0%, var(--surface) 80%);
+  border: 1px solid rgba(200,152,84,0.28);
+}
+.kd-assignment-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--deep-blue);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+.kd-assignment-desc {
+  font-size: 12.5px;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.kd-assignment-meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(200,152,84,0.28);
+}
+
+/* ---- Community link ---- */
+.kd-community-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--deep-blue);
+  font-weight: 500;
+  transition: all 0.16s ease;
+}
+.kd-community-link:hover {
+  border-color: var(--teal);
+  background: var(--teal-bg);
+}
+.kd-community-link svg { width: 14px; height: 14px; color: var(--teal); }
+
+/* ---- Mobile: 锚定卡变成居中弹窗（近似全屏）---- */
+@media (max-width: 639px) {
+  .km-callout {
+    width: calc(100vw - 24px);
+    max-width: 400px;
+    max-height: calc(100vh - 120px);
+  }
+  .km-leader-svg { display: none; }
+}
 
 /* ============ TOAST ============ */
-.ds-toast {
-  position: fixed;
-  bottom: 32px; left: 50%; transform: translateX(-50%) translateY(16px);
-  padding: 12px 20px;
-  background: var(--deep-blue);
-  color: #fff;
-  font-size: 13px; font-weight: 500;
-  border-radius: 10px;
-  box-shadow: 0 12px 28px rgba(30, 58, 82, 0.28);
+.toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--deep-blue); color: #fff;
+  padding: 10px 18px; border-radius: 999px;
+  font-size: 13px;
+  box-shadow: 0 10px 30px -6px rgba(30,58,82,0.4);
   opacity: 0;
+  transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.22,1,0.36,1);
+  z-index: 200;
   pointer-events: none;
-  z-index: 300;
-  transition: opacity 0.22s, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  display: flex; align-items: center; gap: 8px;
 }
-.ds-toast.show {
-  opacity: 1; transform: translateX(-50%) translateY(0);
-}
-.ds-toast .emoji { font-size: 16px; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============ MOBILE STACK ============ */
+.km-mobile-stack { display: none; }
 
 /* ============ RESPONSIVE ============ */
-@media (max-width: 960px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 8px; }
-  .hero-right { justify-content: flex-start; }
-  .progress-bar { width: 120px; }
+@media (max-width: 1023px) {
+  .km-topbar { padding: 0 20px; }
+  .tb-back { display: none; }
+  .km-actionbar { padding: 0 24px; }
+  .ab-eta { display: none; }
 }
-@media (max-width: 760px) {
-  .topbar { padding: 0 20px; }
-  .hero { padding: 14px 20px 12px; min-height: auto; max-height: none; }
-  .hero-sub { white-space: normal; }
-  .hero-right { flex-wrap: wrap; gap: 10px; }
-  .page { padding: 6px 16px 48px; }
-  .ascent-panels { grid-template-columns: 1fr; }
-  .quick-grid { grid-template-columns: 1fr; }
-  .quick-card { min-height: 70px; }
-  .timeline-marker .tm-label { font-size: 9px; }
-  .timeline-marker .tm-date { font-size: 9px; }
+/* 平板 640-1023：保留 SVG 横向布局，只微缩字号 */
+@media (max-width: 1023px) and (min-width: 640px) {
+  .km-main { padding: 8px 20px; }
+  .tb-progress-bar { width: 80px; }
+}
+/* 手机 ≤639px：降级到 vertical stack */
+@media (max-width: 639px) {
+  body { overflow: auto; }
+  .km-app { grid-template-rows: 48px auto auto; height: auto; min-height: 100vh; }
+  .km-main {
+    padding: 14px 16px;
+    align-items: stretch;
+    overflow: visible;
+  }
+  .km-canvas { display: none; }
+  .km-mobile-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+  .tb-center { display: none; }
+  .km-topbar { padding: 0 16px; }
+  .km-actionbar {
+    padding: 14px 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .ab-cta { justify-content: center; }
+  .ab-next { max-width: 100%; white-space: normal; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+/* ---- Mobile stage cards ---- */
+.ms-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow-card);
+  position: relative;
 }
+.ms-card.current { border: 1.5px solid var(--gold); background: linear-gradient(180deg, #fffcf5 0%, var(--surface) 40%); }
+.ms-card.done { border-color: rgba(13,148,136,0.3); }
+.ms-card.locked { opacity: 0.55; }
+.ms-card .ms-badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  background: #f6fbfb;
+  border: 1px solid rgba(13,148,136,0.38);
+  color: var(--teal);
+}
+.ms-card.current .ms-badge { background: var(--gold); border-color: var(--gold); color: #fff; }
+.ms-card.done .ms-badge { background: var(--teal); border-color: var(--teal); color: #fff; }
+.ms-card .ms-num {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 600; font-style: italic;
+  color: var(--gold);
+}
+.ms-card.done .ms-num { color: var(--teal); font-style: normal; }
+.ms-card.locked .ms-num { color: var(--text-3); }
+.ms-card .ms-name {
+  font-family: var(--font-serif);
+  font-size: 18px; font-weight: 600;
+  color: var(--deep-blue);
+  margin-top: 2px;
+}
+.ms-card .ms-promise {
+  font-size: 13px; color: var(--text-2);
+  margin-top: 4px;
+}
+.ms-card .ms-comps {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 12px;
+}
+.ms-comp {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--text-2);
+  background: var(--surface);
+  font-weight: 500;
+}
+.ms-comp.done { background: var(--teal-bg); border-color: var(--teal); color: var(--deep-blue); }
+.ms-comp.current { background: var(--gold-soft); border-color: var(--gold); color: var(--deep-blue); font-weight: 600; }
+.ms-comp.locked { border-style: dashed; border-color: var(--text-4); color: var(--text-3); }
+
 </style>
 </head>
 <body>
 
-<!-- ============ TOPBAR ============ -->
-<div class="topbar">
-  <div class="tb-inner">
-    <div class="tb-left">
-      <a href="index.html" class="logo">深海圈</a>
-      <a href="index.html" class="back-link">← 返回首页</a>
-    </div>
-    <a href="profile.html" class="avatar">瓜</a>
-  </div>
-</div>
+<div class="km-app">
 
-<!-- ============ HERO · compact single row ============ -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <h1 class="hero-title"><span class="glyph">The</span>Ascent — 你的学习路线</h1>
-      <p class="hero-sub">
-        4 座山 · 77 节 · 5 场直播 · 4 次大作业 — 今天是 <strong id="heroDate">5 月 11 日 · 周一</strong>，加入深海圈的第
-        <span class="day-accent" id="heroDay">8</span> 天。
-        <span class="frag" id="heroDateFrag">5/4 — 7/1</span>
-      </p>
+  <!-- ============ TOPBAR ============ -->
+  <header class="km-topbar">
+    <div class="tb-group">
+      <a href="welcome.html" class="tb-logo">深海圈</a>
     </div>
-    <div class="hero-right">
-      <div class="progress-inline">
-        <span><strong id="progressDone">0</strong>/77</span>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <span><strong id="progressPct">0%</strong> · <strong id="finishEta">—</strong> 登顶</span>
+    <div class="tb-center">
+      <span class="tb-cohort">第 3 期 · 2026 春</span>
+      <span class="sep">◆</span>
+      <span class="tb-day">第 <strong id="tbDay">8</strong> 天</span>
+      <span class="sep">◆</span>
+      <div class="tb-progress">
+        <strong id="tbDone">6</strong><span>/</span><strong id="tbTotal">77</strong>
+        <div class="tb-progress-bar"><div class="tb-progress-fill" id="tbProgressFill" style="width:8%"></div></div>
+        <em id="tbPct">8%</em>
       </div>
-      <button class="pace-chip" onclick="openPaceModal()">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+    </div>
+    <div class="tb-group">
+      <button class="tb-pace" onclick="openPaceModal()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1"/>
         </svg>
-        <strong id="paceDisplay">每天 1 小时</strong>
+        <span>节奏</span>
+        <strong id="tbPaceText">1 小时/天</strong>
       </button>
+      <div class="tb-avatar" title="我">李</div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- ============ MAIN ============ -->
-<main class="page">
-
-  <!-- ==== THE ASCENT MAP ==== -->
-  <div class="ascent-map-wrap">
-    <span class="map-corner tl"></span>
-    <span class="map-corner tr"></span>
-    <span class="map-corner bl"></span>
-    <span class="map-corner br"></span>
-    <svg class="ascent-svg" id="ascentSvg" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="登山远征路线图">
-      <!-- injected by renderAscentMap() -->
+  <!-- ============ MAIN CANVAS ============ -->
+  <main class="km-main">
+    <svg class="km-canvas" id="kmCanvas" viewBox="0 50 1440 510" preserveAspectRatio="xMidYMid meet" role="img" aria-label="你的学习路线 · 产品架构演化图">
+      <!-- injected by render() -->
     </svg>
-    <div class="ascent-tooltip" id="ascentTooltip"></div>
-  </div>
-
-  <!-- ==== QUICK CARDS · compact (moved up: sits right under the map) ==== -->
-  <section class="quick-section">
-    <div class="quick-grid">
-
-      <!-- Card 1 · 本周进度 -->
-      <div class="quick-card primary">
-        <div class="qc-main">
-          <div class="qc-eyebrow">
-            <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1"/></svg>
-            <span id="todayDateStr">5/11 · 周一 · 第 8 天</span>
-          </div>
-          <h3 class="qc-title" id="todayTitle">本周进度</h3>
-          <p class="qc-subtitle" id="todaySubtitle">本周 3 节课 · 约 <strong>60 分钟</strong></p>
-        </div>
-        <div class="qc-footer">
-          <a href="learn.html" class="qc-btn">
-            继续学习
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 2 · 最近直播 -->
-      <div class="quick-card">
-        <div class="qc-main">
-          <div class="qc-eyebrow">
-            <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="4" width="10" height="8" rx="1"/><path d="M12 7l2-1v4l-2-1z"/>
-            </svg>
-            <span>Live · 近期直播</span>
-          </div>
-          <h3 class="qc-title" id="nextLiveTitle">最近直播</h3>
-          <p class="qc-subtitle" id="nextLiveSubtitle">晚 8 点开始</p>
-        </div>
-        <div class="qc-footer">
-          <button class="qc-btn-ghost" onclick="showAllLives()">
-            全部
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Card 3 · 里程碑 -->
-      <div class="quick-card">
-        <div class="qc-main">
-          <div class="qc-eyebrow">
-            <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 13V3l7 3-7 3"/><path d="M3 13v-3"/>
-            </svg>
-            <span>Milestone · 里程碑</span>
-          </div>
-          <h3 class="qc-title" id="mileTitle">下一个里程碑</h3>
-          <p class="qc-subtitle" id="mileSubtitle">当前阶段还差 — 节可解锁下一座山</p>
-        </div>
-        <div class="qc-footer">
-          <button class="qc-btn-ghost" onclick="scrollToMap()">
-            阶段
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-          </button>
-        </div>
-      </div>
-
+    <div class="km-mobile-stack" id="kmMobileStack">
+      <!-- injected on mobile -->
     </div>
-  </section>
+    <!-- 引出线 SVG 覆盖层 + 锚定卡 -->
+    <svg class="km-leader-svg" id="kmLeader" aria-hidden="true"></svg>
+    <aside class="km-callout" id="kmCallout" aria-hidden="true" role="dialog">
+      <button class="kd-close" onclick="closeCallout()" aria-label="关闭">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+      <!-- Header -->
+      <header class="kd-header">
+        <div class="kd-badge" id="kdBadge">▸ 能跑通</div>
+        <div class="kd-stage-num" id="kdStageNum">第一阶段</div>
+        <h2 class="kd-title" id="kdTitle">快速入门</h2>
+        <p class="kd-promise" id="kdPromise">跑通你的第一个 AI 产品</p>
+        <p class="kd-clicked" id="kdClicked"></p>
+      </header>
 
-  <!-- ==== LEGEND + SQUAD ==== -->
-  <div class="ascent-panels">
-    <!-- LEGEND -->
-    <div class="ascent-panel">
-      <div class="panel-header">
-        <div class="panel-eyebrow"><span class="accent">◆</span> LEGEND · 地图图例</div>
-        <div class="panel-num">FIG. 01</div>
-      </div>
-      <div class="legend-grid">
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="22" height="22" viewBox="0 0 22 22">
-              <circle cx="11" cy="11" r="3.5" fill="#0d9488"/>
+      <!-- 图文章节 -->
+      <section class="kd-section">
+        <div class="kd-section-head">
+          <span class="kd-icon kd-icon-book" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 4h8a2 2 0 0 1 2 2v10H6a2 2 0 0 1-2-2V4z"/>
+              <path d="M4 4v12a2 2 0 0 0 2 2h8"/>
+              <path d="M7 8h4M7 11h3"/>
             </svg>
           </span>
-          <span class="legend-label">
-            <span class="zh">已学课程</span>
-            <span class="en">Course · Done</span>
-          </span>
+          <span class="kd-heading">课程章节</span>
+          <span class="kd-count" id="kdCoursesCount">0 节</span>
         </div>
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="22" height="22" viewBox="0 0 22 22">
-              <circle cx="11" cy="11" r="3.5" fill="#ffffff" stroke="#7dd3cc" stroke-width="1.4"/>
+        <ul class="kd-list kd-course-list" id="kdCourses"></ul>
+      </section>
+
+      <!-- 相关直播 -->
+      <section class="kd-section">
+        <div class="kd-section-head">
+          <span class="kd-icon kd-icon-live" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="5" width="11" height="10" rx="1.5"/>
+              <path d="M13 9l5-3v8l-5-3z"/>
+              <circle cx="6" cy="9" r="0.8" fill="currentColor"/>
             </svg>
           </span>
-          <span class="legend-label">
-            <span class="zh">待学课程</span>
-            <span class="en">Course · Pending</span>
-          </span>
+          <span class="kd-heading">直播营地</span>
+          <span class="kd-count" id="kdLivesCount">0 场</span>
         </div>
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="22" height="22" viewBox="0 0 22 22">
-              <circle cx="11" cy="11" r="6" fill="#ffffff" stroke="#0d9488" stroke-width="1.6"/>
-              <path d="M8 9v4l3-2z" fill="#0d9488"/>
+        <ul class="kd-list kd-live-list" id="kdLives"></ul>
+      </section>
+
+      <!-- 阶段作业 -->
+      <section class="kd-section">
+        <div class="kd-section-head">
+          <span class="kd-icon kd-icon-task" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="4" y="3" width="12" height="14" rx="1.5"/>
+              <path d="M7 8l2 2 4-4M7 13h6"/>
             </svg>
           </span>
-          <span class="legend-label">
-            <span class="zh">直播营地</span>
-            <span class="en">Live Session</span>
-          </span>
+          <span class="kd-heading">阶段作业</span>
         </div>
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="22" height="22" viewBox="0 0 22 22">
-              <polygon points="11,3 18,17 4,17" fill="#d97857" stroke="#d97857" stroke-width="1"/>
+        <div class="kd-assignment" id="kdAssignment"></div>
+      </section>
+
+      <!-- 社区讨论 -->
+      <section class="kd-section">
+        <div class="kd-section-head">
+          <span class="kd-icon kd-icon-community" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H5a2 2 0 0 1-2-2V6z"/>
+              <path d="M7 8h4M7 10h3"/>
             </svg>
           </span>
-          <span class="legend-label">
-            <span class="zh">阶段大作业</span>
-            <span class="en">Milestone Flag</span>
-          </span>
+          <span class="kd-heading">社区讨论</span>
         </div>
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="22" height="22" viewBox="0 0 22 22">
-              <polygon points="11,2 13.5,8.5 20,8.5 14.5,12.5 16.5,19 11,15 5.5,19 7.5,12.5 2,8.5 8.5,8.5" fill="#c89854"/>
-            </svg>
-          </span>
-          <span class="legend-label">
-            <span class="zh">毕业顶峰</span>
-            <span class="en">Graduation Star</span>
-          </span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-glyph">
-            <svg width="26" height="18" viewBox="0 0 26 18">
-              <line x1="3" y1="9" x2="12" y2="9" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
-              <line x1="14" y1="9" x2="23" y2="9" stroke="#7dd3cc" stroke-width="2" stroke-dasharray="2 3" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <span class="legend-label">
-            <span class="zh">路径 · 已走 / 未走</span>
-            <span class="en">Trail Walked / Ahead</span>
-          </span>
-        </div>
-      </div>
+        <a class="kd-community-link" id="kdCommunityLink" href="community.html">
+          <span>查看本阶段相关讨论</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3l5 5-5 5"/></svg>
+        </a>
+      </section>
+    </aside>
+  </main>
+
+  <!-- ============ ACTIONBAR ============ -->
+  <footer class="km-actionbar">
+    <div class="ab-next-block">
+      <span class="dot"></span>
+      <span class="ab-label">下一节</span>
+      <strong class="ab-next-title" id="abNext">—</strong>
+      <span class="ab-next-dur" id="abNextDur">—</span>
     </div>
-
-    <!-- SQUAD -->
-    <div class="ascent-panel">
-      <div class="panel-header">
-        <div class="panel-eyebrow"><span class="accent">◆</span> SQUAD · 同期分布</div>
-        <div class="panel-num">N = 1,247</div>
-      </div>
-      <div class="squad-wrap">
-        <div class="squad-bars" id="squadBars"></div>
-        <div class="squad-footnote">
-          <strong id="squadPositionText">32%</strong> 的同学和你处于同一阶段 ·
-          <strong id="squadAheadText">5%</strong> 已登顶毕业
-          <br>
-          <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-3); letter-spacing:0.08em;">DEEPSEA S03 · 2026 SPRING COHORT</span>
-        </div>
-      </div>
+    <div class="ab-eta-block" id="abEtaBlock">
+      还差 <strong id="abRemain">—</strong> 节
+      <span class="ab-arrow">→</span>
+      解锁
+      <span class="ab-unlock-badge" id="abUnlockBadge">—</span>
     </div>
-  </div>
+    <a href="learn.html" class="ab-cta">
+      继续学习
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+    </a>
+  </footer>
 
-  <!-- ==== TIMELINE ==== -->
-  <div class="ascent-timeline">
-    <div class="timeline-head">
-      <div class="lbl"><span class="accent">◆</span> EXPEDITION TIMELINE · 远征时间轴</div>
-      <div class="range" id="timelineRange">—</div>
-    </div>
-    <div class="timeline-track" id="timelineTrack"></div>
-    <!-- reserve space for timeline labels below markers -->
-    <div style="height: 34px;"></div>
-  </div>
-
-</main>
+</div>
 
 <!-- ============ PACE MODAL ============ -->
 <div class="modal-mask" id="paceModal">
   <div class="modal">
-    <h3>调整学习节奏</h3>
-    <p>你之前的进度不会丢 — 只是往后的每日任务量会重新分布。</p>
-    <div class="pace-opts" id="paceOpts">
+    <h3>学习节奏</h3>
+    <p>你希望每天投入多少时间？会实时更新预计毕业日期。</p>
+    <div class="pace-opts">
       <div class="pace-opt" data-min="30">
-        <div>
-          <div class="pace-opt-main">每天 30 分钟</div>
-          <div class="pace-opt-sub">轻量节奏 · 通勤 / 睡前</div>
-        </div>
-        <span style="font-size:11px; color:var(--text-3); font-family:var(--font-mono);" data-eta="30"></span>
+        <span class="pace-opt-label">每天 30 分钟 · 轻松</span>
+        <span class="pace-opt-eta" data-eta>—</span>
       </div>
-      <div class="pace-opt selected" data-min="60">
-        <div>
-          <div class="pace-opt-main">每天 1 小时</div>
-          <div class="pace-opt-sub">推荐节奏 · 下班后 / 晚饭后</div>
-        </div>
-        <span style="font-size:11px; color:var(--text-3); font-family:var(--font-mono);" data-eta="60"></span>
+      <div class="pace-opt" data-min="60">
+        <span class="pace-opt-label">每天 1 小时 · 推荐</span>
+        <span class="pace-opt-eta" data-eta>—</span>
       </div>
       <div class="pace-opt" data-min="120">
-        <div>
-          <div class="pace-opt-main">每天 2 小时</div>
-          <div class="pace-opt-sub">冲刺节奏 · 周末全力</div>
-        </div>
-        <span style="font-size:11px; color:var(--text-3); font-family:var(--font-mono);" data-eta="120"></span>
+        <span class="pace-opt-label">每天 2 小时 · 冲刺</span>
+        <span class="pace-opt-eta" data-eta>—</span>
       </div>
       <div class="pace-opt" data-min="0">
-        <div>
-          <div class="pace-opt-main">我自己安排</div>
-          <div class="pace-opt-sub">关闭日历，按自己节奏学</div>
-        </div>
+        <span class="pace-opt-label">自主安排</span>
+        <span class="pace-opt-eta">按你节奏</span>
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-ghost" onclick="closePaceModal()">取消</button>
-      <button class="btn-primary-sm" onclick="applyPace()">保存新节奏</button>
+      <button class="modal-btn ghost" onclick="closePaceModal()">取消</button>
+      <button class="modal-btn primary" onclick="applyPace()">确认</button>
     </div>
   </div>
 </div>
 
 <!-- ============ TOAST ============ -->
-<div class="ds-toast" id="dsToast"></div>
+<div class="toast" id="kmToast"></div>
 
 <script>
 /* =====================================================
-   DATA · 77 courses / 4 assignments / 5 lives
-===================================================== */
+   DATA · COURSES (保留自旧版本)
+   ===================================================== */
 const COURSES = [
   // 快速入门 12 节 (stage 1)
   { code:'A1', s:1, t:'这套课程有什么不同？', d:15 },
@@ -1302,25 +1189,136 @@ const COURSES = [
 ];
 
 const STAGE_NAMES = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
+const STAGE_PROMISES = {
+  1: '跑通你的第一个 AI 产品',
+  2: '独立做出一个能上线的产品',
+  3: '让你的产品能收到钱',
+  4: '让真实用户用起来',
+};
+/* 价值徽章（即使 locked 也能看出差异化）*/
+const STAGE_BADGES = {
+  1: { icon:'▸', text:'能跑通' },
+  2: { icon:'⊡', text:'能上线' },
+  3: { icon:'¥', text:'能收钱' },
+  4: { icon:'↗', text:'能扩张' },
+};
 
-const ASSIGNMENTS = [
-  { afterCode:'A12', title:'阶段大作业 · 用 AI 做出一个能在线访问的网站', stage:1, estDays:2 },
-  { afterCode:'B27', title:'阶段大作业 · 完成产品部署上线 + 域名 + API + 数据库', stage:2, estDays:3 },
-  { afterCode:'C19', title:'阶段大作业 · 从零搭建完整产品（落地页 + 认证 + 支付）', stage:3, estDays:3 },
-  { afterCode:'D19', title:'毕业大作业 · 执行至少 1 个增长动作，展示产品数据变化', stage:4, estDays:2 },
+/* =====================================================
+   DATA · KMAP_STAGES (架构演化图几何)
+   每个 stage 包含：centerX + 本阶段呈现的组件位置 + 连接线
+   组件的 origin 字段表示它最早出现在哪个阶段（用于状态判定）
+   ===================================================== */
+const KMAP_STAGES = [
+  {
+    num: 1,
+    centerX: 200,
+    components: [
+      { key:'demo', label:'第一个 demo', en:'First Demo',
+        desc:'用 AI 做一个能访问的最小产品', dx: 0, dy: 320, origin: 1 },
+    ],
+    connections: [],
+  },
+  {
+    num: 2,
+    centerX: 540,
+    components: [
+      { key:'frontend', label:'前端界面', en:'Frontend',
+        desc:'用户看到和点的页面', dx: 0, dy: 245, origin: 2 },
+      { key:'backend',  label:'后端服务', en:'Backend',
+        desc:'处理业务逻辑和数据的服务', dx: 0, dy: 320, origin: 2 },
+      { key:'db',       label:'数据库',   en:'Database',
+        desc:'产品所有数据的持久存储', dx: 0, dy: 395, origin: 2 },
+    ],
+    connections: [
+      ['frontend', 'backend'],
+      ['backend', 'db'],
+    ],
+  },
+  {
+    num: 3,
+    centerX: 880,
+    components: [
+      // 继承自 Stage 2
+      { key:'frontend', label:'前端界面', en:'Frontend',
+        desc:'用户看到和点的页面', dx: -68, dy: 245, origin: 2 },
+      { key:'backend',  label:'后端服务', en:'Backend',
+        desc:'处理业务逻辑和数据的服务', dx: -68, dy: 320, origin: 2 },
+      { key:'db',       label:'数据库',   en:'Database',
+        desc:'产品所有数据的持久存储', dx: -68, dy: 395, origin: 2 },
+      // 本阶段新增
+      { key:'auth',     label:'用户登录', en:'Auth',
+        desc:'让用户注册、登录、找回密码', dx:  68, dy: 282, origin: 3 },
+      { key:'payment',  label:'支付模块', en:'Payment',
+        desc:'接入订阅、单次付款、海外支付', dx:  68, dy: 358, origin: 3 },
+    ],
+    connections: [
+      ['frontend', 'backend'],
+      ['backend', 'db'],
+      ['backend', 'auth'],
+      ['db', 'payment'],
+    ],
+  },
+  {
+    num: 4,
+    centerX: 1230,
+    compact: true,
+    components: [
+      // 继承
+      { key:'frontend', label:'前端', en:'Frontend',
+        desc:'用户看到和点的页面', dx: -108, dy: 230, origin: 2 },
+      { key:'backend',  label:'后端', en:'Backend',
+        desc:'处理业务逻辑和数据的服务', dx: -108, dy: 290, origin: 2 },
+      { key:'db',       label:'数据库', en:'Database',
+        desc:'产品所有数据的持久存储', dx: -108, dy: 350, origin: 2 },
+      { key:'auth',     label:'用户登录', en:'Auth',
+        desc:'让用户注册、登录、找回密码', dx: 0, dy: 230, origin: 3 },
+      { key:'payment',  label:'支付', en:'Payment',
+        desc:'接入订阅、单次付款、海外支付', dx: 0, dy: 290, origin: 3 },
+      { key:'analytics',label:'数据看板', en:'Analytics',
+        desc:'观测用户行为和核心指标', dx: 0, dy: 350, origin: 4 },
+      // 本阶段新增
+      { key:'cdn',      label:'内容加速', en:'CDN',
+        desc:'全球分发静态资源、图片', dx: 108, dy: 230, origin: 4 },
+      { key:'queue',    label:'任务队列', en:'Queue',
+        desc:'定时任务、异步邮件、批量处理', dx: 108, dy: 290, origin: 4 },
+      { key:'agent',    label:'智能助手', en:'AI Agent',
+        desc:'让 AI 自动处理重复工作、客户互动', dx: 108, dy: 350, origin: 4 },
+    ],
+    connections: [
+      ['frontend', 'backend'],
+      ['backend', 'db'],
+      ['backend', 'auth'],
+      ['db', 'payment'],
+      ['backend', 'cdn'],
+      ['db', 'analytics'],
+      ['backend', 'queue'],
+      ['analytics', 'agent'],
+    ],
+  },
 ];
 
+const AI_SYMBOLS = ['⌘', '⊡', '⊗', '⊕'];
+
+/* 阶段大作业 · 学完该阶段后需要提交的动手项目 */
+const ASSIGNMENTS = {
+  1: { title:'用 AI 做出一个能在线访问的网站', desc:'提交一个部署后的 URL + 源码仓库', estDays:2 },
+  2: { title:'完成产品部署上线 + 域名 + API + 数据库', desc:'要求：域名可访问、API 正常返回、数据库已配置', estDays:3 },
+  3: { title:'从零搭建完整产品：落地页 + 认证 + 支付', desc:'具备用户可注册、可付费的真实 MicroSaaS', estDays:3 },
+  4: { title:'毕业大作业 · 执行 1 个增长动作，展示产品数据变化', desc:'至少 14 天数据；展示冷启动策略 + 实测反馈', estDays:2 },
+};
+
+/* 本期直播日程（每场绑定到一个阶段）*/
 const LIVES = [
-  { date:'2026-05-07', time:'20:00', title:'答疑直播' },
-  { date:'2026-05-14', time:'20:00', title:'案例拆解直播' },
-  { date:'2026-05-21', time:'20:00', title:'阶段总结直播' },
-  { date:'2026-05-28', time:'20:00', title:'实战启动直播' },
-  { date:'2026-06-04', time:'20:00', title:'答疑直播' },
+  { date:'2026-05-14', time:'20:00', title:'案例拆解 · 从 demo 到产品', stage:1 },
+  { date:'2026-05-28', time:'20:00', title:'技术深水区答疑', stage:2 },
+  { date:'2026-06-18', time:'20:00', title:'商业化方法论 · 如何挑产品', stage:3 },
+  { date:'2026-07-08', time:'20:00', title:'增长案例复盘', stage:4 },
+  { date:'2026-07-22', time:'20:00', title:'毕业分享会', stage:4 },
 ];
 
 /* =====================================================
-   STATE — demo 用固定值
-===================================================== */
+   STATE
+   ===================================================== */
 const TODAY_STR = '2026-05-11';
 const STATE = {
   enrolledAt: localStorage.getItem('ds_enrolled_at') || '2026-05-04',
@@ -1329,95 +1327,25 @@ const STATE = {
 };
 
 /* =====================================================
-   DATE UTILS
-===================================================== */
+   UTILS
+   ===================================================== */
 function addDays(dateStr, n) {
   const [y,m,d] = dateStr.split('-').map(Number);
   const dt = new Date(y, m-1, d);
   dt.setDate(dt.getDate() + n);
   return dt.toISOString().slice(0,10);
 }
-function isSunday(dateStr) {
-  const [y,m,d] = dateStr.split('-').map(Number);
-  return new Date(y, m-1, d).getDay() === 0;
-}
-function weekdayCn(dateStr) {
-  const [y,m,d] = dateStr.split('-').map(Number);
-  const names = ['周日','周一','周二','周三','周四','周五','周六'];
-  return names[new Date(y, m-1, d).getDay()];
-}
-function codeToStage(code) {
-  return { A:1, B:2, C:3, D:4 }[code[0]] || 1;
-}
-function paceText(min) {
-  if (!min || min === 0) return '自主安排';
-  if (min < 60) return '每天 ' + min + ' 分钟';
-  return '每天 ' + (min / 60) + ' 小时';
-}
+function codeToStage(code) { return { A:1, B:2, C:3, D:4 }[code[0]] || 1; }
 function fmtDate(ds) {
   if (!ds) return '—';
   const [y,m,d] = ds.split('-').map(Number);
   return `${m}/${d}`;
 }
-function fmtFullDate(ds) {
-  if (!ds) return '—';
-  const [y,m,d] = ds.split('-').map(Number);
-  return `${m} 月 ${d} 日`;
+function paceText(min) {
+  if (!min) return '自主安排';
+  if (min < 60) return min + ' 分钟/天';
+  return (min/60) + ' 小时/天';
 }
-
-/* =====================================================
-   SCHEDULE GENERATION (保留)
-===================================================== */
-function generateSchedule(state) {
-  if (state.dailyMinutes === 0) return {};
-  const result = {};
-  let dateStr = state.enrolledAt;
-  let courseIdx = 0;
-  const maxDays = 300;
-  let dayCount = 0;
-
-  while (courseIdx < COURSES.length && dayCount < maxDays) {
-    dayCount++;
-    if (isSunday(dateStr)) {
-      result[dateStr] = { courses:[], rest:true };
-      dateStr = addDays(dateStr, 1);
-      continue;
-    }
-    const dayCourses = [];
-    let minutes = 0;
-    while (courseIdx < COURSES.length) {
-      const c = COURSES[courseIdx];
-      if (dayCourses.length > 0 && (minutes + c.d) > state.dailyMinutes * 1.3) break;
-      dayCourses.push(c.code);
-      minutes += c.d;
-      courseIdx++;
-      if (minutes >= state.dailyMinutes) break;
-    }
-    result[dateStr] = { courses: dayCourses };
-    if (dayCourses.length > 0) {
-      const last = dayCourses[dayCourses.length - 1];
-      const asn = ASSIGNMENTS.find(a => a.afterCode === last);
-      if (asn) {
-        for (let i = 0; i < asn.estDays; i++) {
-          dateStr = addDays(dateStr, 1);
-          if (isSunday(dateStr)) {
-            result[dateStr] = { courses:[], rest:true };
-            i--; continue;
-          }
-          if (i === 0) result[dateStr] = { courses:[], assignment: asn };
-          else result[dateStr] = { courses:[], assignmentCont:true, assignmentRef:asn };
-        }
-      }
-    }
-    dateStr = addDays(dateStr, 1);
-  }
-  LIVES.forEach(live => {
-    if (!result[live.date]) result[live.date] = { courses:[] };
-    result[live.date].live = live;
-  });
-  return result;
-}
-
 function getCurrentStage() {
   for (let s = 1; s <= 4; s++) {
     const stageCourses = COURSES.filter(c => c.s === s);
@@ -1425,1417 +1353,733 @@ function getCurrentStage() {
   }
   return 4;
 }
-
 function estimateFinishDate(state) {
-  if (state.dailyMinutes === 0) return '按你节奏';
-  const totalMin = COURSES.reduce((s, c) => s + c.d, 0);
-  const completedMin = COURSES.filter(c => state.completed.includes(c.code)).reduce((s,c)=>s+c.d, 0);
-  const remainMin = totalMin - completedMin;
-  const remainDays = Math.ceil(remainMin / state.dailyMinutes * 7 / 6) + 8;
-  const finishDate = addDays(TODAY_STR, remainDays);
-  const [y,m,d] = finishDate.split('-').map(Number);
-  return `${m}/${d}`;
-}
-
-function getTodayCourses() {
-  const schedule = generateSchedule(STATE);
-  if (STATE.dailyMinutes === 0) {
-    return COURSES.filter(c => !STATE.completed.includes(c.code)).slice(0, 3);
-  }
-  const todayPlan = schedule[TODAY_STR] || { courses: [] };
-  const todoCodes = (todayPlan.courses || []).filter(code => !STATE.completed.includes(code));
-  // 往前找 overdue
-  const overdue = [];
-  Object.keys(schedule).sort().forEach(date => {
-    if (date >= TODAY_STR) return;
-    (schedule[date].courses || []).forEach(code => {
-      if (!STATE.completed.includes(code) && !todoCodes.includes(code)) overdue.push(code);
-    });
-  });
-  const merged = [...overdue, ...todoCodes].slice(0, 4);
-  return merged.map(code => COURSES.find(c => c.code === code)).filter(Boolean);
+  if (!state.dailyMinutes) return '按你节奏';
+  const totalMin = COURSES.reduce((s,c)=>s+c.d, 0);
+  const doneMin = COURSES.filter(c => state.completed.includes(c.code)).reduce((s,c)=>s+c.d, 0);
+  const remainDays = Math.ceil((totalMin - doneMin) / state.dailyMinutes * 7/6) + 8;
+  return fmtDate(addDays(TODAY_STR, remainDays));
 }
 
 /* =====================================================
-   ASCENT MAP RENDERER · 登山图 SVG 主绘制
-===================================================== */
-function renderAscentMap() {
-  const svg = document.getElementById('ascentSvg');
-  if (!svg) return;
-
-  const schedule = generateSchedule(STATE);
+   STATE COMPUTATION · determine component state per stage
+   ===================================================== */
+function computeComponentStates() {
   const currentStage = getCurrentStage();
+  const curStageCourses = COURSES.filter(c => c.s === currentStage);
+  const curStageDone = curStageCourses.filter(c => STATE.completed.includes(c.code)).length;
+  const curStageTotal = curStageCourses.length;
+  const stageProgress = curStageTotal ? curStageDone / curStageTotal : 0;
 
-  // 每阶段起止日期
-  const stageDates = [null, null, null, null];
-  Object.keys(schedule).sort().forEach(date => {
-    const plan = schedule[date];
-    (plan.courses || []).forEach(code => {
-      const s = codeToStage(code);
-      if (!stageDates[s-1]) stageDates[s-1] = { start: date, end: date };
-      else stageDates[s-1].end = date;
-    });
-    if (plan.assignment) {
-      const s = plan.assignment.stage;
-      if (stageDates[s-1]) stageDates[s-1].end = date;
+  // Current-stage new components: distribute progress
+  const curStageNewComps = KMAP_STAGES[currentStage - 1].components
+    .filter(c => c.origin === currentStage)
+    .map(c => c.key);
+  const newDoneCount = Math.floor(stageProgress * curStageNewComps.length);
+  // Key of the component that should be CURRENT (pulsing)
+  const currentKey = curStageNewComps[newDoneCount] || curStageNewComps[curStageNewComps.length - 1];
+
+  function stateFor(stageIdx, comp) {
+    // stageIdx: 0-indexed (the stage we're rendering this component in)
+    const displayStage = stageIdx + 1;
+    const originStage = comp.origin;
+
+    // Rendering in a stage that's before origin: impossible (won't be rendered)
+    // Rendering in a stage === origin: subject to progress state
+    // Rendering in a stage after origin: treat as "background" — always fully done
+
+    if (displayStage < originStage) return 'locked'; // shouldn't happen with our data
+
+    // If displaying in stage BEFORE the current stage: everything is done
+    if (displayStage < currentStage) return 'done';
+
+    // If displaying in stage AFTER the current stage: everything is locked (future vision)
+    if (displayStage > currentStage) return 'locked';
+
+    // Displaying in CURRENT stage:
+    // Components that originate in earlier stages are always done
+    if (originStage < currentStage) return 'done';
+
+    // Components originating THIS stage: based on progress
+    if (originStage === currentStage) {
+      const newComps = curStageNewComps;
+      const idx = newComps.indexOf(comp.key);
+      if (idx < 0) return 'locked';
+      if (idx < newDoneCount) return 'done';
+      if (comp.key === currentKey) return 'current';
+      return 'locked';
     }
-  });
 
-  const startDate = STATE.enrolledAt;
-  const lastStageEnd = stageDates[3]?.end || addDays(startDate, 180);
-  const enrollDaysPassed = Math.max(1, Math.round(
-    (new Date(TODAY_STR) - new Date(startDate)) / 86400000
-  ) + 1);
-
-  /* ============================================================
-     CARTOGRAPHY · Swiss style in teal
-     viewBox 1440 x 720
-     画面分区：
-       0–80  : 外框 + 经纬刻度 + 顶部 SHEET/标题
-       80–560: 山体区（4 座山）
-       560   : 地面基准线 BASE_Y
-       560–640: 阶段标签带
-       640–720: 底部（图例 / 剖面 / 指南针 / 时间尺 / colophon）
-     ============================================================ */
-  const BASE_Y = 560;
-  const FRAME = { x: 24, y: 24, w: 1392, h: 672 };  // 外框
-
-  // ========= 4 座山几何 =========
-  const PEAKS = [
-    { stage:1, summitX: 230,  summitY: 420, baseLeftX: 60,   baseRightX: 420,
-      zhName:'快速入门',     enName:'FOOTHILLS',  code:'MT. 01' },
-    { stage:2, summitX: 560,  summitY: 320, baseLeftX: 400,  baseRightX: 800,
-      zhName:'实战进阶',     enName:'CRUX',        code:'MT. 02' },
-    { stage:3, summitX: 880,  summitY: 260, baseLeftX: 780,  baseRightX: 1080,
-      zhName:'商业化',       enName:'MARKETPLACE', code:'MT. 03' },
-    { stage:4, summitX: 1220, summitY: 170, baseLeftX: 1060, baseRightX: 1380,
-      zhName:'增长 · 毕业',  enName:'SUMMIT',      code:'MT. 04' },
-  ];
-
-  // ========= 11 个章节（顺序即学习顺序）=========
-  // 每个章节：哪些课程代号、哪座山、在"爬升进度 t"上的位置、引出线方向
-  // t 0→1 是从山脚到山顶的比例
-  // leader 用绝对坐标指定 label 框锚点位置，避免对称碰撞
-  //   labelX / labelY 是 label 盒左上角（单独控制，排版精确）
-  const CHAPTERS = [
-    // 山 1 · 快速入门（山顶 x=230, y=420）
-    { no:'01', zh:'预备篇',       en:'PROLOGUE',       codes:['A1','A2','A3'],
-      mtn:0, t:0.36, labelX:46,  labelY:524 },  // 下方左：紧贴 START 右侧
-    { no:'02', zh:'认识新伙伴',   en:'CONTACT',         codes:['A4','A5','A6','A7','A8','A9','A10','A11','A12'],
-      mtn:0, t:0.82, labelX:46,  labelY:376 },  // 山1 山腰左上
-
-    // 山 2 · 实战进阶（山顶 x=560, y=320）
-    { no:'03', zh:'技术基础',     en:'FOUNDATIONS',    codes:['B1','B2','B3','B4','B5','B6','B7'],
-      mtn:1, t:0.22, labelX:248, labelY:524 },
-    { no:'04', zh:'核心能力',     en:'CORE CRAFT',     codes:['B8','B9','B10','B11','B12','B13','B14','B15','B16','B17'],
-      mtn:1, t:0.56, labelX:246, labelY:248 },  // 山2 左上（不和山1/02 冲突）
-    { no:'05', zh:'进阶技能',     en:'ADVANCED',       codes:['B18','B19','B20','B21','B22','B23','B24','B25','B26','B27'],
-      mtn:1, t:0.88, labelX:646, labelY:204 },  // 山2 顶右上
-
-    // 山 3 · 商业化（山顶 x=880, y=260）
-    { no:'06', zh:'需求篇',       en:'DEMAND',         codes:['C1','C2','C3','C4','C5','C6','C7','C8'],
-      mtn:2, t:0.28, labelX:578, labelY:524 },
-    { no:'07', zh:'产品篇',       en:'PRODUCT',        codes:['C9','C10','C11','C12','C13','C14'],
-      mtn:2, t:0.60, labelX:444, labelY:196 },  // 山3 左上（避开 time scale）
-    { no:'08', zh:'扩展篇',       en:'EXPANSION',      codes:['C15','C16','C17','C18','C19'],
-      mtn:2, t:0.90, labelX:908, labelY:524 },
-
-    // 山 4 · 增长 + 毕业（山顶 x=1220, y=170）
-    { no:'09', zh:'提效篇',       en:'LEVERAGE',       codes:['D1','D2','D3','D4','D5','D6','D7'],
-      mtn:3, t:0.28, labelX:1094, labelY:468 },
-    { no:'10', zh:'内功篇',       en:'MASTERY',        codes:['D8','D9','D10','D11','D12','D13','D14','D15'],
-      mtn:3, t:0.56, labelX:880, labelY:196 },  // 山4 左上（避开 time scale）
-    { no:'11', zh:'增长篇',       en:'GROWTH',         codes:['D16','D17','D18','D19'],
-      mtn:3, t:0.88, labelX:1234, labelY:524 },
-  ];
-
-  // 每章 waypoint 在山形路径（baseLeft→summit）上的坐标
-  function chapterPos(chapter) {
-    const peak = PEAKS[chapter.mtn];
-    const t = chapter.t;
-    // bezier 爬升曲线（跟 climb-map 一致的节奏）
-    const P0 = { x: peak.baseLeftX, y: BASE_Y };
-    const P1 = { x: peak.baseLeftX + 0.30 * (peak.summitX - peak.baseLeftX), y: BASE_Y - 0.08 * (BASE_Y - peak.summitY) };
-    const P2 = { x: peak.summitX  - 0.22 * (peak.summitX - peak.baseLeftX), y: peak.summitY + 0.45 * (BASE_Y - peak.summitY) };
-    const P3 = { x: peak.summitX, y: peak.summitY };
-    const mt = 1 - t;
-    const x = mt*mt*mt*P0.x + 3*mt*mt*t*P1.x + 3*mt*t*t*P2.x + t*t*t*P3.x;
-    const y = mt*mt*mt*P0.y + 3*mt*mt*t*P1.y + 3*mt*t*t*P2.y + t*t*t*P3.y;
-    return { x, y };
-  }
-  CHAPTERS.forEach(ch => { const p = chapterPos(ch); ch.x = p.x; ch.y = p.y; });
-
-  // 章节完成进度
-  CHAPTERS.forEach(ch => {
-    const done = ch.codes.filter(c => STATE.completed.includes(c)).length;
-    ch.done = done;
-    ch.total = ch.codes.length;
-    ch.stage = done === ch.total ? 'done' : (done > 0 ? 'active' : 'locked');
-    // 章节总时长（分钟 → 小时）
-    const min = ch.codes.reduce((s, code) => {
-      const c = COURSES.find(cc => cc.code === code);
-      return s + (c ? c.d : 0);
-    }, 0);
-    ch.minutes = min;
-    ch.hours = Math.round(min / 60 * 10) / 10;
-  });
-
-  // ========= 山脊路径几何 · 每座山的路由 =========
-  // 路径从起点 → 山1左坡 → 山1顶 → 山1右坡下 → 山2左坡上 → 山2顶 → 下 → ...
-  // 每座山的内部又要容纳该阶段所有课程 waypoint
-  const START = { x: 70, y: BASE_Y };
-  // 为每座山定义一段"登顶路径"：从左山脚 → 山顶 的多点（课程分布于此段）
-  // 以及 "下山路径"：山顶 → 右山脚
-  function buildAscentSegment(peak, includeCourses) {
-    // includeCourses: 该阶段的课程数 N
-    // 从 baseLeft 蜿蜒到 summit，N 步（不含起点和终点，即 1..N）
-    // 用 cubic-in 缓动曲线让路径起初缓、靠近山顶陡
-    const pts = [];
-    const { baseLeftX:bl, summitX:sx, summitY:sy } = peak;
-    const stepCount = includeCourses + 1; // N+1 段 → N 个中间点
-    // 为了让路径看起来自然，用 3 段 cubic bezier 的近似（sub-sample）
-    // 起点 (bl, BASE_Y)，控制点 (bl + 0.3*(sx-bl), BASE_Y), (sx - 0.2*(sx-bl), sy + 0.4*(BASE_Y-sy))，终点 (sx, sy)
-    for (let i = 1; i <= includeCourses; i++) {
-      const t = i / stepCount;
-      // bezier interpolation with snappy curve
-      const P0 = { x: bl, y: BASE_Y };
-      const P1 = { x: bl + 0.28 * (sx - bl), y: BASE_Y - 0.08 * (BASE_Y - sy) };
-      const P2 = { x: sx - 0.22 * (sx - bl), y: sy + 0.45 * (BASE_Y - sy) };
-      const P3 = { x: sx, y: sy };
-      const mt = 1 - t;
-      const x = mt*mt*mt*P0.x + 3*mt*mt*t*P1.x + 3*mt*t*t*P2.x + t*t*t*P3.x;
-      const y = mt*mt*mt*P0.y + 3*mt*mt*t*P1.y + 3*mt*t*t*P2.y + t*t*t*P3.y;
-      // 加少量 zigzag 起伏让路径不是直线
-      const jitter = Math.sin(i * 1.1 + peak.stage * 2) * 4;
-      pts.push({ x: x + jitter * 0.3, y: y - Math.abs(jitter) * 0.2 });
-    }
-    return pts;
-  }
-  function buildDescentSegment(peak, stepCount) {
-    // 山顶 → 右山脚，stepCount 步
-    const pts = [];
-    const { summitX:sx, summitY:sy, baseRightX:br } = peak;
-    for (let i = 1; i <= stepCount; i++) {
-      const t = i / (stepCount + 1);
-      const P0 = { x: sx, y: sy };
-      const P1 = { x: sx + 0.22 * (br - sx), y: sy + 0.45 * (BASE_Y - sy) };
-      const P2 = { x: sx + 0.72 * (br - sx), y: BASE_Y - 0.08 * (BASE_Y - sy) };
-      const P3 = { x: br, y: BASE_Y };
-      const mt = 1 - t;
-      const x = mt*mt*mt*P0.x + 3*mt*mt*t*P1.x + 3*mt*t*t*P2.x + t*t*t*P3.x;
-      const y = mt*mt*mt*P0.y + 3*mt*mt*t*P1.y + 3*mt*t*t*P2.y + t*t*t*P3.y;
-      pts.push({ x, y });
-    }
-    return pts;
+    return 'locked';
   }
 
-  // ========= 按阶段为每节课计算坐标（用于 youPos / trail / live 定位） =========
-  const positions = {}; // code → {x,y}
-  const trailPoints = [START]; // 整条路径按顺序（start → 各 peak summit）
+  return { currentStage, stateFor, stageProgress, curStageDone, curStageTotal };
+}
 
-  [1,2,3,4].forEach(s => {
-    const peak = PEAKS[s-1];
-    const stageCourses = COURSES.filter(c => c.s === s);
-    const ascentPts = buildAscentSegment(peak, stageCourses.length);
-    stageCourses.forEach((c, i) => {
-      positions[c.code] = ascentPts[i];
-      trailPoints.push(ascentPts[i]);
-    });
-    // 路径经过山顶（过山顶）
-    trailPoints.push({ x: peak.summitX, y: peak.summitY - 6 });
-    // descent 过渡到下一座山的左山脚
-    if (s < 4) {
-      const descentPts = buildDescentSegment(peak, 3);
-      descentPts.forEach(p => trailPoints.push(p));
-    }
-  });
+/* =====================================================
+   RENDER · SVG KNOWLEDGE MAP
+   ===================================================== */
+function boxSize(stage) {
+  return stage.compact ? { w: 96, h: 40 } : { w: 128, h: 52 };
+}
+function compPos(stage, comp) {
+  return { x: stage.centerX + comp.dx, y: comp.dy };
+}
+function findComp(stage, key) {
+  return stage.components.find(c => c.key === key);
+}
 
-  // ========= "你在这里"位置：基于已完成课程数插值 =========
-  // 根据 STATE.completed 排序找最后一节完成课的位置 + 偏移一点点前进感
-  let youPos = START;
-  const lastCompleted = STATE.completed
-    .map(code => ({ code, idx: COURSES.findIndex(c => c.code === code) }))
-    .filter(x => x.idx >= 0)
-    .sort((a, b) => b.idx - a.idx)[0];
-  if (lastCompleted && positions[lastCompleted.code]) {
-    const curPos = positions[lastCompleted.code];
-    const nextCode = COURSES[lastCompleted.idx + 1]?.code;
-    const nextPos = nextCode ? positions[nextCode] : null;
-    if (nextPos) {
-      // 介于 current 和 next 之间 ~35%
-      youPos = {
-        x: curPos.x + (nextPos.x - curPos.x) * 0.35,
-        y: curPos.y + (nextPos.y - curPos.y) * 0.35,
-      };
+function renderComponent(stage, comp, state) {
+  const { x, y } = compPos(stage, comp);
+  const { w, h } = boxSize(stage);
+  const left = x - w/2, top = y - h/2;
+
+  // state-based styling
+  const styles = {
+    done: {
+      fill: '#e8f6f5',
+      stroke: '#0d9488',
+      sw: 1.2,
+      dash: 'none',
+      textFill: '#1a2942',
+      dotFill: '#0d9488',
+      showCheck: true,
+    },
+    current: {
+      fill: '#fffcf5',
+      stroke: '#c89854',
+      sw: 1.6,
+      dash: 'none',
+      textFill: '#1a2942',
+      dotFill: '#c89854',
+      showCheck: false,
+    },
+    locked: {
+      fill: '#ffffff',
+      stroke: '#b8c5d0',
+      sw: 1,
+      dash: '3 2',
+      textFill: '#94a3b8',
+      dotFill: '#b8c5d0',
+      showCheck: false,
+    },
+  };
+  const s = styles[state];
+
+  const fontSize = stage.compact ? 11.5 : 13.5;
+  const labelY = top + h/2 + 4;
+
+  // pulse ring for current
+  let pulse = '';
+  if (state === 'current') {
+    pulse = `
+      <rect class="km-pulse-ring" x="${left - 3}" y="${top - 3}" width="${w + 6}" height="${h + 6}" rx="10"
+            fill="none" stroke="#c89854" stroke-width="1.5" opacity="0"/>
+    `;
+  }
+
+  // done checkmark
+  let check = '';
+  if (s.showCheck) {
+    const cx = left + w - 10, cy = top + h/2;
+    check = `
+      <path d="M ${cx - 4} ${cy} l 2.5 2.5 l 5 -5.5" fill="none" stroke="#0d9488" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+  }
+
+  // glow for current
+  let glow = '';
+  if (state === 'current') {
+    glow = `<rect x="${left}" y="${top}" width="${w}" height="${h}" rx="7" fill="url(#gradCurrent)" opacity="1"/>`;
+  }
+
+  return `
+    <g class="km-comp km-comp-${state}" data-stage="${stage.num}" data-key="${comp.key}"
+       data-label="${comp.label}" data-en="${comp.en}" data-desc="${comp.desc}">
+      ${pulse}
+      <rect class="km-comp-box" x="${left}" y="${top}" width="${w}" height="${h}" rx="7"
+            fill="${s.fill}" stroke="${s.stroke}" stroke-width="${s.sw}"
+            ${s.dash !== 'none' ? `stroke-dasharray="${s.dash}"` : ''}/>
+      ${glow}
+      <circle cx="${left + 10}" cy="${top + 9}" r="2.4" fill="${s.dotFill}"/>
+      <text x="${x}" y="${labelY}" text-anchor="middle"
+            font-size="${fontSize}" font-weight="500" fill="${s.textFill}"
+            letter-spacing="-0.01em">${comp.label}</text>
+      ${check}
+    </g>
+  `;
+}
+
+function renderConnection(stage, fromKey, toKey, stateFn) {
+  const fromComp = findComp(stage, fromKey);
+  const toComp = findComp(stage, toKey);
+  if (!fromComp || !toComp) return '';
+  const fromState = stateFn(stage.num - 1, fromComp);
+  const toState = stateFn(stage.num - 1, toComp);
+
+  const { w, h } = boxSize(stage);
+  const fromP = compPos(stage, fromComp);
+  const toP = compPos(stage, toComp);
+
+  const dx = toP.x - fromP.x, dy = toP.y - fromP.y;
+
+  let path;
+  if (Math.abs(dx) < 4) {
+    // vertical
+    path = `M ${fromP.x} ${fromP.y + h/2} L ${toP.x} ${toP.y - h/2}`;
+  } else if (Math.abs(dy) < 4) {
+    // horizontal
+    const sign = dx > 0 ? 1 : -1;
+    path = `M ${fromP.x + sign*w/2} ${fromP.y} L ${toP.x - sign*w/2} ${toP.y}`;
+  } else {
+    // 90 angle : vertical first, then horizontal from midpoint
+    if (Math.abs(dx) > Math.abs(dy)) {
+      const signX = dx > 0 ? 1 : -1;
+      const midX = fromP.x + signX * (w/2 + 14);
+      path = `M ${fromP.x + signX*w/2} ${fromP.y} L ${midX} ${fromP.y} L ${midX} ${toP.y} L ${toP.x - signX*w/2} ${toP.y}`;
     } else {
-      youPos = { x: curPos.x + 10, y: curPos.y - 6 };
+      const signY = dy > 0 ? 1 : -1;
+      const midY = fromP.y + signY * (h/2 + 10);
+      path = `M ${fromP.x} ${fromP.y + signY*h/2} L ${fromP.x} ${midY} L ${toP.x} ${midY} L ${toP.x} ${toP.y - signY*h/2}`;
     }
   }
 
-  /* ======================================================
-     SVG DEFS · 青蓝 cartography
-     ====================================================== */
+  // styling
+  let stroke = '#b8c5d0', sw = 0.9, dash = '2 3', opacity = 0.5, arrow = '';
+  if (fromState === 'done' && toState === 'done') {
+    stroke = '#0d9488'; dash = 'none'; opacity = 1; sw = 1.1;
+    arrow = 'url(#arrowTeal)';
+  } else if (fromState === 'done' || toState === 'done' || fromState === 'current' || toState === 'current') {
+    stroke = '#7dd3cc'; dash = '4 3'; opacity = 0.9; sw = 1;
+    arrow = 'url(#arrowLight)';
+  }
+
+  return `<path d="${path}" fill="none" stroke="${stroke}" stroke-width="${sw}" opacity="${opacity}"
+                ${dash !== 'none' ? `stroke-dasharray="${dash}"` : ''}
+                ${arrow ? `marker-end="${arrow}"` : ''}/>`;
+}
+
+function renderStageBadge(stage, stageState) {
+  const x = stage.centerX;
+  const y = 78;
+  const badge = STAGE_BADGES[stage.num];
+  const content = `${badge.icon}  ${badge.text}`;
+
+  /* 徽章尺寸（固定宽高，所有阶段一致以保持节奏）*/
+  const w = 86, h = 24;
+  const left = x - w/2, top = y - h/2;
+
+  /* 状态配色：current=金底白字；done=teal底白字；locked=淡 teal 外框+teal 字 */
+  let bg, stroke, textColor, sw = 1;
+  if (stageState === 'current') {
+    bg = '#c89854'; stroke = 'none'; textColor = '#ffffff'; sw = 0;
+  } else if (stageState === 'done') {
+    bg = '#0d9488'; stroke = 'none'; textColor = '#ffffff'; sw = 0;
+  } else {
+    /* locked 状态：浅奶白 bg + 淡 teal 外框 + teal 字 —— 让 locked 阶段也有存在感 */
+    bg = '#f6fbfb'; stroke = 'rgba(13,148,136,0.38)'; textColor = '#0d9488';
+  }
+
+  return `
+    <rect x="${left}" y="${top}" width="${w}" height="${h}" rx="12"
+          fill="${bg}" ${sw > 0 ? `stroke="${stroke}" stroke-width="${sw}"` : ''}/>
+    <text x="${x}" y="${top + 16}" text-anchor="middle"
+          font-size="12" font-weight="600" fill="${textColor}"
+          letter-spacing="0.04em">${content}</text>
+  `;
+}
+
+function renderStageLabel(stage, stageState) {
+  const x = stage.centerX;
+  const numColor  = stageState === 'current' ? '#c89854' : stageState === 'done' ? '#0d9488' : '#94a3b8';
+  const nameColor = stageState === 'locked' ? '#94a3b8' : '#1a2942';
+  const promiseColor = stageState === 'locked' ? '#94a3b8' : '#5c7a8a';
+  const numStyle = stageState === 'done' ? 'normal' : 'italic';
+  /* 当前阶段编号放大，建立节奏 */
+  const numSize = stageState === 'current' ? 40 : 32;
+  return `
+    <g class="km-stage-label">
+      ${renderStageBadge(stage, stageState)}
+      <text x="${x}" y="120" text-anchor="middle" class="t-serif"
+            font-size="${numSize}" font-weight="600" font-style="${numStyle}"
+            fill="${numColor}" letter-spacing="0.01em">0${stage.num}</text>
+      <text x="${x}" y="155" text-anchor="middle" class="t-serif"
+            font-size="19" font-weight="600"
+            fill="${nameColor}" letter-spacing="-0.01em">${STAGE_NAMES[stage.num]}</text>
+      <text x="${x}" y="178" text-anchor="middle"
+            font-size="12.5" fill="${promiseColor}">
+        ${STAGE_PROMISES[stage.num]}
+      </text>
+    </g>
+  `;
+}
+
+function renderStageDividers() {
+  const ys = [95, 500];
+  return [360, 720, 1080].map(x => `
+    <line x1="${x}" y1="${ys[0]}" x2="${x}" y2="${ys[1]}"
+          stroke="#dde7ea" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.55"/>
+  `).join('');
+}
+
+/* 跨阶段演化连接线 —— 表达"同一个产品在 4 阶段里生长"的时间流向 */
+function renderCrossStageConnectors(currentStage) {
+  /* 每个 gap 数据：[起点 x, 终点 x, 起点 stage, 终点 stage, 标签] */
+  /* 箭头不带文字 —— 价值描述由各阶段顶部的徽章承载，避免重复 */
+  const gaps = [
+    [280, 460, 1, 2],
+    [620, 736, 2, 3],
+    [1032, 1060, 3, 4],
+  ];
+  const y = 320;
+
+  return gaps.map(([x1, x2, a, b]) => {
+    let stroke, dash, opacity, arrow;
+    if (b <= currentStage) {
+      stroke = '#0d9488'; dash = '4 3'; opacity = 0.9; arrow = 'url(#arrowTeal)';
+    } else if (a === currentStage) {
+      stroke = '#c89854'; dash = '4 3'; opacity = 0.85; arrow = 'url(#arrowGold)';
+    } else {
+      stroke = '#b8c5d0'; dash = '3 4'; opacity = 0.45; arrow = 'url(#arrowGray)';
+    }
+
+    return `
+      <g class="km-cross-arrow">
+        <path d="M ${x1} ${y} L ${x2} ${y}" fill="none"
+              stroke="${stroke}" stroke-width="1.2"
+              stroke-dasharray="${dash}" opacity="${opacity}"
+              marker-end="${arrow}"/>
+      </g>
+    `;
+  }).join('');
+}
+
+/* AI 能力 底座已删除（装饰性，无信息量） */
+
+function renderKnowledgeMap() {
+  const svg = document.getElementById('kmCanvas');
+  if (!svg) return;
+  const { currentStage, stateFor } = computeComponentStates();
+
   const defs = `
     <defs>
-      <!-- 纸纹（淡青）— 降到 opacity 0.4 制造"印刷品"肌理 -->
-      <filter id="paperTexture" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.88" numOctaves="2" seed="7"/>
-        <feColorMatrix values="0 0 0 0 0.05  0 0 0 0 0.58  0 0 0 0 0.53  0 0 0 0.10 0"/>
-      </filter>
-      <filter id="paperGrain" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="2.4" numOctaves="1" seed="3"/>
-        <feColorMatrix values="0 0 0 0 0.10  0 0 0 0 0.35  0 0 0 0 0.35  0 0 0 0.05 0"/>
-      </filter>
-      <!-- 路径箭头 -->
-      <marker id="trailArrow" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto">
-        <path d="M 0 0 L 8 4.5 L 0 9 L 2 4.5 Z" fill="#0d9488"/>
-      </marker>
-      <marker id="trailArrowMuted" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto">
-        <path d="M 0 0 L 8 4.5 L 0 9 L 2 4.5 Z" fill="#7dd3cc"/>
-      </marker>
-      <radialGradient id="youHalo" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="rgba(13,148,136,0.28)"/>
-        <stop offset="55%" stop-color="rgba(13,148,136,0.10)"/>
-        <stop offset="100%" stop-color="rgba(13,148,136,0)"/>
-      </radialGradient>
-      <radialGradient id="starHalo" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="rgba(200,152,84,0.38)"/>
-        <stop offset="100%" stop-color="rgba(200,152,84,0)"/>
-      </radialGradient>
-      <!-- YOU callout 顶部金→青渐变 -->
-      <linearGradient id="youCalloutAccent" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#c89854"/>
-        <stop offset="100%" stop-color="#0d9488"/>
+      <linearGradient id="gradCurrent" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="#fffaf0" stop-opacity="0.75"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
       </linearGradient>
-      <filter id="softLabelShadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="1.2" result="blur"/>
-        <feOffset dx="0" dy="1" result="off"/>
-        <feColorMatrix values="0 0 0 0 0.10  0 0 0 0 0.22  0 0 0 0 0.32  0 0 0 0.18 0" in="off"/>
-        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
+      <marker id="arrowTeal" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M 0 0 L 7 4 L 0 8 L 1.5 4 Z" fill="#0d9488"/>
+      </marker>
+      <marker id="arrowLight" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M 0 0 L 7 4 L 0 8 L 1.5 4 Z" fill="#7dd3cc"/>
+      </marker>
+      <marker id="arrowGold" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M 0 0 L 8 4.5 L 0 9 L 2 4.5 Z" fill="#c89854"/>
+      </marker>
+      <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M 0 0 L 7 4 L 0 8 L 1.5 4 Z" fill="#b8c5d0" opacity="0.6"/>
+      </marker>
     </defs>
   `;
 
-  /* ======================================================
-     背景纸 + 纹理 (保留但淡到几乎看不见)
-     ====================================================== */
-  const paperLayer = `
-    <rect x="0" y="0" width="1440" height="720" fill="#f5fafa"/>
-    <rect x="0" y="0" width="1440" height="720" filter="url(#paperTexture)" opacity="0.4"/>
-    <rect x="0" y="0" width="1440" height="720" filter="url(#paperGrain)" opacity="0.3"/>
-  `;
+  // 4 stage groups
+  let body = '';
+  KMAP_STAGES.forEach((stage, idx) => {
+    const stageNum = stage.num;
+    const stageState = stageNum < currentStage ? 'done' :
+                       stageNum === currentStage ? 'current' : 'locked';
 
-  /* ======================================================
-     外框（双线）+ 经纬刻度 — Swiss cartography standard
-     ====================================================== */
-  const frame = `
-    <rect x="${FRAME.x}" y="${FRAME.y}" width="${FRAME.w}" height="${FRAME.h}"
-          fill="none" stroke="#1a2942" stroke-width="1.1"/>
-    <rect x="${FRAME.x+8}" y="${FRAME.y+8}" width="${FRAME.w-16}" height="${FRAME.h-16}"
-          fill="none" stroke="#1a2942" stroke-width="0.35" opacity="0.7"/>
-  `;
-
-  // 经纬刻度
-  const latLonTicks = (() => {
-    const lines = [];
-    const labels = [];
-    // 顶部经度刻度
-    const lonPositions = [160, 320, 480, 640, 800, 960, 1120, 1280];
-    const lonLabels    = ['103°E','104°','105°','106°','107°','108°','109°','110°E'];
-    lonPositions.forEach((x, i) => {
-      lines.push(`<line x1="${x}" y1="${FRAME.y}" x2="${x}" y2="${FRAME.y+10}" stroke="#1a2942" stroke-width="0.4" opacity="0.6"/>`);
-      lines.push(`<line x1="${x}" y1="${FRAME.y+FRAME.h}" x2="${x}" y2="${FRAME.y+FRAME.h-10}" stroke="#1a2942" stroke-width="0.4" opacity="0.6"/>`);
-      labels.push(`<text x="${x}" y="${FRAME.y-6}" text-anchor="middle" class="t-mono" font-size="7.5" fill="#5a9490" letter-spacing="0.8">${lonLabels[i]}</text>`);
+    // connections first (below components)
+    let connSvg = '';
+    stage.connections.forEach(([from, to]) => {
+      connSvg += renderConnection(stage, from, to, stateFor);
     });
-    // 左右纬度刻度
-    const latPositions = [120, 240, 360, 480, 600];
-    const latLabels    = ['33°N','32°','31°','30°','29°'];
-    latPositions.forEach((y, i) => {
-      lines.push(`<line x1="${FRAME.x}" y1="${y}" x2="${FRAME.x+10}" y2="${y}" stroke="#1a2942" stroke-width="0.4" opacity="0.6"/>`);
-      lines.push(`<line x1="${FRAME.x+FRAME.w}" y1="${y}" x2="${FRAME.x+FRAME.w-10}" y2="${y}" stroke="#1a2942" stroke-width="0.4" opacity="0.6"/>`);
-      labels.push(`<text x="${FRAME.x-6}" y="${y+3}" text-anchor="end" class="t-mono" font-size="7.5" fill="#5a9490" letter-spacing="0.8">${latLabels[i]}</text>`);
+
+    // components
+    let compSvg = '';
+    stage.components.forEach(comp => {
+      const state = stateFor(idx, comp);
+      compSvg += renderComponent(stage, comp, state);
     });
-    return lines.join('') + labels.join('');
-  })();
 
-  /* ======================================================
-     远景山（3 层 · 淡青晕染）
-     ====================================================== */
-  function distantRange(yBase, seed, variance = 1) {
-    const step = 60;
-    const pts = [];
-    for (let x = 0; x <= 1440; x += step) {
-      const h = (26 + Math.sin(x * 0.012 + seed) * 18 * variance + Math.cos(x * 0.005 + seed * 2) * 12 * variance);
-      pts.push([x, yBase - h]);
-    }
-    let d = `M 0,${BASE_Y}`;
-    d += ` L ${pts[0][0]},${pts[0][1]}`;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const [x1, y1] = pts[i];
-      const [x2, y2] = pts[i + 1];
-      const mx = (x1 + x2) / 2;
-      const my = (y1 + y2) / 2;
-      d += ` Q ${x1},${y1} ${mx},${my}`;
-    }
-    const last = pts[pts.length - 1];
-    d += ` L 1440,${last[1]} L 1440,${BASE_Y} Z`;
-    return d;
-  }
-  const distantLayer = `
-    <path d="${distantRange(460, 0.7, 0.65)}" fill="#c2e0dd" opacity="0.22"/>
-    <path d="${distantRange(490, 1.3, 0.85)}" fill="#a8d0cb" opacity="0.28"/>
-    <path d="${distantRange(515, 2.7, 1.0)}"  fill="#8fc4bd" opacity="0.32"/>
-  `;
-
-  /* ======================================================
-     山体 · Swiss 风山形（线稿 + 淡填充 + 等高线 + hatching）
-     ====================================================== */
-  function peakShape(peak, jitter = 0) {
-    const { baseLeftX:bl, baseRightX:br, summitX:sx, summitY:sy } = peak;
-    const dx1 = sx - bl, dx2 = br - sx;
-    const h = BASE_Y - sy;
-    const leftAscent = `
-      C ${bl + dx1*0.12},${BASE_Y - h*0.05} ${bl + dx1*0.22},${BASE_Y - h*0.18 + jitter*0.6} ${bl + dx1*0.32},${BASE_Y - h*0.26 + jitter*0.8}
-      C ${bl + dx1*0.44},${BASE_Y - h*0.42} ${bl + dx1*0.55},${BASE_Y - h*0.58 - jitter*0.4} ${bl + dx1*0.66},${BASE_Y - h*0.68}
-      C ${bl + dx1*0.78},${BASE_Y - h*0.80 + jitter*0.3} ${bl + dx1*0.90},${BASE_Y - h*0.93} ${sx},${sy}
-    `;
-    const rightDescent = `
-      C ${sx + dx2*0.10},${sy + h*0.10 - jitter*0.4} ${sx + dx2*0.24},${sy + h*0.26} ${sx + dx2*0.36},${sy + h*0.38 + jitter*0.3}
-      C ${sx + dx2*0.50},${sy + h*0.55} ${sx + dx2*0.64},${sy + h*0.72 + jitter*0.5} ${sx + dx2*0.76},${sy + h*0.82}
-      C ${sx + dx2*0.88},${sy + h*0.92 - jitter*0.3} ${br - 8},${BASE_Y - 4} ${br},${BASE_Y}
-    `;
-    return `M ${bl},${BASE_Y} ${leftAscent} ${rightDescent} Z`;
-  }
-
-  // 等高线 — 10 条，主 rgba(13,148,136,0.22)，每 5 条加粗 index 0.4
-  function contourLinesDetail(peak) {
-    const { baseLeftX:bl, baseRightX:br, summitX:sx, summitY:sy } = peak;
-    const h = BASE_Y - sy;
-    const out = [];
-    for (let i = 1; i <= 10; i++) {
-      const t = i / 11;
-      const y = BASE_Y - h * t;
-      const widthL = (sx - bl) * (1 - t * 0.88) * 0.92;
-      const widthR = (br - sx) * (1 - t * 0.88) * 0.92;
-      const isIndex = (i === 5 || i === 10);
-      const stroke = isIndex ? 'rgba(13,148,136,0.42)' : 'rgba(13,148,136,0.24)';
-      const sw = isIndex ? 0.9 : 0.55;
-      const dash = isIndex ? 'none' : '3 4';
-      out.push(`<path d="M ${sx - widthL},${y} Q ${sx - widthL*0.4},${y - 4 - t*2} ${sx},${y - 1.5} Q ${sx + widthR*0.4},${y - 4 - t*2} ${sx + widthR},${y}" fill="none" stroke="${stroke}" stroke-width="${sw}" stroke-dasharray="${dash}"/>`);
-    }
-    return out.join('');
-  }
-
-  // Hatching 山体阴影（左侧 · 沿山坡向下辐射的短射线，淡青）
-  function hatchingLines(peak) {
-    const { baseLeftX:bl, summitX:sx, summitY:sy, baseRightX:br } = peak;
-    const lines = [];
-    const h = BASE_Y - sy;
-
-    // 左坡 hatching（从山脊向下辐射）
-    const count = 14;
-    for (let i = 0; i < count; i++) {
-      const t = 0.22 + (i / count) * 0.68;
-      const xOnRidge = bl + (sx - bl) * t;
-      const yOnRidge = BASE_Y - h * Math.pow(t, 1.02);
-      const len = 16 + Math.sin(i * 1.3) * 5;
-      const angle = Math.PI * 0.22 + Math.sin(i) * 0.06;
-      const x2 = xOnRidge + Math.cos(angle) * len;
-      const y2 = yOnRidge + Math.sin(angle) * len;
-      // 前 70% 距离用实线，后面淡
-      lines.push(`<line x1="${xOnRidge.toFixed(1)}" y1="${yOnRidge.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#5a9490" stroke-width="0.42" opacity="0.55" stroke-dasharray="0.5 1.2"/>`);
-    }
-    // 顶部密集小 hatches (更密)
-    for (let j = 0; j < 6; j++) {
-      const t = 0.80 + j * 0.022;
-      const xOnRidge = sx - (sx - bl) * (1 - t) * 0.35 + j * 1.8;
-      const yOnRidge = sy + h * (1 - t) * 0.45;
-      const len = 8 - j * 0.6;
-      lines.push(`<line x1="${xOnRidge.toFixed(1)}" y1="${yOnRidge.toFixed(1)}" x2="${(xOnRidge + len).toFixed(1)}" y2="${(yOnRidge + len * 0.65).toFixed(1)}" stroke="#5a9490" stroke-width="0.45" opacity="0.65"/>`);
-    }
-    return lines.join('');
-  }
-
-  const mountainsLayer = PEAKS.map((peak, i) => {
-    const state = peak.stage < currentStage ? 'done' :
-                  peak.stage === currentStage ? 'current' : 'locked';
-    const jitter = 2.5 + i * 0.8;
-    // Swiss 风：极淡的山体填充 + 清晰的外轮廓线
-    const fillOpacity = state === 'locked' ? 0.06 : (state === 'current' ? 0.14 : 0.10);
-    return `
-      <g class="peak-group" data-stage="${peak.stage}">
-        <!-- 极淡的山体填充 -->
-        <path d="${peakShape(peak, jitter)}" fill="#0d9488" fill-opacity="${fillOpacity}"
-              stroke="none"/>
-        <!-- 等高线（画在填充之上） -->
-        ${contourLinesDetail(peak)}
-        <!-- Hatching 山体阴影 -->
-        ${hatchingLines(peak)}
-        <!-- 山体外轮廓线（最上一层）— 深墨蓝 -->
-        <path d="${peakShape(peak, jitter)}" fill="none"
-              stroke="#1a2942"
-              stroke-width="${state === 'current' ? 1.25 : 1.0}"
-              stroke-opacity="${state === 'locked' ? 0.55 : 0.88}"
-              stroke-linejoin="round"/>
-        <!-- 山顶 snow-cap 小细节 -->
-        <path d="M ${peak.summitX - 14},${peak.summitY + 10}
-                 Q ${peak.summitX},${peak.summitY + 2}
-                 ${peak.summitX + 14},${peak.summitY + 10}"
-              fill="none" stroke="#ffffff" stroke-width="1.6"
-              stroke-linecap="round" opacity="0.9"/>
-        <!-- 山脊高光 -->
-        <path d="M ${peak.baseLeftX + (peak.summitX - peak.baseLeftX)*0.45},${BASE_Y - (BASE_Y - peak.summitY)*0.45}
-                 Q ${peak.baseLeftX + (peak.summitX - peak.baseLeftX)*0.72},${BASE_Y - (BASE_Y - peak.summitY)*0.72}
-                 ${peak.summitX},${peak.summitY}"
-              fill="none" stroke="rgba(255,255,255,0.55)"
-              stroke-width="0.9" opacity="0.8"/>
-        <!-- 隐形 hit area -->
-        <rect class="peak-hit" x="${peak.baseLeftX}" y="${peak.summitY - 24}"
-              width="${peak.baseRightX - peak.baseLeftX}" height="${BASE_Y - peak.summitY + 24}"
-              data-stage="${peak.stage}"/>
+    body += `
+      <g class="km-stage-group km-stage-group-${stageNum}">
+        ${renderStageLabel(stage, stageState)}
+        ${connSvg}
+        ${compSvg}
       </g>
     `;
-  }).join('');
-
-  /* ======================================================
-     地面基准线
-     ====================================================== */
-  const groundLayer = `
-    <line x1="${FRAME.x+8}" y1="${BASE_Y}" x2="${FRAME.x+FRAME.w-8}" y2="${BASE_Y}"
-          stroke="#1a2942" stroke-width="0.5" opacity="0.35"/>
-    <line x1="${FRAME.x+8}" y1="${BASE_Y+2}" x2="${FRAME.x+FRAME.w-8}" y2="${BASE_Y+2}"
-          stroke="rgba(13,148,136,0.22)" stroke-width="0.5" stroke-dasharray="1 3"/>
-  `;
-
-  /* ======================================================
-     登山路径 — GPS 虚线，青 teal + 箭头
-     ====================================================== */
-  function buildSmoothPath(pts) {
-    if (pts.length < 2) return '';
-    let d = `M ${pts[0].x},${pts[0].y}`;
-    for (let i = 1; i < pts.length; i++) {
-      const prev = pts[i-1], cur = pts[i];
-      const cx1 = prev.x + (cur.x - prev.x) * 0.55;
-      const cy1 = prev.y;
-      const cx2 = prev.x + (cur.x - prev.x) * 0.45;
-      const cy2 = cur.y;
-      d += ` C ${cx1},${cy1} ${cx2},${cy2} ${cur.x},${cur.y}`;
-    }
-    return d;
-  }
-
-  let splitIdx = 0;
-  let minDist = Infinity;
-  trailPoints.forEach((p, i) => {
-    const d = Math.hypot(p.x - youPos.x, p.y - youPos.y);
-    if (d < minDist) { minDist = d; splitIdx = i; }
-  });
-  const walkedPts = trailPoints.slice(0, splitIdx + 1);
-  walkedPts.push(youPos);
-  const aheadPts = [youPos, ...trailPoints.slice(splitIdx + 1)];
-  const walkedD = buildSmoothPath(walkedPts);
-  const aheadD = buildSmoothPath(aheadPts);
-
-  // climb-map 风格：阴影 + 虚线主路径 + 箭头
-  const pathLayer = `
-    <!-- 阴影（立体感） -->
-    <path d="${walkedD}" fill="none" stroke="rgba(13,71,63,0.18)" stroke-width="3.6"
-          stroke-linecap="round" transform="translate(1.2,1.2)"/>
-    <path d="${aheadD}" fill="none" stroke="rgba(90,148,144,0.10)" stroke-width="3"
-          stroke-linecap="round" transform="translate(1,1)"/>
-    <!-- 已走：实线 teal GPS dash -->
-    <path d="${walkedD}" fill="none" stroke="#0d9488" stroke-width="1.9"
-          stroke-linecap="round" stroke-dasharray="6 3"/>
-    <!-- 未走：虚线 更淡 teal + 箭头 marker -->
-    <path d="${aheadD}" fill="none" stroke="#5a9490" stroke-width="1.5"
-          stroke-linecap="round" stroke-dasharray="4 5" opacity="0.75"
-          marker-end="url(#trailArrowMuted)"/>
-  `;
-
-  /* ======================================================
-     11 个章节 waypoint · 符号 + 引出线 + 标签框
-     标签框用绝对坐标 labelX/labelY（精确排版）
-     ====================================================== */
-  const LABEL_W = 174;
-  const LABEL_H = 54;
-
-  // 绘制 waypoint 符号（实心/空心/半填 根据完成度）
-  function waypointSymbol(x, y, ch) {
-    const progress = ch.total === 0 ? 0 : ch.done / ch.total;
-    if (ch.stage === 'done') {
-      // ◎ 完成 — 实心 teal 圆加外圈
-      return `
-        <circle cx="${x}" cy="${y}" r="8.5" fill="#ffffff" stroke="#0d9488" stroke-width="1.1"/>
-        <circle cx="${x}" cy="${y}" r="5" fill="#0d9488"/>
-        <circle cx="${x}" cy="${y}" r="1.8" fill="#ffffff"/>
-      `;
-    }
-    if (ch.stage === 'active') {
-      // ● 进行中 — 外圈 + 扇形进度
-      const r = 8;
-      const startA = -Math.PI / 2;
-      const endA = startA + progress * Math.PI * 2;
-      const x1 = x + r * Math.cos(startA), y1 = y + r * Math.sin(startA);
-      const x2 = x + r * Math.cos(endA),   y2 = y + r * Math.sin(endA);
-      const large = progress > 0.5 ? 1 : 0;
-      const arc = `M ${x},${y} L ${x1},${y1} A ${r},${r} 0 ${large} 1 ${x2},${y2} Z`;
-      return `
-        <circle cx="${x}" cy="${y}" r="8.5" fill="#ffffff" stroke="#c89854" stroke-width="1.3"/>
-        <path d="${arc}" fill="#c89854" opacity="0.9"/>
-        <circle cx="${x}" cy="${y}" r="2.4" fill="#ffffff"/>
-      `;
-    }
-    // locked — 空心深墨蓝
-    return `
-      <circle cx="${x}" cy="${y}" r="7.5" fill="#ffffff" stroke="#1a2942" stroke-width="0.9" opacity="0.8"/>
-      <circle cx="${x}" cy="${y}" r="1.6" fill="#1a2942" opacity="0.55"/>
-    `;
-  }
-
-  // 计算从 waypoint (ax,ay) 到 label box 边缘的 leader line
-  // 两段折线 + 第二段落到 label box 最近边缘的中点
-  function leaderPath(ax, ay, lx, ly, lw, lh) {
-    const cx = lx + lw / 2, cy = ly + lh / 2;
-    // label 中心相对于 waypoint 的方向
-    const dx = cx - ax, dy = cy - ay;
-    // 找 label 最靠近 waypoint 的边缘目标点
-    let tx, ty;
-    if (Math.abs(dx) > Math.abs(dy) * 0.8) {
-      // 水平主导
-      tx = dx > 0 ? lx : lx + lw;  // 取靠近 waypoint 的那条边
-      ty = Math.max(ly + 4, Math.min(ly + lh - 4, ay));
-    } else {
-      // 垂直主导
-      tx = Math.max(lx + 8, Math.min(lx + lw - 8, ax));
-      ty = dy > 0 ? ly : ly + lh;
-    }
-    // 中间拐点：让 leader 折一下（90° 折角 + 小 offset）
-    let kx, ky;
-    if (Math.abs(dx) > Math.abs(dy) * 0.8) {
-      kx = ax + dx * 0.55;
-      ky = ay;
-    } else {
-      kx = ax;
-      ky = ay + dy * 0.55;
-    }
-    return { kx, ky, tx, ty };
-  }
-
-  const chapterLayer = CHAPTERS.map((ch, idx) => {
-    const ax = ch.x, ay = ch.y;
-    const lx = ch.labelX, ly = ch.labelY, lw = LABEL_W, lh = LABEL_H;
-    const { kx, ky, tx, ty } = leaderPath(ax, ay, lx, ly, lw, lh);
-
-    // 章节状态颜色
-    const accent = ch.stage === 'done'   ? '#0d9488' :
-                   ch.stage === 'active' ? '#c89854' : '#1a2942';
-    const accentSoft = ch.stage === 'done' ? '#0d9488' :
-                       ch.stage === 'active' ? '#c89854' : 'rgba(26,41,66,0.6)';
-    const boxStroke = ch.stage === 'done' ? '#0d9488' :
-                      ch.stage === 'active' ? '#c89854' : '#1a2942';
-    const boxStrokeOp = ch.stage === 'active' ? 0.75 : 0.55;
-
-    // code range 显示（如 A1–A3）
-    const codeStart = ch.codes[0];
-    const codeEnd   = ch.codes[ch.codes.length - 1];
-    const codeRange = codeStart === codeEnd ? codeStart : `${codeStart}–${codeEnd}`;
-
-    // 状态文字
-    const stateTag = ch.stage === 'done' ? '完成' :
-                     ch.stage === 'active' ? '进行中' : '未解锁';
-
-    // 进度条
-    const pct = ch.total === 0 ? 0 : ch.done / ch.total;
-    const progBarW = lw - 20;
-
-    return `
-      <g class="leader-label" data-type="chapter" data-chapter-no="${ch.no}"
-         data-title="${ch.zh.replace(/"/g, '&quot;')}"
-         data-codes="${codeRange}" data-hours="${ch.hours}"
-         data-done="${ch.done}" data-total="${ch.total}" data-stage="${ch.mtn + 1}">
-        <!-- Leader line: waypoint → kink → label edge -->
-        <path d="M ${ax.toFixed(1)},${ay.toFixed(1)} L ${kx.toFixed(1)},${ky.toFixed(1)} L ${tx.toFixed(1)},${ty.toFixed(1)}"
-              fill="none" stroke="${accentSoft}" stroke-width="0.6"
-              stroke-linecap="round" opacity="0.9"/>
-        <!-- Anchor dot at label edge -->
-        <circle cx="${tx.toFixed(1)}" cy="${ty.toFixed(1)}" r="1.3" fill="${accentSoft}"/>
-        <!-- Label box -->
-        <rect x="${lx}" y="${ly}" width="${lw}" height="${lh}" rx="2.5"
-              fill="rgba(255,255,255,0.94)" stroke="${boxStroke}" stroke-width="0.7"
-              stroke-opacity="${boxStrokeOp}"
-              filter="url(#softLabelShadow)"/>
-        <!-- Top stripe: CH no + state -->
-        <text x="${lx + 10}" y="${ly + 14}" class="t-mono" font-size="8.5" font-weight="700"
-              fill="${accent}" letter-spacing="1.4">CH ${ch.no} · ${ch.en}</text>
-        <text x="${lx + lw - 10}" y="${ly + 14}" text-anchor="end" class="t-mono" font-size="7.4"
-              fill="${accentSoft}" letter-spacing="0.3">${stateTag}</text>
-        <!-- Title (中文, Songti SC) -->
-        <text x="${lx + 10}" y="${ly + 30}" class="t-serif" font-size="13" font-weight="600"
-              fill="#1a2942" letter-spacing="0.02em">${ch.zh}</text>
-        <!-- Meta row: codes + lessons + hours -->
-        <text x="${lx + 10}" y="${ly + 44}" class="t-mono" font-size="8.5"
-              fill="#5c7a8a" letter-spacing="0.1em">
-          ${codeRange} · ${ch.total} 节 · ${ch.hours}h
-        </text>
-        <!-- Progress hairline -->
-        <line x1="${lx + 10}" y1="${ly + lh - 3}" x2="${lx + 10 + progBarW}" y2="${ly + lh - 3}"
-              stroke="rgba(13,148,136,0.12)" stroke-width="1.4" stroke-linecap="round"/>
-        <line x1="${lx + 10}" y1="${ly + lh - 3}" x2="${lx + 10 + progBarW * pct}" y2="${ly + lh - 3}"
-              stroke="${accent}" stroke-width="1.4" stroke-linecap="round"/>
-        <!-- Waypoint symbol (drawn last so it's on top of path) -->
-        ${waypointSymbol(ax, ay, ch)}
-      </g>
-    `;
-  }).join('');
-
-  /* ======================================================
-     大作业 flag — 每座山顶右下侧，暖金旗
-     ====================================================== */
-  const flagLayer = [1,2,3,4].map(s => {
-    const peak = PEAKS[s-1];
-    const asn = ASSIGNMENTS.find(a => a.stage === s);
-    if (!asn) return '';
-    // flag 位置：山 1-3 在山顶右下；山 4 在顶峰左下（留位置给毕业星）
-    const pos = (s === 4)
-      ? { x: peak.summitX - 30, y: peak.summitY + 10 }
-      : { x: peak.summitX + 26, y: peak.summitY + 10 };
-    const done = s < currentStage;
-    const color = done ? '#0d9488' : '#c89854';
-    const poleColor = '#1a2942';
-    return `
-      <g class="waypoint" data-type="assignment" data-stage="${s}"
-         data-title="${asn.title.replace(/"/g, '&quot;')}"
-         data-date="${stageDates[s-1]?.end || ''}">
-        <!-- flag pole -->
-        <line x1="${pos.x}" y1="${pos.y}" x2="${pos.x}" y2="${pos.y + 22}"
-              stroke="${poleColor}" stroke-width="1.2" stroke-linecap="round"/>
-        <!-- flag triangle (指南针风三角) -->
-        <polygon points="${pos.x},${pos.y} ${pos.x + 16},${pos.y + 5} ${pos.x},${pos.y + 10}"
-                 fill="${color}" stroke="${poleColor}" stroke-width="0.7" stroke-linejoin="round"/>
-        <!-- base dot -->
-        <circle cx="${pos.x}" cy="${pos.y + 22}" r="1.6" fill="${poleColor}"/>
-        <!-- mini label below -->
-        <text x="${pos.x + 8}" y="${pos.y + 34}" text-anchor="middle" class="t-mono"
-              font-size="7.5" fill="${color}" letter-spacing="1.2" font-weight="600">
-          ${s === 4 ? 'FINAL' : 'MS ' + s}
-        </text>
-      </g>
-    `;
-  }).join('');
-
-  /* ======================================================
-     毕业顶峰 ★ (山 4)
-     ====================================================== */
-  const summitPeak4 = PEAKS[3];
-  const gradDone = STATE.completed.length >= COURSES.length;
-  const graduationLayer = `
-    <g class="waypoint" data-type="graduation" data-stage="4"
-       data-title="全程毕业" data-date="${stageDates[3]?.end || ''}">
-      <circle cx="${summitPeak4.summitX}" cy="${summitPeak4.summitY - 2}" r="22" fill="url(#starHalo)"/>
-      <!-- 9 芒星 -->
-      <polygon points="${summitPeak4.summitX},${summitPeak4.summitY - 11}
-                       ${summitPeak4.summitX + 3},${summitPeak4.summitY - 3}
-                       ${summitPeak4.summitX + 11},${summitPeak4.summitY - 3}
-                       ${summitPeak4.summitX + 5},${summitPeak4.summitY + 1.5}
-                       ${summitPeak4.summitX + 7},${summitPeak4.summitY + 9}
-                       ${summitPeak4.summitX},${summitPeak4.summitY + 4.5}
-                       ${summitPeak4.summitX - 7},${summitPeak4.summitY + 9}
-                       ${summitPeak4.summitX - 5},${summitPeak4.summitY + 1.5}
-                       ${summitPeak4.summitX - 11},${summitPeak4.summitY - 3}
-                       ${summitPeak4.summitX - 3},${summitPeak4.summitY - 3}"
-               fill="${gradDone ? '#c89854' : '#d4b682'}"
-               stroke="#1a2942" stroke-width="0.9" stroke-linejoin="round"/>
-      <!-- 9 芒星光环虚线 -->
-      <circle cx="${summitPeak4.summitX}" cy="${summitPeak4.summitY - 1}" r="15"
-              fill="none" stroke="#c89854" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>
-    </g>
-  `;
-
-  /* ======================================================
-     5 场直播 waypoints — 按日期找路径位置
-     ====================================================== */
-  const livePositions = {};
-  LIVES.forEach((live, idx) => {
-    // 找离该日最近有课程的日期
-    let anchorCode = null;
-    let probeDate = live.date;
-    for (let i = 0; i < 8; i++) {
-      const p = schedule[probeDate];
-      if (p && p.courses && p.courses.length > 0) { anchorCode = p.courses[0]; break; }
-      probeDate = addDays(probeDate, -1);
-    }
-    if (!anchorCode) {
-      probeDate = live.date;
-      for (let i = 0; i < 8; i++) {
-        const p = schedule[probeDate];
-        if (p && p.courses && p.courses.length > 0) { anchorCode = p.courses[0]; break; }
-        probeDate = addDays(probeDate, 1);
-      }
-    }
-    if (anchorCode && positions[anchorCode]) {
-      const pos = positions[anchorCode];
-      // 错开以避免重叠
-      const dx = 10 + (idx % 3) * 4;
-      const dy = -28 - (idx % 2) * 14;
-      livePositions[live.date] = { x: pos.x + dx, y: pos.y + dy };
-    } else {
-      livePositions[live.date] = { x: 180 + idx * 260, y: 110 };
-    }
   });
 
-  const liveLayer = LIVES.map((live, idx) => {
-    const pos = livePositions[live.date];
-    if (!pos) return '';
-    const past = live.date < TODAY_STR;
-    const color = past ? '#5a9490' : '#0d9488';
-    return `
-      <g class="waypoint" data-type="live" data-date="${live.date}"
-         data-time="${live.time}" data-title="${live.title.replace(/"/g, '&quot;')}">
-        <!-- mic-in-circle 小图标 -->
-        <circle cx="${pos.x}" cy="${pos.y}" r="9" fill="#ffffff" stroke="${color}" stroke-width="1.3"
-                opacity="${past ? 0.7 : 1}"/>
-        <rect x="${pos.x - 1.6}" y="${pos.y - 3.2}" width="3.2" height="4.2" rx="1.2" fill="${color}"/>
-        <path d="M ${pos.x - 3} ${pos.y - 0.2} a 3 3 0 0 0 6 0"
-              fill="none" stroke="${color}" stroke-width="0.9" stroke-linecap="round"/>
-        <line x1="${pos.x}" y1="${pos.y + 2.5}" x2="${pos.x}" y2="${pos.y + 4}"
-              stroke="${color}" stroke-width="0.9"/>
-        <!-- date tick -->
-        <line x1="${pos.x}" y1="${pos.y + 9}" x2="${pos.x}" y2="${pos.y + 16}"
-              stroke="${color}" stroke-width="0.5" stroke-dasharray="1 1.5"/>
-        <text x="${pos.x}" y="${pos.y + 24}" text-anchor="middle" class="t-mono"
-              font-size="8" fill="${color}" letter-spacing="0.3">
-          ${fmtDate(live.date)}
-        </text>
-      </g>
-    `;
-  }).join('');
-
-  /* ======================================================
-     阶段标签带（山下方 560–640）
-     ====================================================== */
-  const stageLabels = PEAKS.map((peak, i) => {
-    const stage = peak.stage;
-    const state = stage < currentStage ? 'done' :
-                  stage === currentStage ? 'current' : 'locked';
-    const mainColor = state === 'done' ? '#0d9488' :
-                      state === 'current' ? '#1a2942' : '#94a3b8';
-    const subColor = state === 'locked' ? '#b8c5d0' : '#5c7a8a';
-    const badgeColor = state === 'done' ? '#0d9488' :
-                       state === 'current' ? '#c89854' : '#94a3b8';
-    const labelY = BASE_Y + 18;
-    const total = COURSES.filter(c => c.s === stage).length;
-    const done  = COURSES.filter(c => c.s === stage && STATE.completed.includes(c.code)).length;
-    const hours = Math.round(COURSES.filter(c => c.s === stage).reduce((a,c)=>a+c.d,0) / 60);
-    const pct   = total > 0 ? done / total : 0;
-    return `
-      <g class="stage-label" data-stage="${stage}">
-        <!-- STAGE badge -->
-        <text x="${peak.summitX}" y="${labelY}" text-anchor="middle"
-              class="t-mono" font-size="8.5" font-weight="700"
-              fill="${badgeColor}" letter-spacing="2.3">
-          ${peak.code} · STAGE 0${stage}
-        </text>
-        <!-- 中文名 -->
-        <text x="${peak.summitX}" y="${labelY + 17}" text-anchor="middle"
-              class="t-serif" font-size="16" font-weight="600"
-              fill="${mainColor}" letter-spacing="-0.2">
-          ${peak.zhName}
-        </text>
-        <!-- 节数 · 小时 -->
-        <text x="${peak.summitX}" y="${labelY + 30}" text-anchor="middle"
-              class="t-mono" font-size="8.8" fill="${subColor}" letter-spacing="0.3">
-          ${total} 节 · ${hours}h · ${done}/${total} · ${stageDates[i] ? fmtDate(stageDates[i].end) : '—'}
-        </text>
-      </g>
-    `;
-  }).join('');
-
-  /* ======================================================
-     "你在这里" · YOU ARE HERE — 三层视觉
-       L1 · 脉冲光晕（ambient + 2 圈外扩 pulse）
-       L2 · 放大小人 hiker（2.5x）
-       L3 · 下一节课 callout 气泡（动态左右放，带 leader line + CTA）
-     ====================================================== */
-  // 找到下一节未完成课程
-  const nextCourse = (() => {
-    for (const c of COURSES) {
-      if (!STATE.completed.includes(c.code)) return c;
-    }
-    return null;
-  })();
-  const nextStageName = nextCourse ? STAGE_NAMES[nextCourse.s] : '毕业';
-  const nextLabel = nextCourse
-    ? `${nextCourse.code} · ${nextCourse.t}`
-    : '全程毕业 — 恭喜登顶';
-  // 截断过长文案（中文 + 英文代号算单字节，简单按字符长度）
-  const nextLabelShort = nextLabel.length > 24 ? nextLabel.slice(0, 23) + '…' : nextLabel;
-  const nextMeta = nextCourse
-    ? `DAY ${enrollDaysPassed} · ${nextStageName} · ${nextCourse.d} min`
-    : `DAY ${enrollDaysPassed} · 登顶`;
-
-  // callout 紧凑版：240x60 · 不遮挡山脉 · 放小人正下方地面线下方空白区
-  const calloutOnRight = youPos.x < 900;
-  const CALLOUT_W = 240;
-  const CALLOUT_H = 60;
-  const CALLOUT_OFFSET_X = calloutOnRight ? 40 : -(CALLOUT_W + 40);
-  // callout 垂直位置 — 放小人下方（而不是斜上方遮山）
-  const CALLOUT_OFFSET_Y = 36;
-  // Leader line 从圆环边缘短弧连到 callout 顶边
-  const LEADER_X1 = calloutOnRight ? 22 : -22;
-  const LEADER_Y1 = 18;
-  const LEADER_TARGET_X = CALLOUT_OFFSET_X + (calloutOnRight ? 14 : CALLOUT_W - 14);
-  const LEADER_TARGET_Y = CALLOUT_OFFSET_Y - 2;
-
-  const cx0 = 14;
-  const ctaW = 80;
-  const ctaX = CALLOUT_W - ctaW - 10;
-
-  const youLayer = `
-    <g class="you-are-here" transform="translate(${youPos.x}, ${youPos.y})">
-      <!-- L1 · ambient halo 大范围淡青晕 -->
-      <circle r="52" fill="url(#youHalo)" opacity="0.75"/>
-      <circle r="32" fill="rgba(13,148,136,0.10)"/>
-      <!-- 脉冲环 1 -->
-      <circle r="22" fill="none" stroke="#0d9488" stroke-width="1.4" opacity="0.6">
-        <animate attributeName="r" values="20;42;20" dur="2.4s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.65;0;0.65" dur="2.4s" repeatCount="indefinite"/>
-      </circle>
-      <!-- 脉冲环 2（错峰）-->
-      <circle r="16" fill="none" stroke="#0d9488" stroke-width="1.0" opacity="0.5">
-        <animate attributeName="r" values="16;36;16" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.55;0;0.55" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-      </circle>
-      <!-- 静态金环（定位感）-->
-      <circle r="22" fill="#ffffff" stroke="#0d9488" stroke-width="2.2"/>
-      <circle r="22" fill="none" stroke="#c89854" stroke-width="0.7" stroke-dasharray="2 3" opacity="0.7"/>
-
-      <!-- L2 · 放大小人 hiker（~2.0x vs 原 1x）-->
-      <g transform="translate(0,1) scale(2.0)">
-        <circle cx="0" cy="-7" r="2.4" fill="#1a2942"/>
-        <path d="M -3 -2 L 0 -5 L 3 -2 L 2 6 L 3 10 M 0 -5 L 0 4 L -2 10"
-              stroke="#1a2942" stroke-width="1.3" fill="none"
-              stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="-4" y1="0" x2="-6" y2="10" stroke="#0d9488" stroke-width="1.2" stroke-linecap="round"/>
-      </g>
-
-      <!-- L3 · Callout 紧凑气泡 · 放小人下方空白区不挡山 -->
-      <path d="M ${LEADER_X1} ${LEADER_Y1} Q ${LEADER_X1 * 1.4} ${(LEADER_Y1 + LEADER_TARGET_Y) / 2} ${LEADER_TARGET_X} ${LEADER_TARGET_Y}"
-            fill="none" stroke="#0d9488" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8"/>
-
-      <g transform="translate(${CALLOUT_OFFSET_X}, ${CALLOUT_OFFSET_Y})" class="you-callout-box">
-        <!-- 阴影底 -->
-        <rect x="1" y="2" width="${CALLOUT_W}" height="${CALLOUT_H}" rx="6" fill="rgba(30,58,82,0.12)"/>
-        <!-- 白底 + 青框 -->
-        <rect x="0" y="0" width="${CALLOUT_W}" height="${CALLOUT_H}" rx="6"
-              fill="#ffffff" stroke="#0d9488" stroke-width="1.2"/>
-        <!-- 顶部金色 accent 细条 -->
-        <rect x="0" y="0" width="${CALLOUT_W}" height="2" fill="url(#youCalloutAccent)"/>
-
-        <!-- Row 1 · YOU ARE HERE eyebrow -->
-        <g transform="translate(${cx0}, 16)">
-          <circle cx="3" cy="-3" r="2.6" fill="#0d9488">
-            <animate attributeName="opacity" values="1;0.35;1" dur="1.6s" repeatCount="indefinite"/>
-          </circle>
-          <text x="11" y="0" class="t-mono" font-size="9" font-weight="700"
-                fill="#0d9488" letter-spacing="2.2">YOU ARE HERE</text>
-          <text x="${CALLOUT_W - cx0 * 2 + 8}" y="0" text-anchor="end" class="t-mono"
-                font-size="8.4" fill="#5c7a8a" letter-spacing="0.3">DAY ${enrollDaysPassed}</text>
-        </g>
-
-        <!-- Row 2 · 下一节标题 + CTA 同行 -->
-        <text x="${cx0}" y="40" class="t-serif" font-size="12" font-weight="600"
-              fill="#1a2942">${nextLabelShort}</text>
-        <g class="you-cta" style="cursor:pointer;" onclick="location.href='learn.html'">
-          <rect x="${ctaX}" y="${CALLOUT_H - 22}" width="${ctaW}" height="16" rx="8"
-                fill="#0d9488" stroke="none"/>
-          <text x="${ctaX + ctaW / 2}" y="${CALLOUT_H - 11}" text-anchor="middle"
-                class="t-mono" font-size="9.4" font-weight="700"
-                fill="#ffffff" letter-spacing="1">开始学习 &#8594;</text>
-        </g>
-      </g>
-    </g>
-  `;
-
-  /* ======================================================
-     START 起点 (cartography 风)
-     ====================================================== */
-  const startLayer = `
-    <g transform="translate(${START.x}, ${START.y})">
-      <!-- 十字底 -->
-      <circle r="9" fill="#ffffff" stroke="#1a2942" stroke-width="1"/>
-      <circle r="3.5" fill="#0d9488"/>
-      <line x1="-14" y1="0" x2="-10" y2="0" stroke="#1a2942" stroke-width="0.6"/>
-      <line x1="10" y1="0" x2="14" y2="0" stroke="#1a2942" stroke-width="0.6"/>
-      <line x1="0" y1="-14" x2="0" y2="-10" stroke="#1a2942" stroke-width="0.6"/>
-      <line x1="0" y1="10" x2="0" y2="14" stroke="#1a2942" stroke-width="0.6"/>
-      <text y="-22" text-anchor="middle" class="t-mono" font-size="9"
-            fill="#1a2942" font-weight="700" letter-spacing="2.5">START</text>
-      <text y="32" text-anchor="middle" class="t-mono" font-size="8.5"
-            fill="#5c7a8a" letter-spacing="1.2">${fmtDate(startDate)}</text>
-    </g>
-  `;
-
-  /* ======================================================
-     顶部标题区 (居中 · 双语)
-     ====================================================== */
-  const titleLayer = `
-    <g transform="translate(720, 66)" text-anchor="middle" fill="#1a2942">
-      <text class="t-display" font-size="32" font-weight="500" letter-spacing="1.5">The Ascent</text>
-      <text y="22" class="t-serif" font-size="15" font-style="italic" fill="#1e3a52">
-        深海圈 · 第 3 期 · 2026 年春季
-      </text>
-      <text y="38" class="t-mono" font-size="8.5" fill="#5a9490" letter-spacing="4.5">
-        DEEPSEA · COHORT III · SPRING · 77 LESSONS · 4 MOUNTAINS · 11 CHAPTERS
-      </text>
-      <line x1="-220" y1="48" x2="220" y2="48" stroke="#1a2942" stroke-width="0.4"/>
-    </g>
-  `;
-
-  /* ======================================================
-     左上角 指南针
-     ====================================================== */
-  const compassLayer = `
-    <g transform="translate(70, 146)" fill="none" stroke="#1a2942">
-      <circle r="28" stroke-width="0.8"/>
-      <circle r="24" stroke-width="0.3" opacity="0.6"/>
-      <!-- 十字 -->
-      <line x1="0" y1="-28" x2="0" y2="-20" stroke-width="0.5"/>
-      <line x1="0" y1="28"  x2="0" y2="20"  stroke-width="0.5"/>
-      <line x1="-28" y1="0" x2="-20" y2="0" stroke-width="0.5"/>
-      <line x1="28"  y1="0" x2="20"  y2="0" stroke-width="0.5"/>
-      <!-- 对角小刻 -->
-      <line x1="-19" y1="-19" x2="-15" y2="-15" stroke-width="0.3"/>
-      <line x1="19"  y1="-19" x2="15"  y2="-15" stroke-width="0.3"/>
-      <line x1="-19" y1="19"  x2="-15" y2="15"  stroke-width="0.3"/>
-      <line x1="19"  y1="19"  x2="15"  y2="15"  stroke-width="0.3"/>
-      <!-- 北指针（深墨蓝实心） -->
-      <polygon points="0,-18 -3,0 0,3 3,0" fill="#1a2942" stroke="none"/>
-      <!-- 南指针（空心） -->
-      <polygon points="0,18 -3,0 0,-3 3,0" fill="none" stroke="#1a2942" stroke-width="0.4"/>
-      <!-- 字母 -->
-      <text y="-33" text-anchor="middle" class="t-mono" font-size="9.5" font-weight="700" fill="#1a2942" stroke="none">N</text>
-      <text y="39"  text-anchor="middle" class="t-mono" font-size="8.5" fill="#5c7a8a" stroke="none">S</text>
-      <text x="-35" y="3" text-anchor="middle" class="t-mono" font-size="8.5" fill="#5c7a8a" stroke="none">W</text>
-      <text x="35"  y="3" text-anchor="middle" class="t-mono" font-size="8.5" fill="#5c7a8a" stroke="none">E</text>
-    </g>
-  `;
-
-  /* ======================================================
-     右上角 时间尺 (0w → N weeks, 1 unit = 1 week)
-     ====================================================== */
-  const totalWeeks = Math.max(1, Math.round((new Date(lastStageEnd) - new Date(startDate)) / (7 * 86400000)));
-  const ticks = [0, 0.25, 0.5, 0.75, 1];
-  const scaleLen = 240;
-  const scaleX0 = 600;    // 标题下居中
-  const scaleY = 148;     // 标题底线下方，山 2/3/4 山顶上方
-  const timeScaleLayer = `
-    <g transform="translate(${scaleX0}, ${scaleY})" class="t-mono" fill="#1a2942">
-      <text x="0" y="-16" font-size="8.5" letter-spacing="2.2" fill="#1a2942" font-weight="700">TEMPORAL SCALE</text>
-      <text x="0" y="-5" font-size="7.2" fill="#5a9490" letter-spacing="0.1">1 unit = 1 week · 共 ${totalWeeks} w</text>
-      <line x1="0" y1="0" x2="${scaleLen}" y2="0" stroke="#1a2942" stroke-width="0.9"/>
-      ${ticks.map(t => {
-        const x = t * scaleLen;
-        const isMajor = t === 0 || t === 1;
-        const h = isMajor ? 4 : 2.5;
-        return `<line x1="${x}" y1="${-h}" x2="${x}" y2="${h}" stroke="#1a2942" stroke-width="${isMajor ? 0.9 : 0.55}"/>`;
-      }).join('')}
-      ${ticks.map(t => {
-        const x = t * scaleLen;
-        const label = Math.round(t * totalWeeks) + 'w';
-        return `<text x="${x}" y="12" text-anchor="middle" font-size="7" fill="#5c7a8a">${label}</text>`;
-      }).join('')}
-    </g>
-  `;
-
-  /* SVG 内部的 LEGEND 已删除 — 外部 .ascent-panel 已有更清晰的图例 */
-  const legendLayer = ``;
-
-  /* ======================================================
-     右下 强度剖面迷你图 (ELEVATION PROFILE)
-     — 显示 4 座山 / 11 章 的"难度 / 强度"
-     ====================================================== */
-  const profileW = 1080;
-  const profileH = 42;
-  const profileX0 = (1440 - profileW) / 2;  // 居中
-  const profileY0 = 650;
-  // 每章节的相对强度：用小时数 + 难度系数
-  const profileBars = CHAPTERS.map((ch, i) => {
-    // 阶段山顶难度系数
-    const difficultyBoost = [1.0, 1.3, 1.15, 1.25][ch.mtn];
-    const raw = ch.minutes * difficultyBoost;
-    return { ch, raw };
-  });
-  const maxRaw = Math.max(...profileBars.map(b => b.raw));
-  // 紧凑单行剖面：title 在左，柱子在右
-  const titleW = 136;
-  const barAreaX = titleW + 6;
-  const barAreaY = 6;
-  const barAreaW = profileW - barAreaX - 10;
-  const barAreaH = profileH - 12;
-  const gap = 2;
-  const barW = (barAreaW - gap * (CHAPTERS.length - 1)) / CHAPTERS.length;
-  const profileLayer = `
-    <g transform="translate(${profileX0}, ${profileY0})" class="t-mono" fill="#1a2942">
-      <rect width="${profileW}" height="${profileH}" fill="rgba(255,255,255,0.82)" stroke="#1a2942" stroke-width="0.65"/>
-      <rect x="3" y="3" width="${profileW-6}" height="${profileH-6}" fill="none" stroke="#1a2942" stroke-width="0.25" opacity="0.55"/>
-      <text x="10" y="14" font-size="8" font-weight="700" letter-spacing="1.8" fill="#1a2942">ELEVATION PROFILE</text>
-      <text x="10" y="26" font-size="7.5" fill="#5a9490" letter-spacing="0.2">章节强度剖面 · 11 CH</text>
-      <line x1="${titleW}" y1="6" x2="${titleW}" y2="${profileH-6}" stroke="#1a2942" stroke-width="0.3" opacity="0.55"/>
-      ${profileBars.map((b, i) => {
-        const x = barAreaX + i * (barW + gap);
-        const h = Math.max(3, (b.raw / maxRaw) * barAreaH);
-        const y = barAreaY + barAreaH - h;
-        const peakColor = ['#7dd3cc', '#5a9490', '#0d9488', '#c89854'][b.ch.mtn];
-        return `
-          <rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${peakColor}" opacity="0.85"
-                stroke="#1a2942" stroke-width="0.3"/>
-          <text x="${x + barW/2}" y="${barAreaY + barAreaH + 8}" text-anchor="middle"
-                font-size="6.5" fill="#5c7a8a" letter-spacing="0.2">${b.ch.no}</text>
-        `;
-      }).join('')}
-      <line x1="${barAreaX}" y1="${barAreaY + barAreaH}" x2="${barAreaX + barAreaW}" y2="${barAreaY + barAreaH}"
-            stroke="#1a2942" stroke-width="0.4"/>
-    </g>
-  `;
-
-  /* ======================================================
-     底部左右 colophon (SHEET / SCALE / REV · 经纬)
-     ====================================================== */
-  const colophon = `
-    <g class="t-mono" fill="#5a9490">
-      <text x="${FRAME.x + 12}" y="${FRAME.y + FRAME.h - 22}" font-size="7.5" letter-spacing="2">
-        N 27°43′ — 33°28′ · E 103° — 110°
-      </text>
-      <text x="${FRAME.x + 12}" y="${FRAME.y + FRAME.h - 10}" font-size="7.5" letter-spacing="2">
-        DRAFTED FOR 2,000 LEARNERS · 深海圈制图局
-      </text>
-      <text x="${FRAME.x + FRAME.w - 12}" y="${FRAME.y + FRAME.h - 34}" text-anchor="end" font-size="7.5" letter-spacing="2.2">
-        SHEET 1 OF 1
-      </text>
-      <text x="${FRAME.x + FRAME.w - 12}" y="${FRAME.y + FRAME.h - 22}" text-anchor="end" font-size="7.5" letter-spacing="2.2">
-        SCALE 1 : ∞  · 1440 × 720
-      </text>
-      <text x="${FRAME.x + FRAME.w - 12}" y="${FRAME.y + FRAME.h - 10}" text-anchor="end" font-size="7.5" letter-spacing="2.2">
-        REV A · 2026.04
-      </text>
-    </g>
-  `;
-
-  /* ======================================================
-     组装 — 按 z-order 从底到顶
-     ====================================================== */
   svg.innerHTML = `
     ${defs}
-    ${paperLayer}
-    ${frame}
-    ${latLonTicks}
-    ${titleLayer}
-    ${compassLayer}
-    ${timeScaleLayer}
-    ${distantLayer}
-    ${mountainsLayer}
-    ${groundLayer}
-    ${pathLayer}
-    ${startLayer}
-    ${liveLayer}
-    ${flagLayer}
-    ${graduationLayer}
-    ${chapterLayer}
-    ${youLayer}
-    ${stageLabels}
-    ${legendLayer}
-    ${profileLayer}
-    ${colophon}
+    ${renderStageDividers()}
+    ${renderCrossStageConnectors(currentStage)}
+    ${body}
   `;
 
-  // ========= 交互 =========
-  const tooltip = document.getElementById('ascentTooltip');
-  function showTip(event, { label, meta, progress, cta }) {
-    if (!tooltip) return;
-    const wrapRect = svg.parentElement.getBoundingClientRect();
-    const x = event.clientX - wrapRect.left + 14;
-    const y = event.clientY - wrapRect.top + 14;
-    tooltip.innerHTML = `
-      ${meta ? `<div class="tt-label">${meta}</div>` : ''}
-      <div class="tt-title">${label}</div>
-      ${progress ? `<div class="tt-progress">${progress}</div>` : ''}
-      ${cta ? `<div class="tt-cta">${cta}</div>` : ''}
-    `;
-    tooltip.style.left = Math.min(x, wrapRect.width - 280) + 'px';
-    tooltip.style.top = Math.min(y, wrapRect.height - 120) + 'px';
-    tooltip.classList.add('show');
+  bindInteractions();
+}
+
+/* =====================================================
+   TOPBAR / ACTIONBAR
+   ===================================================== */
+function renderTopBar() {
+  const enrolledMs = new Date(STATE.enrolledAt).getTime();
+  const todayMs = new Date(TODAY_STR).getTime();
+  const days = Math.max(1, Math.round((todayMs - enrolledMs) / 86400000) + 1);
+  const done = STATE.completed.length;
+  const total = COURSES.length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('tbDay').textContent = days;
+  document.getElementById('tbDone').textContent = done;
+  document.getElementById('tbTotal').textContent = total;
+  document.getElementById('tbPct').textContent = pct + '%';
+  document.getElementById('tbProgressFill').style.width = pct + '%';
+  document.getElementById('tbPaceText').textContent = paceText(STATE.dailyMinutes);
+}
+
+function renderActionBar() {
+  const currentStage = getCurrentStage();
+  const nextCourse = COURSES.find(c => !STATE.completed.includes(c.code));
+  const curStageCourses = COURSES.filter(c => c.s === currentStage);
+  const curDone = curStageCourses.filter(c => STATE.completed.includes(c.code)).length;
+  const curRemain = curStageCourses.length - curDone;
+
+  const nextEl = document.getElementById('abNext');
+  const durEl = document.getElementById('abNextDur');
+  const etaBlock = document.getElementById('abEtaBlock');
+  const remainEl = document.getElementById('abRemain');
+  const unlockEl = document.getElementById('abUnlockBadge');
+
+  if (nextCourse) {
+    nextEl.textContent = nextCourse.t;
+    durEl.textContent = nextCourse.d + ' 分钟';
+    durEl.style.display = '';
+  } else {
+    nextEl.textContent = '恭喜完成全部课程 · 可以毕业了';
+    durEl.style.display = 'none';
   }
-  function hideTip() { if (tooltip) tooltip.classList.remove('show'); }
 
-  // schedule lookup for courses (for date estimate)
-  function courseScheduledDate(code) {
-    for (const date of Object.keys(schedule).sort()) {
-      if ((schedule[date].courses || []).includes(code)) return date;
-    }
-    return null;
+  if (!nextCourse) {
+    etaBlock.classList.add('graduated');
+    return;
   }
+  etaBlock.classList.remove('graduated');
+  remainEl.textContent = curRemain;
 
-  // waypoint + leader-label (chapter) hover/click
-  const allHotspots = svg.querySelectorAll('.waypoint, .leader-label');
-  allHotspots.forEach(wp => {
-    const type = wp.dataset.type;
-    wp.addEventListener('mousemove', (e) => {
-      if (type === 'chapter') {
-        const no = wp.dataset.chapterNo;
-        const title = wp.dataset.title;
-        const codes = wp.dataset.codes;
-        const hours = wp.dataset.hours;
-        const done = parseInt(wp.dataset.done, 10);
-        const total = parseInt(wp.dataset.total, 10);
-        const stage = wp.dataset.stage;
-        const stateLabel = done === total ? '已完成' : done > 0 ? '进行中' : '未解锁';
-        showTip(e, {
-          label: `CH ${no} · ${title}`,
-          meta: `CHAPTER · ${STAGE_NAMES[stage]}`,
-          progress: `${codes} · ${total} 节 · ${hours}h · ${done}/${total} · ${stateLabel}`,
-          cta: done > 0 ? '点击进入章节 →' : '解锁前置章节后进入 →',
-        });
-      } else if (type === 'live') {
-        const date = wp.dataset.date;
-        const time = wp.dataset.time;
-        const title = wp.dataset.title;
-        const past = date < TODAY_STR;
-        showTip(e, {
-          label: title,
-          meta: 'LIVE · 直播营地',
-          progress: `${fmtFullDate(date)} ${time}${past ? ' · 已结束' : ''}`,
-          cta: past ? '点击查看回放 →' : '点击预约提醒 →',
-        });
-      } else if (type === 'assignment') {
-        showTip(e, {
-          label: wp.dataset.title,
-          meta: `MILESTONE · 阶段 0${wp.dataset.stage} 大作业`,
-          progress: wp.dataset.date ? `预计截止 · ${fmtFullDate(wp.dataset.date)}` : '',
-          cta: '点击查看作业要求 →',
-        });
-      } else if (type === 'graduation') {
-        showTip(e, {
-          label: '毕业登顶 · 全程通关',
-          meta: 'GRADUATION · 顶峰',
-          progress: wp.dataset.date ? `预计登顶 · ${fmtFullDate(wp.dataset.date)}` : '',
-          cta: '深海圈四阶全通关 →',
-        });
-      }
-    });
-    wp.addEventListener('mouseleave', hideTip);
-    wp.addEventListener('click', () => {
-      if (type === 'chapter') {
-        // 跳转学习页；可带章节参数
-        location.href = 'learn.html';
-      } else if (type === 'assignment') {
-        location.href = 'showcase.html';
-      } else if (type === 'graduation') {
-        showToast('🎉 完成全部 77 节 + 4 次大作业即可登顶');
-      } else if (type === 'live') {
-        const date = wp.dataset.date;
-        const past = date < TODAY_STR;
-        showToast(past ? '🎬 回放上线后会推送通知' : '⏰ 已预约，开播前 15 分钟提醒你');
-      }
-    });
-  });
+  /* 解锁目标：如果当前阶段还没完，显示下一阶段的徽章；如果在最后阶段，显示"毕业" */
+  if (currentStage < 4) {
+    const nextBadge = STAGE_BADGES[currentStage + 1];
+    unlockEl.textContent = `${nextBadge.icon}  ${nextBadge.text}`;
+  } else {
+    unlockEl.textContent = '毕业';
+  }
+}
 
-  // peak hover
-  svg.querySelectorAll('.peak-hit').forEach(hit => {
-    const stage = parseInt(hit.dataset.stage, 10);
-    const total = COURSES.filter(c => c.s === stage).length;
-    const done = COURSES.filter(c => c.s === stage && STATE.completed.includes(c.code)).length;
-    const hours = Math.round(COURSES.filter(c => c.s === stage).reduce((a,c)=>a+c.d,0) / 60);
-    const state = stage < currentStage ? '已通关' : stage === currentStage ? '进行中' : '未解锁';
-    hit.addEventListener('mousemove', (e) => {
-      showTip(e, {
-        label: `${STAGE_NAMES[stage]} · ${state}`,
-        meta: `STAGE 0${stage}`,
-        progress: `${done}/${total} 节 · 约 ${hours} 小时`,
-      });
+/* =====================================================
+   MOBILE STACK (smaller than 768px)
+   ===================================================== */
+function renderMobileStack() {
+  const el = document.getElementById('kmMobileStack');
+  if (!el) return;
+  const { currentStage, stateFor } = computeComponentStates();
+  el.innerHTML = KMAP_STAGES.map((stage, idx) => {
+    const stageNum = stage.num;
+    const stageState = stageNum < currentStage ? 'done' :
+                       stageNum === currentStage ? 'current' : 'locked';
+    const badge = STAGE_BADGES[stageNum];
+    // Deduplicate comps by key (in S3/S4 we have carryovers)
+    const seen = new Set();
+    const uniqComps = stage.components.filter(c => {
+      if (seen.has(c.key)) return false;
+      seen.add(c.key); return true;
     });
-    hit.addEventListener('mouseleave', hideTip);
-  });
-
-  // ========= Squad bars =========
-  const squadDist = { 1: 32, 2: 45, 3: 18, 4: 5 };
-  const squadBarsEl = document.getElementById('squadBars');
-  if (squadBarsEl) {
-    const maxPct = Math.max(...Object.values(squadDist));
-    squadBarsEl.innerHTML = [1,2,3,4].map(s => {
-      const pct = squadDist[s];
-      const hPct = Math.round(pct / maxPct * 100);
-      const isYou = s === currentStage;
-      return `
-        <div class="squad-bar ${isYou ? 'you' : ''}">
-          <div class="bar-fill" style="height: ${hPct}%;"></div>
-          <div class="bar-pct">${pct}%</div>
-          <div class="bar-label">0${s}<br>${STAGE_NAMES[s].slice(0,2)}</div>
+    return `
+      <div class="ms-card ${stageState}">
+        <div class="ms-badge ${stageState}">${badge.icon}  ${badge.text}</div>
+        <div class="ms-num">0${stageNum}</div>
+        <div class="ms-name">${STAGE_NAMES[stageNum]}</div>
+        <div class="ms-promise">${STAGE_PROMISES[stageNum]}</div>
+        <div class="ms-comps">
+          ${uniqComps.map(c => {
+            const s = stateFor(idx, c);
+            return `<span class="ms-comp ${s}">${c.label}</span>`;
+          }).join('')}
         </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* =====================================================
+   INTERACTIONS · 点击组件 → 打开锚定卡（in-map anchored card）
+   ===================================================== */
+function bindInteractions() {
+  const svg = document.getElementById('kmCanvas');
+
+  svg.querySelectorAll('.km-comp').forEach(el => {
+    const stageNum = parseInt(el.dataset.stage, 10);
+    const compKey = el.dataset.key;
+    const label = el.dataset.label;
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openCallout(stageNum, el, { key: compKey, label });
+    });
+  });
+
+  /* 移动端卡片点击 */
+  document.querySelectorAll('.ms-card').forEach(card => {
+    if (card.dataset.bound) return;
+    card.dataset.bound = '1';
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const chip = e.target.closest('.ms-comp');
+      const label = chip ? chip.textContent.trim() : null;
+      const idx = Array.from(document.querySelectorAll('.ms-card')).indexOf(card);
+      openCallout(idx + 1, card, label ? { label } : null);
+    });
+  });
+}
+
+/* =====================================================
+   CALLOUT · 锚定卡（永远画布居中 · 引出线锚定到源组件）
+   ===================================================== */
+let _activeSourceEl = null;
+
+function _fillCalloutContent(stageNum, clickedComp) {
+  const currentStage = getCurrentStage();
+  const stageState = stageNum < currentStage ? 'done' :
+                     stageNum === currentStage ? 'current' : 'locked';
+
+  /* Header */
+  const badge = STAGE_BADGES[stageNum];
+  const badgeEl = document.getElementById('kdBadge');
+  badgeEl.textContent = `${badge.icon}  ${badge.text}`;
+  badgeEl.className = 'kd-badge ' + stageState;
+
+  document.getElementById('kdStageNum').textContent =
+    `第${['一','二','三','四'][stageNum-1]}阶段`;
+  document.getElementById('kdTitle').textContent = STAGE_NAMES[stageNum];
+  document.getElementById('kdPromise').textContent = STAGE_PROMISES[stageNum];
+
+  const clickedEl = document.getElementById('kdClicked');
+  if (clickedComp && clickedComp.label) {
+    clickedEl.innerHTML = `你点开的是 <strong>「${clickedComp.label}」</strong>·架构中的一环`;
+    clickedEl.style.display = '';
+  } else {
+    clickedEl.style.display = 'none';
+  }
+
+  /* 图文章节 */
+  const courses = COURSES.filter(c => c.s === stageNum);
+  document.getElementById('kdCoursesCount').textContent = `${courses.length} 节`;
+  const coursesEl = document.getElementById('kdCourses');
+  const nextCourse = COURSES.find(c => !STATE.completed.includes(c.code));
+  coursesEl.innerHTML = courses.map(c => {
+    const done = STATE.completed.includes(c.code);
+    const isCurrent = nextCourse && c.code === nextCourse.code;
+    const state = done ? 'done' : (isCurrent ? 'current' : 'locked');
+    const mark = done ? '✓' : (isCurrent ? '▸' : '');
+    return `
+      <li class="kd-course ${state}" data-code="${c.code}"
+          onclick="gotoCourse('${c.code}', '${state}')">
+        <span class="kd-course-mark">${mark}</span>
+        <span class="kd-course-code">${c.code}</span>
+        <span class="kd-course-title">${c.t}</span>
+        <span class="kd-course-dur">${c.d}min</span>
+        <svg class="kd-course-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 3l5 5-5 5"/>
+        </svg>
+      </li>
+    `;
+  }).join('');
+
+  /* 相关直播 */
+  const stageLives = LIVES.filter(l => l.stage === stageNum);
+  document.getElementById('kdLivesCount').textContent = `${stageLives.length} 场`;
+  const livesEl = document.getElementById('kdLives');
+  if (stageLives.length === 0) {
+    livesEl.innerHTML = '<li class="kd-empty">本阶段暂无直播安排</li>';
+  } else {
+    livesEl.innerHTML = stageLives.map(l => {
+      const past = l.date < TODAY_STR;
+      const [y, m, d] = l.date.split('-').map(Number);
+      return `
+        <li class="kd-live ${past ? 'past' : ''}">
+          <span class="kd-live-date">${m}/${d}</span>
+          <span class="kd-live-title">${l.title}${past ? ' · 已结束' : ''}</span>
+          <span class="kd-live-time">${l.time}</span>
+        </li>
       `;
     }).join('');
   }
-  document.getElementById('squadPositionText').textContent = squadDist[currentStage] + '%';
-  document.getElementById('squadAheadText').textContent = squadDist[4] + '%';
 
-  // ========= Timeline =========
-  const timelineTrack = document.getElementById('timelineTrack');
-  const timelineRange = document.getElementById('timelineRange');
-  if (timelineTrack) {
-    const startMs = new Date(startDate).getTime();
-    const endMs = new Date(lastStageEnd).getTime();
-    const totalSpan = Math.max(endMs - startMs, 86400000);
-    const todayMs = new Date(TODAY_STR).getTime();
-    const todayPct = Math.min(100, Math.max(0, (todayMs - startMs) / totalSpan * 100));
-    timelineTrack.style.setProperty('--prog', todayPct + '%');
-
-    const markers = [];
-    markers.push({ date: startDate, pct: 0, type: 'done', caption: 'START', dateLabel: fmtDate(startDate) });
-    [1,2,3].forEach(s => {
-      const sd = stageDates[s-1];
-      if (!sd) return;
-      const ms = new Date(sd.end).getTime();
-      const pct = Math.min(100, Math.max(0, (ms - startMs) / totalSpan * 100));
-      const state = s < currentStage ? 'done' : '';
-      markers.push({
-        date: sd.end, pct, type: state,
-        caption: `MS ${s}`,
-        dateLabel: fmtDate(sd.end),
-      });
-    });
-    markers.push({ date: TODAY_STR, pct: todayPct, type: 'you', caption: `DAY ${enrollDaysPassed}`, dateLabel: fmtDate(TODAY_STR) });
-    markers.push({ date: lastStageEnd, pct: 100, type: 'finish', caption: 'FINISH', dateLabel: fmtDate(lastStageEnd) });
-
-    const sorted = markers.sort((a,b) => a.pct - b.pct);
-    timelineTrack.innerHTML = sorted.map(m => `
-      <div class="timeline-marker ${m.type}" style="left: ${m.pct}%;">
-        <div class="tm-dot"></div>
-        <div class="tm-label">
-          <div class="tm-date">${m.dateLabel}</div>
-          <div class="tm-caption">${m.caption}</div>
-        </div>
+  /* 阶段作业 */
+  const assign = ASSIGNMENTS[stageNum];
+  const assignEl = document.getElementById('kdAssignment');
+  if (assign) {
+    assignEl.innerHTML = `
+      <div class="kd-assignment-title">${assign.title}</div>
+      <div class="kd-assignment-desc">${assign.desc}</div>
+      <div class="kd-assignment-meta">
+        <span>预计用时 · ${assign.estDays} 天</span>
+        <span>提交后评审</span>
       </div>
-    `).join('');
-  }
-  if (timelineRange) {
-    const days = Math.round((new Date(lastStageEnd) - new Date(startDate)) / 86400000);
-    timelineRange.textContent = `${fmtDate(startDate)} → ${fmtDate(lastStageEnd)} · ${days} 天`;
+    `;
   }
 
-  // ========= Hero 数据 =========
-  const [ty,tm,td] = TODAY_STR.split('-').map(Number);
-  document.getElementById('heroDate').textContent = `${tm} 月 ${td} 日 · ${weekdayCn(TODAY_STR)}`;
-  document.getElementById('heroDay').textContent = enrollDaysPassed;
-  document.getElementById('heroDateFrag').textContent = `${fmtDate(startDate)} — ${fmtDate(lastStageEnd)}`;
-  document.getElementById('paceDisplay').textContent =
-    STATE.dailyMinutes === 0 ? '自主安排' :
-    STATE.dailyMinutes >= 60 ? `每天 ${STATE.dailyMinutes/60} 小时` :
-    `每天 ${STATE.dailyMinutes} 分钟`;
-  document.getElementById('progressDone').textContent = STATE.completed.length;
-  const pct = Math.round(STATE.completed.length / COURSES.length * 100);
-  document.getElementById('progressPct').textContent = pct + '%';
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('finishEta').textContent = estimateFinishDate(STATE);
+  /* 社区链接 */
+  document.getElementById('kdCommunityLink').href = `community.html?stage=${stageNum}`;
 }
 
-/* =====================================================
-   QUICK CARDS RENDERER · compact row
-===================================================== */
-function renderQuickCards() {
-  const [ty,tm,td] = TODAY_STR.split('-').map(Number);
-  const enrollDays = Math.round((new Date(TODAY_STR) - new Date(STATE.enrolledAt)) / 86400000) + 1;
-  const schedule = generateSchedule(STATE);
+function openCallout(stageNum, sourceEl, clickedComp) {
+  _fillCalloutContent(stageNum, clickedComp);
 
-  // Card 1 · 本周进度（把"今日要学"的信息让给地图上的 YOU ARE HERE callout）
-  const el1Date = document.getElementById('todayDateStr');
-  if (el1Date) el1Date.textContent = `${tm}/${td} · ${weekdayCn(TODAY_STR)} · 第 ${enrollDays} 天`;
+  const callout = document.getElementById('kmCallout');
+  const leader = document.getElementById('kmLeader');
+  const main = document.querySelector('.km-main');
+  const canvas = document.getElementById('kmCanvas');
+  const mobileStack = document.getElementById('kmMobileStack');
 
-  // 本周（TODAY 到未来 6 天）还剩几节
-  let weekCourses = 0;
-  let weekMin = 0;
-  for (let i = 0; i < 7; i++) {
-    const d = addDays(TODAY_STR, i);
-    const plan = schedule[d];
-    if (!plan) continue;
-    (plan.courses || []).forEach(code => {
-      if (!STATE.completed.includes(code)) {
-        weekCourses++;
-        const c = COURSES.find(cc => cc.code === code);
-        if (c) weekMin += c.d;
-      }
-    });
-  }
-  const titleEl1 = document.getElementById('todayTitle');
-  const subEl1 = document.getElementById('todaySubtitle');
-  if (weekCourses === 0) {
-    if (titleEl1) titleEl1.textContent = '本周已清空';
-    if (subEl1) subEl1.innerHTML = '可以提前学下周内容 · 或休息充电';
-  } else {
-    if (titleEl1) titleEl1.textContent = '本周进度';
-    if (subEl1) subEl1.innerHTML = `本周剩 <strong>${weekCourses}</strong> 节 · 约 <strong>${Math.round(weekMin/60*10)/10} 小时</strong>`;
+  const isMobile = window.matchMedia('(max-width: 639px)').matches;
+
+  /* ---- 移动端：居中显示为 modal（无引出线）---- */
+  if (isMobile) {
+    callout.style.left = '50%';
+    callout.style.top = '60px';
+    callout.style.transform = 'translateX(-50%) scale(0.96)';
+    callout.classList.add('show');
+    setTimeout(() => { callout.style.transform = 'translateX(-50%) scale(1)'; }, 10);
+    mobileStack.classList.add('km-dim');
+    canvas.classList.add('km-dim');
+    document.body.style.overflow = 'hidden';
+    return;
   }
 
-  // Card 2 · 最近直播（下一场）
-  const upcomingLives = LIVES.filter(l => l.date >= TODAY_STR);
-  const nextLive = upcomingLives[0];
-  const nextLiveTitleEl = document.getElementById('nextLiveTitle');
-  const nextLiveSubEl = document.getElementById('nextLiveSubtitle');
-  if (nextLive) {
-    const [ly, lm, ld] = nextLive.date.split('-').map(Number);
-    const daysAway = Math.round((new Date(nextLive.date) - new Date(TODAY_STR)) / 86400000);
-    const relLabel = daysAway === 0 ? '今晚' : daysAway === 1 ? '明晚' : `${daysAway} 天后`;
-    if (nextLiveTitleEl) nextLiveTitleEl.textContent = nextLive.title;
-    if (nextLiveSubEl) nextLiveSubEl.innerHTML = `<strong>${relLabel}</strong> · ${lm}/${ld} ${weekdayCn(nextLive.date)} ${nextLive.time} · 共 ${LIVES.length} 场`;
-  } else {
-    if (nextLiveTitleEl) nextLiveTitleEl.textContent = '暂无直播';
-    if (nextLiveSubEl) nextLiveSubEl.innerHTML = '回放整理中';
-  }
+  /* ---- 桌面：居中锚定卡 + S 形引出线 ---- */
+  const mainRect = main.getBoundingClientRect();
+  const boxRect = sourceEl.getBoundingClientRect();
+  const boxCx = boxRect.left + boxRect.width/2 - mainRect.left;
+  const boxCy = boxRect.top + boxRect.height/2 - mainRect.top;
+  const boxRx = boxRect.right - mainRect.left;
+  const boxLx = boxRect.left - mainRect.left;
 
-  // Card 3 · 里程碑
-  const currentStage = getCurrentStage();
-  const stageCoursesAll = COURSES.filter(c => c.s === currentStage);
-  const stageDone = stageCoursesAll.filter(c => STATE.completed.includes(c.code)).length;
-  const stageRemain = stageCoursesAll.length - stageDone;
-  const nextStage = currentStage < 4 ? currentStage + 1 : null;
+  const canvasCenterX = mainRect.width / 2;
+  const attachSide = boxCx < canvasCenterX ? 'right' : 'left';
 
-  const mileTitleEl = document.getElementById('mileTitle');
-  const mileSubEl = document.getElementById('mileSubtitle');
-  if (mileTitleEl) mileTitleEl.textContent = nextStage ? `通关 ${STAGE_NAMES[currentStage]}` : '毕业登顶';
+  const cardW = 420;
+  const padding = 16;
+  const maxCardH = mainRect.height - padding * 2;
+  callout.style.maxHeight = maxCardH + 'px';
 
-  // 估算本阶段预计完成日期
-  let stageEndDate = null;
-  Object.keys(schedule).sort().forEach(date => {
-    const plan = schedule[date];
-    if (plan.assignment && plan.assignment.stage === currentStage) {
-      stageEndDate = date;
+  /* 临时显示以测量 */
+  callout.style.visibility = 'hidden';
+  callout.style.opacity = '1';
+  callout.style.left = '-9999px';
+  callout.style.display = 'block';
+  const measuredH = Math.min(callout.scrollHeight, maxCardH);
+  callout.style.height = measuredH + 'px';
+  callout.style.visibility = '';
+  callout.style.opacity = '';
+  callout.style.display = '';
+
+  /* X 坐标：就近源组件，留 60px gap；放不下则翻到另一侧 */
+  const gap = 60;
+  let left;
+  if (attachSide === 'right') {
+    left = boxRx + gap;
+    if (left + cardW > mainRect.width - padding) {
+      /* 右侧放不下 → 翻到左侧 */
+      left = boxLx - gap - cardW;
     }
-  });
-  const remainHours = stageCoursesAll
-    .filter(c => !STATE.completed.includes(c.code))
-    .reduce((s,c) => s + c.d, 0);
-  if (mileSubEl) {
-    mileSubEl.innerHTML = nextStage
-      ? `还差 <strong>${stageRemain}</strong> 节 · 约 ${Math.round(remainHours/60*10)/10}h · ${stageEndDate ? fmtDate(stageEndDate) : '—'} 解锁 <strong>${STAGE_NAMES[nextStage]}</strong>`
-      : `毕业大作业 · ${stageEndDate ? fmtFullDate(stageEndDate) : '—'}`;
+  } else {
+    left = boxLx - gap - cardW;
+    if (left < padding) {
+      /* 左侧放不下 → 翻到右侧 */
+      left = boxRx + gap;
+    }
+  }
+  left = Math.min(Math.max(padding, left), mainRect.width - cardW - padding);
+
+  /* Y 坐标：画布竖直居中 */
+  const top = Math.max(padding, (mainRect.height - measuredH) / 2);
+
+  callout.style.left = left + 'px';
+  callout.style.top = top + 'px';
+  callout.style.transform = '';
+
+  /* 引出线：S 形 cubic bezier */
+  const cardEdgeX = attachSide === 'right' ? left : left + cardW;
+  const cardEdgeY = top + measuredH / 2;
+  const boxEdgeX = attachSide === 'right' ? boxRx : boxLx;
+  const boxEdgeY = boxCy;
+  const dx = cardEdgeX - boxEdgeX;
+  const c1x = boxEdgeX + dx * 0.5;
+  const c1y = boxEdgeY;
+  const c2x = cardEdgeX - dx * 0.5;
+  const c2y = cardEdgeY;
+
+  leader.setAttribute('viewBox', `0 0 ${mainRect.width} ${mainRect.height}`);
+  leader.innerHTML = `
+    <circle cx="${boxEdgeX}" cy="${boxEdgeY}" r="3.5"/>
+    <path d="M ${boxEdgeX} ${boxEdgeY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${cardEdgeX} ${cardEdgeY}"/>
+  `;
+
+  leader.classList.add('show');
+  callout.classList.add('show');
+  callout.setAttribute('aria-hidden', 'false');
+  canvas.classList.add('km-dim');
+
+  /* 标记源组件 */
+  if (_activeSourceEl) _activeSourceEl.classList.remove('km-comp-source');
+  if (sourceEl && sourceEl.classList && sourceEl.classList.contains('km-comp')) {
+    sourceEl.classList.add('km-comp-source');
+    _activeSourceEl = sourceEl;
   }
 }
 
+function closeCallout() {
+  const callout = document.getElementById('kmCallout');
+  const leader = document.getElementById('kmLeader');
+  callout.classList.remove('show');
+  callout.setAttribute('aria-hidden', 'true');
+  callout.style.transform = '';
+  leader.classList.remove('show');
+  leader.innerHTML = '';
+  document.getElementById('kmCanvas').classList.remove('km-dim');
+  const ms = document.getElementById('kmMobileStack');
+  if (ms) ms.classList.remove('km-dim');
+  document.body.style.overflow = '';
+  if (_activeSourceEl) {
+    _activeSourceEl.classList.remove('km-comp-source');
+    _activeSourceEl = null;
+  }
+}
+
+/* 课程卡片点击跳转 */
+function gotoCourse(code, state) {
+  if (state === 'locked') {
+    showToast(`${code} 尚未解锁 · 先完成前面的课程`);
+    return;
+  }
+  location.href = `learn.html?code=${encodeURIComponent(code)}`;
+}
+
+/* 点地图空白 / ESC 关闭 */
+document.querySelector('.km-main').addEventListener('click', (e) => {
+  /* 点在 callout 或 leader 或 mobile stack 内部不触发关闭 */
+  if (e.target.closest('.km-callout, .km-leader-svg, .ms-card, .km-comp, .km-mobile-stack')) return;
+  closeCallout();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeCallout();
+});
+
 /* =====================================================
-   INTERACTIONS
-===================================================== */
-function toggleCourse(code) {
-  const idx = STATE.completed.indexOf(code);
-  if (idx >= 0) STATE.completed.splice(idx, 1);
-  else STATE.completed.push(code);
-  localStorage.setItem('ds_completed_demo', JSON.stringify(STATE.completed));
-  renderAll();
-}
-
-function renderAll() {
-  renderAscentMap();
-  renderQuickCards();
-}
-
-/* ---- Pace modal ---- */
+   PACE MODAL
+   ===================================================== */
 function openPaceModal() {
   const modal = document.getElementById('paceModal');
   modal.classList.add('show');
@@ -2847,15 +2091,13 @@ function openPaceModal() {
     };
   });
   [30, 60, 120].forEach(min => {
-    const tempState = {...STATE, dailyMinutes: min};
-    const eta = estimateFinishDate(tempState);
+    const tmp = {...STATE, dailyMinutes: min};
+    const eta = estimateFinishDate(tmp);
     const el = document.querySelector(`.pace-opt[data-min="${min}"] [data-eta]`);
-    if (el) el.textContent = '约 ' + eta + ' 完成';
+    if (el) el.textContent = '预计 ' + eta;
   });
 }
-function closePaceModal() {
-  document.getElementById('paceModal').classList.remove('show');
-}
+function closePaceModal() { document.getElementById('paceModal').classList.remove('show'); }
 function applyPace() {
   const picked = document.querySelector('.pace-opt.selected');
   if (picked) {
@@ -2864,33 +2106,48 @@ function applyPace() {
   }
   closePaceModal();
   renderAll();
-  showToast('✓ 节奏已更新');
+  showToast('已更新学习节奏');
 }
 document.getElementById('paceModal').addEventListener('click', (e) => {
   if (e.target.id === 'paceModal') closePaceModal();
 });
 
-/* ---- Toast ---- */
+/* =====================================================
+   TOAST
+   ===================================================== */
 let toastTimer = null;
 function showToast(msg) {
-  const toast = document.getElementById('dsToast');
-  toast.textContent = msg;
-  toast.classList.add('show');
+  const t = document.getElementById('kmToast');
+  t.textContent = msg;
+  t.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-/* ---- Quick card handlers ---- */
-function showAllLives() {
-  const list = LIVES.map(l => `${fmtDate(l.date)} ${weekdayCn(l.date)} · ${l.time} · ${l.title}`).join('\n');
-  showToast('📡 共 ' + LIVES.length + ' 场直播 · 详见页面顶部登山图');
+/* =====================================================
+   BOOT
+   ===================================================== */
+function renderAll() {
+  renderKnowledgeMap();
+  renderTopBar();
+  renderActionBar();
+  renderMobileStack();
 }
-function scrollToMap() {
-  document.querySelector('.ascent-map-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-/* ---- 初次渲染 ---- */
 renderAll();
+
+/* 开发调试：URL 参数 ?callout=<stage>.<compIdx> 预开锚定卡 */
+(() => {
+  const p = new URLSearchParams(location.search);
+  const raw = p.get('callout') || '';
+  if (!raw) return;
+  const [s, idx] = raw.split('.').map(Number);
+  if (s < 1 || s > 4) return;
+  setTimeout(() => {
+    const comps = document.querySelectorAll(`.km-comp[data-stage="${s}"]`);
+    const target = comps[idx || 0] || comps[0];
+    if (target) target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }, 80);
+})();
 </script>
 
 </body>
