@@ -409,15 +409,39 @@ a { color: inherit; text-decoration: none; }
 
 /* Thread indicator */
 .thread-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 6px;
   font-size: 13px;
   color: var(--teal);
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
   font-weight: 500;
 }
-.thread-link:hover { opacity: 0.75; }
+.thread-link:hover { color: var(--teal-hover); }
+.thread-link .thread-arrow {
+  display: inline-block;
+  transition: transform .2s;
+  font-size: 10px;
+}
+.thread-link.expanded .thread-arrow { transform: rotate(90deg); }
+
+/* Inline thread expansion */
+.thread-expand {
+  display: none;
+  margin-left: 50px;
+  padding: 4px 0 8px;
+  animation: fadeSlideIn .15s ease;
+}
+.thread-expand.open { display: block; }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.thread-expand .msg.is-reply {
+  margin-left: 0;
+}
 
 /* ===== Top-level message emphasis ===== */
 .msg.is-root {
@@ -1378,7 +1402,7 @@ function renderMessages(channelId) {
     ).join('') : '';
     let threadHtml = '';
     if (msg.thread) {
-      threadHtml = `<span class="thread-link" onclick="openThread('${msg.id}')">${msg.thread.count} 条回复</span>`;
+      threadHtml = `<span class="thread-link" id="tl-${msg.id}" onclick="toggleInlineThread('${msg.id}')"><span class="thread-arrow">▶</span> ${msg.thread.count} 条回复</span>`;
     }
     const textHtml = msg.text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -1406,7 +1430,7 @@ function renderMessages(channelId) {
           <span class="msg-hover-actions">
             <span class="msg-hover-action" title="回复" onclick="startInlineReply('${msg.id}','${msg.author}')">💬</span>
             <span class="msg-hover-action" title="表情">😊</span>
-            ${msg.thread ? `<span class="msg-hover-action" title="查看线程" onclick="openThread('${msg.id}')">🧵</span>` : ''}
+            ${msg.thread ? `<span class="msg-hover-action" title="展开回复" onclick="toggleInlineThread('${msg.id}')">🧵</span>` : ''}
           </span>
         </div>
         <div class="msg-text">${displayText}</div>
@@ -1414,6 +1438,7 @@ function renderMessages(channelId) {
         ${threadHtml}
       </div>
     </div>
+    ${msg.thread && threadData[msg.id] ? `<div class="thread-expand" id="te-${msg.id}">${renderThreadReplies(msg.id)}</div>` : ''}
     <div id="inline-reply-${msg.id}"></div>`;
   });
 
@@ -1500,18 +1525,46 @@ function switchChannel(el) {
   renderMessages(currentChannel);
 }
 
-function openThread(msgId) {
-  if (!threadData[msgId]) return;
-  currentThread = msgId;
-  panelOpen = true;
-  document.getElementById('layout').classList.add('panel-open');
-  renderPanel();
+function renderThreadReplies(msgId) {
+  const td = threadData[msgId];
+  if (!td || !td.replies) return '';
+  return td.replies.map(r => {
+    const roleTag = r.role ? `<span class="msg-role">${r.role}</span>` : '';
+    const rText = r.text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/@(\S+)/g, '<strong style="color:var(--teal);font-size:12px;">@$1</strong>')
+      .replace(/\n/g, '<br>');
+    return `<div class="msg is-reply">
+      <div class="msg-monogram">${r.author[0]}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${r.author}</span>
+          ${roleTag}
+          <span class="msg-time">${r.time}</span>
+        </div>
+        <div class="msg-text">${rText}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleInlineThread(msgId) {
+  const el = document.getElementById('te-' + msgId);
+  const link = document.getElementById('tl-' + msgId);
+  if (!el) return;
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    if (link) link.classList.remove('expanded');
+  } else {
+    el.classList.add('open');
+    if (link) link.classList.add('expanded');
+    setTimeout(() => { el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
+  }
 }
 
 function closePanel() {
-  panelOpen = false;
   document.getElementById('layout').classList.remove('panel-open');
-  currentThread = null;
 }
 
 function toggleReaction(el) {
