@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 讨论 — Variant C</title>
+<style>
+:root {
+  --font: -apple-system, 'PingFang SC', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Menlo', 'Monaco', monospace;
+
+  /* Sidebar — deep navy */
+  --navy: #1a2942;
+  --navy-light: #1f3150;
+  --navy-lighter: #253a5c;
+  --navy-text: #e2e8f0;
+  --navy-text2: #94a3b8;
+  --navy-text3: #64748b;
+
+  /* Accent — teal */
+  --teal: #0d9488;
+  --teal-hover: #0b7c71;
+  --teal-light: #eef8f7;
+  --teal-bg: rgba(13, 148, 136, 0.04);
+  --teal-subtle: rgba(13, 148, 136, 0.08);
+
+  /* Content area */
+  --white: #ffffff;
+  --bg: #f8f9fb;
+  --text1: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --text4: #cbd5e1;
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
+  --success: #22c55e;
+  --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.05);
+  --shadow-panel: -4px 0 24px rgba(0,0,0,.06);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--navy); color:var(--text1); -webkit-font-smoothing:antialiased; height:100vh; overflow:hidden; }
+a { color:inherit; text-decoration:none; }
+
+/* ===== Topbar — frosted glass bridging dark/light ===== */
+.topbar {
+  position:sticky; top:0; z-index:50;
+  background:rgba(26,41,66,.92);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  height:52px; display:flex; align-items:center; padding:0 24px;
+}
+.tb-inner { max-width:100%; width:100%; display:flex; align-items:center; justify-content:space-between; }
+.tb-left { display:flex; align-items:center; gap:24px; }
+.logo { font-size:17px; font-weight:700; color:var(--teal); letter-spacing:-.2px; }
+.nav { display:flex; gap:4px; }
+.nav a { font-size:13px; color:var(--navy-text2); padding:6px 12px; border-radius:6px; transition:all .15s; }
+.nav a:hover { color:var(--navy-text); background:rgba(255,255,255,.06); }
+.nav a.active { color:var(--teal); background:rgba(13,148,136,.12); font-weight:500; }
+.tb-right { display:flex; align-items:center; gap:12px; }
+.online-dot { width:7px; height:7px; border-radius:50%; background:var(--success); display:inline-block; }
+.online-text { font-size:12px; color:var(--navy-text2); }
+.tb-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#ccfbf1,#99f6e4); color:var(--text1); display:grid; place-items:center; font-size:13px; font-weight:600; cursor:pointer; transition:transform .2s; }
+.tb-avatar:hover { transform:scale(1.05); }
+
+/* ===== Layout ===== */
+.layout { display:grid; grid-template-columns:220px 1fr; height:calc(100vh - 52px); position:relative; }
+
+/* ===== Left sidebar — deep navy ===== */
+.sidebar {
+  background:var(--navy);
+  padding:20px 0;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  border-right:1px solid rgba(255,255,255,.04);
+}
+.sidebar::-webkit-scrollbar { width:4px; }
+.sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:4px; }
+
+.sb-group { margin-bottom:16px; }
+.sb-label {
+  font-size:10px; font-weight:600; color:var(--navy-text3);
+  letter-spacing:.8px; text-transform:uppercase;
+  padding:0 20px 10px;
+}
+.sb-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 14px 8px 16px; margin:1px 10px;
+  cursor:pointer; font-size:13.5px; color:var(--navy-text2);
+  border-radius:6px; transition:all .15s; user-select:none;
+  border-left:3px solid transparent;
+  letter-spacing:-.1px;
+}
+.sb-item:hover {
+  background:rgba(255,255,255,.04);
+  color:var(--navy-text);
+}
+.sb-item.active {
+  background:rgba(255,255,255,.07);
+  color:var(--navy-text);
+  font-weight:500;
+  border-left-color:var(--teal);
+}
+.sb-icon {
+  font-size:13px; width:18px; text-align:center;
+  flex-shrink:0; color:var(--navy-text3);
+  opacity:.6;
+}
+.sb-item.active .sb-icon { color:var(--teal); opacity:1; }
+.sb-item:hover .sb-icon { opacity:.8; }
+.sb-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sb-badge {
+  background:var(--teal); color:#fff;
+  font-size:10px; font-weight:600;
+  padding:1px 6px; border-radius:10px;
+  min-width:18px; text-align:center;
+}
+.sb-unread {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--teal); flex-shrink:0; opacity:.8;
+}
+
+/* Sidebar divider */
+.sb-divider { height:1px; background:rgba(255,255,255,.05); margin:8px 20px 16px; }
+
+/* Sidebar bottom — user + online count */
+.sb-bottom {
+  margin-top:auto; padding:16px 20px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.sb-online {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--navy-text3);
+  margin-bottom:14px;
+}
+.sb-online-dot { width:6px; height:6px; border-radius:50%; background:var(--success); }
+.sb-user { display:flex; align-items:center; gap:10px; }
+.sb-user-avatar {
+  width:30px; height:30px; border-radius:50%;
+  background:linear-gradient(135deg,#ccfbf1,#99f6e4);
+  color:var(--text1); display:grid; place-items:center;
+  font-size:12px; font-weight:600;
+}
+.sb-user-info { flex:1; }
+.sb-user-name { font-size:13px; font-weight:500; color:var(--navy-text); }
+.sb-user-status { font-size:11px; color:var(--success); }
+
+/* ===== Content wrapper ===== */
+.content-wrap {
+  display:flex; flex:1; min-width:0; position:relative;
+  background:var(--white);
+}
+
+/* ===== Message area ===== */
+.msg-area {
+  display:flex; flex-direction:column;
+  flex:1; min-width:0; background:var(--white);
+  position:relative;
+}
+
+/* Teal accent line at top */
+.msg-area::before {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:2px; background:var(--teal); z-index:2;
+}
+
+/* Channel header */
+.ch-header {
+  padding:14px 28px; background:var(--white);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-shrink:0; position:relative;
+}
+.ch-header-left { display:flex; align-items:center; gap:10px; min-width:0; }
+.ch-header-icon { font-size:15px; }
+.ch-header-title { font-size:15px; font-weight:600; color:var(--text1); letter-spacing:-.1px; }
+.ch-header-desc { font-size:12px; color:var(--text3); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ch-header-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.icon-btn {
+  width:30px; height:30px; border:none; background:transparent;
+  border-radius:6px; display:grid; place-items:center;
+  cursor:pointer; font-size:14px; color:var(--text3); transition:all .15s;
+}
+.icon-btn:hover { background:var(--border-soft); color:var(--text1); }
+.icon-btn.active { background:var(--teal-light); color:var(--teal); }
+
+/* Search bar */
+.search-bar { display:none; padding:10px 24px; background:var(--white); border-bottom:1px solid var(--border); }
+.search-bar.show { display:block; }
+.search-input { width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; font-family:var(--font); outline:none; background:var(--bg); transition:border-color .15s; }
+.search-input:focus { border-color:var(--teal); background:var(--white); }
+.search-input::placeholder { color:var(--text4); }
+
+/* Message feed */
+.msg-feed { flex:1; overflow-y:auto; padding:8px 0; scroll-behavior:smooth; }
+.msg-feed::-webkit-scrollbar { width:6px; }
+.msg-feed::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+.msg-feed::-webkit-scrollbar-thumb:hover { background:var(--text4); }
+
+/* Date separator */
+.date-sep { display:flex; align-items:center; gap:16px; padding:20px 28px 10px; }
+.date-sep::before, .date-sep::after { content:''; flex:1; height:1px; background:var(--border); opacity:.5; }
+.date-sep span { font-size:11px; color:var(--text3); font-weight:500; white-space:nowrap; letter-spacing:.3px; }
+
+/* Messages — compact style */
+.msg {
+  display:flex; gap:10px;
+  padding:5px 28px; border-radius:0;
+  transition:background .15s;
+  position:relative; margin-bottom:1px;
+}
+.msg:hover { background:#f8fafc; }
+.msg:hover .msg-actions { opacity:1; }
+.msg-avatar {
+  width:30px; height:30px; border-radius:50%;
+  display:grid; place-items:center;
+  font-size:12px; font-weight:600; color:var(--text1);
+  flex-shrink:0; margin-top:2px;
+}
+.msg-body { flex:1; min-width:0; }
+.msg-meta { display:flex; align-items:baseline; gap:8px; margin-bottom:2px; }
+.msg-name { font-size:13px; font-weight:600; color:var(--text1); }
+.msg-role { font-size:10px; font-weight:500; color:var(--teal); background:var(--teal-light); padding:2px 6px; border-radius:4px; letter-spacing:.2px; }
+.msg-time { font-size:11px; color:var(--text4); font-variant-numeric:tabular-nums; }
+.msg-text { font-size:13.5px; color:#475569; line-height:1.65; word-break:break-word; }
+.msg-text code { font-family:var(--mono); font-size:12px; background:#f1f5f9; color:#334155; padding:2px 5px; border-radius:4px; }
+.msg-text strong { color:var(--text1); font-weight:600; }
+
+/* Message actions (hover) */
+.msg-actions {
+  position:absolute; right:28px; top:-8px;
+  background:var(--white); border:1px solid var(--border);
+  border-radius:8px; display:flex; gap:0;
+  opacity:0; transition:opacity .12s;
+  box-shadow:var(--shadow-md);
+}
+.msg-action {
+  padding:4px 8px; cursor:pointer; font-size:13px;
+  border-right:1px solid var(--border-soft); transition:background .1s;
+}
+.msg-action:last-child { border-right:none; }
+.msg-action:hover { background:var(--border-soft); }
+
+/* Reactions */
+.msg-reactions { display:flex; gap:4px; margin-top:4px; }
+.reaction {
+  display:inline-flex; align-items:center; gap:3px;
+  padding:2px 7px; border-radius:20px;
+  border:1px solid var(--border); background:var(--white);
+  font-size:11.5px; color:var(--text2); cursor:pointer; transition:all .15s;
+}
+.reaction:hover { border-color:var(--text4); background:var(--border-soft); }
+.reaction.active { border-color:var(--teal); background:var(--teal-light); color:var(--teal); }
+
+/* Thread indicator */
+.thread-indicator {
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:4px; padding:4px 10px;
+  background:transparent; border:1px solid var(--border);
+  border-radius:8px; font-size:12px; color:var(--teal);
+  cursor:pointer; transition:all .15s; font-weight:500;
+}
+.thread-indicator:hover { background:var(--teal-light); border-color:var(--teal-subtle); }
+.thread-avatars { display:flex; margin-left:2px; }
+.thread-avatars .mini-avatar {
+  width:16px; height:16px; border-radius:50%;
+  display:grid; place-items:center;
+  font-size:7px; font-weight:600; color:var(--text1);
+  margin-left:-3px; border:1.5px solid var(--white);
+}
+.thread-avatars .mini-avatar:first-child { margin-left:0; }
+
+/* Pinned bar */
+.pinned-bar {
+  display:flex; align-items:center; gap:6px;
+  padding:7px 28px; background:transparent;
+  border-bottom:1px solid var(--border-soft);
+  font-size:12px; color:var(--text3); cursor:pointer; transition:color .15s;
+}
+.pinned-bar:hover { color:var(--text2); }
+
+/* Input area */
+.msg-input { padding:12px 28px 18px; background:var(--white); border-top:1px solid var(--border); flex-shrink:0; }
+.input-wrapper { border:1px solid var(--border); border-radius:12px; background:var(--bg); transition:all .2s; overflow:hidden; }
+.input-wrapper:focus-within { border-color:var(--teal); background:var(--white); box-shadow:0 0 0 3px rgba(13,148,136,.06); }
+.msg-textarea { width:100%; min-height:42px; max-height:120px; padding:10px 14px; border:none; font-family:var(--font); font-size:13.5px; color:var(--text1); resize:none; outline:none; line-height:1.5; background:transparent; }
+.msg-textarea::placeholder { color:var(--text4); }
+.input-toolbar { display:flex; align-items:center; justify-content:space-between; padding:4px 8px 6px; }
+.input-tools { display:flex; gap:2px; }
+.input-tool { padding:4px 6px; border-radius:4px; cursor:pointer; font-size:14px; color:var(--text3); transition:all .1s; border:none; background:none; font-family:var(--font); }
+.input-tool:hover { background:var(--border-soft); color:var(--text1); }
+.send-btn { padding:5px 14px; border-radius:6px; font-size:12px; font-weight:500; border:none; cursor:pointer; font-family:var(--font); transition:all .15s; }
+.send-btn.ready { background:var(--teal); color:#fff; }
+.send-btn.ready:hover { background:var(--teal-hover); }
+.send-btn.disabled { background:var(--bg); color:var(--text4); cursor:default; }
+
+/* ===== Right panel — slides in with shadow ===== */
+.thread-panel {
+  position:absolute; top:0; right:0; bottom:0;
+  width:340px; background:var(--white);
+  box-shadow:var(--shadow-panel);
+  border-left:1px solid var(--border);
+  display:flex; flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .25s ease;
+  z-index:10;
+}
+.thread-panel.open { transform:translateX(0); }
+
+.panel-header {
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+.panel-title { font-size:14px; font-weight:600; color:var(--text1); display:flex; align-items:center; gap:6px; }
+.panel-close {
+  border:none; background:none; font-size:18px;
+  color:var(--text3); cursor:pointer; padding:2px 6px; border-radius:4px;
+  transition:all .15s;
+}
+.panel-close:hover { background:var(--bg); color:var(--text1); }
+
+/* Thread content */
+.thread-content { flex:1; overflow-y:auto; padding:12px; }
+.thread-parent {
+  padding:12px; background:var(--teal-bg);
+  border-radius:8px; margin-bottom:12px;
+  border-left:3px solid var(--teal);
+}
+.thread-parent .msg-name { color:var(--teal); }
+.thread-replies { display:flex; flex-direction:column; gap:2px; }
+.thread-reply { display:flex; gap:8px; padding:8px 10px; border-radius:6px; transition:background .1s; }
+.thread-reply:hover { background:var(--bg); }
+.thread-reply .msg-avatar { width:24px; height:24px; border-radius:50%; font-size:10px; margin-top:1px; }
+.thread-reply .msg-name { font-size:12px; }
+.thread-reply .msg-text { font-size:12.5px; line-height:1.6; }
+.thread-reply .msg-time { font-size:10px; }
+.thread-input { padding:12px; border-top:1px solid var(--border-soft); flex-shrink:0; }
+.thread-input textarea {
+  width:100%; min-height:44px; border:1px solid var(--border);
+  border-radius:8px; padding:8px 10px;
+  font-family:var(--font); font-size:12.5px;
+  resize:none; outline:none; background:var(--bg); transition:all .15s;
+}
+.thread-input textarea:focus { border-color:var(--teal); background:var(--white); }
+.thread-input-footer { display:flex; justify-content:flex-end; margin-top:6px; }
+
+/* Channel info in panel */
+.info-content { flex:1; overflow-y:auto; padding:16px; }
+.info-section { margin-bottom:20px; }
+.info-label { font-size:10px; font-weight:600; color:var(--text4); letter-spacing:.5px; text-transform:uppercase; margin-bottom:8px; }
+.info-text { font-size:13px; color:var(--text2); line-height:1.6; }
+.pinned-list { display:flex; flex-direction:column; gap:6px; }
+.pinned-item { padding:8px 10px; background:var(--bg); border-radius:6px; font-size:12px; color:var(--text2); line-height:1.5; cursor:pointer; transition:background .1s; }
+.pinned-item:hover { background:var(--teal-light); }
+.member-list { display:flex; flex-direction:column; gap:6px; }
+.member-item { display:flex; align-items:center; gap:8px; font-size:13px; }
+.member-item .msg-avatar { width:24px; height:24px; border-radius:50%; font-size:9px; }
+.member-name { color:var(--text1); font-weight:500; }
+.member-role-tag { font-size:10px; color:var(--teal); background:var(--teal-light); padding:1px 5px; border-radius:3px; }
+
+/* ===== Responsive ===== */
+@media (max-width:768px) {
+  .layout { grid-template-columns:1fr !important; }
+  .sidebar { display:none; }
+  .topbar { background:rgba(26,41,66,.96); }
+  .ch-header-desc { display:none; }
+  .thread-panel { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar — frosted dark glass -->
+<div class="topbar">
+  <div class="tb-inner">
+    <div class="tb-left">
+      <a href="roadmap.html" class="logo">深海圈</a>
+      <nav class="nav">
+        <a href="roadmap.html">路线图</a>
+        <a href="learn.html">学习</a>
+        <a href="discuss.html" class="active">讨论</a>
+        <a href="community.html">社区</a>
+        <a href="showcase.html">成果墙</a>
+      </nav>
+    </div>
+    <div class="tb-right">
+      <span class="online-dot"></span>
+      <span class="online-text">34 人在线</span>
+      <a href="profile.html" class="tb-avatar">瓜</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="layout" id="layout">
+
+  <!-- Left: Dark sidebar -->
+  <aside class="sidebar">
+    <div class="sb-group">
+      <div class="sb-label">交流</div>
+      <div class="sb-item active" data-channel="lobby" onclick="switchChannel(this)">
+        <span class="sb-icon">☕</span>
+        <span class="sb-name">大厅</span>
+        <span class="sb-badge">5</span>
+      </div>
+      <div class="sb-item" data-channel="tools" onclick="switchChannel(this)">
+        <span class="sb-icon">#</span>
+        <span class="sb-name">工具测评</span>
+        <span class="sb-unread"></span>
+      </div>
+      <div class="sb-item" data-channel="pitfalls" onclick="switchChannel(this)">
+        <span class="sb-icon">#</span>
+        <span class="sb-name">踩坑经验</span>
+      </div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+      <div class="sb-label">专题</div>
+      <div class="sb-item" data-channel="lobby" onclick="switchChannel(this)" style="pointer-events:none;opacity:.4;">
+        <span class="sb-icon">#</span>
+        <span class="sb-name">每周挑战</span>
+      </div>
+      <div class="sb-item" data-channel="lobby" onclick="switchChannel(this)" style="pointer-events:none;opacity:.4;">
+        <span class="sb-icon">#</span>
+        <span class="sb-name">求职互助</span>
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-online">
+        <span class="sb-online-dot"></span>
+        <span>34 人在线</span>
+      </div>
+      <div class="sb-user">
+        <div class="sb-user-avatar">瓜</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name">瓜哥</div>
+          <div class="sb-user-status">● 在线</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right: Content area (messages + sliding panel) -->
+  <div class="content-wrap">
+
+    <!-- Center: Messages -->
+    <main class="msg-area" id="msgArea">
+      <!-- Channel header -->
+      <div class="ch-header">
+        <div class="ch-header-left">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="ch-header-icon" id="chIcon">☕</span>
+              <span class="ch-header-title" id="chTitle">大厅</span>
+            </div>
+            <div class="ch-header-desc" id="chDesc">随便聊，什么都可以。这里就是深海圈的客厅。</div>
+          </div>
+        </div>
+        <div class="ch-header-right">
+          <button class="icon-btn" id="searchToggle" onclick="toggleSearch()" title="搜索">🔍</button>
+          <button class="icon-btn" id="infoToggle" onclick="togglePanel('info')" title="频道信息">ℹ️</button>
+        </div>
+      </div>
+
+      <!-- Search bar -->
+      <div class="search-bar" id="searchBar">
+        <input class="search-input" type="text" placeholder="搜索当前频道的消息..." oninput="searchMessages(this.value)">
+      </div>
+
+      <!-- Message feed -->
+      <div class="msg-feed" id="msgFeed">
+        <!-- Content rendered by JS -->
+      </div>
+
+      <!-- Input -->
+      <div class="msg-input">
+        <div class="input-wrapper">
+          <textarea class="msg-textarea" id="msgInput" placeholder="在 ☕ 大厅 中发消息..." rows="1" oninput="autoResize(this); updateSendBtn();" onkeydown="handleKey(event)"></textarea>
+          <div class="input-toolbar">
+            <div class="input-tools">
+              <button class="input-tool" title="Markdown">𝐌</button>
+              <button class="input-tool" title="@提及">@</button>
+              <button class="input-tool" title="表情">😊</button>
+            </div>
+            <button class="send-btn disabled" id="sendBtn" onclick="sendMessage()">发送</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right: Slide-in panel -->
+    <aside class="thread-panel" id="threadPanel">
+      <div id="panelContent">
+        <!-- Rendered by JS -->
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script>
+// ===== Data =====
+const channelData = {
+  lobby: {
+    icon: '☕', name: '大厅', type: 'lobby',
+    desc: '随便聊，什么都可以。这里就是深海圈的客厅。',
+    pinned: ['欢迎新同学！有任何问题直接在这里问，大家都很友善'],
+    messages: [
+      { date: '4月14日 周一' },
+      { id:'l1', author:'陈小飞', color:'#6987b8', time:'09:12', text:'早啊各位！昨天搞到凌晨三点终于把部署搞定了，Vercel 真是救星。', reactions:[{emoji:'👍',count:6,active:false},{emoji:'💪',count:3,active:false}] },
+      { id:'l2', author:'李思思', color:'#b87a9e', time:'09:15', text:'@陈小飞 恭喜！部署到 Vercel 了？还是 Netlify？' },
+      { id:'l3', author:'陈小飞', color:'#6987b8', time:'09:17', text:'Vercel，它那个 GitHub 集成太丝滑了。push 一下就自动部署。', reactions:[{emoji:'🔥',count:2,active:false}] },
+      { id:'l4', author:'张明', color:'#b89e6f', time:'09:45', text:'有没有人看到今天 Claude 更新了？Code 模式据说又升级了。', reactions:[{emoji:'👀',count:8,active:false}] },
+      { id:'l5', author:'周杰', color:'#8b7aaf', time:'09:52', text:'看到了！说是支持 agent 模式了，可以自动跑测试。有点期待。' },
+      { id:'l6', author:'赵薇薇', color:'#6aafa0', time:'10:03', text:'刚试了一下 Claude Code 的新版，确实比上个版本快很多。特别是多文件编辑。' },
+      { date: '4月15日 周二' },
+      { id:'l7', author:'林小鱼', color:'#c08a7a', time:'10:20', text:'请问大家用什么做数据库啊？Supabase 还是 Firebase？新手不知道怎么选...', reactions:[{emoji:'🤔',count:2,active:false}] },
+      { id:'l8', author:'王大锤', role:'助教', color:'#6987b8', time:'10:25', text:'@林小鱼 新手推荐 Supabase，PostgreSQL 底子，将来迁移方便。Firebase 生态锁定比较强。', reactions:[{emoji:'👍',count:11,active:false},{emoji:'❤️',count:3,active:false}] },
+      { id:'l9', author:'林小鱼', color:'#c08a7a', time:'10:28', text:'@王大锤 谢谢大锤哥！那我先试 Supabase 了' },
+      { id:'l10', author:'刘小排', role:'讲师', color:'#0d9488', time:'14:30', text:'各位早！今天发了一篇新文章，讲的是怎么用 AI 做落地页设计。链接放在 #工具测评 了，大家可以去看看讨论。', reactions:[{emoji:'🎉',count:15,active:false},{emoji:'👍',count:9,active:false}] },
+      { date: '今天' },
+      { id:'l11', author:'周杰', color:'#8b7aaf', time:'08:55', text:'早安！有人用过 Bolt.new 吗？昨天试了一下，从零到上线只花了 2 个小时，有点疯狂。' },
+      { id:'l12', author:'李思思', color:'#b87a9e', time:'09:03', text:'Bolt 我前两天也试了，确实快。但生成的代码质量一般，后续维护有点头疼。', reactions:[{emoji:'💯',count:4,active:false}] },
+      { id:'l13', author:'王大锤', role:'助教', color:'#6987b8', time:'09:10', text:'Bolt 适合做 MVP 验证想法，但正经做产品还是建议 Cursor + Claude。代码质量差很多。' },
+      { id:'l14', author:'张明', color:'#b89e6f', time:'09:25', text:'话说有人遇到 Stripe 测试模式 webhook 一直收不到的问题吗？我搞了一上午了...' },
+      { id:'l15', author:'林小鱼', color:'#c08a7a', time:'09:30', text:'@张明 你是不是用了 ngrok？我之前也遇到过，后来发现是 ngrok 免费版的域名每次重启会变，得重新配 webhook URL。', reactions:[{emoji:'👍',count:3,active:false}] },
+      { id:'l16', author:'张明', color:'#b89e6f', time:'09:33', text:'@林小鱼 就是这个问题！！谢了兄弟 这要自己查还不知道查到什么时候。这种经验应该沉淀到 #踩坑经验 去。', reactions:[{emoji:'😂',count:5,active:false}] },
+    ]
+  },
+  tools: {
+    icon: '#', name: '工具测评', type: 'topic',
+    desc: '分享你用过的 AI 工具、开发工具，聊聊优缺点和使用心得',
+    pinned: ['[置顶] 2025 年 AI 编程工具推荐清单 — 刘小排整理'],
+    messages: [
+      { date: '4月14日 周一' },
+      { id:'t1', author:'刘小排', role:'讲师', color:'#0d9488', time:'10:00', text:'给大家整理了一份 2025 年最新的 AI 编程工具推荐清单，从代码编辑器到部署平台到数据库。收藏起来，遇到选择困难的时候翻一翻。', reactions:[{emoji:'🔥',count:24,active:false},{emoji:'❤️',count:12,active:false}], thread:{count:15, lastTime:'4月15日', authors:['陈','王','李','周']} },
+      { id:'t2', author:'陈小飞', color:'#6987b8', time:'14:23', text:'刚试了 **Cursor** 的新版本，Tab 补全的准确率提升很明显，尤其是写 React 组件的时候。但是内存占用也上去了，8G 的机器有点吃力。', reactions:[{emoji:'👍',count:12,active:false}], thread:{count:8, lastTime:'16:05', authors:['周','赵','陈','林']} },
+      { id:'t3', author:'王大锤', role:'助教', color:'#6987b8', time:'15:01', text:'有没有人用过 **v0.dev**？上周试着用它生成了一个 landing page，出来的效果比我预期好很多。但细节调整还是得手动改。不过配合 shadcn/ui 可以直接导入组件，这个工作流很丝滑。', reactions:[{emoji:'👍',count:5,active:false},{emoji:'💡',count:3,active:false}] },
+      { date: '4月15日 周二' },
+      { id:'t4', author:'李思思', color:'#b87a9e', time:'09:38', text:'v0 我也在用，配合 Shadcn 很丝滑。不过我发现直接用 **Claude** 写组件反而更可控，你们觉得呢？v0 生成的代码有时候嵌套太深。' },
+      { id:'t5', author:'张明', color:'#b89e6f', time:'16:12', text:'分享一个发现：**Bolt.new** 现在支持直接部署到 Netlify 了，对于快速验证想法特别方便。我昨天 2 小时从零到上线了一个小工具。\n\n不过代码质量确实不如 Cursor + Claude 的组合。适合 MVP，不适合长期维护。', reactions:[{emoji:'👍',count:8,active:false},{emoji:'🔥',count:4,active:false}], thread:{count:3, lastTime:'17:20', authors:['周','李']} },
+      { date: '今天' },
+      { id:'t6', author:'赵薇薇', color:'#6aafa0', time:'10:15', text:'推荐一个宝藏工具：**Supabase** 的 AI SQL 编辑器。你用自然语言描述想要什么数据，它帮你写 SQL。对于不熟悉 SQL 的同学简直是救星。', reactions:[{emoji:'💡',count:9,active:false},{emoji:'👍',count:6,active:false}], thread:{count:2, lastTime:'10:45', authors:['林']} },
+    ]
+  },
+  pitfalls: {
+    icon: '#', name: '踩坑经验', type: 'topic',
+    desc: 'Bug、配置、部署、支付... 把你踩过的坑记录下来，帮后来人少走弯路',
+    pinned: ['[置顶] Stripe 中国开发者常见问题汇总'],
+    messages: [
+      { date: '4月13日 周日' },
+      { id:'p1', author:'王大锤', role:'助教', color:'#6987b8', time:'14:00', text:'整理了一份 **Stripe 中国开发者常见问题汇总**。包括：注册地区选择、测试模式配置、webhook 调试、人民币结算等。都是群里反复出现的问题。', reactions:[{emoji:'❤️',count:20,active:false},{emoji:'🔥',count:8,active:false}], thread:{count:22, lastTime:'今天 08:30', authors:['张','林','赵','陈']} },
+      { date: '4月14日 周一' },
+      { id:'p2', author:'张明', color:'#b89e6f', time:'16:30', text:'**踩坑：Vercel 部署 Next.js 14 的 Server Actions 报 500**\n\n原因：`next.config.js` 里没加 `serverExternalPackages`，导致某些 node 模块在 edge runtime 跑不了。\n\n解决：在 config 里加上 `serverExternalPackages: [\"your-package\"]`\n\n浪费了我整整一个下午... 希望大家别踩同样的坑。', reactions:[{emoji:'👍',count:14,active:false},{emoji:'🙏',count:5,active:false}], thread:{count:6, lastTime:'4月15日', authors:['李','周','陈']} },
+      { date: '4月15日 周二' },
+      { id:'p3', author:'林小鱼', color:'#c08a7a', time:'11:20', text:'**踩坑：Supabase RLS (Row Level Security) 导致前端查不到数据**\n\n症状：明明数据库里有数据，但 `supabase.from(\"table\").select()` 返回空数组。\n\n原因：创建表后默认启用 RLS，但没有添加策略(policy)。等于所有人都没有读取权限。\n\n解决：在 Supabase Dashboard 里给对应表添加 SELECT policy。\n\n新手很容易忽略这个，RLS 默认"全部拒绝"。', reactions:[{emoji:'💡',count:16,active:false},{emoji:'👍',count:9,active:false},{emoji:'🙏',count:4,active:false}], thread:{count:11, lastTime:'今天 09:15', authors:['赵','王','张','李']} },
+      { date: '今天' },
+      { id:'p4', author:'赵薇薇', color:'#6aafa0', time:'08:50', text:'小坑：**Tailwind CSS v4 和 v3 的配置方式完全不同**。v4 不再用 `tailwind.config.js`，改成在 CSS 文件里用 `@import` 和 `@theme`。如果你按 v3 的教程配置会发现样式全部失效。\n\n检查方法：看 `package.json` 里 tailwindcss 的版本号。', reactions:[{emoji:'👍',count:7,active:false}], thread:{count:4, lastTime:'09:30', authors:['周','陈']} },
+    ]
+  }
+};
+
+// Thread data
+const threadData = {
+  t2: {
+    parent: channelData.tools.messages.find(m => m.id === 't2'),
+    replies: [
+      { author:'周杰', color:'#8b7aaf', time:'14:35', text:'同感，补全确实好了。我发现在写 Python 的时候提升最大。' },
+      { author:'赵薇薇', color:'#6aafa0', time:'14:52', text:'内存占用 +1，我 16G 的 MacBook Air 也能感觉到变慢了。有没有人试过限制它的索引范围？' },
+      { author:'陈小飞', color:'#6987b8', time:'15:10', text:'@赵薇薇 可以在设置里排除 node_modules 和 .git，我排除后大概省了 2G 内存。路径：Settings → Features → Codebase indexing → Ignore patterns' },
+      { author:'林小鱼', color:'#c08a7a', time:'15:28', text:'赞！这种实用配置技巧太有价值了。话说 Cursor 的 .cursorrules 文件大家有在用吗？可以自定义 AI 行为。' },
+      { author:'王大锤', role:'助教', color:'#6987b8', time:'15:35', text:'@林小鱼 .cursorrules 推荐用！我一般会加上项目的技术栈说明和代码风格要求。效果比不加好很多。' },
+      { author:'周杰', color:'#8b7aaf', time:'15:50', text:'学到了。我之前都不知道还有 .cursorrules 这个东西。' },
+      { author:'赵薇薇', color:'#6aafa0', time:'16:00', text:'建议这些 Cursor 配置经验可以整理一下发到社区去，肯定很多人需要。' },
+      { author:'林小鱼', color:'#c08a7a', time:'16:05', text:'好主意！我来整理一篇，大家有补充的可以继续在这里回复。' },
+    ]
+  },
+  p1: {
+    parent: channelData.pitfalls.messages.find(m => m.id === 'p1'),
+    replies: [
+      { author:'张明', color:'#b89e6f', time:'14:20', text:'感谢大锤哥整理！webhook 那部分特别有用，我之前就是因为这个卡了两天。' },
+      { author:'林小鱼', color:'#c08a7a', time:'14:35', text:'人民币结算那段建议补充一下香港账户的方案，很多人用 Stripe Atlas 注册的公司。' },
+      { author:'赵薇薇', color:'#6aafa0', time:'15:10', text:'我补充一个：测试模式下的 webhook 超时时间很短，如果你的 API 处理太慢会直接失败。' },
+    ]
+  }
+};
+
+// ===== State =====
+let currentChannel = 'lobby';
+let panelOpen = false;
+let panelMode = 'info'; // 'info' or 'thread'
+let currentThread = null;
+
+// ===== Render =====
+function renderMessages(channelId, filter) {
+  const ch = channelData[channelId];
+  const feed = document.getElementById('msgFeed');
+  let html = '';
+
+  // Pinned bar
+  if (ch.pinned && ch.pinned.length > 0) {
+    html += `<div class="pinned-bar" onclick="togglePanel('info')">📌 ${ch.pinned[0]}</div>`;
+  }
+
+  ch.messages.forEach(msg => {
+    if (msg.date) {
+      html += `<div class="date-sep"><span>${msg.date}</span></div>`;
+      return;
+    }
+    if (filter && !msg.text.toLowerCase().includes(filter.toLowerCase())) return;
+
+    const roleHtml = msg.role ? `<span class="msg-role">${msg.role}</span>` : '';
+    const reactionsHtml = msg.reactions ? msg.reactions.map(r =>
+      `<span class="reaction${r.active?' active':''}" onclick="toggleReaction(this)">${r.emoji} ${r.count}</span>`
+    ).join('') : '';
+
+    let threadHtml = '';
+    if (msg.thread) {
+      const avatars = msg.thread.authors.map(a =>
+        `<span class="mini-avatar" style="background:${getGradient(a)}">${a}</span>`
+      ).join('');
+      threadHtml = `<div class="thread-indicator" onclick="openThread('${msg.id}')">
+        <span>💬 ${msg.thread.count} 条回复</span>
+        <div class="thread-avatars">${avatars}</div>
+        <span style="color:var(--text4);font-weight:400;font-size:11px;">最后 ${msg.thread.lastTime}</span>
+      </div>`;
+    }
+
+    const textHtml = msg.text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
+      .replace(/\n/g, '<br>');
+
+    html += `<div class="msg" data-id="${msg.id}">
+      <div class="msg-avatar" style="background:${getGradient(msg.author[0])}">${msg.author[0]}</div>
+      <div class="msg-body">
+        <div class="msg-meta">
+          <span class="msg-name">${msg.author}</span>
+          ${roleHtml}
+          <span class="msg-time">${msg.time}</span>
+        </div>
+        <div class="msg-text">${textHtml}</div>
+        ${reactionsHtml ? `<div class="msg-reactions">${reactionsHtml}</div>` : ''}
+        ${threadHtml}
+      </div>
+      <div class="msg-actions">
+        <span class="msg-action" title="表情">😊</span>
+        <span class="msg-action" title="回复" onclick="openThread('${msg.id}')">💬</span>
+        <span class="msg-action" title="置顶">📌</span>
+      </div>
+    </div>`;
+  });
+
+  feed.innerHTML = html;
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function renderPanel() {
+  const panel = document.getElementById('panelContent');
+
+  if (panelMode === 'thread' && currentThread && threadData[currentThread]) {
+    const td = threadData[currentThread];
+    const parentMsg = td.parent;
+    const textHtml = parentMsg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
+
+    let repliesHtml = td.replies.map(r => {
+      const roleTag = r.role ? `<span class="msg-role">${r.role}</span>` : '';
+      const rText = r.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>').replace(/\n/g, '<br>');
+      return `<div class="thread-reply">
+        <div class="msg-avatar" style="background:${getGradient(r.author[0])}">${r.author[0]}</div>
+        <div class="msg-body">
+          <div class="msg-meta"><span class="msg-name">${r.author}</span>${roleTag}<span class="msg-time">${r.time}</span></div>
+          <div class="msg-text">${rText}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div class="panel-title">💬 线程</div>
+        <button class="panel-close" onclick="closePanel()">×</button>
+      </div>
+      <div class="thread-content">
+        <div class="thread-parent">
+          <div class="msg-meta"><span class="msg-name" style="color:var(--teal)">${parentMsg.author}</span>${parentMsg.role ? `<span class="msg-role">${parentMsg.role}</span>` : ''}<span class="msg-time">${parentMsg.time}</span></div>
+          <div class="msg-text" style="margin-top:4px;font-size:13px;">${textHtml}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text4);padding:0 4px 8px;">${td.replies.length} 条回复</div>
+        <div class="thread-replies">${repliesHtml}</div>
+      </div>
+      <div class="thread-input">
+        <textarea placeholder="回复这个线程..." rows="2"></textarea>
+        <div class="thread-input-footer">
+          <button class="send-btn ready" style="font-size:12px;">回复</button>
+        </div>
+      </div>`;
+  } else {
+    const ch = channelData[currentChannel];
+    const membersHtml = [
+      {name:'刘小排',role:'讲师',color:'#0d9488'},
+      {name:'王大锤',role:'助教',color:'#6987b8'},
+      {name:'陈小飞',role:'',color:'#6987b8'},
+      {name:'李思思',role:'',color:'#b87a9e'},
+      {name:'张明',role:'',color:'#b89e6f'},
+      {name:'赵薇薇',role:'',color:'#6aafa0'},
+      {name:'周杰',role:'',color:'#8b7aaf'},
+      {name:'林小鱼',role:'',color:'#c08a7a'},
+    ].map(m => `<div class="member-item">
+      <div class="msg-avatar" style="background:${getGradient(m.name[0])}">${m.name[0]}</div>
+      <span class="member-name">${m.name}</span>
+      ${m.role ? `<span class="member-role-tag">${m.role}</span>` : ''}
+    </div>`).join('');
+
+    const pinnedHtml = ch.pinned ? ch.pinned.map(p => `<div class="pinned-item">📌 ${p}</div>`).join('') : '';
+
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div class="panel-title">${ch.icon === '☕' ? '☕' : '#'} ${ch.name}</div>
+        <button class="panel-close" onclick="closePanel()">×</button>
+      </div>
+      <div class="info-content">
+        <div class="info-section">
+          <div class="info-label">简介</div>
+          <div class="info-text">${ch.desc}</div>
+        </div>
+        ${pinnedHtml ? `<div class="info-section"><div class="info-label">置顶消息</div><div class="pinned-list">${pinnedHtml}</div></div>` : ''}
+        <div class="info-section">
+          <div class="info-label">成员 · 8 人</div>
+          <div class="member-list">${membersHtml}</div>
+        </div>
+      </div>`;
+  }
+}
+
+// ===== Actions =====
+function switchChannel(el) {
+  if (el.style.pointerEvents === 'none') return;
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentChannel = el.dataset.channel;
+  currentThread = null;
+  panelMode = 'info';
+
+  const ch = channelData[currentChannel];
+  document.getElementById('chIcon').textContent = ch.icon === '#' ? '#' : ch.icon;
+  document.getElementById('chTitle').textContent = ch.name;
+  document.getElementById('chDesc').textContent = ch.desc;
+  document.getElementById('msgInput').placeholder = `在 ${ch.icon === '#' ? '#' : ch.icon} ${ch.name} 中发消息...`;
+
+  // Clear search
+  document.getElementById('searchBar').classList.remove('show');
+  document.getElementById('searchToggle').classList.remove('active');
+  const searchInput = document.querySelector('.search-input');
+  if (searchInput) searchInput.value = '';
+
+  // Remove badge
+  const badge = el.querySelector('.sb-badge');
+  if (badge) badge.remove();
+  const dot = el.querySelector('.sb-unread');
+  if (dot) dot.remove();
+
+  // Close panel if open
+  closePanel();
+  renderMessages(currentChannel);
+}
+
+function toggleSearch() {
+  const bar = document.getElementById('searchBar');
+  const btn = document.getElementById('searchToggle');
+  bar.classList.toggle('show');
+  btn.classList.toggle('active');
+  if (bar.classList.contains('show')) {
+    bar.querySelector('input').focus();
+  } else {
+    bar.querySelector('input').value = '';
+    renderMessages(currentChannel);
+  }
+}
+
+function searchMessages(query) {
+  renderMessages(currentChannel, query);
+}
+
+function togglePanel(mode) {
+  if (mode) panelMode = mode;
+  if (panelOpen && panelMode === mode && mode !== 'thread') {
+    closePanel();
+    return;
+  }
+  panelOpen = true;
+  document.getElementById('threadPanel').classList.add('open');
+  if (mode === 'info') {
+    document.getElementById('infoToggle').classList.add('active');
+  }
+  renderPanel();
+}
+
+function closePanel() {
+  panelOpen = false;
+  document.getElementById('threadPanel').classList.remove('open');
+  document.getElementById('infoToggle').classList.remove('active');
+  currentThread = null;
+  panelMode = 'info';
+}
+
+function openThread(msgId) {
+  if (!threadData[msgId]) return;
+  currentThread = msgId;
+  panelMode = 'thread';
+  panelOpen = true;
+  document.getElementById('threadPanel').classList.add('open');
+  document.getElementById('infoToggle').classList.remove('active');
+  renderPanel();
+}
+
+function toggleReaction(el) {
+  el.classList.toggle('active');
+  const parts = el.textContent.trim().split(' ');
+  let count = parseInt(parts[1]);
+  if (el.classList.contains('active')) count++; else count--;
+  el.textContent = parts[0] + ' ' + count;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function updateSendBtn() {
+  const btn = document.getElementById('sendBtn');
+  const input = document.getElementById('msgInput');
+  if (input.value.trim()) {
+    btn.classList.remove('disabled');
+    btn.classList.add('ready');
+  } else {
+    btn.classList.add('disabled');
+    btn.classList.remove('ready');
+  }
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const ch = channelData[currentChannel];
+  ch.messages.push({
+    id: 'u' + Date.now(),
+    author: '瓜哥',
+    color: '#0d9488',
+    time: new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'}),
+    text: text,
+    reactions: []
+  });
+
+  input.value = '';
+  input.style.height = 'auto';
+  updateSendBtn();
+  renderMessages(currentChannel);
+}
+
+// Pastel gradient palette
+function getGradient(name) {
+  const gradients = {
+    '陈':'linear-gradient(135deg,#dbeafe,#e0e7ff)',
+    '王':'linear-gradient(135deg,#dbeafe,#ddd6fe)',
+    '李':'linear-gradient(135deg,#fce7f3,#ede9fe)',
+    '张':'linear-gradient(135deg,#fef3c7,#fde68a)',
+    '赵':'linear-gradient(135deg,#d1fae5,#a7f3d0)',
+    '周':'linear-gradient(135deg,#e0e7ff,#ede9fe)',
+    '林':'linear-gradient(135deg,#ffe4e6,#fecdd3)',
+    '刘':'linear-gradient(135deg,#ccfbf1,#99f6e4)',
+    '瓜':'linear-gradient(135deg,#ccfbf1,#99f6e4)',
+  };
+  return gradients[name] || 'linear-gradient(135deg,#e2e8f0,#cbd5e1)';
+}
+
+// ===== Init =====
+renderMessages('lobby');
+</script>
+</body>
+</html>

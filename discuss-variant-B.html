@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 编辑室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-serif: 'Noto Serif SC', 'Songti SC', serif;
+  --font: -apple-system, 'PingFang SC', BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  --mono: 'SF Mono', 'Menlo', 'Monaco', monospace;
+
+  --bg: #ffffff;
+  --bg-warm: #faf9f7;
+  --bg-hover: #f8f8f6;
+  --white: #ffffff;
+
+  --teal: #0d9488;
+  --teal-hover: #0b7c71;
+
+  --text1: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --text4: #cbd5e1;
+
+  --border: #e8e6e1;
+  --border-soft: #f1f0ed;
+
+  --monogram-bg: #f1f5f9;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg-warm);
+  color: var(--text1);
+  -webkit-font-smoothing: antialiased;
+  height: 100vh;
+  overflow: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ===== Topbar ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+}
+.tb-inner {
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tb-left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.logo {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 0.02em;
+}
+.nav {
+  display: flex;
+  gap: 4px;
+}
+.nav a {
+  font-size: 13px;
+  color: var(--text3);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.nav a:hover { color: var(--text1); }
+.nav a.active {
+  color: var(--text1);
+  font-weight: 500;
+}
+.tb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.online-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  display: inline-block;
+}
+.online-text { font-size: 12px; color: var(--text3); }
+.avatar-tb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--text1);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ===== Layout ===== */
+.layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  height: calc(100vh - 52px);
+  transition: grid-template-columns 0.3s ease;
+}
+.layout.panel-open {
+  grid-template-columns: 180px 1fr 320px;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  background: var(--bg-warm);
+  padding: 28px 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-soft);
+}
+.sb-section { margin-bottom: 24px; }
+.sb-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text4);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 0 24px 10px;
+}
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 24px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text3);
+  transition: color 0.15s;
+  user-select: none;
+  line-height: 1.4;
+  position: relative;
+}
+.sb-item:hover { color: var(--text1); }
+.sb-item.active { color: var(--text1); font-weight: 500; }
+.sb-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: transparent;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.sb-item.active .sb-dot { background: var(--teal); }
+.sb-item-name { flex: 1; }
+.sb-unread {
+  font-size: 11px;
+  color: var(--text3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sidebar bottom */
+.sb-bottom {
+  margin-top: auto;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-soft);
+}
+.sb-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sb-user-mono {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--monogram-bg);
+  color: var(--text1);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+.sb-user-name { font-size: 13px; font-weight: 500; color: var(--text1); }
+.sb-user-status { font-size: 11px; color: #22c55e; }
+
+/* ===== Message Area ===== */
+.msg-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--white);
+}
+
+/* Channel header */
+.ch-header {
+  padding: 20px 40px 16px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.ch-header-left { min-width: 0; }
+.ch-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text1);
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+.ch-desc {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.ch-header-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.ch-action-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text4);
+  transition: all 0.15s;
+}
+.ch-action-btn:hover { color: var(--text2); background: var(--bg-warm); }
+
+/* Message feed */
+.msg-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 20px;
+  scroll-behavior: smooth;
+}
+
+/* Date separator */
+.date-sep {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 40px 12px;
+}
+.date-sep::before,
+.date-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
+.date-sep span {
+  font-size: 11px;
+  color: var(--text4);
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 0.4px;
+}
+
+/* Messages */
+.msg {
+  display: flex;
+  gap: 14px;
+  padding: 10px 40px;
+  transition: background 0.12s;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+.msg:hover { background: #f7f7f5; }
+.msg:hover .msg-hover-actions { opacity: 1; }
+
+.msg-monogram {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--monogram-bg);
+  color: var(--text2);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.msg-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 1px;
+}
+.msg-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.msg-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text1);
+}
+.msg-role {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.3px;
+}
+.msg-time {
+  font-size: 11px;
+  color: var(--text4);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.msg-text {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.8;
+  word-break: break-word;
+}
+.msg-text code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--monogram-bg);
+  color: #334155;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.msg-text strong { color: var(--text1); font-weight: 600; }
+
+/* Hover actions — inline with message header */
+.msg-hover-actions {
+  display: flex;
+  gap: 2px;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity .12s;
+}
+.msg-hover-action {
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: background .1s;
+  line-height: 1;
+}
+.msg-hover-action:hover { background: var(--border-soft); }
+
+/* Reactions */
+.msg-reactions {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 12px;
+  color: var(--text4);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.reaction:hover {
+  color: var(--text2);
+  background: var(--bg-warm);
+  border-color: var(--border);
+}
+.reaction.active {
+  color: var(--teal);
+  background: rgba(13, 148, 136, 0.04);
+  border-color: rgba(13, 148, 136, 0.15);
+}
+
+/* Thread indicator */
+.thread-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--teal);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  font-weight: 500;
+}
+.thread-link:hover { opacity: 0.75; }
+
+/* ===== Reply Reference — lightweight Discord-style ===== */
+.reply-ref {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 -2px 54px;
+  padding: 0 0 2px;
+  font-size: 12px;
+  color: var(--text4);
+  cursor: pointer;
+  transition: color .12s;
+}
+.reply-ref:hover { color: var(--text2); }
+.reply-ref-line {
+  width: 24px;
+  height: 12px;
+  border-left: 2px solid var(--border);
+  border-top: 2px solid var(--border);
+  border-radius: 6px 0 0 0;
+  flex-shrink: 0;
+}
+.reply-ref-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--monogram-bg);
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+.reply-ref-name { font-weight: 500; color: var(--text3); }
+.reply-ref-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 360px;
+  color: var(--text4);
+}
+.reply-ref:hover .reply-ref-name { color: var(--teal); }
+
+/* ===== Inline Reply ===== */
+.inline-reply {
+  margin: 4px 0 8px 50px;
+  padding: 12px 14px;
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  animation: fadeSlideIn .15s ease;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.inline-reply-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text3);
+}
+.inline-reply-header .reply-to {
+  color: var(--teal);
+  font-weight: 500;
+}
+.inline-reply-close {
+  border: none; background: none; font-size: 14px; color: var(--text4);
+  cursor: pointer; padding: 2px 4px; border-radius: 4px; line-height: 1;
+}
+.inline-reply-close:hover { color: var(--text1); background: var(--border-soft); }
+.inline-reply textarea {
+  width: 100%;
+  min-height: 40px;
+  max-height: 100px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text1);
+  resize: none;
+  outline: none;
+  line-height: 1.5;
+  background: var(--white);
+  transition: border-color .15s;
+}
+.inline-reply textarea:focus { border-color: var(--teal); }
+.inline-reply textarea::placeholder { color: var(--text4); }
+.inline-reply-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+.inline-reply-footer .cancel-btn {
+  padding: 4px 12px; border-radius: 4px; font-size: 12px;
+  border: 1px solid var(--border); background: var(--white);
+  color: var(--text2); cursor: pointer; font-family: var(--font);
+}
+.inline-reply-footer .cancel-btn:hover { background: var(--bg-warm); }
+.inline-reply-footer .reply-send-btn {
+  padding: 4px 14px; border-radius: 4px; font-size: 12px;
+  border: none; background: var(--teal); color: #fff;
+  cursor: pointer; font-family: var(--font); font-weight: 500;
+}
+.inline-reply-footer .reply-send-btn:hover { background: var(--teal-hover); }
+
+/* ===== Input area ===== */
+.msg-input {
+  padding: 16px 40px 24px;
+  background: var(--white);
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.input-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-warm);
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.input-wrapper:focus-within {
+  border-color: var(--teal);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.05);
+}
+.msg-textarea {
+  width: 100%;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 12px 16px;
+  border: none;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text1);
+  resize: none;
+  outline: none;
+  line-height: 1.6;
+  background: transparent;
+}
+.msg-textarea::placeholder { color: var(--text4); }
+.input-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px 6px;
+}
+.input-tools { display: flex; gap: 2px; }
+.input-tool {
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text4);
+  transition: all 0.1s;
+  border: none;
+  background: none;
+}
+.input-tool:hover { color: var(--text2); }
+.send-btn {
+  padding: 5px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+.send-btn.ready { background: var(--teal); color: #fff; }
+.send-btn.ready:hover { background: var(--teal-hover); }
+.send-btn.disabled { background: transparent; color: var(--text4); cursor: default; }
+
+/* ===== Right Panel ===== */
+.panel {
+  background: var(--white);
+  border-left: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.panel-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text1);
+}
+.panel-close {
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: var(--text3);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+.panel-close:hover { color: var(--text1); }
+
+/* Thread panel */
+.thread-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+.thread-parent {
+  padding: 16px;
+  background: var(--bg-warm);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border-left: 2px solid var(--teal);
+}
+.thread-parent .msg-name { color: var(--teal); }
+.thread-parent .msg-text {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 6px;
+}
+
+.thread-replies-label {
+  font-size: 11px;
+  color: var(--text4);
+  padding: 0 4px 10px;
+  letter-spacing: 0.3px;
+}
+.thread-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.thread-reply {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+.thread-reply:hover { background: var(--bg-warm); }
+.thread-reply .msg-monogram {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+.thread-reply .msg-name { font-size: 12px; }
+.thread-reply .msg-text {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.thread-input-area {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.thread-input-area textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  background: var(--bg-warm);
+  color: var(--text1);
+  line-height: 1.5;
+}
+.thread-input-area textarea:focus {
+  border-color: var(--teal);
+  background: var(--white);
+}
+.thread-input-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr !important; }
+  .sidebar, .panel { display: none; }
+  .msg { padding: 10px 20px; }
+  .ch-header { padding: 16px 20px 12px; }
+  .msg-input { padding: 12px 20px 16px; }
+  .date-sep { padding: 24px 20px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="tb-inner">
+    <div class="tb-left">
+      <a href="roadmap.html" class="logo">深海圈</a>
+      <nav class="nav">
+        <a href="roadmap.html">路线图</a>
+        <a href="learn.html">学习</a>
+        <a href="discuss-variant-B.html" class="active">讨论</a>
+        <a href="community.html">社区</a>
+        <a href="showcase.html">成果墙</a>
+      </nav>
+    </div>
+    <div class="tb-right">
+      <span class="online-dot"></span>
+      <span class="online-text">34 人在线</span>
+      <a href="profile.html" class="avatar-tb">瓜</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="layout" id="layout">
+
+  <!-- Left: Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">交流</div>
+      <div class="sb-item active" data-channel="lobby" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">大厅</span>
+        <span class="sb-unread">5</span>
+      </div>
+      <div class="sb-item" data-channel="tools" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">工具测评</span>
+      </div>
+      <div class="sb-item" data-channel="pitfalls" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">踩坑经验</span>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">话题</div>
+      <div class="sb-item" data-channel="showcase" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">作品分享</span>
+      </div>
+      <div class="sb-item" data-channel="payment" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">支付变现</span>
+      </div>
+      <div class="sb-item" data-channel="prompt" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">Prompt 技巧</span>
+      </div>
+      <div class="sb-item" data-channel="news" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">行业资讯</span>
+      </div>
+      <div class="sb-item" data-channel="resources" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">资源推荐</span>
+      </div>
+      <div class="sb-item" data-channel="intro" onclick="switchChannel(this)">
+        <span class="sb-dot"></span>
+        <span class="sb-item-name">自我介绍</span>
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-user-mono">瓜</div>
+        <div>
+          <div class="sb-user-name">瓜哥</div>
+          <div class="sb-user-status">在线</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Center: Messages -->
+  <main class="msg-area" id="msgArea">
+    <div class="ch-header">
+      <div class="ch-header-left">
+        <div class="ch-title" id="chTitle">大厅</div>
+        <div class="ch-desc" id="chDesc">随便聊，什么都可以。这里就是深海圈的客厅。</div>
+      </div>
+      <div class="ch-header-actions">
+        <button class="ch-action-btn" onclick="toggleSearch()" title="搜索">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Message feed -->
+    <div class="msg-feed" id="msgFeed"></div>
+
+    <!-- Input -->
+    <div class="msg-input">
+      <div class="input-wrapper">
+        <textarea class="msg-textarea" id="msgInput" placeholder="写点什么..." rows="1" oninput="autoResize(this); updateSendBtn();" onkeydown="handleKey(event)"></textarea>
+        <div class="input-toolbar">
+          <div class="input-tools">
+            <button class="input-tool" title="Markdown">Md</button>
+            <button class="input-tool" title="@提及">@</button>
+          </div>
+          <button class="send-btn disabled" id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Panel (hidden by default) -->
+  <aside class="panel" id="panel">
+    <div id="panelContent"></div>
+  </aside>
+
+</div>
+
+<script>
+// ===== Data =====
+const channelData = {
+  lobby: {
+    name: '大厅',
+    desc: '随便聊，什么都可以。这里就是深海圈的客厅。',
+    messages: [
+      { date: '4月14日 周一' },
+      { id:'l1', author:'陈小飞', time:'09:12', text:'早啊各位！昨天搞到凌晨三点终于把部署搞定了，Vercel 真是救星。', reactions:[{emoji:'👍',count:6},{emoji:'💪',count:3}] },
+      { id:'l2', author:'李思思', time:'09:15', text:'恭喜！部署到 Vercel 了？还是 Netlify？', replyTo:{msgId:'l1',author:'陈小飞',preview:'早啊各位！昨天搞到凌晨三点终于把部署搞定了'} },
+      { id:'l3', author:'陈小飞', time:'09:17', text:'Vercel，它那个 GitHub 集成太丝滑了。push 一下就自动部署。', reactions:[{emoji:'🔥',count:2}], replyTo:{msgId:'l2',author:'李思思',preview:'恭喜！部署到 Vercel 了？还是 Netlify？'} },
+      { id:'l4', author:'张明', time:'09:45', text:'有没有人看到今天 Claude 更新了？Code 模式据说又升级了。', reactions:[{emoji:'👀',count:8}] },
+      { id:'l5', author:'周杰', time:'09:52', text:'看到了！说是支持 agent 模式了，可以自动跑测试。有点期待。', replyTo:{msgId:'l4',author:'张明',preview:'有没有人看到今天 Claude 更新了？'} },
+      { id:'l6', author:'赵薇薇', time:'10:03', text:'刚试了一下新版，确实比上个版本快很多。特别是多文件编辑的体验提升明显。', replyTo:{msgId:'l4',author:'张明',preview:'有没有人看到今天 Claude 更新了？'} },
+      { date: '4月15日 周二' },
+      { id:'l7', author:'林小鱼', time:'10:20', text:'请问大家用什么做数据库啊？Supabase 还是 Firebase？新手不知道怎么选...', reactions:[{emoji:'🤔',count:2}] },
+      { id:'l8', author:'王大锤', role:'助教', time:'10:25', text:'@林小鱼 新手推荐 Supabase，PostgreSQL 底子，将来迁移方便。Firebase 生态锁定比较强。', reactions:[{emoji:'👍',count:11},{emoji:'❤️',count:3}], thread:{count:4, authors:['林','陈']} },
+      { id:'l9', author:'林小鱼', time:'10:28', text:'谢谢大锤哥！那我先试 Supabase 了。', replyTo:{msgId:'l8',author:'王大锤',preview:'新手推荐 Supabase，PostgreSQL 底子，将来迁移方便'} },
+      { date: '今天' },
+      { id:'l10', author:'刘小排', role:'讲师', time:'08:30', text:'各位早！今天发了一篇新文章，讲的是怎么用 AI 做落地页设计。链接放在工具测评频道了，大家可以去看看讨论。', reactions:[{emoji:'🎉',count:15},{emoji:'👍',count:9}] },
+      { id:'l11', author:'张明', time:'09:10', text:'已经看了！那个 v0 + Cursor 的组合拳太猛了。确实能省很多时间。', replyTo:{msgId:'l10',author:'刘小排',preview:'今天发了一篇新文章，讲的是怎么用 AI 做落地页设计'} },
+      { id:'l12', author:'赵薇薇', time:'11:45', text:'报告一个好消息：我的第一个小工具上线了！是一个 AI 英文邮件润色器，昨晚部署的。虽然还很简陋但已经有 3 个朋友在用了。', reactions:[{emoji:'🎉',count:18},{emoji:'🔥',count:7},{emoji:'👏',count:5}], thread:{count:6, authors:['陈','张','林']} },
+      { id:'l13', author:'周杰', time:'08:55', text:'早安！有人用过 Bolt.new 吗？昨天试了一下，从零到上线只花了 2 个小时，有点疯狂。' },
+      { id:'l14', author:'李思思', time:'09:03', text:'Bolt 我前两天也试了，确实快。但生成的代码质量一般，后续维护有点头疼。', reactions:[{emoji:'💯',count:4}], replyTo:{msgId:'l13',author:'周杰',preview:'有人用过 Bolt.new 吗？'} },
+      { id:'l15', author:'王大锤', role:'助教', time:'09:10', text:'Bolt 适合做 MVP 验证想法，但正经做产品还是建议 Cursor + Claude。代码质量差很多。', thread:{count:3, authors:['周','李']}, replyTo:{msgId:'l13',author:'周杰',preview:'有人用过 Bolt.new 吗？'} },
+    ]
+  },
+  tools: {
+    name: '工具测评',
+    desc: '分享你用过的 AI 工具、开发工具，聊聊优缺点和使用心得。',
+    messages: [
+      { date: '4月14日 周一' },
+      { id:'t1', author:'刘小排', role:'讲师', time:'10:00', text:'给大家整理了一份 2025 年最新的 AI 编程工具推荐清单，从代码编辑器到部署平台到数据库。收藏起来，遇到选择困难的时候翻一翻。', reactions:[{emoji:'🔥',count:24},{emoji:'❤️',count:12}], thread:{count:15, authors:['陈','王','李','周']} },
+      { id:'t2', author:'陈小飞', time:'14:23', text:'刚试了 **Cursor** 的新版本，Tab 补全的准确率提升很明显，尤其是写 React 组件的时候。但是内存占用也上去了，8G 的机器有点吃力。', reactions:[{emoji:'👍',count:12}], thread:{count:8, authors:['周','赵','陈','林']} },
+      { id:'t3', author:'王大锤', role:'助教', time:'15:01', text:'有没有人用过 **v0.dev**？上周试着用它生成了一个 landing page，出来的效果比我预期好很多。但细节调整还是得手动改。配合 shadcn/ui 可以直接导入组件，这个工作流很丝滑。', reactions:[{emoji:'👍',count:5},{emoji:'💡',count:3}] },
+      { date: '4月15日 周二' },
+      { id:'t4', author:'李思思', time:'09:38', text:'v0 我也在用，配合 Shadcn 很丝滑。不过我发现直接用 **Claude** 写组件反而更可控，你们觉得呢？v0 生成的代码有时候嵌套太深。' },
+      { id:'t5', author:'张明', time:'16:12', text:'分享一个发现：**Bolt.new** 现在支持直接部署到 Netlify 了，对于快速验证想法特别方便。我昨天 2 小时从零到上线了一个小工具。\n\n不过代码质量确实不如 Cursor + Claude 的组合。适合 MVP，不适合长期维护。', reactions:[{emoji:'👍',count:8},{emoji:'🔥',count:4}], thread:{count:3, authors:['周','李']} },
+      { date: '今天' },
+      { id:'t6', author:'赵薇薇', time:'10:15', text:'推荐一个宝藏工具：**Supabase** 的 AI SQL 编辑器。你用自然语言描述想要什么数据，它帮你写 SQL。对于不熟悉 SQL 的同学简直是救星。', reactions:[{emoji:'💡',count:9},{emoji:'👍',count:6}], thread:{count:2, authors:['林']} },
+      { id:'t7', author:'周杰', time:'11:30', text:'昨天发现 **Claude Code** 可以直接连 GitHub，一句话就能帮你 review PR、写测试。这个效率提升是指数级的。', reactions:[{emoji:'🔥',count:10}] },
+    ]
+  },
+  pitfalls: {
+    name: '踩坑经验',
+    desc: 'Bug、配置、部署、支付... 把你踩过的坑记录下来，帮后来人少走弯路。',
+    messages: [
+      { date: '4月13日 周日' },
+      { id:'p1', author:'王大锤', role:'助教', time:'14:00', text:'整理了一份 **Stripe 中国开发者常见问题汇总**。包括：注册地区选择、测试模式配置、webhook 调试、人民币结算等。都是群里反复出现的问题。', reactions:[{emoji:'❤️',count:20},{emoji:'🔥',count:8}], thread:{count:22, authors:['张','林','赵','陈']} },
+      { date: '4月14日 周一' },
+      { id:'p2', author:'张明', time:'16:30', text:'**踩坑：Vercel 部署 Next.js 14 的 Server Actions 报 500**\n\n原因：`next.config.js` 里没加 `serverExternalPackages`，导致某些 node 模块在 edge runtime 跑不了。\n\n解决：在 config 里加上 `serverExternalPackages: [\"your-package\"]`\n\n浪费了我整整一个下午... 希望大家别踩同样的坑。', reactions:[{emoji:'👍',count:14},{emoji:'🙏',count:5}], thread:{count:6, authors:['李','周','陈']} },
+      { date: '4月15日 周二' },
+      { id:'p3', author:'林小鱼', time:'11:20', text:'**踩坑：Supabase RLS 导致前端查不到数据**\n\n症状：明明数据库里有数据，但 `supabase.from(\"table\").select()` 返回空数组。\n\n原因：创建表后默认启用 RLS，但没有添加策略。等于所有人都没有读取权限。\n\n解决：在 Supabase Dashboard 的 Authentication 里给对应表添加 SELECT policy。', reactions:[{emoji:'💡',count:16},{emoji:'👍',count:9},{emoji:'🙏',count:4}], thread:{count:11, authors:['赵','王','张','李']} },
+      { date: '今天' },
+      { id:'p4', author:'赵薇薇', time:'08:50', text:'小坑：**Tailwind CSS v4 和 v3 的配置方式完全不同**。v4 不再用 `tailwind.config.js`，改成在 CSS 文件里用 `@import` 和 `@theme`。如果你按 v3 的教程配置会发现样式全部失效。\n\n检查方法：看 `package.json` 里 tailwindcss 的版本号。', reactions:[{emoji:'👍',count:7}], thread:{count:4, authors:['周','陈']} },
+      { id:'p5', author:'张明', time:'09:33', text:'补一个小坑：**ngrok 免费版的域名每次重启会变**。如果你在 Stripe 里配了 webhook URL，重启 ngrok 之后 webhook 就收不到了。建议用 `ngrok http --url=你的固定域名` 或者直接升级。', reactions:[{emoji:'👍',count:3},{emoji:'😂',count:5}] },
+    ]
+  }
+};
+
+// Thread data
+const threadData = {
+  t2: {
+    parent: null,
+    replies: [
+      { author:'周杰', time:'14:35', text:'同感，补全确实好了。我发现在写 Python 的时候提升最大。' },
+      { author:'赵薇薇', time:'14:52', text:'内存占用 +1，我 16G 的 MacBook Air 也能感觉到变慢了。有没有人试过限制它的索引范围？' },
+      { author:'陈小飞', time:'15:10', text:'@赵薇薇 可以在设置里排除 node_modules 和 .git，我排除后大概省了 2G 内存。' },
+      { author:'林小鱼', time:'15:28', text:'赞！这种实用配置技巧太有价值了。话说 Cursor 的 .cursorrules 文件大家有在用吗？' },
+      { author:'王大锤', role:'助教', time:'15:35', text:'@林小鱼 .cursorrules 推荐用！我一般会加上项目的技术栈说明和代码风格要求。效果比不加好很多。' },
+      { author:'周杰', time:'15:50', text:'学到了。我之前都不知道还有 .cursorrules 这个东西。' },
+      { author:'赵薇薇', time:'16:00', text:'建议这些 Cursor 配置经验可以整理一下发到社区去，肯定很多人需要。' },
+      { author:'林小鱼', time:'16:05', text:'好主意！我来整理一篇，大家有补充的可以继续在这里回复。' },
+    ]
+  },
+  l8: {
+    parent: null,
+    replies: [
+      { author:'林小鱼', time:'10:30', text:'Supabase 上手难吗？我只用过 MySQL。' },
+      { author:'王大锤', role:'助教', time:'10:35', text:'@林小鱼 不难，它自带可视化界面，基本不用写 SQL。' },
+      { author:'陈小飞', time:'10:42', text:'而且 Supabase 的 JS SDK 封装得很好，几行代码就能搞定 CRUD。' },
+      { author:'林小鱼', time:'10:50', text:'太好了，今晚回去试试！' },
+    ]
+  },
+  l12: {
+    parent: null,
+    replies: [
+      { author:'陈小飞', time:'11:48', text:'厉害！发到成果墙上吧，大家都可以看看学习一下。' },
+      { author:'张明', time:'11:55', text:'多长时间做出来的？用的什么技术栈？' },
+      { author:'赵薇薇', time:'12:00', text:'大概一周吧。Next.js + Supabase + Claude API。其实大部分代码是 Claude 帮我写的。' },
+      { author:'林小鱼', time:'12:05', text:'一周就上线了？太励志了。' },
+      { author:'张明', time:'12:10', text:'我也要加速了，一直在纠结选型，看你们做得这么快有点焦虑。' },
+      { author:'赵薇薇', time:'12:15', text:'别焦虑！先动手最重要，完美主义是产出的敌人。' },
+    ]
+  },
+  l15: {
+    parent: null,
+    replies: [
+      { author:'周杰', time:'09:15', text:'那 Cursor + Claude 现在入手的话，建议买年费还是月费？' },
+      { author:'李思思', time:'09:20', text:'先月费试试水，确认用得上再年费。' },
+      { author:'王大锤', role:'助教', time:'09:25', text:'同意，而且 Claude 的免费额度其实够用来学习了。' },
+    ]
+  }
+};
+
+// Resolve parent references
+Object.keys(threadData).forEach(key => {
+  for (const chKey of Object.keys(channelData)) {
+    const msg = channelData[chKey].messages.find(m => m.id === key);
+    if (msg) { threadData[key].parent = msg; break; }
+  }
+});
+
+// New channel data
+channelData.showcase = {
+  name:'作品分享', desc:'做出来了就大方秀出来！不管多简陋，做出来就是成功。',
+  messages: [
+    { date:'4月14日 周一' },
+    { id:'s1', author:'赵薇薇', time:'14:00', text:'我的第一个 AI 小工具上线了！**AI 英文邮件润色器** — 输入中式英语，输出地道的商务邮件。\n\n技术栈：Next.js + Supabase + Stripe + Claude API\n开发周期：5 天（其中 2 天在搞 Stripe）', reactions:[{emoji:'🎉',count:22},{emoji:'🔥',count:11}], thread:{count:6, authors:['陈','刘','李']} },
+    { date:'今天' },
+    { id:'s2', author:'陈小飞', time:'10:00', text:'**AI 周报生成器**做完了！从飞书日历 + Git 提交记录自动抓取内容，用 Claude 总结成周报。已经在公司内部试用一周，反馈还不错。', reactions:[{emoji:'💪',count:15},{emoji:'🔥',count:9}] },
+    { id:'s3', author:'林小鱼', time:'09:00', text:'做了一个很小的东西：**AI 表情包生成器**。输入一句话生成表情包。纯粹为了好玩，但同事们很喜欢。', reactions:[{emoji:'😂',count:14},{emoji:'❤️',count:8}] }
+  ]
+};
+channelData.payment = {
+  name:'支付变现', desc:'Stripe、微信支付、定价策略、收款经验，和钱相关的都在这里。',
+  messages: [
+    { date:'4月14日 周一' },
+    { id:'pay1', author:'赵薇薇', time:'15:00', text:'请问大家的 SaaS 产品一般怎么定价？我做了个小工具，不知道收 $5/月还是 $10/月。', reactions:[{emoji:'🤔',count:6}], thread:{count:4, authors:['王','刘','张']} },
+    { date:'今天' },
+    { id:'pay2', author:'陈小飞', time:'09:00', text:'**微信支付 vs 支付宝：海外开发者的选择**\n\n国内用户为主就用微信支付。但个人开发者没法直接申请商户号，替代方案：虎皮椒或 LemonSqueezy。', reactions:[{emoji:'💡',count:8},{emoji:'👍',count:5}] },
+    { id:'pay3', author:'林小鱼', time:'10:30', text:'有人用过 LemonSqueezy 吗？比 Stripe 对个人开发者更友好？', reactions:[{emoji:'👀',count:4}] }
+  ]
+};
+channelData.prompt = {
+  name:'Prompt 技巧', desc:'Prompt Engineering 的经验、技巧、最佳实践。',
+  messages: [
+    { date:'4月15日 周二' },
+    { id:'pr1', author:'刘小排', role:'讲师', time:'09:00', text:'分享一个 prompt 技巧：**让 AI 先分析再执行**。\n\n不要说"帮我写一个登录页"，而是"先分析项目的技术栈和组件，然后写一个风格一致的登录页"。差别很大。', reactions:[{emoji:'🔥',count:20},{emoji:'💡',count:11}] },
+    { id:'pr2', author:'王大锤', role:'助教', time:'14:00', text:'**Claude system prompt 模板**：1) 角色定义 2) 上下文 3) 约束条件 4) 输出格式。按这四步写，效果好很多。', reactions:[{emoji:'📝',count:9},{emoji:'👍',count:7}] },
+    { date:'今天' },
+    { id:'pr3', author:'李思思', time:'08:45', text:'在 prompt 里加上"写测试"可以提升代码质量。让 AI 同时写代码和测试会迫使它思考边界情况。', reactions:[{emoji:'💡',count:12}] }
+  ]
+};
+channelData.news = {
+  name:'行业资讯', desc:'AI、编程、创业相关的新闻和讨论。',
+  messages: [
+    { date:'今天' },
+    { id:'n1', author:'张明', time:'08:30', text:'OpenAI 刚发布了 GPT-5.4，推理能力据说又提升了一截。', reactions:[{emoji:'👀',count:10}], thread:{count:3, authors:['周','赵']} },
+    { id:'n2', author:'刘小排', role:'讲师', time:'10:00', text:'Vercel 发布 AI SDK 4.0，原生支持 streaming UI 和 tool calling。做 AI 产品的同学有福了。', reactions:[{emoji:'🔥',count:8},{emoji:'👍',count:5}] }
+  ]
+};
+channelData.resources = {
+  name:'资源推荐', desc:'好文章、好教程、好工具，看到好东西就丢进来。',
+  messages: [
+    { date:'4月14日 周一' },
+    { id:'r1', author:'刘小排', role:'讲师', time:'09:00', text:'推荐：**《How to Build a SaaS in 2025》** — 从选品到变现的完整指南。核心观点：2025 年做 SaaS 门槛已降到"会用 AI + 有痛点"。', reactions:[{emoji:'🔥',count:18},{emoji:'📝',count:7}] },
+    { id:'r2', author:'王大锤', role:'助教', time:'14:00', text:'新手必看资源：\n1. Next.js 官方教程\n2. Supabase YouTube\n3. Tailwind CSS 速查表\n4. Stripe 官方文档', reactions:[{emoji:'❤️',count:15},{emoji:'👍',count:12}] },
+    { date:'今天' },
+    { id:'r3', author:'张明', time:'11:00', text:'GitHub 模板：**Next.js + Supabase + Stripe Starter**。包含认证、支付、dashboard。fork 就能用，省 2 天搭建时间。', reactions:[{emoji:'🔥',count:13},{emoji:'👍',count:8}] }
+  ]
+};
+channelData.intro = {
+  name:'自我介绍', desc:'新来的？先来打个招呼，说说你是谁、想做什么。',
+  messages: [
+    { date:'4月13日 周日' },
+    { id:'i1', author:'林小鱼', time:'10:00', text:'大家好！我是林小鱼，8 年产品经理，完全不会代码。目标：用 AI 做一个面向设计师的工具。', reactions:[{emoji:'👋',count:12},{emoji:'💪',count:5}] },
+    { id:'i2', author:'赵薇薇', time:'11:00', text:'Hi～我是薇薇，自由职业翻译。想学做翻译相关的 AI 工具。已经有一些想法了！', reactions:[{emoji:'👋',count:10},{emoji:'❤️',count:4}] },
+    { id:'i3', author:'周杰', time:'14:00', text:'周杰，字节后端开发。会写代码但没做过自己的产品。想业余时间做个独立项目试试。', reactions:[{emoji:'👋',count:8}] },
+    { date:'今天' },
+    { id:'i4', author:'瓜哥', time:'09:00', text:'Hello！瓜哥，创业公司运营。零代码基础，争取毕业时做出一个能用的东西！', reactions:[{emoji:'👋',count:6},{emoji:'🎉',count:3}] }
+  ]
+};
+
+// ===== State =====
+let currentChannel = 'lobby';
+let panelOpen = false;
+let currentThread = null;
+
+// ===== Render =====
+function renderMessages(channelId) {
+  const ch = channelData[channelId];
+  const feed = document.getElementById('msgFeed');
+  let html = '';
+
+  ch.messages.forEach(msg => {
+    if (msg.date) {
+      html += `<div class="date-sep"><span>${msg.date}</span></div>`;
+      return;
+    }
+
+    const roleHtml = msg.role ? `<span class="msg-role">${msg.role}</span>` : '';
+    const reactionsHtml = msg.reactions ? msg.reactions.map(r =>
+      `<span class="reaction" onclick="toggleReaction(this)">${r.emoji} ${r.count}</span>`
+    ).join('') : '';
+    let threadHtml = '';
+    if (msg.thread) {
+      threadHtml = `<span class="thread-link" onclick="openThread('${msg.id}')">${msg.thread.count} 条回复</span>`;
+    }
+    const textHtml = msg.text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
+      .replace(/\n/g, '<br>');
+
+    // Lightweight reply reference (Discord-style)
+    let refHtml = '';
+    if (msg.replyTo) {
+      const preview = msg.replyTo.preview || '';
+      refHtml = `<div class="reply-ref" onclick="scrollToMsg('${msg.replyTo.msgId}')">
+        <span class="reply-ref-line"></span>
+        <span class="reply-ref-avatar">${msg.replyTo.author[0]}</span>
+        <span class="reply-ref-name">${msg.replyTo.author}</span>
+        <span class="reply-ref-preview">${preview}</span>
+      </div>`;
+    }
+
+    html += `${refHtml}<div class="msg" data-id="${msg.id}">
+      <div class="msg-monogram">${msg.author[0]}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${msg.author}</span>
+          ${roleHtml}
+          <span class="msg-time">${msg.time}</span>
+          <span class="msg-hover-actions">
+            <span class="msg-hover-action" title="回复" onclick="startInlineReply('${msg.id}','${msg.author}')">💬</span>
+            <span class="msg-hover-action" title="表情">😊</span>
+            ${msg.thread ? `<span class="msg-hover-action" title="查看线程" onclick="openThread('${msg.id}')">🧵</span>` : ''}
+          </span>
+        </div>
+        <div class="msg-text">${textHtml}</div>
+        ${reactionsHtml ? `<div class="msg-reactions">${reactionsHtml}</div>` : ''}
+        ${threadHtml}
+      </div>
+    </div>
+    <div id="inline-reply-${msg.id}"></div>`;
+  });
+
+  feed.innerHTML = html;
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function renderPanel() {
+  const panel = document.getElementById('panelContent');
+  if (!currentThread || !threadData[currentThread]) {
+    closePanel();
+    return;
+  }
+
+  const td = threadData[currentThread];
+  const parentMsg = td.parent;
+  if (!parentMsg) { closePanel(); return; }
+
+  const parentText = parentMsg.text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\n/g, '<br>');
+
+  let repliesHtml = td.replies.map(r => {
+    const roleTag = r.role ? `<span class="msg-role">${r.role}</span>` : '';
+    const rText = r.text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
+      .replace(/\n/g, '<br>');
+    return `<div class="thread-reply">
+      <div class="msg-monogram">${r.author[0]}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${r.author}</span>
+          ${roleTag}
+          <span class="msg-time">${r.time}</span>
+        </div>
+        <div class="msg-text">${rText}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">线程</div>
+      <button class="panel-close" onclick="closePanel()">&times;</button>
+    </div>
+    <div class="thread-content">
+      <div class="thread-parent">
+        <div class="msg-header">
+          <span class="msg-name">${parentMsg.author}</span>
+          <span class="msg-time">${parentMsg.time}</span>
+        </div>
+        <div class="msg-text">${parentText}</div>
+      </div>
+      <div class="thread-replies-label">${td.replies.length} 条回复</div>
+      <div class="thread-replies">${repliesHtml}</div>
+    </div>
+    <div class="thread-input-area">
+      <textarea placeholder="回复..." rows="2"></textarea>
+      <div class="thread-input-footer">
+        <button class="send-btn ready" style="font-size:12px;">回复</button>
+      </div>
+    </div>`;
+}
+
+// ===== Actions =====
+function switchChannel(el) {
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentChannel = el.dataset.channel;
+  currentThread = null;
+
+  const ch = channelData[currentChannel];
+  document.getElementById('chTitle').textContent = ch.name;
+  document.getElementById('chDesc').textContent = ch.desc;
+
+  // Remove unread count
+  const unread = el.querySelector('.sb-unread');
+  if (unread) unread.remove();
+
+  closePanel();
+  renderMessages(currentChannel);
+}
+
+function openThread(msgId) {
+  if (!threadData[msgId]) return;
+  currentThread = msgId;
+  panelOpen = true;
+  document.getElementById('layout').classList.add('panel-open');
+  renderPanel();
+}
+
+function closePanel() {
+  panelOpen = false;
+  document.getElementById('layout').classList.remove('panel-open');
+  currentThread = null;
+}
+
+function toggleReaction(el) {
+  el.classList.toggle('active');
+  const parts = el.textContent.trim().split(' ');
+  let count = parseInt(parts[1]);
+  if (el.classList.contains('active')) count++; else count--;
+  el.textContent = parts[0] + ' ' + count;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function updateSendBtn() {
+  const btn = document.getElementById('sendBtn');
+  const input = document.getElementById('msgInput');
+  if (input.value.trim()) {
+    btn.classList.remove('disabled');
+    btn.classList.add('ready');
+  } else {
+    btn.classList.add('disabled');
+    btn.classList.remove('ready');
+  }
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const ch = channelData[currentChannel];
+  ch.messages.push({
+    id: 'u' + Date.now(),
+    author: '瓜哥',
+    time: new Date().toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'}),
+    text: text,
+    reactions: []
+  });
+
+  input.value = '';
+  input.style.height = 'auto';
+  updateSendBtn();
+  renderMessages(currentChannel);
+}
+
+function toggleSearch() {
+  // Minimal search toggle - could expand
+  const input = document.getElementById('msgInput');
+  input.focus();
+  input.placeholder = '搜索...';
+  input.addEventListener('blur', function restore() {
+    input.placeholder = '写点什么...';
+    input.removeEventListener('blur', restore);
+  });
+}
+
+// ===== Scroll to message =====
+function scrollToMsg(msgId) {
+  const el = document.querySelector('[data-id="' + msgId + '"]');
+  if (el) {
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+    el.style.background = '#f0eeea';
+    setTimeout(() => { el.style.background = ''; }, 1500);
+  }
+}
+
+// ===== Inline Reply =====
+let activeReplyId = null;
+
+function startInlineReply(msgId, author) {
+  // 关闭之前打开的
+  if (activeReplyId) closeInlineReply(activeReplyId);
+  activeReplyId = msgId;
+
+  const container = document.getElementById('inline-reply-' + msgId);
+  if (!container) return;
+
+  container.innerHTML = `<div class="inline-reply">
+    <div class="inline-reply-header">
+      <span>回复 <span class="reply-to">${author}</span></span>
+      <button class="inline-reply-close" onclick="closeInlineReply('${msgId}')">&times;</button>
+    </div>
+    <textarea id="reply-input-${msgId}" placeholder="回复 ${author}..." rows="2" onkeydown="handleInlineReplyKey(event,'${msgId}','${author}')"></textarea>
+    <div class="inline-reply-footer">
+      <button class="cancel-btn" onclick="closeInlineReply('${msgId}')">取消</button>
+      <button class="reply-send-btn" onclick="sendInlineReply('${msgId}','${author}')">回复</button>
+    </div>
+  </div>`;
+
+  // Focus and scroll into view
+  const textarea = document.getElementById('reply-input-' + msgId);
+  setTimeout(() => {
+    textarea.focus();
+    container.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 50);
+}
+
+function closeInlineReply(msgId) {
+  const container = document.getElementById('inline-reply-' + msgId);
+  if (container) container.innerHTML = '';
+  if (activeReplyId === msgId) activeReplyId = null;
+}
+
+function handleInlineReplyKey(e, msgId, author) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendInlineReply(msgId, author);
+  }
+  if (e.key === 'Escape') {
+    closeInlineReply(msgId);
+  }
+}
+
+function sendInlineReply(msgId, author) {
+  const textarea = document.getElementById('reply-input-' + msgId);
+  if (!textarea) return;
+  const text = textarea.value.trim();
+  if (!text) return;
+
+  const ch = channelData[currentChannel];
+  const parentMsg = ch.messages.find(m => m.id === msgId);
+  const parentPreview = parentMsg ? parentMsg.text.replace(/\*\*/g,'').replace(/\n/g,' ').slice(0,40) : '';
+
+  // Insert reply right after the original message
+  const msgIndex = ch.messages.findIndex(m => m.id === msgId);
+  const newMsg = {
+    id:'u'+Date.now(), author:'瓜哥',
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: text, reactions: [],
+    replyTo: { msgId: msgId, author: author, preview: parentPreview }
+  };
+
+  if (msgIndex >= 0) {
+    ch.messages.splice(msgIndex + 1, 0, newMsg);
+  } else {
+    ch.messages.push(newMsg);
+  }
+
+  activeReplyId = null;
+  renderMessages(currentChannel);
+
+  // Scroll to the new message
+  setTimeout(() => {
+    const el = document.querySelector('[data-id="' + newMsg.id + '"]');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 50);
+}
+
+// ===== Init =====
+renderMessages('lobby');
+</script>
+</body>
+</html>

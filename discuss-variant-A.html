@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 讨论</title>
+<style>
+:root {
+  --font: -apple-system, 'PingFang SC', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Menlo', 'Monaco', monospace;
+  --bg: #f8f9fb;
+  --white: #ffffff;
+  --teal: #0d9488;
+  --teal-hover: #0b7c71;
+  --teal-light: #eef8f7;
+  --teal-bg: rgba(13, 148, 136, 0.04);
+  --teal-subtle: rgba(13, 148, 136, 0.08);
+  --text1: #1e293b;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --text4: #cbd5e1;
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
+  --success: #22c55e;
+  --orange: #f59e0b;
+  --radius: 12px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.03);
+  --shadow-card: 0 1px 3px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.03);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; min-height:100vh; }
+a { color:inherit; text-decoration:none; }
+
+/* ===== Topbar ===== */
+.topbar {
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  height:52px; display:flex; align-items:center; padding:0 24px;
+}
+.tb-inner { max-width:1100px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
+.tb-left { display:flex; align-items:center; gap:24px; }
+.logo { font-size:17px; font-weight:700; color:var(--teal); letter-spacing:-.3px; }
+.nav { display:flex; gap:4px; }
+.nav a { font-size:13px; color:var(--text3); padding:6px 12px; border-radius:6px; transition:all .15s; }
+.nav a:hover { color:var(--text1); background:rgba(0,0,0,.03); }
+.nav a.active { color:var(--teal); background:var(--teal-light); font-weight:500; }
+.tb-right { display:flex; align-items:center; gap:12px; }
+.online-dot { width:7px; height:7px; border-radius:50%; background:var(--success); display:inline-block; }
+.online-text { font-size:12px; color:var(--text3); }
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; cursor:pointer; transition:transform .2s; }
+.avatar:hover { transform:scale(1.05); }
+
+/* ===== Hero ===== */
+.hero {
+  background:linear-gradient(180deg, #edf7f6 0%, var(--bg) 100%);
+  padding:44px 24px 32px;
+}
+.hero-inner { max-width:720px; margin:0 auto; }
+.hero h1 { font-size:28px; font-weight:700; letter-spacing:-.5px; color:var(--text1); margin-bottom:6px; }
+.hero p { font-size:14px; color:var(--text2); line-height:1.6; }
+
+/* ===== Channel Tabs ===== */
+.channel-bar {
+  max-width:720px; margin:0 auto; padding:0 24px;
+  position:relative;
+}
+.channel-tabs {
+  display:flex; gap:8px; padding:16px 0 20px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.channel-tabs::-webkit-scrollbar { display:none; }
+.ch-tab {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 16px; border-radius:20px;
+  font-size:13px; font-weight:500; white-space:nowrap;
+  border:1px solid var(--border); background:var(--white);
+  color:var(--text2); cursor:pointer;
+  transition:all .2s; user-select:none;
+}
+.ch-tab:hover { border-color:var(--teal); color:var(--teal); }
+.ch-tab.active {
+  background:var(--teal); color:#fff; border-color:var(--teal);
+}
+.ch-tab .tab-icon { font-size:13px; }
+.ch-tab .tab-badge {
+  background:rgba(255,255,255,.25); font-size:11px; font-weight:600;
+  padding:1px 6px; border-radius:10px; min-width:18px; text-align:center;
+}
+.ch-tab:not(.active) .tab-badge {
+  background:var(--teal-light); color:var(--teal);
+}
+
+/* ===== Page Layout ===== */
+.page-wrap {
+  max-width:1100px; margin:0 auto; padding:0 24px 60px;
+  display:grid; grid-template-columns:1fr 300px; gap:32px;
+}
+@media (max-width:960px) {
+  .page-wrap { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+}
+
+/* ===== Feed ===== */
+.feed { display:flex; flex-direction:column; gap:0; max-width:720px; }
+
+/* Date separator */
+.date-sep { display:flex; align-items:center; gap:14px; padding:24px 0 12px; }
+.date-sep::before, .date-sep::after { content:''; flex:1; height:1px; background:var(--border); opacity:.5; }
+.date-sep span { font-size:11px; color:var(--text3); font-weight:500; white-space:nowrap; letter-spacing:.3px; }
+
+/* Message Card */
+.msg-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:var(--radius); padding:20px 24px;
+  margin-bottom:10px; transition:all .2s; position:relative;
+}
+.msg-card:hover {
+  border-color:#d0d5dd;
+  box-shadow:var(--shadow-card);
+}
+.msg-card:hover .card-actions { opacity:1; }
+
+.card-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.card-avatar {
+  width:36px; height:36px; border-radius:50%;
+  display:grid; place-items:center;
+  font-size:14px; font-weight:600; color:var(--text1); flex-shrink:0;
+}
+.card-meta { flex:1; min-width:0; }
+.card-author { font-size:14px; font-weight:600; color:var(--text1); }
+.card-role {
+  font-size:10px; font-weight:500; color:var(--teal);
+  background:var(--teal-light); padding:2px 7px; border-radius:4px;
+  margin-left:6px; letter-spacing:.2px; display:inline-block; vertical-align:middle;
+}
+.card-time { font-size:12px; color:var(--text3); margin-top:1px; }
+
+.card-body {
+  font-size:14px; color:#475569; line-height:1.7; word-break:break-word;
+}
+.card-body code {
+  font-family:var(--mono); font-size:12.5px;
+  background:#f1f5f9; color:#334155; padding:2px 6px; border-radius:4px;
+}
+.card-body strong { color:var(--text1); font-weight:600; }
+
+/* Card footer: reactions + reply count */
+.card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:12px; flex-wrap:wrap; gap:8px; }
+.card-reactions { display:flex; gap:4px; flex-wrap:wrap; }
+.reaction {
+  display:inline-flex; align-items:center; gap:3px;
+  padding:4px 10px; border-radius:20px;
+  border:1px solid var(--border); background:var(--white);
+  font-size:12px; color:var(--text2); cursor:pointer;
+  transition:all .15s; user-select:none;
+}
+.reaction:hover { border-color:var(--text4); background:var(--border-soft); }
+.reaction.active { border-color:var(--teal); background:var(--teal-light); color:var(--teal); }
+
+.reply-toggle {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 12px; border-radius:8px;
+  font-size:12px; font-weight:500; color:var(--teal);
+  background:transparent; border:1px solid var(--border);
+  cursor:pointer; transition:all .15s; user-select:none;
+}
+.reply-toggle:hover { background:var(--teal-light); border-color:var(--teal-subtle); }
+.reply-toggle .toggle-avatars { display:flex; margin-left:2px; }
+.reply-toggle .mini-av {
+  width:18px; height:18px; border-radius:50%;
+  display:grid; place-items:center; font-size:8px; font-weight:600;
+  color:var(--text1); margin-left:-5px; border:2px solid var(--white);
+}
+.reply-toggle .mini-av:first-child { margin-left:0; }
+
+/* Hover action buttons */
+.card-actions {
+  position:absolute; right:16px; top:12px;
+  display:flex; gap:4px; opacity:0; transition:opacity .15s;
+}
+.card-action-btn {
+  width:28px; height:28px; border-radius:6px; border:1px solid var(--border);
+  background:var(--white); display:grid; place-items:center;
+  font-size:13px; cursor:pointer; transition:all .12s;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.card-action-btn:hover { background:var(--border-soft); border-color:var(--text4); }
+
+/* ===== Inline Thread ===== */
+.thread-inline {
+  display:none; margin-top:12px; padding-top:12px;
+  border-top:1px solid var(--border-soft);
+}
+.thread-inline.open { display:block; }
+.thread-reply {
+  display:flex; gap:10px; padding:10px 0;
+  border-bottom:1px solid var(--border-soft);
+}
+.thread-reply:last-of-type { border-bottom:none; }
+.thread-reply .tr-avatar {
+  width:28px; height:28px; border-radius:50%;
+  display:grid; place-items:center; font-size:11px; font-weight:600;
+  color:var(--text1); flex-shrink:0;
+}
+.thread-reply .tr-body { flex:1; min-width:0; }
+.thread-reply .tr-meta { display:flex; align-items:baseline; gap:6px; margin-bottom:2px; }
+.thread-reply .tr-name { font-size:13px; font-weight:600; color:var(--text1); }
+.thread-reply .tr-role {
+  font-size:9px; font-weight:500; color:var(--teal);
+  background:var(--teal-light); padding:1px 5px; border-radius:3px;
+}
+.thread-reply .tr-time { font-size:11px; color:var(--text4); }
+.thread-reply .tr-text { font-size:13px; color:#475569; line-height:1.65; }
+.thread-reply .tr-text strong { color:var(--text1); font-weight:600; }
+
+.thread-compose {
+  display:flex; gap:8px; padding-top:10px; align-items:flex-start;
+}
+.thread-compose .tr-avatar { margin-top:4px; }
+.thread-compose-input {
+  flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:8px;
+  font-family:var(--font); font-size:13px; color:var(--text1); resize:none;
+  outline:none; min-height:36px; line-height:1.5; background:var(--bg);
+  transition:border-color .15s, background .15s;
+}
+.thread-compose-input:focus { border-color:var(--teal); background:var(--white); }
+.thread-compose-input::placeholder { color:var(--text4); }
+
+/* ===== Reply bar ===== */
+.reply-bar {
+  display:none; max-width:720px; margin:0 auto;
+  padding:8px 16px; background:var(--white);
+  border:1px solid var(--border); border-bottom:none;
+  border-radius:var(--radius) var(--radius) 0 0;
+  font-size:13px; color:var(--text2);
+  align-items:center; gap:8px;
+  box-shadow:0 -2px 8px rgba(0,0,0,.03);
+}
+.reply-bar.show { display:flex; }
+.reply-bar .reply-indicator { color:var(--teal); font-weight:500; }
+.reply-bar .reply-preview { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text3); }
+.reply-bar .reply-close {
+  border:none; background:none; font-size:16px; color:var(--text3);
+  cursor:pointer; padding:2px 4px; border-radius:4px; line-height:1;
+}
+.reply-bar .reply-close:hover { background:var(--border-soft); color:var(--text1); }
+.reply-bar + .compose-card { border-radius:0 0 var(--radius) var(--radius); }
+
+/* ===== Compose area ===== */
+.compose-area {
+  max-width:720px; margin:0 auto; padding:0 0 24px;
+  position:sticky; bottom:0; z-index:10;
+}
+.compose-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  box-shadow:0 -4px 20px rgba(0,0,0,.04);
+  transition:border-color .2s, box-shadow .2s;
+}
+.compose-card:focus-within {
+  border-color:var(--teal);
+  box-shadow:0 -4px 20px rgba(0,0,0,.04), 0 0 0 3px rgba(13,148,136,.06);
+}
+.compose-textarea {
+  width:100%; min-height:44px; max-height:120px;
+  padding:12px 16px; border:none;
+  font-family:var(--font); font-size:14px; color:var(--text1);
+  resize:none; outline:none; line-height:1.5; background:transparent;
+}
+.compose-textarea::placeholder { color:var(--text4); }
+.compose-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:4px 10px 8px;
+}
+.compose-tools { display:flex; gap:2px; }
+.compose-tool {
+  padding:4px 8px; border-radius:5px; cursor:pointer;
+  font-size:14px; color:var(--text3); transition:all .12s;
+  border:none; background:none; font-family:var(--font);
+}
+.compose-tool:hover { background:var(--bg); color:var(--text1); }
+.compose-send {
+  padding:6px 16px; border-radius:6px; font-size:12px; font-weight:500;
+  border:none; cursor:pointer; font-family:var(--font); transition:all .15s;
+}
+.compose-send.ready { background:var(--teal); color:#fff; }
+.compose-send.ready:hover { background:var(--teal-hover); }
+.compose-send.disabled { background:var(--bg); color:var(--text4); cursor:default; }
+
+/* ===== Sidebar ===== */
+.sidebar { display:flex; flex-direction:column; gap:16px; position:sticky; top:72px; }
+.side-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:var(--radius); padding:20px;
+}
+.side-title {
+  font-size:12px; font-weight:600; color:var(--text3);
+  letter-spacing:.3px; margin-bottom:14px;
+  text-transform:uppercase;
+}
+.trending-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.trending-item {
+  display:flex; align-items:flex-start; gap:8px;
+  font-size:13px; color:var(--text1); line-height:1.5;
+  cursor:pointer; transition:color .15s;
+}
+.trending-item:hover { color:var(--teal); }
+.trending-rank {
+  font-size:11px; font-weight:700; color:var(--text4);
+  min-width:18px; padding-top:1px;
+}
+.trending-text { flex:1; }
+.trending-heat { font-size:11px; color:var(--text3); margin-top:2px; }
+
+.member-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.member-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px 4px 4px; border-radius:20px;
+  border:1px solid var(--border); background:var(--white);
+  font-size:12px; color:var(--text2); transition:all .15s; cursor:default;
+}
+.member-chip:hover { border-color:var(--teal); }
+.member-chip .mc-avatar {
+  width:22px; height:22px; border-radius:50%;
+  display:grid; place-items:center; font-size:9px; font-weight:600;
+  color:var(--text1);
+}
+.member-chip .mc-role {
+  font-size:9px; color:var(--teal); font-weight:500;
+}
+.member-online { width:5px; height:5px; border-radius:50%; background:var(--success); display:inline-block; margin-left:2px; }
+
+/* ===== Responsive ===== */
+@media (max-width:768px) {
+  .hero { padding:32px 16px 24px; }
+  .hero h1 { font-size:24px; }
+  .channel-bar { padding:0 16px; }
+  .page-wrap { padding:0 16px 40px; }
+  .msg-card { padding:16px 18px; }
+  .compose-area { padding:0 16px 16px; }
+  .nav { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="tb-inner">
+    <div class="tb-left">
+      <a href="roadmap.html" class="logo">深海圈</a>
+      <nav class="nav">
+        <a href="roadmap.html">路线图</a>
+        <a href="learn.html">学习</a>
+        <a href="discuss-variant-A.html" class="active">讨论</a>
+        <a href="community.html">社区</a>
+        <a href="showcase.html">成果墙</a>
+      </nav>
+    </div>
+    <div class="tb-right">
+      <span class="online-dot"></span>
+      <span class="online-text">34 人在线</span>
+      <a href="profile.html" class="avatar">瓜</a>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>讨论</h1>
+    <p>深海圈学员的交流空间 · 工具测评、踩坑经验、随便聊聊</p>
+  </div>
+</section>
+
+<!-- Channel Tabs -->
+<div class="channel-bar">
+  <div class="channel-tabs" id="channelTabs">
+    <div class="ch-tab active" data-channel="lobby" onclick="switchChannel(this)">
+      <span class="tab-icon">☕</span> 大厅
+      <span class="tab-badge">5</span>
+    </div>
+    <div class="ch-tab" data-channel="tools" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 工具测评
+    </div>
+    <div class="ch-tab" data-channel="pitfalls" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 踩坑经验
+    </div>
+    <div class="ch-tab" data-channel="showcase" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 作品分享
+    </div>
+    <div class="ch-tab" data-channel="resources" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 资源推荐
+    </div>
+    <div class="ch-tab" data-channel="payment" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 支付变现
+    </div>
+    <div class="ch-tab" data-channel="prompt" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> Prompt 技巧
+    </div>
+    <div class="ch-tab" data-channel="news" onclick="switchChannel(this)">
+      <span class="tab-icon">#</span> 行业资讯
+    </div>
+    <div class="ch-tab" data-channel="intro" onclick="switchChannel(this)">
+      <span class="tab-icon">👋</span> 自我介绍
+    </div>
+  </div>
+</div>
+
+<!-- Page layout -->
+<div class="page-wrap">
+  <div>
+    <!-- Feed -->
+    <div class="feed" id="feed">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- Compose -->
+    <div class="compose-area">
+      <div class="reply-bar" id="replyBar">
+        <span class="reply-indicator">回复</span>
+        <span class="reply-preview" id="replyPreview"></span>
+        <button class="reply-close" onclick="cancelReply()">×</button>
+      </div>
+      <div class="compose-card">
+        <textarea class="compose-textarea" id="composeInput" placeholder="在 ☕ 大厅 说点什么..." rows="1" oninput="autoResize(this); updateSendBtn();" onkeydown="handleKey(event)"></textarea>
+        <div class="compose-toolbar">
+          <div class="compose-tools">
+            <button class="compose-tool" title="Markdown">M</button>
+            <button class="compose-tool" title="@提及">@</button>
+            <button class="compose-tool" title="代码">&lt;/&gt;</button>
+            <button class="compose-tool" title="表情">😊</button>
+          </div>
+          <button class="compose-send disabled" id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="side-card">
+      <div class="side-title">热门话题</div>
+      <ul class="trending-list">
+        <li class="trending-item">
+          <span class="trending-rank">1</span>
+          <div>
+            <div class="trending-text">Claude Code agent 模式使用体验</div>
+            <div class="trending-heat">32 条讨论 · 89 个赞</div>
+          </div>
+        </li>
+        <li class="trending-item">
+          <span class="trending-rank">2</span>
+          <div>
+            <div class="trending-text">Supabase RLS 踩坑全记录</div>
+            <div class="trending-heat">22 条讨论 · 67 个赞</div>
+          </div>
+        </li>
+        <li class="trending-item">
+          <span class="trending-rank">3</span>
+          <div>
+            <div class="trending-text">Bolt.new vs Cursor：快速原型对比</div>
+            <div class="trending-heat">18 条讨论 · 54 个赞</div>
+          </div>
+        </li>
+        <li class="trending-item">
+          <span class="trending-rank">4</span>
+          <div>
+            <div class="trending-text">Stripe 中国开发者注册指南</div>
+            <div class="trending-heat">15 条讨论 · 48 个赞</div>
+          </div>
+        </li>
+        <li class="trending-item">
+          <span class="trending-rank">5</span>
+          <div>
+            <div class="trending-text">从零到上线的 AI 周报生成器</div>
+            <div class="trending-heat">11 条讨论 · 42 个赞</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">在线成员</div>
+      <div class="member-grid" id="memberGrid">
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#ccfbf1,#99f6e4)">刘</div>
+          刘小排 <span class="mc-role">讲师</span> <span class="member-online"></span>
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#dbeafe,#ddd6fe)">王</div>
+          王大锤 <span class="mc-role">助教</span> <span class="member-online"></span>
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#dbeafe,#e0e7ff)">陈</div>
+          陈小飞 <span class="member-online"></span>
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#fce7f3,#ede9fe)">李</div>
+          李思思 <span class="member-online"></span>
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">张</div>
+          张明
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">赵</div>
+          赵薇薇 <span class="member-online"></span>
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#e0e7ff,#ede9fe)">周</div>
+          周杰
+        </div>
+        <div class="member-chip">
+          <div class="mc-avatar" style="background:linear-gradient(135deg,#ffe4e6,#fecdd3)">林</div>
+          林小鱼 <span class="member-online"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">频道说明</div>
+      <p id="channelDesc" style="font-size:13px; color:var(--text2); line-height:1.6;">随便聊，什么都可以。这里就是深海圈的客厅。</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ===== Data =====
+const channelData = {
+  lobby: {
+    icon:'☕', name:'大厅',
+    desc:'随便聊，什么都可以。这里就是深海圈的客厅。',
+    messages: [
+      { date:'4月14日 周一' },
+      { id:'l1', author:'陈小飞', time:'09:12',
+        text:'早啊各位！昨天搞到凌晨三点终于把部署搞定了，Vercel 真是救星。第一次体验 push 完自动部署的感觉，太爽了。',
+        reactions:[{emoji:'👍',count:6,me:false},{emoji:'💪',count:3,me:false}]
+      },
+      { id:'l2', author:'李思思', time:'09:15',
+        text:'@陈小飞 恭喜！你是部署到 Vercel 了？还是 Netlify？我还在纠结选哪个。'
+      },
+      { id:'l3', author:'陈小飞', time:'09:17',
+        text:'Vercel，它那个 GitHub 集成太丝滑了。push 一下就自动部署，连 CI 都不用配。',
+        reactions:[{emoji:'🔥',count:2,me:false}]
+      },
+      { id:'l4', author:'张明', time:'09:45',
+        text:'有没有人看到今天 Claude 更新了？Code 模式据说又升级了，支持 agent 模式自动跑测试。',
+        reactions:[{emoji:'👀',count:8,me:false}],
+        thread:{ count:5, authors:['周','赵','林'],
+          replies:[
+            { author:'周杰', time:'09:52', text:'看到了！说是支持 agent 模式了，可以自动跑测试和修 lint。有点期待。' },
+            { author:'赵薇薇', time:'10:03', text:'刚试了一下新版，确实比上个版本快很多。特别是多文件编辑的场景。' },
+            { author:'林小鱼', time:'10:15', text:'想问一下 agent 模式和普通模式有什么区别？我还没升级。' },
+            { author:'周杰', time:'10:22', text:'@林小鱼 agent 模式下它会自己跑命令、看报错、修代码，不用你一步步指挥。像一个初级程序员帮你干活。' },
+            { author:'赵薇薇', time:'10:30', text:'总结：agent 模式适合重复性的任务，比如批量修改、跑测试修 bug。创造性的工作还是手动控制比较好。' }
+          ]
+        }
+      },
+      { id:'l5', author:'林小鱼', time:'10:20',
+        text:'请问大家用什么做数据库啊？Supabase 还是 Firebase？新手不知道怎么选...',
+        reactions:[{emoji:'🤔',count:2,me:false}],
+        thread:{ count:3, authors:['王','林','陈'],
+          replies:[
+            { author:'王大锤', role:'助教', time:'10:25', text:'新手推荐 Supabase，PostgreSQL 底子，将来迁移方便。Firebase 的 NoSQL 生态锁定比较强，换数据库时会很痛苦。' },
+            { author:'林小鱼', time:'10:28', text:'@王大锤 谢谢大锤哥！那我先试 Supabase 了。有什么新手要注意的坑吗？' },
+            { author:'陈小飞', time:'10:35', text:'@林小鱼 最大的坑是 RLS（行级安全），默认开启但没有策略，导致前端查不到数据。去 #踩坑经验 频道搜 RLS 可以看到详细解决方案。' }
+          ]
+        }
+      },
+      { date:'4月15日 周二' },
+      { id:'l6', author:'刘小排', role:'讲师', time:'08:30',
+        text:'各位早！今天发了一篇新文章，讲的是怎么用 AI 做落地页设计。v0 + Cursor 的组合拳，从设计到上线只要 2 小时。链接放在 #工具测评 了，大家可以去看看讨论。',
+        reactions:[{emoji:'🎉',count:15,me:false},{emoji:'👍',count:9,me:false}]
+      },
+      { id:'l7', author:'赵薇薇', time:'11:45',
+        text:'报告一个好消息：我的第一个小工具上线了！是一个 AI 英文邮件润色器，昨晚部署的。虽然还很简陋但已经有 3 个朋友在用了。从零到上线花了 5 天，最难的是 Stripe 支付接入，搞了两天。',
+        reactions:[{emoji:'🎉',count:18,me:false},{emoji:'🔥',count:7,me:false},{emoji:'👏',count:5,me:false}],
+        thread:{ count:4, authors:['陈','张','李'],
+          replies:[
+            { author:'陈小飞', time:'11:48', text:'厉害！发到成果墙上吧，大家都可以看看学习一下。' },
+            { author:'张明', time:'11:55', text:'收费模式是怎么设计的？订阅还是按次？' },
+            { author:'赵薇薇', time:'12:02', text:'@张明 目前是免费 5 次 + 月订阅 $5。想先验证需求，再调价格。' },
+            { author:'李思思', time:'12:10', text:'定价策略很聪明，先用免费次数拉用户，再转化订阅。学到了。' }
+          ]
+        }
+      },
+      { date:'今天' },
+      { id:'l8', author:'周杰', time:'08:55',
+        text:'早安！有人用过 Bolt.new 吗？昨天试了一下，从零到上线只花了 2 个小时，有点疯狂。但代码质量... 一言难尽。',
+        reactions:[{emoji:'😂',count:4,me:false}]
+      },
+      { id:'l9', author:'王大锤', role:'助教', time:'09:10',
+        text:'Bolt 适合做 MVP 验证想法，但正经做产品还是建议 Cursor + Claude。代码质量差很多，后续维护会很头疼。我的建议是：用 Bolt 快速验证 → 确认有人要 → 用 Cursor 重写。',
+        reactions:[{emoji:'👍',count:11,me:false},{emoji:'💡',count:3,me:false}]
+      },
+      { id:'l10', author:'张明', time:'09:25',
+        text:'话说有人遇到 Stripe 测试模式 webhook 一直收不到的问题吗？我搞了一上午了...',
+        thread:{ count:3, authors:['林','张'],
+          replies:[
+            { author:'林小鱼', time:'09:30', text:'你是不是用了 ngrok？我之前也遇到过，后来发现是 ngrok 免费版的域名每次重启会变，得重新配 webhook URL。' },
+            { author:'张明', time:'09:33', text:'@林小鱼 卧槽就是这个问题！！谢了兄弟。这要自己查还不知道查到什么时候。这种经验应该沉淀到 #踩坑经验 去。' },
+            { author:'林小鱼', time:'09:35', text:'哈哈已经写了，等我整理一下格式就发。' }
+          ]
+        },
+        reactions:[{emoji:'🙏',count:3,me:false}]
+      }
+    ]
+  },
+  tools: {
+    icon:'#', name:'工具测评',
+    desc:'分享你用过的 AI 工具、开发工具，聊聊优缺点和使用心得。',
+    messages: [
+      { date:'4月14日 周一' },
+      { id:'t1', author:'刘小排', role:'讲师', time:'10:00',
+        text:'给大家整理了一份 2025 年最新的 AI 编程工具推荐清单，从代码编辑器到部署平台到数据库。收藏起来，遇到选择困难的时候翻一翻。',
+        reactions:[{emoji:'🔥',count:24,me:false},{emoji:'❤️',count:12,me:false}],
+        thread:{ count:15, authors:['陈','王','李','周'],
+          replies:[
+            { author:'陈小飞', time:'10:20', text:'这份清单太全了！补充一个：Lovable（原 GPT Engineer），适合快速生成全栈应用。' },
+            { author:'王大锤', role:'助教', time:'10:35', text:'@陈小飞 Lovable 确实不错，但目前只支持 React + Supabase 的组合。技术栈比较固定。' },
+            { author:'李思思', time:'11:00', text:'想问一下小排老师，Windsurf 和 Cursor 怎么选？感觉功能差不多。' },
+            { author:'刘小排', role:'讲师', time:'11:15', text:'@李思思 目前推荐 Cursor。Windsurf 的 AI 补全体验还差一截，但它免费版额度更多。如果预算有限可以先用 Windsurf 入门，之后再切 Cursor。' }
+          ]
+        }
+      },
+      { id:'t2', author:'陈小飞', time:'14:23',
+        text:'刚试了 **Cursor** 的新版本，Tab 补全的准确率提升很明显，尤其是写 React 组件的时候。但是内存占用也上去了，8G 的机器有点吃力。建议至少 16G 内存。',
+        reactions:[{emoji:'👍',count:12,me:false}],
+        thread:{ count:8, authors:['周','赵','陈','林'],
+          replies:[
+            { author:'周杰', time:'14:35', text:'同感，补全确实好了。我发现在写 Python 的时候提升最大。' },
+            { author:'赵薇薇', time:'14:52', text:'内存占用 +1，我 16G 的 MacBook Air 也能感觉到变慢了。有没有人试过限制它的索引范围？' },
+            { author:'陈小飞', time:'15:10', text:'@赵薇薇 可以在设置里排除 node_modules 和 .git，我排除后大概省了 2G 内存。路径：Settings → Features → Codebase indexing → Ignore patterns' }
+          ]
+        }
+      },
+      { date:'4月15日 周二' },
+      { id:'t3', author:'李思思', time:'09:38',
+        text:'v0 我也在用，配合 Shadcn 很丝滑。不过我发现直接用 **Claude** 写组件反而更可控，你们觉得呢？v0 生成的代码有时候嵌套太深，改起来费劲。',
+        reactions:[{emoji:'💡',count:6,me:false}]
+      },
+      { id:'t4', author:'张明', time:'16:12',
+        text:'分享一个发现：**Bolt.new** 现在支持直接部署到 Netlify 了，对于快速验证想法特别方便。我昨天 2 小时从零到上线了一个小工具。\n\n不过代码质量确实不如 Cursor + Claude 的组合。适合 MVP，不适合长期维护的产品。',
+        reactions:[{emoji:'👍',count:8,me:false},{emoji:'🔥',count:4,me:false}],
+        thread:{ count:3, authors:['周','李'],
+          replies:[
+            { author:'周杰', time:'16:30', text:'Bolt 的部署确实快，但我发现它生成的代码可读性很差。变量命名一塌糊涂。' },
+            { author:'李思思', time:'16:45', text:'同意，Bolt 生成的代码基本只能跑一次。要改需求就得重新生成。' },
+            { author:'周杰', time:'17:00', text:'所以结论：用 Bolt 验证想法，用 Cursor 做产品。两个工具互补。' }
+          ]
+        }
+      },
+      { date:'今天' },
+      { id:'t5', author:'赵薇薇', time:'10:15',
+        text:'推荐一个宝藏工具：**Supabase** 的 AI SQL 编辑器。你用自然语言描述想要什么数据，它帮你写 SQL。对于不熟悉 SQL 的同学简直是救星。\n\n举个例子：我输入"查找过去 7 天注册的用户，按注册时间倒序"，它直接生成了 `SELECT * FROM users WHERE created_at > now() - interval \'7 days\' ORDER BY created_at DESC`。',
+        reactions:[{emoji:'💡',count:9,me:false},{emoji:'👍',count:6,me:false}],
+        thread:{ count:2, authors:['林'],
+          replies:[
+            { author:'林小鱼', time:'10:30', text:'这也太好用了！我之前写 SQL 都是让 Claude 帮我写，现在直接在 Supabase 里就能搞定了。' },
+            { author:'赵薇薇', time:'10:45', text:'@林小鱼 对，而且它还会自动加上性能优化的索引建议，比直接问 AI 更贴合你的数据库结构。' }
+          ]
+        }
+      },
+      { id:'t6', author:'王大锤', role:'助教', time:'11:30',
+        text:'提醒大家一下：**v0.dev** 最近更新了定价，免费版每天只有 5 次生成了（之前是 10 次）。如果用量大的话建议买 Pro，$20/月无限次。\n\n另外 v0 现在支持导出到 Next.js 项目了，之前只能导出单组件。',
+        reactions:[{emoji:'📝',count:5,me:false},{emoji:'👍',count:3,me:false}]
+      }
+    ]
+  },
+  pitfalls: {
+    icon:'#', name:'踩坑经验',
+    desc:'Bug、配置、部署、支付... 把你踩过的坑记录下来，帮后来人少走弯路。',
+    messages: [
+      { date:'4月13日 周日' },
+      { id:'p1', author:'王大锤', role:'助教', time:'14:00',
+        text:'整理了一份 **Stripe 中国开发者常见问题汇总**。包括：注册地区选择、测试模式配置、webhook 调试、人民币结算等。都是群里反复出现的问题，建议收藏。',
+        reactions:[{emoji:'❤️',count:20,me:false},{emoji:'🔥',count:8,me:false}],
+        thread:{ count:12, authors:['张','林','赵','陈'],
+          replies:[
+            { author:'张明', time:'14:30', text:'太需要了！我注册 Stripe 的时候选错了地区，后来才知道要选 HK 或 SG。' },
+            { author:'林小鱼', time:'14:45', text:'补充一个坑：Stripe 的 webhook 在本地调试需要用 Stripe CLI，不要用 ngrok 转发，会少很多问题。' },
+            { author:'赵薇薇', time:'15:00', text:'请问用 Stripe CLI 的话，命令是什么？我之前一直用 ngrok。' },
+            { author:'王大锤', role:'助教', time:'15:10', text:'@赵薇薇 先装 CLI：`brew install stripe/stripe-cli/stripe`，然后 `stripe listen --forward-to localhost:3000/api/webhook`。会在终端实时显示 webhook 事件。' }
+          ]
+        }
+      },
+      { date:'4月14日 周一' },
+      { id:'p2', author:'张明', time:'16:30',
+        text:'**踩坑：Vercel 部署 Next.js 14 的 Server Actions 报 500**\n\n原因：`next.config.js` 里没加 `serverExternalPackages`，导致某些 node 模块在 edge runtime 跑不了。\n\n解决：在 config 里加上 `serverExternalPackages: [\"your-package\"]`\n\n浪费了我整整一个下午... 希望大家别踩同样的坑。',
+        reactions:[{emoji:'👍',count:14,me:false},{emoji:'🙏',count:5,me:false}],
+        thread:{ count:6, authors:['李','周','陈'],
+          replies:[
+            { author:'李思思', time:'16:50', text:'我也遇到过！还有一个坑：如果你用了 `bcrypt`，也要加到 serverExternalPackages 里，因为它有 native binding。' },
+            { author:'周杰', time:'17:10', text:'建议把这些常见的 serverExternalPackages 都列一下，省得每个人踩一遍。' },
+            { author:'陈小飞', time:'17:30', text:'常见需要加的：`bcrypt`、`sharp`、`puppeteer`、`canvas`。基本上有 native addon 的都要加。' }
+          ]
+        }
+      },
+      { date:'4月15日 周二' },
+      { id:'p3', author:'林小鱼', time:'11:20',
+        text:'**踩坑：Supabase RLS (Row Level Security) 导致前端查不到数据**\n\n症状：明明数据库里有数据，但 `supabase.from(\"table\").select()` 返回空数组。\n\n原因：创建表后默认启用 RLS，但没有添加策略 (policy)。等于所有人都没有读取权限。\n\n解决：在 Supabase Dashboard → Authentication → Policies 里给对应表添加 SELECT policy。\n\n新手很容易忽略这个，RLS 默认"全部拒绝"。',
+        reactions:[{emoji:'💡',count:16,me:false},{emoji:'👍',count:9,me:false},{emoji:'🙏',count:4,me:false}],
+        thread:{ count:8, authors:['赵','王','张','李'],
+          replies:[
+            { author:'赵薇薇', time:'11:35', text:'我当初在这个坑里卡了整整两天... 以为是前端代码的问题，一直在改 fetch 逻辑。' },
+            { author:'王大锤', role:'助教', time:'11:45', text:'补充：如果你暂时不需要 RLS，可以在建表时取消勾选"Enable Row Level Security"。但生产环境强烈建议开启。' },
+            { author:'张明', time:'12:00', text:'还有个相关的坑：RLS 策略里用 `auth.uid()` 获取当前用户 ID，但你得先确保用户已登录，否则返回 null，策略会拒绝所有请求。' }
+          ]
+        }
+      },
+      { date:'今天' },
+      { id:'p4', author:'赵薇薇', time:'08:50',
+        text:'小坑：**Tailwind CSS v4 和 v3 的配置方式完全不同**。v4 不再用 `tailwind.config.js`，改成在 CSS 文件里用 `@import` 和 `@theme`。如果你按 v3 的教程配置会发现样式全部失效。\n\n检查方法：看 `package.json` 里 tailwindcss 的版本号。4.x 就用新语法。',
+        reactions:[{emoji:'👍',count:7,me:false}],
+        thread:{ count:2, authors:['周','陈'],
+          replies:[
+            { author:'周杰', time:'09:00', text:'这个坑我也踩了！而且目前网上 80% 的教程都是 v3 的，很容易搞混。建议大家在项目开始时就确认 Tailwind 版本。' },
+            { author:'陈小飞', time:'09:15', text:'补充：如果你用 Next.js 15 的话，默认装的就是 Tailwind v4。`create-next-app` 会帮你配好。' }
+          ]
+        }
+      },
+      { id:'p5', author:'周杰', time:'10:30',
+        text:'**踩坑：环境变量在 Vercel 上不生效**\n\n症状：本地跑得好好的，部署到 Vercel 后各种报错。\n\n原因：Vercel 的环境变量需要在 Dashboard → Settings → Environment Variables 里手动添加，`.env.local` 文件不会被上传。\n\n另外注意：添加/修改环境变量后需要重新部署才会生效！不是实时的。',
+        reactions:[{emoji:'💯',count:10,me:false},{emoji:'👍',count:6,me:false}]
+      }
+    ]
+  },
+  showcase: {
+    icon:'#', name:'作品分享',
+    desc:'做出来了就大方秀出来！不管多简陋，做出来就是成功。',
+    messages: [
+      { date:'4月14日 周一' },
+      { id:'s1', author:'赵薇薇', time:'14:00',
+        text:'我的第一个 AI 小工具上线了！**AI 英文邮件润色器** —— 输入中式英语，输出地道的商务邮件。\n\n技术栈：Next.js + Supabase + Stripe + Claude API\n部署：Vercel\n开发周期：5 天（其中 2 天在搞 Stripe）\n\n目前免费体验 5 次，之后 $5/月。欢迎大家试用提建议！',
+        reactions:[{emoji:'🎉',count:22,me:false},{emoji:'🔥',count:11,me:false},{emoji:'👏',count:8,me:false}],
+        thread:{ count:6, authors:['陈','刘','李'],
+          replies:[
+            { author:'陈小飞', time:'14:10', text:'试了一下，效果不错！把"Please help me to check this document"改成了"Could you please review this document at your earliest convenience?"，语气自然多了。' },
+            { author:'刘小排', role:'讲师', time:'14:20', text:'这就是深海圈的精神！从想法到上线只花了 5 天。赵薇薇同学，可以把这个项目写成一个完整的案例分享到社区。' },
+            { author:'李思思', time:'14:30', text:'请问 Stripe 接入部分有什么参考资料吗？我也想给我的工具加收费功能。' }
+          ]
+        }
+      },
+      { date:'4月15日 周二' },
+      { id:'s2', author:'陈小飞', time:'10:00',
+        text:'**AI 周报生成器** 终于做完了！核心功能：从飞书日历 + Git 提交记录自动抓取内容，用 Claude 总结成周报。\n\n最大的挑战是飞书 API 的鉴权流程，文档写得不太清楚，踩了不少坑。\n\n已经在我们公司内部试用了一周，反馈还不错。计划下周开放公测。',
+        reactions:[{emoji:'💪',count:15,me:false},{emoji:'🔥',count:9,me:false}],
+        thread:{ count:4, authors:['张','王'],
+          replies:[
+            { author:'张明', time:'10:15', text:'飞书 API 的鉴权确实折腾，我之前也卡了很久。有什么好的解决方案吗？' },
+            { author:'陈小飞', time:'10:25', text:'@张明 最后用的 lark-cli，比直接调 API 简单很多。推荐试试。' },
+            { author:'王大锤', role:'助教', time:'10:40', text:'这个项目很有商业价值，特别是对小团队。建议你考虑做成 SaaS。' }
+          ]
+        }
+      },
+      { date:'今天' },
+      { id:'s3', author:'林小鱼', time:'09:00',
+        text:'分享一个很小的东西：做了一个 **AI 表情包生成器**。输入一句话，生成对应的表情包图片。纯粹为了好玩做的，但意外地同事们都很喜欢。\n\n技术栈超简单：一个 HTML 页面 + Claude API。没有后端，没有数据库，API key 写在前端（别学我，仅限个人用）。',
+        reactions:[{emoji:'😂',count:14,me:false},{emoji:'❤️',count:8,me:false},{emoji:'💯',count:3,me:false}]
+      }
+    ]
+  },
+  resources: {
+    icon:'#', name:'资源推荐',
+    desc:'好文章、好教程、好工具，看到好东西就丢进来。',
+    messages: [
+      { date:'4月14日 周一' },
+      { id:'r1', author:'刘小排', role:'讲师', time:'09:00',
+        text:'推荐一篇文章：**《How to Build a SaaS in 2025》** —— 从选品到技术栈到变现的完整指南。虽然是英文的，但配合 AI 翻译看起来很快。\n\n核心观点：2025 年做 SaaS 的门槛已经降到了"会用 AI 工具 + 有一个具体的痛点"。不需要会写代码，但需要理解代码的逻辑。',
+        reactions:[{emoji:'🔥',count:18,me:false},{emoji:'📝',count:7,me:false}]
+      },
+      { id:'r2', author:'王大锤', role:'助教', time:'14:00',
+        text:'给新手推荐几个学习资源：\n\n1. **Next.js 官方教程** —— 免费，从零到一搭一个完整项目\n2. **Supabase 官方 YouTube** —— 视频教程，讲得很清楚\n3. **Tailwind CSS Cheat Sheet** —— 常用类名速查表\n4. **Stripe 官方文档** —— 支付接入必看，比任何第三方教程都准确\n\n这几个文档过一遍，技术篇的作业就没问题了。',
+        reactions:[{emoji:'❤️',count:15,me:false},{emoji:'👍',count:12,me:false},{emoji:'📝',count:6,me:false}]
+      },
+      { date:'今天' },
+      { id:'r3', author:'李思思', time:'08:30',
+        text:'发现一个免费的 AI 学习平台：**DeepLearning.AI** 的短课程系列。每门课 1-2 小时，讲的是具体的 AI 应用场景（比如 RAG、Agent、Fine-tuning）。\n\n推荐先看 "Building Systems with the ChatGPT API" 这门，对理解 API 调用很有帮助。',
+        reactions:[{emoji:'💡',count:10,me:false},{emoji:'👍',count:7,me:false}]
+      },
+      { id:'r4', author:'张明', time:'11:00',
+        text:'分享一个 GitHub 模板仓库：**Next.js + Supabase + Stripe Starter**。包含完整的用户认证、支付订阅、dashboard 模板。\n\n直接 fork 就能用，省去了至少 2 天的搭建时间。小排老师课里说的"四件套"全齐了。',
+        reactions:[{emoji:'🔥',count:13,me:false},{emoji:'👍',count:8,me:false}],
+        thread:{ count:3, authors:['林','赵'],
+          replies:[
+            { author:'林小鱼', time:'11:15', text:'这个太好了！我正想找这样的模板。请问在哪里可以找到？' },
+            { author:'张明', time:'11:20', text:'@林小鱼 GitHub 搜 "nextjs supabase stripe starter" 第一个就是，星标 2k+ 的那个。' },
+            { author:'赵薇薇', time:'11:30', text:'我用的就是这个模板！确实省了很多时间。不过建议大家在用之前先看一遍代码结构，不然后续改起来会很懵。' }
+          ]
+        }
+      }
+    ]
+  }
+};
+
+// ===== Gradient palette =====
+function getGradient(name) {
+  const map = {
+    '陈':'linear-gradient(135deg,#dbeafe,#e0e7ff)',
+    '王':'linear-gradient(135deg,#dbeafe,#ddd6fe)',
+    '李':'linear-gradient(135deg,#fce7f3,#ede9fe)',
+    '张':'linear-gradient(135deg,#fef3c7,#fde68a)',
+    '赵':'linear-gradient(135deg,#d1fae5,#a7f3d0)',
+    '周':'linear-gradient(135deg,#e0e7ff,#ede9fe)',
+    '林':'linear-gradient(135deg,#ffe4e6,#fecdd3)',
+    '刘':'linear-gradient(135deg,#ccfbf1,#99f6e4)',
+    '瓜':'linear-gradient(135deg,#ccfbf1,#99f6e4)',
+  };
+  return map[name] || 'linear-gradient(135deg,#e2e8f0,#cbd5e1)';
+}
+
+// New channels data
+channelData.payment = {
+  icon:'#', name:'支付变现',
+  desc:'Stripe、微信支付、定价策略、收款经验，和钱相关的都在这里。',
+  messages: [
+    { date:'4月14日 周一' },
+    { id:'pay1', author:'赵薇薇', time:'15:00', text:'请问大家的 SaaS 产品一般怎么定价？我做了个小工具，不知道收 $5/月还是 $10/月合适。', reactions:[{emoji:'🤔',count:6,me:false}],
+      thread:{ count:4, authors:['王','刘','张'], replies:[
+        { author:'王大锤', role:'助教', time:'15:10', text:'看你的目标用户。如果是个人开发者，$5 起步比较合理；如果面向企业，$10-20 都可以。关键是先有人付费。' },
+        { author:'刘小排', role:'讲师', time:'15:20', text:'我的经验：先用低价获取前 100 个付费用户，等产品稳定了再涨价。早期的目标是验证需求，不是利润最大化。' },
+        { author:'张明', time:'15:30', text:'推荐看一下 Stripe 的 Billing Portal，可以让用户自助管理订阅，省得你自己写管理页面。' },
+        { author:'赵薇薇', time:'15:45', text:'谢谢大家！决定先 $5/月起步，100 个用户后再考虑调价。' }
+      ]}
+    },
+    { date:'今天' },
+    { id:'pay2', author:'陈小飞', time:'09:00', text:'**微信支付 vs 支付宝：海外开发者的选择**\n\n如果你的用户主要在国内，微信支付接入比 Stripe 简单很多。但个人开发者没法直接申请微信支付商户号，需要有公司主体。\n\n替代方案：用虎皮椒或者 LemonSqueezy 做中间层。', reactions:[{emoji:'💡',count:8,me:false},{emoji:'👍',count:5,me:false}] },
+    { id:'pay3', author:'林小鱼', time:'10:30', text:'有人用过 LemonSqueezy 吗？听说比 Stripe 对个人开发者更友好，不需要公司主体。', reactions:[{emoji:'👀',count:4,me:false}] }
+  ]
+};
+channelData.prompt = {
+  icon:'#', name:'Prompt 技巧',
+  desc:'Prompt Engineering 的经验、技巧、最佳实践分享。',
+  messages: [
+    { date:'4月15日 周二' },
+    { id:'pr1', author:'刘小排', role:'讲师', time:'09:00', text:'分享一个 prompt 技巧：**让 AI 先分析再执行**。\n\n不要直接说"帮我写一个登录页"，而是说"先分析这个项目的技术栈和现有组件，然后写一个风格一致的登录页"。\n\n前者给你一个通用的登录页，后者给你一个融入项目的登录页。差别很大。', reactions:[{emoji:'🔥',count:20,me:false},{emoji:'💡',count:11,me:false}] },
+    { id:'pr2', author:'王大锤', role:'助教', time:'14:00', text:'**Claude 的 system prompt 模板**\n\n我常用的结构：\n1. 角色定义（你是一个...）\n2. 上下文（当前项目用了...）\n3. 约束（不要用 any，不要改现有代码风格）\n4. 输出格式（返回完整代码，不要省略）\n\n分享给大家参考。', reactions:[{emoji:'📝',count:9,me:false},{emoji:'👍',count:7,me:false}] },
+    { date:'今天' },
+    { id:'pr3', author:'李思思', time:'08:45', text:'发现一个提升 AI 代码质量的方法：**在 prompt 里加上"写测试"**。\n\n不管你是不是真的要跑测试，让 AI 同时写代码和测试会迫使它思考边界情况。生成的代码质量明显更高。', reactions:[{emoji:'💡',count:12,me:false}] }
+  ]
+};
+channelData.news = {
+  icon:'#', name:'行业资讯',
+  desc:'AI、编程、创业相关的新闻和资讯讨论。',
+  messages: [
+    { date:'今天' },
+    { id:'n1', author:'张明', time:'08:30', text:'OpenAI 刚发布了 GPT-5.4，据说推理能力又提升了一大截。有人试了吗？', reactions:[{emoji:'👀',count:10,me:false}],
+      thread:{ count:3, authors:['周','赵'], replies:[
+        { author:'周杰', time:'08:45', text:'刚试了，代码生成确实更好了。但 Claude 在长上下文理解上还是更强。' },
+        { author:'赵薇薇', time:'09:00', text:'我更关心的是价格，GPT-5.4 的 API 调用比 4o 贵了 3 倍...' },
+        { author:'周杰', time:'09:10', text:'所以 Claude 还是性价比之王。写代码用 Claude，做创意用 GPT。各有所长。' }
+      ]}
+    },
+    { id:'n2', author:'刘小排', role:'讲师', time:'10:00', text:'Vercel 宣布了 AI SDK 4.0，原生支持 streaming UI 和 tool calling。对做 AI 产品的同学来说是个好消息，不用再手动处理 SSE 了。', reactions:[{emoji:'🔥',count:8,me:false},{emoji:'👍',count:5,me:false}] }
+  ]
+};
+channelData.intro = {
+  icon:'👋', name:'自我介绍',
+  desc:'新来的？先来这里打个招呼吧！说说你是谁，想做什么。',
+  messages: [
+    { date:'4月13日 周日' },
+    { id:'i1', author:'林小鱼', time:'10:00', text:'大家好！我是林小鱼，做了 8 年的产品经理，完全不会写代码。报名这个课就是想学会用 AI 把脑子里的想法变成真实的产品。目标是做一个面向设计师的 AI 工具。请多指教！', reactions:[{emoji:'👋',count:12,me:false},{emoji:'💪',count:5,me:false}] },
+    { id:'i2', author:'赵薇薇', time:'11:00', text:'Hi 各位～我是薇薇，自由职业翻译。之前一直用 ChatGPT 辅助翻译，这次想更进一步，学会自己做翻译相关的 AI 工具。已经有一些产品想法了，来这里找队友和灵感！', reactions:[{emoji:'👋',count:10,me:false},{emoji:'❤️',count:4,me:false}] },
+    { id:'i3', author:'周杰', time:'14:00', text:'周杰，字节跳动后端开发。会写代码但没做过自己的产品。想利用业余时间做个独立产品试试水。技术栈主要是 Go + Python，前端是弱项，希望 AI 能帮我补上。', reactions:[{emoji:'👋',count:8,me:false},{emoji:'💪',count:3,me:false}] },
+    { date:'今天' },
+    { id:'i4', author:'瓜哥', time:'09:00', text:'Hello！我是瓜哥，在一家创业公司做运营。零代码基础，报课的原因是老板说"以后每个人都得会用 AI 写代码"。既来之则安之，争取毕业时做出一个能用的东西！', reactions:[{emoji:'👋',count:6,me:false},{emoji:'🎉',count:3,me:false}] }
+  ]
+};
+
+// ===== State =====
+let currentChannel = 'lobby';
+let openThreads = new Set();
+let replyTo = null; // { msgId, author, preview }
+
+// ===== Format text =====
+function fmt(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+// ===== Render feed =====
+function renderFeed(channelId) {
+  const ch = channelData[channelId];
+  const feed = document.getElementById('feed');
+  let html = '';
+
+  ch.messages.forEach(msg => {
+    // Date separator
+    if (msg.date) {
+      html += `<div class="date-sep"><span>${msg.date}</span></div>`;
+      return;
+    }
+
+    const roleTag = msg.role ? `<span class="card-role">${msg.role}</span>` : '';
+    const surname = msg.author[0];
+
+    // Reactions
+    let reactionsHtml = '';
+    if (msg.reactions && msg.reactions.length) {
+      reactionsHtml = msg.reactions.map(r =>
+        `<span class="reaction${r.me?' active':''}" onclick="toggleReaction(this)">${r.emoji} ${r.count}</span>`
+      ).join('');
+    }
+
+    // Thread toggle
+    let threadToggleHtml = '';
+    if (msg.thread && msg.thread.count > 0) {
+      const avs = msg.thread.authors.map(a =>
+        `<span class="mini-av" style="background:${getGradient(a)}">${a}</span>`
+      ).join('');
+      threadToggleHtml = `<span class="reply-toggle" onclick="toggleThread('${msg.id}')">
+        <span class="toggle-avatars">${avs}</span>
+        ${msg.thread.count} 条回复
+      </span>`;
+    }
+
+    // Inline thread
+    let threadInlineHtml = '';
+    if (msg.thread && msg.thread.replies) {
+      const isOpen = openThreads.has(msg.id);
+      let repliesHtml = msg.thread.replies.map(r => {
+        const rRole = r.role ? `<span class="tr-role">${r.role}</span>` : '';
+        return `<div class="thread-reply">
+          <div class="tr-avatar" style="background:${getGradient(r.author[0])}">${r.author[0]}</div>
+          <div class="tr-body">
+            <div class="tr-meta">
+              <span class="tr-name">${r.author}</span>${rRole}
+              <span class="tr-time">${r.time}</span>
+            </div>
+            <div class="tr-text">${fmt(r.text)}</div>
+          </div>
+        </div>`;
+      }).join('');
+
+      threadInlineHtml = `<div class="thread-inline${isOpen?' open':''}" id="thread-${msg.id}">
+        ${repliesHtml}
+        <div class="thread-compose">
+          <div class="tr-avatar" style="background:${getGradient('瓜')}">瓜</div>
+          <textarea class="thread-compose-input" placeholder="回复这个话题..." rows="1" onkeydown="handleThreadKey(event, '${msg.id}')"></textarea>
+        </div>
+      </div>`;
+    }
+
+    html += `<div class="msg-card" data-id="${msg.id}">
+      <div class="card-actions">
+        <span class="card-action-btn" title="表情">😊</span>
+        <span class="card-action-btn" title="回复" onclick="startReply('${msg.id}')">💬</span>
+        <span class="card-action-btn" title="收藏">⭐</span>
+      </div>
+      <div class="card-header">
+        <div class="card-avatar" style="background:${getGradient(surname)}">${surname}</div>
+        <div class="card-meta">
+          <div><span class="card-author">${msg.author}</span>${roleTag}</div>
+          <div class="card-time">${msg.time}</div>
+        </div>
+      </div>
+      <div class="card-body">${fmt(msg.text)}</div>
+      <div class="card-footer">
+        <div class="card-reactions">${reactionsHtml}</div>
+        ${threadToggleHtml}
+      </div>
+      ${threadInlineHtml}
+    </div>`;
+  });
+
+  feed.innerHTML = html;
+}
+
+// ===== Channel switching =====
+function switchChannel(el) {
+  document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentChannel = el.dataset.channel;
+  openThreads.clear();
+
+  const ch = channelData[currentChannel];
+  document.getElementById('channelDesc').textContent = ch.desc;
+  document.getElementById('composeInput').placeholder = `在 ${ch.icon === '#' ? '#' : ch.icon} ${ch.name} 说点什么...`;
+
+  // Remove badge
+  const badge = el.querySelector('.tab-badge');
+  if (badge) badge.remove();
+
+  renderFeed(currentChannel);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== Toggle thread =====
+function toggleThread(msgId) {
+  const el = document.getElementById('thread-' + msgId);
+  if (!el) return;
+  if (openThreads.has(msgId)) {
+    openThreads.delete(msgId);
+    el.classList.remove('open');
+  } else {
+    openThreads.add(msgId);
+    el.classList.add('open');
+    // Scroll into view
+    setTimeout(() => {
+      el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 50);
+  }
+}
+
+// ===== Reactions =====
+function toggleReaction(el) {
+  el.classList.toggle('active');
+  const parts = el.textContent.trim().split(' ');
+  let count = parseInt(parts[1]);
+  if (el.classList.contains('active')) count++; else count--;
+  el.textContent = parts[0] + ' ' + count;
+}
+
+// ===== Compose =====
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function updateSendBtn() {
+  const btn = document.getElementById('sendBtn');
+  const input = document.getElementById('composeInput');
+  if (input.value.trim()) {
+    btn.classList.remove('disabled');
+    btn.classList.add('ready');
+  } else {
+    btn.classList.add('disabled');
+    btn.classList.remove('ready');
+  }
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function handleThreadKey(e, msgId) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const textarea = e.target;
+    const text = textarea.value.trim();
+    if (!text) return;
+
+    const ch = channelData[currentChannel];
+    const msg = ch.messages.find(m => m.id === msgId);
+    if (msg && msg.thread) {
+      msg.thread.replies.push({
+        author:'瓜哥',
+        time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+        text: text
+      });
+      msg.thread.count++;
+      renderFeed(currentChannel);
+      // Keep thread open after sending
+      openThreads.add(msgId);
+      const el = document.getElementById('thread-' + msgId);
+      if (el) el.classList.add('open');
+    }
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('composeInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const ch = channelData[currentChannel];
+  // Find today's separator or add one
+  const hasToday = ch.messages.some(m => m.date === '今天');
+  if (!hasToday) {
+    ch.messages.push({ date:'今天' });
+  }
+
+  ch.messages.push({
+    id: 'u' + Date.now(),
+    author: '瓜哥',
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: text,
+    reactions: []
+  });
+
+  input.value = '';
+  input.style.height = 'auto';
+  updateSendBtn();
+  renderFeed(currentChannel);
+
+  // Scroll to bottom
+  setTimeout(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }, 50);
+}
+
+// ===== Reply =====
+function startReply(msgId) {
+  const ch = channelData[currentChannel];
+  const msg = ch.messages.find(m => m.id === msgId);
+  if (!msg) return;
+
+  replyTo = { msgId: msgId, author: msg.author, preview: msg.text.slice(0, 50) };
+
+  const bar = document.getElementById('replyBar');
+  const preview = document.getElementById('replyPreview');
+  preview.textContent = msg.author + '：' + msg.text.replace(/\*\*/g,'').replace(/\n/g,' ').slice(0, 60) + '...';
+  bar.classList.add('show');
+
+  const input = document.getElementById('composeInput');
+  input.focus();
+  input.placeholder = '回复 ' + msg.author + '...';
+}
+
+function cancelReply() {
+  replyTo = null;
+  document.getElementById('replyBar').classList.remove('show');
+  const ch = channelData[currentChannel];
+  document.getElementById('composeInput').placeholder = '在 ' + (ch.icon === '#' ? '#' : ch.icon) + ' ' + ch.name + ' 说点什么...';
+}
+
+// Override sendMessage to include reply
+const _originalSend = sendMessage;
+sendMessage = function() {
+  const input = document.getElementById('composeInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const ch = channelData[currentChannel];
+  const hasToday = ch.messages.some(m => m.date === '今天');
+  if (!hasToday) ch.messages.push({ date:'今天' });
+
+  let finalText = text;
+  if (replyTo) {
+    finalText = '@' + replyTo.author + ' ' + text;
+  }
+
+  ch.messages.push({
+    id: 'u' + Date.now(),
+    author: '瓜哥',
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: finalText,
+    reactions: []
+  });
+
+  input.value = '';
+  input.style.height = 'auto';
+  updateSendBtn();
+  cancelReply();
+  renderFeed(currentChannel);
+  setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 50);
+};
+
+// ===== Init =====
+renderFeed('lobby');
+</script>
+</body>
+</html>
