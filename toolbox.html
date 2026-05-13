@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | AI 工具箱</title>
+<style>
+:root {
+  --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  --serif: 'Songti SC', 'STSong', Georgia, serif;
+  --bg: #f7f8fa;
+  --white: #ffffff;
+  --teal: #14b8a6;
+  --teal-light: #e6f7f5;
+  --teal-dark: #0d9488;
+  --deep-blue: #1a2942;
+  --gold: #c89854;
+  --gold-soft: rgba(200, 152, 84, 0.15);
+  --text1: #1a1a2e;
+  --text2: #666666;
+  --text3: #999999;
+  --text4: #b8c5cc;
+  --border: #e8eaed;
+  --border-soft: #f0f2f4;
+  --success: #22c55e;
+  --gradient: linear-gradient(180deg, #e8f4f2 0%, #f7f8fa 100%);
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(30,58,82,.04), 0 8px 28px -12px rgba(30,58,82,.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; min-height:100vh; }
+a { color:inherit; text-decoration:none; }
+button { font-family:inherit; border:none; background:none; cursor:pointer; color:inherit; }
+
+/* ============ TOPBAR ============ */
+.topbar { position:sticky; top:0; z-index:50; background:rgba(247,248,250,.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; }
+.tb-inner { max-width:1280px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.tb-left { display:flex; align-items:center; gap:28px; }
+.logo { font-size:17px; font-weight:700; color:var(--teal); }
+.nav { display:flex; gap:18px; }
+.nav a { font-size:13.5px; color:var(--text2); transition:color .15s; padding:4px 0; border-bottom:2px solid transparent; }
+.nav a:hover { color:var(--text1); }
+.nav a.active { color:var(--text1); font-weight:600; border-bottom-color:var(--teal); }
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; cursor:pointer; transition:transform .2s; }
+.avatar:hover { transform:scale(1.05); }
+
+/* ============ HERO ============ */
+.hero { background:var(--gradient); padding:40px 32px 28px; border-bottom:1px solid var(--border); }
+.hero-inner { max-width:1280px; margin:0 auto; }
+.hero-eyebrow { font-family:var(--mono); font-size:11px; color:var(--teal-dark); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.hero h1 { font-size:30px; font-weight:700; letter-spacing:-.5px; margin-bottom:6px; }
+.hero h1 .accent { color:var(--teal-dark); font-family:var(--serif); font-style:italic; font-weight:600; }
+.hero p { font-size:14.5px; color:var(--text2); max-width:680px; line-height:1.65; }
+
+/* ============ LAYOUT ============ */
+.page { max-width:1280px; margin:0 auto; padding:32px; display:grid; grid-template-columns:240px 1fr; gap:32px; align-items:start; }
+
+.sidebar { position:sticky; top:88px; }
+.sb-title { font-size:11px; font-weight:600; color:var(--text3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; padding:0 4px; }
+.sb-list { display:flex; flex-direction:column; gap:2px; }
+.sb-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px; font-size:13.5px; color:var(--text2); cursor:pointer; transition:all .15s; }
+.sb-item:hover { background:var(--white); color:var(--text1); }
+.sb-item.active { background:var(--teal-light); color:var(--teal-dark); font-weight:600; }
+.sb-item-icon { width:26px; height:26px; border-radius:6px; background:var(--white); border:1px solid var(--border); display:grid; place-items:center; font-size:13px; font-weight:600; color:var(--teal-dark); flex-shrink:0; }
+.sb-item.active .sb-item-icon { background:var(--teal); color:#fff; border-color:var(--teal); }
+.sb-item-meta { font-family:var(--mono); font-size:10.5px; color:var(--text3); margin-left:auto; }
+
+/* ============ MAIN PANEL ============ */
+.panel { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:32px; box-shadow:var(--shadow); min-height:600px; }
+.panel-header { padding-bottom:20px; margin-bottom:24px; border-bottom:1px solid var(--border-soft); }
+.panel-stage { font-family:var(--mono); font-size:11px; color:var(--teal-dark); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.panel-title { font-size:22px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.panel-desc { font-size:14px; color:var(--text2); line-height:1.65; }
+
+/* Form */
+.form { display:flex; flex-direction:column; gap:20px; max-width:680px; }
+.field-group { display:flex; flex-direction:column; gap:8px; }
+.field-label { font-size:12px; font-weight:600; color:var(--text2); letter-spacing:.06em; text-transform:uppercase; }
+.field-hint { font-size:12px; color:var(--text3); margin-top:-2px; }
+.field-input, .field-textarea {
+  width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px;
+  font-family:inherit; font-size:14px; color:var(--text1); background:var(--white);
+  resize:vertical; outline:none; transition:border-color .15s;
+}
+.field-textarea { min-height:80px; line-height:1.6; }
+.field-input:focus, .field-textarea:focus { border-color:var(--teal); }
+
+.radio-group { display:flex; gap:8px; flex-wrap:wrap; }
+.radio-chip {
+  padding:7px 14px; border:1px solid var(--border); border-radius:6px;
+  background:var(--white); color:var(--text2); font-size:13px;
+  cursor:pointer; transition:all .15s;
+}
+.radio-chip:hover { border-color:var(--teal); color:var(--teal-dark); }
+.radio-chip.selected { background:var(--teal); border-color:var(--teal); color:#fff; font-weight:500; }
+
+.btn-run {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:11px 22px; border-radius:6px;
+  background:var(--deep-blue); color:#fff;
+  font-family:inherit; font-size:14px; font-weight:600;
+  cursor:pointer; transition:opacity .15s;
+  align-self:flex-start;
+}
+.btn-run:hover { opacity:.88; }
+.btn-run:disabled { opacity:.4; cursor:not-allowed; }
+.btn-run svg { width:14px; height:14px; }
+
+/* Output */
+.output { margin-top:32px; padding-top:28px; border-top:1px solid var(--border-soft); display:none; }
+.output.show { display:block; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+.output-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.output-avatar { width:30px; height:30px; border-radius:50%; background:var(--deep-blue); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; }
+.output-by { font-size:13px; font-weight:600; color:var(--deep-blue); }
+.output-by-role { font-size:11.5px; color:var(--text3); font-family:var(--mono); margin-left:auto; }
+
+.out-section { margin-top:18px; }
+.out-section:first-of-type { margin-top:0; }
+.out-label { font-size:11px; font-weight:600; color:var(--text2); letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+
+.verdict-card {
+  padding:14px 16px; background:var(--teal-light); border:1px solid var(--teal);
+  border-radius:8px; font-size:14.5px; line-height:1.65; color:var(--text1);
+}
+.verdict-card strong { color:var(--teal-dark); font-weight:700; }
+
+.list-card { display:flex; flex-direction:column; gap:6px; }
+.list-card-item {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 14px; background:var(--bg); border:1px solid var(--border);
+  border-radius:6px; font-size:13.5px;
+}
+.list-card-item .left { color:var(--text1); font-weight:500; }
+.list-card-item .right { font-family:var(--mono); font-size:12px; color:var(--teal-dark); }
+
+.idea-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; }
+.idea-card {
+  padding:16px 18px; background:var(--bg); border:1px solid var(--border);
+  border-radius:10px; transition:all .15s;
+}
+.idea-card:hover { border-color:var(--teal); }
+.idea-card-name { font-size:15px; font-weight:700; color:var(--text1); margin-bottom:6px; }
+.idea-card-desc { font-size:13px; color:var(--text2); line-height:1.55; margin-bottom:10px; }
+.idea-card-meta { display:flex; flex-wrap:wrap; gap:6px; }
+.idea-tag { font-size:11px; padding:2px 7px; border-radius:4px; background:var(--white); border:1px solid var(--border); color:var(--text2); }
+.idea-tag.diff-easy { background:#e6f7f5; color:var(--teal-dark); border-color:var(--teal-light); }
+.idea-tag.diff-med  { background:var(--gold-soft); color:#9c7028; border-color:rgba(200,152,84,.4); }
+.idea-tag.diff-hard { background:#fde6e6; color:#c0392b; border-color:#f5c8c8; }
+
+.landing-preview {
+  padding:28px 24px; background:linear-gradient(135deg, #1a2942 0%, #2d4561 100%);
+  border-radius:10px; color:#fff;
+}
+.landing-title { font-size:26px; font-weight:800; letter-spacing:-.3px; line-height:1.25; margin-bottom:10px; }
+.landing-sub { font-size:15px; color:#c2cad6; line-height:1.55; margin-bottom:20px; }
+.landing-cta { display:inline-block; padding:10px 22px; border-radius:6px; background:var(--teal); color:#fff; font-size:14px; font-weight:600; }
+.landing-points { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px 18px; margin-top:24px; padding-top:20px; border-top:1px solid rgba(255,255,255,.12); }
+.landing-point { font-size:13px; color:#c2cad6; }
+.landing-point::before { content:'✓'; color:var(--teal); font-weight:700; margin-right:6px; }
+
+.action-list { display:flex; flex-direction:column; gap:8px; }
+.action-item {
+  display:flex; gap:14px; padding:12px 14px; background:var(--bg);
+  border:1px solid var(--border); border-radius:8px;
+}
+.action-num {
+  width:24px; height:24px; border-radius:50%; background:var(--teal); color:#fff;
+  display:grid; place-items:center; font-size:12px; font-weight:700; flex-shrink:0;
+}
+.action-body { flex:1; }
+.action-platform { font-size:11.5px; font-weight:700; color:var(--teal-dark); letter-spacing:.04em; text-transform:uppercase; margin-bottom:3px; }
+.action-text { font-size:13.5px; color:var(--text1); line-height:1.55; }
+.action-effort { font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:4px; }
+
+.empty-state {
+  padding:48px 20px; text-align:center; color:var(--text3); font-size:14px;
+}
+.empty-state .empty-icon { font-size:32px; margin-bottom:10px; opacity:.5; }
+
+.coming-soon {
+  display:inline-block; margin-left:8px; padding:2px 7px; border-radius:4px;
+  background:var(--gold-soft); color:var(--gold);
+  font-size:10.5px; font-weight:600; letter-spacing:.04em;
+}
+
+@media (max-width: 900px) {
+  .page { grid-template-columns:1fr; padding:20px; }
+  .sidebar { position:static; }
+  .sb-list { flex-direction:row; overflow-x:auto; padding-bottom:6px; }
+  .sb-item { flex-shrink:0; }
+  .panel { padding:24px 20px; min-height:auto; }
+  .landing-points { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-inner">
+    <div class="tb-left">
+      <a href="roadmap.html" class="logo">深海圈</a>
+      <nav class="nav">
+        <a href="roadmap.html">路线图</a>
+        <a href="learn.html">学习</a>
+        <a href="discuss.html">讨论</a>
+        <a href="community.html">社区</a>
+        <a href="showcase.html">成果墙</a>
+        <a href="toolbox.html" class="active">工具箱</a>
+      </nav>
+    </div>
+    <a href="profile.html" class="avatar">瓜</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">AI · TOOLBOX</div>
+    <h1>AI 工具箱 · <span class="accent">让 AI 接手卡点</span></h1>
+    <p>不是聊天，是单次产出。每个工具都对应你做产品路上一个高频卡点——选 idea、选技术栈、写落地页、冷启动……表单进、结果出，5 分钟省你 3 小时。</p>
+  </div>
+</section>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="sb-title">工具列表</div>
+    <div class="sb-list" id="toolList">
+      <div class="sb-item" data-tool="idea-explore" onclick="switchTool('idea-explore')">
+        <span class="sb-item-icon">💡</span>
+        <span class="sb-item-name">Idea 探索器</span>
+        <span class="sb-item-meta">商业化</span>
+      </div>
+      <div class="sb-item" data-tool="idea-validate" onclick="switchTool('idea-validate')">
+        <span class="sb-item-icon">✓</span>
+        <span class="sb-item-name">Idea 验证器</span>
+        <span class="sb-item-meta">商业化</span>
+      </div>
+      <div class="sb-item" data-tool="stack" onclick="switchTool('stack')">
+        <span class="sb-item-icon">⚙</span>
+        <span class="sb-item-name">技术栈推荐</span>
+        <span class="sb-item-meta">实战进阶</span>
+      </div>
+      <div class="sb-item" data-tool="landing" onclick="switchTool('landing')">
+        <span class="sb-item-icon">★</span>
+        <span class="sb-item-name">落地页文案</span>
+        <span class="sb-item-meta">商业化</span>
+      </div>
+      <div class="sb-item" data-tool="cold-start" onclick="switchTool('cold-start')">
+        <span class="sb-item-icon">↗</span>
+        <span class="sb-item-name">冷启动剧本</span>
+        <span class="sb-item-meta">增长</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="panel" id="panel">
+    <!-- populated by switchTool() -->
+  </main>
+</div>
+
+<script>
+/* =====================================================
+   TOOLBOX · 5 个 mock AI 工具
+   单次输入 → 结构化输出。
+   真正接入 AI 刘小白 API 时，替换每个 tool 的 evaluate() 即可。
+   ===================================================== */
+
+const TOOLS = {
+  'idea-explore': {
+    icon: '💡',
+    stage: '商业化 / 找方向',
+    title: 'Idea 探索器',
+    desc: '没想法不要紧。把你的兴趣、能力、目标说清楚，刘小白帮你找 5 个潜在 idea。',
+    render: renderIdeaExploreForm,
+    evaluate: evalIdeaExplore
+  },
+  'idea-validate': {
+    icon: '✓',
+    stage: '商业化 / 验证',
+    title: 'Idea 验证器',
+    desc: '已有 idea，但不确定能不能做。让刘小白看看可行性、市场、风险点、切入点。',
+    render: renderIdeaValidateForm,
+    evaluate: evalIdeaValidate
+  },
+  'stack': {
+    icon: '⚙',
+    stage: '实战进阶 / 技术选型',
+    title: '技术栈推荐',
+    desc: '不知道用什么框架、数据库、AI API？把产品类型告诉刘小白，给你一套上手就能开干的栈。',
+    render: renderStackForm,
+    evaluate: evalStack
+  },
+  'landing': {
+    icon: '★',
+    stage: '商业化 / Landing',
+    title: '落地页文案生成器',
+    desc: '"8 秒打动用户" 是落地页的铁律。给刘小白产品信息，得到 8 秒能 hook 住人的标题、副标题、CTA 和 5 个卖点。',
+    render: renderLandingForm,
+    evaluate: evalLanding
+  },
+  'cold-start': {
+    icon: '↗',
+    stage: '增长 / 冷启动',
+    title: '冷启动剧本',
+    desc: '上线了没人用？刘小白给你 5–10 个具体动作：去哪个平台、发什么内容、多大成本、预期效果。',
+    render: renderColdStartForm,
+    evaluate: evalColdStart
+  }
+};
+
+/* ============= ROUTER ============= */
+function switchTool(key) {
+  if (!TOOLS[key]) key = 'idea-explore';
+  document.querySelectorAll('.sb-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.tool === key);
+  });
+  const tool = TOOLS[key];
+  const panel = document.getElementById('panel');
+  panel.innerHTML =
+    '<div class="panel-header">' +
+      '<div class="panel-stage">' + tool.stage + '</div>' +
+      '<h2 class="panel-title">' + tool.title + '</h2>' +
+      '<p class="panel-desc">' + tool.desc + '</p>' +
+    '</div>' +
+    '<div id="toolForm"></div>' +
+    '<div class="output" id="toolOutput"></div>';
+  tool.render();
+  if (location.search.indexOf('t=' + key) < 0) {
+    history.replaceState(null, '', 'toolbox.html?t=' + key);
+  }
+}
+
+/* ============= FORM RENDERERS ============= */
+function renderIdeaExploreForm() {
+  document.getElementById('toolForm').innerHTML =
+    '<div class="form">' +
+      field('interests', '你感兴趣的领域', 'textarea', '例如：教育、AI 写作、设计、健身、独立游戏…') +
+      field('strengths', '你的能力 / 资源', 'textarea', '例如：会写代码、做过设计师、有医学背景、在大厂做过运营…') +
+      radioField('goal', '目标', [
+        { v:'side',     label:'副业型 · 月入几千美金' },
+        { v:'startup',  label:'创业型 · 想做更大的事' },
+        { v:'learn',    label:'学习型 · 先练手' }
+      ]) +
+      runBtn('生成 5 个 idea') +
+    '</div>';
+}
+
+function renderIdeaValidateForm() {
+  document.getElementById('toolForm').innerHTML =
+    '<div class="form">' +
+      field('idea', '一句话描述你的 idea', 'textarea', '例如：一个帮医学生根据错题智能推荐练习的小程序') +
+      field('audience', '目标用户（一句话）', 'input', '例如：备考执医的医学生，全国约 60 万人') +
+      runBtn('开始验证') +
+    '</div>';
+}
+
+function renderStackForm() {
+  document.getElementById('toolForm').innerHTML =
+    '<div class="form">' +
+      radioField('type', '产品类型', [
+        { v:'web',       label:'网站 / SaaS' },
+        { v:'miniprog',  label:'微信小程序' },
+        { v:'app',       label:'手机 App' },
+        { v:'desktop',   label:'桌面应用' },
+        { v:'agent',     label:'自动化 / Agent' }
+      ]) +
+      radioField('level', '你的水平', [
+        { v:'zero',      label:'零基础' },
+        { v:'some',      label:'有点经验' },
+        { v:'tech',      label:'技术背景' }
+      ]) +
+      radioField('market', '面向市场', [
+        { v:'overseas',  label:'海外（收美金）' },
+        { v:'cn',        label:'国内（收人民币）' },
+        { v:'both',      label:'都要' }
+      ]) +
+      runBtn('生成推荐栈') +
+    '</div>';
+}
+
+function renderLandingForm() {
+  document.getElementById('toolForm').innerHTML =
+    '<div class="form">' +
+      field('name', '产品名', 'input', '例如：MedQuiz') +
+      field('desc', '产品一句话描述', 'input', '例如：AI 帮你根据错题推荐题目的医考小程序') +
+      field('audience', '目标用户', 'input', '例如：备考执医的医学生') +
+      field('benefit', '最大卖点（一句话）', 'input', '例如：练题效率比传统题库高 3 倍') +
+      runBtn('生成落地页文案') +
+    '</div>';
+}
+
+function renderColdStartForm() {
+  document.getElementById('toolForm').innerHTML =
+    '<div class="form">' +
+      field('name', '产品名', 'input', '例如：MedQuiz') +
+      field('audience', '目标用户', 'input', '例如：备考执医的医学生') +
+      radioField('type', '产品类型', [
+        { v:'web',      label:'网站 / SaaS' },
+        { v:'miniprog', label:'小程序' },
+        { v:'app',      label:'App' },
+        { v:'tool',     label:'工具 / Chrome 扩展' }
+      ]) +
+      runBtn('生成冷启动剧本') +
+    '</div>';
+}
+
+/* ============= EVALUATORS (mock) ============= */
+function evalIdeaExplore(inputs) {
+  const i = inputs.interests || '';
+  const s = inputs.strengths || '';
+  const ideas = [
+    { name: '错题智能推荐工具', desc: '基于「' + (i.slice(0,12) || '兴趣领域') + '」的练习推荐器，AI 根据用户错题模式动态调整。', audience: '考试备考人群', similar: 'Anki / 千行AI', diff:'easy' },
+    { name: '面向'+ (s.slice(0,8) || '专业人士') +'的 AI 助理', desc: '把你领域的专业知识沉淀成 SOP，AI 替你回答外行问题。', audience: '同领域新手 + 跨界者', similar: 'Mendable / Reka', diff:'med' },
+    { name: '细分领域榜单网站', desc: '把「' + (i.slice(0,10) || '兴趣领域') + '」相关产品做成可订阅、可投票的榜单，SEO 流量打底。', audience: '行业 KOL + 关注者', similar: 'Product Hunt / There\'s an AI', diff:'easy' },
+    { name: 'AI 创意陪练工具', desc: '把你领域的"做一次会卡几小时"的事，做成 5 分钟的 AI 陪练。', audience: '该领域学习者', similar: 'Hoa / Wordtune', diff:'med' },
+    { name: '内容自动化工作流', desc: '从你的输入或公开数据，自动生成可发布的小红书/Twitter 内容。变现：订阅或按量计费。', audience: '自媒体 / 个人品牌从业者', similar: 'Magai / Hoppy Copy', diff:'hard' }
+  ];
+  const ideasHtml = '<div class="idea-grid">' + ideas.map(it =>
+    '<div class="idea-card">' +
+      '<div class="idea-card-name">' + esc(it.name) + '</div>' +
+      '<div class="idea-card-desc">' + esc(it.desc) + '</div>' +
+      '<div class="idea-card-meta">' +
+        '<span class="idea-tag">目标：' + esc(it.audience) + '</span>' +
+        '<span class="idea-tag">类似：' + esc(it.similar) + '</span>' +
+        '<span class="idea-tag diff-' + it.diff + '">难度：' + ({easy:'低',med:'中',hard:'高'}[it.diff]) + '</span>' +
+      '</div>' +
+    '</div>'
+  ).join('') + '</div>';
+  return [
+    section('5 个候选 idea · 按"门槛 × 你的能力匹配度"排序', ideasHtml),
+    section('建议下一步', verdict('挑 1–2 个 <strong>难度低、和你能力匹配</strong>的进 Idea 验证器深度评估，再决定要不要做。'))
+  ].join('');
+}
+
+function evalIdeaValidate(inputs) {
+  const idea = inputs.idea || '你的 idea';
+  return [
+    section('可行性', verdict('<strong>✓ 可行（难度：中）</strong>。课程能力范围内能搭出 MVP，约 2–3 周可上线第一版。')),
+    section('同类产品 · 已存在的竞争对手', listCard([
+      { l: 'Anki', r: '老牌、桌面端、用户老 → 你能赢"AI 推荐 + 移动端"' },
+      { l: '千行AI', r: '医考垂直、社群运营强 → 你需要错题智能推荐做差异化' },
+      { l: '考虫题库', r: '体量大、内容护城河 → 不正面对抗，做工具型' }
+    ])),
+    section('主要风险', listCard([
+      { l: '冷启动难', r: '细分领域，第一批用户只能去 QQ 群/小红书地推' },
+      { l: '内容版权', r: '题库要么自建要么授权，不能爬' },
+      { l: '续费率', r: '考试型产品有"考完即弃"问题，要做"二刷"机制' }
+    ])),
+    section('切入点 · 建议', verdict('从 <strong>错题分析 + 智能推荐</strong>切入，先不做完整题库（用户自上传错题），降低内容风险。先在 1 个学科（如内科）打透。'))
+  ].join('');
+}
+
+function evalStack(inputs) {
+  const type = inputs.type || 'web';
+  const level = inputs.level || 'zero';
+  const market = inputs.market || 'overseas';
+
+  const stackMap = {
+    web: {
+      zero:  [['前端 + 后端', 'Next.js (App Router)'], ['UI 组件', 'shadcn/ui + Tailwind'], ['数据库', 'Supabase'], ['AI', 'Claude API / OpenAI API'], ['部署', 'Vercel']],
+      some:  [['前端', 'Next.js'], ['后端', 'Next.js API Routes'], ['DB', 'Supabase / PlanetScale'], ['AI', '多 API 混用'], ['部署', 'Vercel / Cloudflare']],
+      tech:  [['前端', 'Next.js / Astro'], ['后端', 'Hono / Fastify'], ['DB', 'PostgreSQL (自管 or Supabase)'], ['AI', 'OpenRouter 统一接入'], ['部署', 'Vercel + Cloudflare']]
+    },
+    miniprog: {
+      zero:  [['框架', 'Taro / 原生小程序'], ['UI', 'Vant Weapp'], ['后端', '云开发 / Supabase'], ['AI', '通义千问 / DeepSeek'], ['支付', '微信支付']],
+      some:  [['框架', '原生小程序 + TypeScript'], ['后端', '云开发'], ['DB', '云数据库'], ['支付', '微信支付'], ['AI', '通义千问']],
+      tech:  [['框架', '原生 + Skyline'], ['后端', '自建 Node + 云函数'], ['AI', 'DeepSeek + 自部署'], ['监控', '友盟']]
+    },
+    app: {
+      zero:  [['框架', 'Expo (React Native)'], ['UI', 'NativeWind'], ['后端', 'Supabase'], ['支付', 'RevenueCat'], ['部署', 'EAS Build']],
+      some:  [['框架', 'Expo / Tauri Mobile'], ['后端', 'Supabase / 自建'], ['支付', 'RevenueCat'], ['推送', 'Expo Push']],
+      tech:  [['框架', 'React Native (bare)'], ['后端', '自建'], ['支付', 'RevenueCat / 自接 Stripe']]
+    },
+    desktop: {
+      zero:  [['框架', 'Tauri + Vue/React'], ['UI', 'shadcn/ui'], ['持久化', 'SQLite'], ['打包', 'Tauri 内置'], ['更新', 'Tauri updater']],
+      some:  [['框架', 'Tauri (推荐) / Electron'], ['DB', 'SQLite'], ['打包', 'Tauri / electron-builder']],
+      tech:  [['框架', 'Tauri 2 (Rust 后端)'], ['DB', 'SQLite + SQLx'], ['打包 + 签名', 'GitHub Actions']]
+    },
+    agent: {
+      zero:  [['编排', 'n8n / Coze'], ['浏览器', 'Playwright'], ['AI', 'Claude API'], ['触发', '飞书 OpenAPI / cron'], ['存储', 'Supabase']],
+      some:  [['编排', 'Node 自写 + LangGraph'], ['浏览器', 'Playwright'], ['AI', '多 API 路由'], ['存储', 'Postgres / Redis']],
+      tech:  [['编排', 'LangGraph / 自研'], ['浏览器', 'Playwright + Browserbase'], ['LLM 路由', 'OpenRouter / Portkey']]
+    }
+  };
+
+  const payment = market === 'cn' ? '微信支付 / 支付宝' : market === 'overseas' ? 'Stripe / Paddle / LemonSqueezy' : '微信支付 + Stripe 双轨';
+
+  const stack = stackMap[type] && stackMap[type][level] ? stackMap[type][level] : stackMap.web.zero;
+  const stackList = listCard(stack.concat([['支付', payment]]).map(([l, r]) => ({ l: l, r: r })));
+
+  const lessons = {
+    web: 'B1 / B5 / B6 / B12',
+    miniprog: 'C15 / C16',
+    app: 'C17',
+    desktop: 'C18',
+    agent: 'D5 / D6 / D7'
+  }[type];
+
+  return [
+    section('推荐栈组合', stackList),
+    section('上手路径', verdict('按顺序：<strong>跟课程节点</strong> → <strong>跑通最小 demo</strong> → <strong>替换为自己的内容</strong>。每一步都有对应课程，不要跳。')),
+    section('对应课程节点', verdict('<strong>' + lessons + '</strong> → 在路线图里点这些节点能看到具体课程。'))
+  ].join('');
+}
+
+function evalLanding(inputs) {
+  const name = inputs.name || 'YourApp';
+  const desc = inputs.desc || '一个能解决问题的工具';
+  const audience = inputs.audience || '需要它的人';
+  const benefit = inputs.benefit || '比传统方式快 3 倍';
+
+  const preview =
+    '<div class="landing-preview">' +
+      '<div class="landing-title">' + esc(benefit) + '</div>' +
+      '<div class="landing-sub">' + esc(name) + ' — ' + esc(desc) + '。专为' + esc(audience) + '设计。</div>' +
+      '<a class="landing-cta" href="#">立即免费试用 →</a>' +
+      '<div class="landing-points">' +
+        '<div class="landing-point">10 秒上手，无需注册</div>' +
+        '<div class="landing-point">每月 ¥X 起，比同类便宜 50%</div>' +
+        '<div class="landing-point">已有 1,234 名' + esc(audience) + '在用</div>' +
+        '<div class="landing-point">数据在你本地，隐私零顾虑</div>' +
+        '<div class="landing-point">不满意 7 天退款</div>' +
+      '</div>' +
+    '</div>';
+
+  return [
+    section('落地页样稿 · 8 秒打动用户版本', preview),
+    section('文案要点说明', listCard([
+      { l: '标题：用「最大卖点」做钩子', r: '不是介绍产品，是给用户结果' },
+      { l: '副标题：补充上下文 + 谁在用', r: '让标题不显得空洞' },
+      { l: 'CTA：低门槛动词', r: '"试用 / 体验 / 看看"，避免"购买 / 注册"' },
+      { l: '5 个卖点：覆盖反对点', r: '便宜 / 容易 / 安全 / 有人在用 / 可退' }
+    ])),
+    section('下一步', verdict('把这版文案拿到 <strong>路线图 → 商业化 → C11 落地页</strong>那一节，跟课程一起优化。'))
+  ].join('');
+}
+
+function evalColdStart(inputs) {
+  const name = inputs.name || '你的产品';
+  const audience = inputs.audience || '目标用户';
+  const type = inputs.type || 'web';
+
+  const actions = [
+    { num:1, platform:'小红书', text:'用「我用 AI 做了一个'+ name +'，专门给'+ audience +'用」为题，发 3 篇笔记。重点放产品截图和真实使用过程，不卖货。', effort:'2h · 自己写 · 0 元', expected:'第一周获得 50–200 用户' },
+    { num:2, platform:'即刻', text:'在「AI 探索站」「独立开发者」「我有一个 idea」3 个圈子各发一帖，标题写「上线了！我的第一个产品 ' + name + '」。带 demo 链接 + 求反馈。', effort:'30 min · 0 元', expected:'同行流量 + 30–80 试用' },
+    { num:3, platform:'X / Twitter', text:'写一条 build in public 推文：「Day N: Just launched ' + name + ' — '+ esc(audience) +' can now ... 」+ 截图 + 链接。配 4–5 个相关 hashtag。', effort:'1h · 0 元', expected:'海外用户首批 20–50' },
+    { num:4, platform:'微信群', text:'找 5 个目标用户聚集的微信群（先加群混 2 周再发），用「问问大家有没有遇到 X 问题」的姿势引出产品，不要硬广。', effort:'两周潜伏 + 1 次发布', expected:'高质量首批用户 10–30' },
+    { num:5, platform:'V2EX / 各论坛', text:'在你领域相关的论坛/Reddit，写一篇「我做了一个 X，求大家给点建议」长帖。前 200 字必须有干货。', effort:'2h · 0 元', expected:'冷门但精准 5–20' },
+    { num:6, platform:'付费 KOL 探针', text:'花 ¥500 找一个小红书/B 站 1–10 万粉的垂直 KOL 发一条种草，看转化漏斗。能不能跑通后续投放。', effort:'1 周 · 500 元', expected:'数据 + 决定要不要继续投' },
+    { num:7, platform:'Product Hunt', text:'攒 30 天数据后上 PH。准备：好的标题 / GIF 截图 / 第一天找 5 个 hunter 互相点赞。', effort:'1 个月攒势能 + 1 天发布', expected:'200–800 PV、20–50 注册' }
+  ];
+
+  const html = '<div class="action-list">' + actions.map(a =>
+    '<div class="action-item">' +
+      '<div class="action-num">' + a.num + '</div>' +
+      '<div class="action-body">' +
+        '<div class="action-platform">' + a.platform + '</div>' +
+        '<div class="action-text">' + a.text + '</div>' +
+        '<div class="action-effort">' + a.effort + ' · 预期：' + a.expected + '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('') + '</div>';
+
+  return [
+    section('7 个具体动作 · 按 ROI 排序', html),
+    section('原则', verdict('冷启动不是等用户来，是 <strong>找到用户聚集的地方，自己走过去</strong>。前 100 个用户都应该是你"一个一个聊出来的"，不是流量推来的。')),
+    section('对应课程', verdict('看 <strong>路线图 → 增长 → D16 冷启动</strong>，那一节有更深入的方法论。'))
+  ].join('');
+}
+
+/* ============= UTILITIES ============= */
+function field(name, label, kind, placeholder) {
+  if (kind === 'textarea') {
+    return '<div class="field-group">' +
+      '<label class="field-label">' + label + '</label>' +
+      '<textarea class="field-textarea" data-name="' + name + '" placeholder="' + esc(placeholder || '') + '"></textarea>' +
+    '</div>';
+  }
+  return '<div class="field-group">' +
+    '<label class="field-label">' + label + '</label>' +
+    '<input class="field-input" data-name="' + name + '" placeholder="' + esc(placeholder || '') + '" />' +
+  '</div>';
+}
+
+function radioField(name, label, options) {
+  const chips = options.map(opt =>
+    '<div class="radio-chip" data-name="' + name + '" data-value="' + esc(opt.v) + '" onclick="selectRadio(this)">' + esc(opt.label) + '</div>'
+  ).join('');
+  return '<div class="field-group">' +
+    '<label class="field-label">' + label + '</label>' +
+    '<div class="radio-group">' + chips + '</div>' +
+  '</div>';
+}
+
+function selectRadio(el) {
+  const name = el.dataset.name;
+  el.parentNode.querySelectorAll('[data-name="' + name + '"]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function runBtn(label) {
+  return '<button class="btn-run" onclick="runCurrentTool()">' +
+    '<span>' + label + '</span>' +
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>' +
+  '</button>';
+}
+
+function runCurrentTool() {
+  const activeKey = (document.querySelector('.sb-item.active') || {}).dataset?.tool;
+  if (!activeKey || !TOOLS[activeKey]) return;
+
+  // 收集所有 input / textarea / 选中 radio
+  const inputs = {};
+  document.querySelectorAll('#toolForm .field-input, #toolForm .field-textarea').forEach(el => {
+    inputs[el.dataset.name] = (el.value || '').trim();
+  });
+  document.querySelectorAll('#toolForm .radio-chip.selected').forEach(el => {
+    inputs[el.dataset.name] = el.dataset.value;
+  });
+
+  const out = document.getElementById('toolOutput');
+  out.innerHTML =
+    '<div class="output-header">' +
+      '<span class="output-avatar">白</span>' +
+      '<span class="output-by">AI 刘小白</span>' +
+      '<span class="output-by-role">/ ' + TOOLS[activeKey].title + '</span>' +
+    '</div>' +
+    TOOLS[activeKey].evaluate(inputs);
+  out.classList.add('show');
+  out.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ============= HTML BUILDERS ============= */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function section(label, html) {
+  return '<div class="out-section">' +
+    '<div class="out-label">' + label + '</div>' +
+    html +
+  '</div>';
+}
+
+function verdict(html) {
+  return '<div class="verdict-card">' + html + '</div>';
+}
+
+function listCard(items) {
+  return '<div class="list-card">' +
+    items.map(it =>
+      '<div class="list-card-item">' +
+        '<span class="left">' + (it.l) + '</span>' +
+        '<span class="right">' + (it.r) + '</span>' +
+      '</div>'
+    ).join('') +
+  '</div>';
+}
+
+/* ============= INIT ============= */
+(function init() {
+  const params = new URLSearchParams(location.search);
+  const t = params.get('t') || 'idea-explore';
+  switchTool(t);
+})();
+</script>
+
+</body>
+</html>
