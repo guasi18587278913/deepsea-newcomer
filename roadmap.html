@@ -66,7 +66,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
    ===================================================== */
 .km-app {
   display: grid;
-  grid-template-rows: 52px 1fr 84px;
+  grid-template-rows: 52px 52px 1fr 84px;
   height: 100vh;
   width: 100%;
 }
@@ -835,7 +835,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 /* 手机 ≤639px：降级到 vertical stack */
 @media (max-width: 639px) {
   body { overflow: auto; }
-  .km-app { grid-template-rows: 48px auto auto; height: auto; min-height: 100vh; }
+  .km-app { grid-template-rows: 48px auto auto auto; height: auto; min-height: 100vh; }
   .km-main {
     padding: 14px 16px;
     align-items: stretch;
@@ -920,6 +920,132 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .ms-comp.current { background: var(--gold-soft); border-color: var(--gold); color: var(--deep-blue); font-weight: 600; }
 .ms-comp.locked { border-style: dashed; border-color: var(--text-4); color: var(--text-3); }
 
+/* ============ PROJECT BANNER · "你的项目" ============ */
+.km-banner {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--deep-blue);
+  z-index: 9;
+}
+.km-banner.pb-empty {
+  justify-content: center;
+  color: var(--text-2);
+  font-style: italic;
+  gap: 6px;
+}
+.km-banner.pb-empty a {
+  color: var(--teal);
+  font-weight: 600;
+  font-style: normal;
+  border-bottom: 1px solid currentColor;
+}
+.km-banner.pb-empty .sep { color: var(--text-4); margin: 0 6px; }
+.pb-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+}
+.pb-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.pb-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.pb-name {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--deep-blue);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pb-stages { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.pb-stage-chip {
+  padding: 3px 9px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  background: var(--surface);
+  transition: all 0.15s;
+}
+.pb-stage-chip.done {
+  border-color: var(--teal);
+  background: var(--teal-bg);
+  color: var(--deep-blue);
+}
+.pb-stage-chip.current {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--deep-blue);
+  font-weight: 600;
+}
+.pb-stage-arrow { color: var(--text-4); font-size: 10px; padding: 0 2px; }
+.pb-next {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.pb-next-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+.pb-next-action {
+  color: var(--deep-blue);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pb-next-link {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--teal);
+  flex-shrink: 0;
+}
+.pb-update-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--deep-blue);
+  color: var(--deep-blue);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pb-update-btn:hover:not(:disabled) {
+  background: var(--deep-blue);
+  color: var(--surface);
+}
+.pb-update-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .km-banner { padding: 0 16px; font-size: 12px; gap: 12px; }
+  .pb-stages { display: none; }
+  .pb-name { max-width: 110px; }
+}
+
 </style>
 </head>
 <body>
@@ -953,6 +1079,11 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
       <div class="tb-avatar" title="我">李</div>
     </div>
   </header>
+
+  <!-- ============ PROJECT BANNER ============ -->
+  <section class="km-banner" id="kmBanner">
+    <!-- populated by renderProjectBanner() -->
+  </section>
 
   <!-- ============ MAIN CANVAS ============ -->
   <main class="km-main">
@@ -2108,6 +2239,92 @@ function showToast(msg) {
 }
 
 /* =====================================================
+   PROJECT BANNER · 「你的项目」 — slice 2
+   读取 welcome.html 写入的 ds_project，渲染顶栏下方的项目状态条
+   ===================================================== */
+const PROJECT_STAGES = ['需求定义', '原型', '开发', '部署', '上线'];
+const STAGE_NEXT = {
+  '需求定义': { action: '把产品需求写清楚（SPEC）', label: 'A6 · 跟 AI 讨论需求' },
+  '原型':     { action: '在扣子里跑出第一版可用 demo', label: 'A5/A9 · 第一个 AI 产品' },
+  '开发':     { action: '从扣子搬到 TRAE，接数据库 + 认证', label: 'B6/B3/B4 · 进入深水区' },
+  '部署':     { action: '部署上线 + 绑定域名', label: 'B12/B13 · 部署 + 域名' },
+  '上线':     { action: '冷启动，找到第一批真实用户', label: 'D16 · 冷启动' }
+};
+
+function loadProject() {
+  try { return JSON.parse(localStorage.getItem('ds_project') || 'null'); }
+  catch (e) { return null; }
+}
+function saveProject(p) { localStorage.setItem('ds_project', JSON.stringify(p)); }
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function renderProjectBanner() {
+  const banner = document.getElementById('kmBanner');
+  if (!banner) return;
+  const project = loadProject();
+
+  if (!project) {
+    banner.className = 'km-banner pb-empty';
+    banner.innerHTML =
+      '尚未启动自选项目。' +
+      '<a href="welcome.html?fresh=1">补充你的 idea</a>' +
+      '<span class="sep">·</span>或先跟教学项目走';
+    return;
+  }
+
+  const stage = project.stage || '需求定义';
+  const stageIdx = Math.max(0, PROJECT_STAGES.indexOf(stage));
+  const next = STAGE_NEXT[stage] || STAGE_NEXT['需求定义'];
+
+  const chipsHtml = PROJECT_STAGES.map((s, i) => {
+    let cls = 'pb-stage-chip';
+    if (i < stageIdx) cls += ' done';
+    else if (i === stageIdx) cls += ' current';
+    const sep = i < PROJECT_STAGES.length - 1
+      ? '<span class="pb-stage-arrow">›</span>' : '';
+    return '<span class="' + cls + '">' + s + '</span>' + sep;
+  }).join('');
+
+  const isLast = stageIdx === PROJECT_STAGES.length - 1;
+
+  banner.className = 'km-banner';
+  banner.innerHTML =
+    '<div class="pb-inner">' +
+      '<div class="pb-meta">' +
+        '<span class="pb-label">你的项目</span>' +
+        '<span class="pb-name" title="' + escapeHtml(project.ideaText || project.name) + '">' +
+          escapeHtml(project.name) +
+        '</span>' +
+      '</div>' +
+      '<div class="pb-stages">' + chipsHtml + '</div>' +
+      '<div class="pb-next">' +
+        '<span class="pb-next-label">下一步</span>' +
+        '<span class="pb-next-action">' + escapeHtml(next.action) + '</span>' +
+        '<span class="pb-next-link">→ ' + escapeHtml(next.label) + '</span>' +
+      '</div>' +
+      '<button class="pb-update-btn" onclick="advanceProjectStage()"' +
+        (isLast ? ' disabled' : '') + '>' +
+        (isLast ? '已完成' : '完成本阶段') +
+      '</button>' +
+    '</div>';
+}
+
+function advanceProjectStage() {
+  const project = loadProject();
+  if (!project) return;
+  const idx = PROJECT_STAGES.indexOf(project.stage || '需求定义');
+  if (idx >= 0 && idx < PROJECT_STAGES.length - 1) {
+    project.stage = PROJECT_STAGES[idx + 1];
+    saveProject(project);
+    renderProjectBanner();
+    showToast('项目阶段更新：' + project.stage);
+  }
+}
+
+/* =====================================================
    BOOT
    ===================================================== */
 function renderAll() {
@@ -2115,6 +2332,7 @@ function renderAll() {
   renderTopBar();
   renderActionBar();
   renderMobileStack();
+  renderProjectBanner();
 }
 renderAll();
 
