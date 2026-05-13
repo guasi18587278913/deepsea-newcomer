@@ -956,7 +956,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 
   <!-- ============ MAIN CANVAS ============ -->
   <main class="km-main">
-    <svg class="km-canvas" id="kmCanvas" viewBox="0 50 1440 510" preserveAspectRatio="xMidYMid meet" role="img" aria-label="你的学习路线 · 产品架构演化图">
+    <svg class="km-canvas" id="kmCanvas" viewBox="0 80 1440 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="你的学习路线 · 产品架构演化图">
       <!-- injected by render() -->
     </svg>
     <div class="km-mobile-stack" id="kmMobileStack">
@@ -1211,23 +1211,26 @@ const STAGE_BADGES = {
 const KMAP_STAGES = [
   {
     num: 1,
-    centerX: 200,
+    centerX: 165,
+    frame: { x: 80, y: 445, w: 170, h: 125 },
     components: [
       { key:'demo', label:'第一个 demo', en:'First Demo',
-        desc:'用 AI 做一个能访问的最小产品', dx: 0, dy: 320, origin: 1 },
+        desc:'用 AI 做一个能访问的最小产品', dx: 0, dy: 520, origin: 1 },
     ],
     connections: [],
   },
   {
     num: 2,
-    centerX: 540,
+    centerX: 455,
+    frame: { x: 290, y: 445, w: 330, h: 125 },
+    compact: true,
     components: [
       { key:'frontend', label:'前端界面', en:'Frontend',
-        desc:'用户看到和点的页面', dx: 0, dy: 245, origin: 2 },
+        desc:'用户看到和点的页面', dx: -110, dy: 520, origin: 2 },
       { key:'backend',  label:'后端服务', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: 0, dy: 320, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: 0, dy: 520, origin: 2 },
       { key:'db',       label:'数据库',   en:'Database',
-        desc:'产品所有数据的持久存储', dx: 0, dy: 395, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: 110, dy: 520, origin: 2 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1236,20 +1239,22 @@ const KMAP_STAGES = [
   },
   {
     num: 3,
-    centerX: 880,
+    centerX: 820,
+    frame: { x: 660, y: 355, w: 320, h: 215 },
+    compact: true,
     components: [
       // 继承自 Stage 2
       { key:'frontend', label:'前端界面', en:'Frontend',
-        desc:'用户看到和点的页面', dx: -68, dy: 245, origin: 2 },
+        desc:'用户看到和点的页面', dx: -75, dy: 420, origin: 2 },
       { key:'backend',  label:'后端服务', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: -68, dy: 320, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: -75, dy: 475, origin: 2 },
       { key:'db',       label:'数据库',   en:'Database',
-        desc:'产品所有数据的持久存储', dx: -68, dy: 395, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: -75, dy: 530, origin: 2 },
       // 本阶段新增
       { key:'auth',     label:'用户登录', en:'Auth',
-        desc:'让用户注册、登录、找回密码', dx:  68, dy: 282, origin: 3 },
+        desc:'让用户注册、登录、找回密码', dx:  75, dy: 445, origin: 3 },
       { key:'payment',  label:'支付模块', en:'Payment',
-        desc:'接入订阅、单次付款、海外支付', dx:  68, dy: 358, origin: 3 },
+        desc:'接入订阅、单次付款、海外支付', dx:  75, dy: 500, origin: 3 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1260,29 +1265,30 @@ const KMAP_STAGES = [
   },
   {
     num: 4,
-    centerX: 1230,
+    centerX: 1220,
+    frame: { x: 1020, y: 100, w: 400, h: 340 },
     compact: true,
     components: [
       // 继承
       { key:'frontend', label:'前端', en:'Frontend',
-        desc:'用户看到和点的页面', dx: -108, dy: 230, origin: 2 },
+        desc:'用户看到和点的页面', dx: -130, dy: 190, origin: 2 },
       { key:'backend',  label:'后端', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: -108, dy: 290, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: -130, dy: 270, origin: 2 },
       { key:'db',       label:'数据库', en:'Database',
-        desc:'产品所有数据的持久存储', dx: -108, dy: 350, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: -130, dy: 350, origin: 2 },
       { key:'auth',     label:'用户登录', en:'Auth',
-        desc:'让用户注册、登录、找回密码', dx: 0, dy: 230, origin: 3 },
+        desc:'让用户注册、登录、找回密码', dx: 0, dy: 190, origin: 3 },
       { key:'payment',  label:'支付', en:'Payment',
-        desc:'接入订阅、单次付款、海外支付', dx: 0, dy: 290, origin: 3 },
+        desc:'接入订阅、单次付款、海外支付', dx: 0, dy: 270, origin: 3 },
       { key:'analytics',label:'数据看板', en:'Analytics',
         desc:'观测用户行为和核心指标', dx: 0, dy: 350, origin: 4 },
       // 本阶段新增
       { key:'cdn',      label:'内容加速', en:'CDN',
-        desc:'全球分发静态资源、图片', dx: 108, dy: 230, origin: 4 },
+        desc:'全球分发静态资源、图片', dx: 130, dy: 190, origin: 4 },
       { key:'queue',    label:'任务队列', en:'Queue',
-        desc:'定时任务、异步邮件、批量处理', dx: 108, dy: 290, origin: 4 },
+        desc:'定时任务、异步邮件、批量处理', dx: 130, dy: 270, origin: 4 },
       { key:'agent',    label:'智能助手', en:'AI Agent',
-        desc:'让 AI 自动处理重复工作、客户互动', dx: 108, dy: 350, origin: 4 },
+        desc:'让 AI 自动处理重复工作、客户互动', dx: 130, dy: 350, origin: 4 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1544,8 +1550,8 @@ function renderConnection(stage, fromKey, toKey, stateFn) {
     }
   }
 
-  // styling
-  let stroke = '#b8c5d0', sw = 0.9, dash = '2 3', opacity = 0.5, arrow = '';
+  // styling — locked 状态也给箭头，让流向可读（Mermaid 风格）
+  let stroke = '#94a3b8', sw = 0.9, dash = '3 3', opacity = 0.65, arrow = 'url(#arrowGray)';
   if (fromState === 'done' && toState === 'done') {
     stroke = '#0d9488'; dash = 'none'; opacity = 1; sw = 1.1;
     arrow = 'url(#arrowTeal)';
@@ -1559,96 +1565,67 @@ function renderConnection(stage, fromKey, toKey, stateFn) {
                 ${arrow ? `marker-end="${arrow}"` : ''}/>`;
 }
 
-function renderStageBadge(stage, stageState) {
-  const x = stage.centerX;
-  const y = 78;
-  const badge = STAGE_BADGES[stage.num];
-  const content = `${badge.icon}  ${badge.text}`;
-
-  /* 徽章尺寸（固定宽高，所有阶段一致以保持节奏）*/
-  const w = 86, h = 24;
-  const left = x - w/2, top = y - h/2;
-
-  /* 状态配色：current=金底白字；done=teal底白字；locked=淡 teal 外框+teal 字 */
-  let bg, stroke, textColor, sw = 1;
-  if (stageState === 'current') {
-    bg = '#c89854'; stroke = 'none'; textColor = '#ffffff'; sw = 0;
-  } else if (stageState === 'done') {
-    bg = '#0d9488'; stroke = 'none'; textColor = '#ffffff'; sw = 0;
-  } else {
-    /* locked 状态：浅奶白 bg + 淡 teal 外框 + teal 字 —— 让 locked 阶段也有存在感 */
-    bg = '#f6fbfb'; stroke = 'rgba(13,148,136,0.38)'; textColor = '#0d9488';
-  }
-
-  return `
-    <rect x="${left}" y="${top}" width="${w}" height="${h}" rx="12"
-          fill="${bg}" ${sw > 0 ? `stroke="${stroke}" stroke-width="${sw}"` : ''}/>
-    <text x="${x}" y="${top + 16}" text-anchor="middle"
-          font-size="12" font-weight="600" fill="${textColor}"
-          letter-spacing="0.04em">${content}</text>
-  `;
+function renderStageFrame(stage, stageState) {
+  const fill   = stageState === 'current' ? '#fdfaf4'
+               : stageState === 'done'    ? '#f3faf9'
+               : '#fbf9f4';
+  const stroke = stageState === 'current' ? 'rgba(200,152,84,0.28)'
+               : stageState === 'done'    ? 'rgba(13,148,136,0.22)'
+               : 'rgba(30,58,82,0.08)';
+  const { x, y, w, h } = stage.frame;
+  return `<rect class="km-stage-frame" x="${x}" y="${y}" width="${w}" height="${h}" rx="10"
+                fill="${fill}" stroke="${stroke}" stroke-width="0.8"/>`;
 }
 
 function renderStageLabel(stage, stageState) {
-  const x = stage.centerX;
-  const numColor  = stageState === 'current' ? '#c89854' : stageState === 'done' ? '#0d9488' : '#94a3b8';
-  const nameColor = stageState === 'locked' ? '#94a3b8' : '#1a2942';
-  const promiseColor = stageState === 'locked' ? '#94a3b8' : '#5c7a8a';
-  const numStyle = stageState === 'done' ? 'normal' : 'italic';
-  /* 当前阶段编号放大，建立节奏 */
-  const numSize = stageState === 'current' ? 40 : 32;
+  const num = stage.num;
+  const badge = STAGE_BADGES[num];
+  /* 单行标签，mono 小字，置于 frame 内部顶部居中（Mermaid 风格）*/
+  const cx = stage.frame.x + stage.frame.w / 2;
+  const y  = stage.frame.y + 22;
+  const color = stageState === 'current' ? '#c89854'
+              : stageState === 'done'    ? '#0d9488'
+              : '#1a2942';
   return `
     <g class="km-stage-label">
-      ${renderStageBadge(stage, stageState)}
-      <text x="${x}" y="120" text-anchor="middle" class="t-serif"
-            font-size="${numSize}" font-weight="600" font-style="${numStyle}"
-            fill="${numColor}" letter-spacing="0.01em">0${stage.num}</text>
-      <text x="${x}" y="155" text-anchor="middle" class="t-serif"
-            font-size="19" font-weight="600"
-            fill="${nameColor}" letter-spacing="-0.01em">${STAGE_NAMES[stage.num]}</text>
-      <text x="${x}" y="178" text-anchor="middle"
-            font-size="12.5" fill="${promiseColor}">
-        ${STAGE_PROMISES[stage.num]}
-      </text>
+      <text x="${cx}" y="${y}" text-anchor="middle" class="t-mono"
+            font-size="11.5" letter-spacing="0.14em" font-weight="600"
+            fill="${color}">STAGE 0${num} · ${badge.text}</text>
     </g>
   `;
 }
 
-function renderStageDividers() {
-  const ys = [95, 500];
-  return [360, 720, 1080].map(x => `
-    <line x1="${x}" y1="${ys[0]}" x2="${x}" y2="${ys[1]}"
-          stroke="#dde7ea" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.55"/>
-  `).join('');
-}
-
-/* 跨阶段演化连接线 —— 表达"同一个产品在 4 阶段里生长"的时间流向 */
+/* 跨阶段演化连接线 —— 粗实心深色箭头，表达"一步步长出真产品"的主干流向 */
 function renderCrossStageConnectors(currentStage) {
-  /* 每个 gap 数据：[起点 x, 终点 x, 起点 stage, 终点 stage, 标签] */
-  /* 箭头不带文字 —— 价值描述由各阶段顶部的徽章承载，避免重复 */
-  const gaps = [
-    [280, 460, 1, 2],
-    [620, 736, 2, 3],
-    [1032, 1060, 3, 4],
+  const arrows = [
+    { x1: 252, y1: 520, x2: 288, y2: 520, label: 'deploy',   from:1, to:2, curve:false },
+    { x1: 622, y1: 520, x2: 658, y2: 520, label: 'monetize', from:2, to:3, curve:false },
+    { x1: 980, y1: 465, x2: 1020, y2: 270, label: 'scale',   from:3, to:4, curve:true  },
   ];
-  const y = 320;
-
-  return gaps.map(([x1, x2, a, b]) => {
-    let stroke, dash, opacity, arrow;
-    if (b <= currentStage) {
-      stroke = '#0d9488'; dash = '4 3'; opacity = 0.9; arrow = 'url(#arrowTeal)';
-    } else if (a === currentStage) {
-      stroke = '#c89854'; dash = '4 3'; opacity = 0.85; arrow = 'url(#arrowGold)';
+  return arrows.map(a => {
+    /* 主干箭头一律深色实线；locked（未到达）用浅一档 */
+    const unreached = a.to > currentStage && a.from !== currentStage;
+    const stroke   = unreached ? '#8a96a3' : '#1a2942';
+    const opacity  = unreached ? 0.45 : 0.95;
+    const marker   = unreached ? 'url(#arrowHeavyMuted)' : 'url(#arrowHeavy)';
+    let path, labelX, labelY;
+    if (a.curve) {
+      /* 三次贝塞尔：stage 3 右侧出发，先横后上再横，接入 stage 4 左侧 */
+      path = `M ${a.x1} ${a.y1} C ${a.x1 + 70} ${a.y1}, ${a.x2 - 30} ${a.y1 - 120}, ${a.x2} ${a.y2}`;
+      labelX = (a.x1 + a.x2) / 2 + 18;
+      labelY = (a.y1 + a.y2) / 2 + 4;
     } else {
-      stroke = '#b8c5d0'; dash = '3 4'; opacity = 0.45; arrow = 'url(#arrowGray)';
+      path = `M ${a.x1} ${a.y1} L ${a.x2} ${a.y2}`;
+      labelX = (a.x1 + a.x2) / 2;
+      labelY = a.y1 - 12;
     }
-
     return `
       <g class="km-cross-arrow">
-        <path d="M ${x1} ${y} L ${x2} ${y}" fill="none"
-              stroke="${stroke}" stroke-width="1.2"
-              stroke-dasharray="${dash}" opacity="${opacity}"
-              marker-end="${arrow}"/>
+        <path d="${path}" fill="none" stroke="${stroke}" stroke-width="2.2"
+              opacity="${opacity}" marker-end="${marker}" stroke-linecap="round"/>
+        <text x="${labelX}" y="${labelY}" text-anchor="middle" class="t-mono"
+              font-size="10.5" letter-spacing="0.16em" font-weight="500"
+              fill="${stroke}" opacity="${opacity}">${a.label}</text>
       </g>
     `;
   }).join('');
@@ -1679,6 +1656,12 @@ function renderKnowledgeMap() {
       <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
         <path d="M 0 0 L 7 4 L 0 8 L 1.5 4 Z" fill="#b8c5d0" opacity="0.6"/>
       </marker>
+      <marker id="arrowHeavy" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M 0 0 L 9 5 L 0 10 L 2 5 Z" fill="#1a2942"/>
+      </marker>
+      <marker id="arrowHeavyMuted" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M 0 0 L 9 5 L 0 10 L 2 5 Z" fill="#8a96a3"/>
+      </marker>
     </defs>
   `;
 
@@ -1704,6 +1687,7 @@ function renderKnowledgeMap() {
 
     body += `
       <g class="km-stage-group km-stage-group-${stageNum}">
+        ${renderStageFrame(stage, stageState)}
         ${renderStageLabel(stage, stageState)}
         ${connSvg}
         ${compSvg}
@@ -1713,7 +1697,6 @@ function renderKnowledgeMap() {
 
   svg.innerHTML = `
     ${defs}
-    ${renderStageDividers()}
     ${renderCrossStageConnectors(currentStage)}
     ${body}
   `;
