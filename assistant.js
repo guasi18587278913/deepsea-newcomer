@@ -283,12 +283,24 @@
     messages.scrollTop = messages.scrollHeight;
   }
 
+  /* suggestion item 支持两种形态：
+       字符串 → 点击当成用户消息发送
+       { text, href } → 点击直接跳转到 href（用于"打开工具箱"这类导航型 chip） */
   function setSuggestions(arr) {
-    suggest.innerHTML = arr.map(s =>
-      '<div class="assistant-suggest-chip" data-text="' + escapeHtml(s) + '">' + escapeHtml(s) + '</div>'
-    ).join('');
+    suggest.innerHTML = arr.map(item => {
+      if (typeof item === 'string') {
+        return '<div class="assistant-suggest-chip" data-text="' + escapeHtml(item) + '">' + escapeHtml(item) + '</div>';
+      }
+      const hrefAttr = item.href ? ' data-href="' + escapeHtml(item.href) + '"' : '';
+      const arrow = item.href ? ' <span style="font-size:10px;opacity:.55;margin-left:2px;">↗</span>' : '';
+      return '<div class="assistant-suggest-chip" data-text="' + escapeHtml(item.text) + '"' + hrefAttr + '>' + escapeHtml(item.text) + arrow + '</div>';
+    }).join('');
     suggest.querySelectorAll('.assistant-suggest-chip').forEach(el => {
       el.addEventListener('click', () => {
+        if (el.dataset.href) {
+          location.href = el.dataset.href;
+          return;
+        }
         input.value = el.dataset.text;
         send();
       });
@@ -359,25 +371,37 @@
     if (/idea|想法|做什么|做啥|方向/i.test(text)) {
       return {
         text: '可以去工具箱里用 "Idea 探索器"（没想法时用）或 "Idea 验证器"（有想法时用）。两个工具都在顶栏的工具箱里。',
-        suggestions: ['打开 Idea 探索器', '什么样的 idea 能赚钱']
+        suggestions: [
+          { text: '打开 Idea 探索器', href: 'toolbox.html?t=idea-explore' },
+          { text: '打开 Idea 验证器', href: 'toolbox.html?t=idea-validate' }
+        ]
       };
     }
     if (/技术栈|框架|用什么|tech stack/i.test(text)) {
       return {
         text: '工具箱里有 "技术栈推荐" 工具。你选产品类型 + 自己的水平 + 面向市场，会给你一套上手就能开干的栈。',
-        suggestions: ['打开技术栈推荐', '零基础推荐什么栈']
+        suggestions: [
+          { text: '打开技术栈推荐', href: 'toolbox.html?t=stack' },
+          '零基础推荐什么栈'
+        ]
       };
     }
     if (/落地页|landing|文案/i.test(text)) {
       return {
         text: '工具箱有 "落地页文案生成器"，输入产品信息能出"8 秒打动用户版本"。课程里 C11 讲落地页方法论，可以配合看。',
-        suggestions: ['打开落地页生成器', 'C11 讲什么']
+        suggestions: [
+          { text: '打开落地页生成器', href: 'toolbox.html?t=landing' },
+          { text: '打开 C11 课程', href: 'learn.html?code=C11' }
+        ]
       };
     }
     if (/冷启动|没人用|找用户|增长/i.test(text)) {
       return {
         text: '工具箱里的 "冷启动剧本" 会给你 7 个具体动作（去哪个平台发什么）。课程对应 D16 节。\n\n核心心法：前 100 个用户都得自己一个一个聊出来，不是流量推来的。',
-        suggestions: ['打开冷启动剧本', '怎么找小红书 KOL']
+        suggestions: [
+          { text: '打开冷启动剧本', href: 'toolbox.html?t=cold-start' },
+          { text: '打开 D16 课程', href: 'learn.html?code=D16' }
+        ]
       };
     }
     if (/spec|需求|怎么写/i.test(text)) {
@@ -389,7 +413,10 @@
     if (/bug|报错|错误|不工作/i.test(text)) {
       return {
         text: '把报错信息发给我，我看看。也建议先去 #踩坑经验 频道搜一下，80% 的坑别人已经踩过了。',
-        suggestions: ['打开踩坑频道', '常见 Bug 总结']
+        suggestions: [
+          { text: '打开 #踩坑经验 频道', href: 'discuss.html' },
+          '常见 Bug 总结'
+        ]
       };
     }
     if (/课程|哪一节|学/i.test(text)) {
@@ -401,13 +428,19 @@
       }
       return {
         text: '建议先看路线图，从快速入门第 1 节开始（这套课程有什么不同？）。零基础 12 节课大约 2-3 周能跑通第一个 demo。',
-        suggestions: ['打开路线图', '快速入门要多久']
+        suggestions: [
+          { text: '打开路线图', href: 'roadmap.html' },
+          { text: '打开 A1 第一节', href: 'learn.html?code=A1' }
+        ]
       };
     }
     if (/支付|stripe|微信支付|收钱/i.test(text)) {
       return {
         text: '海外用 Stripe（首选）或 Paddle / LemonSqueezy（Stripe 不行的国家）。国内用微信支付或支付宝。\n\n课程 C13 节专门讲海外订阅支付。',
-        suggestions: ['打开 C13 课程', 'Stripe 还是 Paddle']
+        suggestions: [
+          { text: '打开 C13 课程', href: 'learn.html?code=C13' },
+          'Stripe 还是 Paddle'
+        ]
       };
     }
     if (/课程节点|对应课/i.test(text) && project) {
@@ -426,7 +459,10 @@
     /* 兜底 */
     return {
       text: '收到。这个问题我给个大致方向：\n\n建议先去 "工具箱"（顶栏入口）里看有没有对应工具，或在 #求助问答 频道发帖。具体要不要展开讲？',
-      suggestions: ['打开工具箱', '帮我具体拆解']
+      suggestions: [
+        { text: '打开工具箱', href: 'toolbox.html' },
+        '帮我具体拆解'
+      ]
     };
   }
 

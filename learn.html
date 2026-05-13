@@ -26,13 +26,13 @@ a { color:inherit; text-decoration:none; }
 
 /* Top bar - minimal, no tab nav */
 .topbar { position:sticky; top:0; z-index:50; background:rgba(247,248,250,.9); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; }
-.tb-inner { max-width:1200px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.tb-inner { max-width:1280px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.tb-left { display:flex; align-items:center; gap:28px; }
 .logo { font-size:17px; font-weight:700; color:var(--teal); }
-.breadcrumb { flex:1; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text3); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-.breadcrumb a { color:var(--text3); transition:color .2s; }
-.breadcrumb a:hover { color:var(--teal); }
-.breadcrumb .sep { opacity:.4; }
-.breadcrumb .current { color:var(--text1); font-weight:500; }
+.nav { display:flex; gap:18px; }
+.nav a { font-size:13.5px; color:var(--text2); transition:color .15s; padding:4px 0; border-bottom:2px solid transparent; }
+.nav a:hover { color:var(--text1); }
+.nav a.active { color:var(--text1); font-weight:600; border-bottom-color:var(--teal); }
 .avatar { width:32px; height:32px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; flex-shrink:0; cursor:pointer; transition:transform .2s; }
 .avatar:hover { transform:scale(1.05); }
 
@@ -129,13 +129,16 @@ var[--blue] { color: var(--blue); }
 
 <div class="topbar">
   <div class="tb-inner">
-    <a href="roadmap.html" class="logo">深海圈</a>
-    <div class="breadcrumb">
-      <a href="roadmap.html">← 返回路线图</a>
-      <span class="sep">/</span>
-      <a href="roadmap.html">快速入门</a>
-      <span class="sep">/</span>
-      <span class="current">这套课程有什么不同？</span>
+    <div class="tb-left">
+      <a href="roadmap.html" class="logo">深海圈</a>
+      <nav class="nav">
+        <a href="roadmap.html">路线图</a>
+        <a href="learn.html" class="active">学习</a>
+        <a href="discuss.html">讨论</a>
+        <a href="community.html">社区</a>
+        <a href="showcase.html">成果墙</a>
+        <a href="toolbox.html">工具箱</a>
+      </nav>
     </div>
     <a href="profile.html" class="avatar">瓜</a>
   </div>
@@ -298,19 +301,215 @@ function toggleSidebar() {
 function toggleDiscuss() {
   document.getElementById('main').classList.toggle('discuss-collapsed');
 }
-function selectLesson(el) {
-  document.querySelectorAll('.course-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+
+/* ============= COURSES DATA · 与 roadmap.html 同步 ============= */
+const COURSES = [
+  // 快速入门 12 节 (stage 1)
+  { code:'A1', s:1, t:'这套课程有什么不同？', d:15 },
+  { code:'A2', s:1, t:'我祖上十八代都不会编程，我为什么需要会？', d:18 },
+  { code:'A3', s:1, t:'开挂式学习：用 AI 来学 AI', d:12 },
+  { code:'A4', s:1, t:'AI 到底是什么？别怕，它就是个超级实习生', d:20 },
+  { code:'A5', s:1, t:'初体验：10 分钟，做出你的第一个网站', d:30 },
+  { code:'A6', s:1, t:'跟 AI 讨论需求：从模糊想法到清晰指令', d:25 },
+  { code:'A7', s:1, t:'什么是 AI 产品？跟普通产品到底差在哪？', d:18 },
+  { code:'A8', s:1, t:'开发 AI 产品的核心秘密：预制菜思维 + 积木思维', d:22 },
+  { code:'A9', s:1, t:'动手开发第一个 AI 产品：互联网黑话翻译器', d:45 },
+  { code:'A10', s:1, t:'难度升级！第二个 AI 产品：哄哄模拟器', d:50 },
+  { code:'A11', s:1, t:'再次升级！从零打造"纸片人男友"', d:60 },
+  { code:'A12', s:1, t:'入门篇总结：你已经不是只会用 AI 聊天的人了', d:10 },
+  // 实战进阶 27 节 (stage 2)
+  { code:'B1', s:2, t:'前端和后端：一个管脸，一个管脑', d:25 },
+  { code:'B2', s:2, t:'源代码管理：你的代码也需要网盘', d:20 },
+  { code:'B3', s:2, t:'数据库：你的数据存在哪？', d:25 },
+  { code:'B4', s:2, t:'用户认证：怎么让用户注册登录你的产品', d:30 },
+  { code:'B5', s:2, t:'Next.js 最核心的内容：你一直在用，只是不知道', d:35 },
+  { code:'B6', s:2, t:'离开扣子编程，进入深水区', d:20 },
+  { code:'B7', s:2, t:'IDE 类 AI 编程工具速通', d:40 },
+  { code:'B8', s:2, t:'使用 Github 做源代码管理', d:45 },
+  { code:'B9', s:2, t:'去 API 超市进货：给你的产品加上现成的 AI 超能力', d:50 },
+  { code:'B10', s:2, t:'环境变量：为什么密码不能直接写在代码里', d:15 },
+  { code:'B11', s:2, t:'Bug 和报错：你的产品一定会出问题，然后呢', d:30 },
+  { code:'B12', s:2, t:'服务器、部署、上线：你的产品怎么跑到全世界', d:60 },
+  { code:'B13', s:2, t:'域名：给你的产品起个好记的名字', d:15 },
+  { code:'B14', s:2, t:'Claude Code：TRAE/Cursor 够了，为什么还要用它', d:35 },
+  { code:'B15', s:2, t:'MCP：AI 的万能插头 — 让 AI 连上一切工具', d:40 },
+  { code:'B16', s:2, t:'Skill：给 AI 写一份上岗 SOP', d:35 },
+  { code:'B17', s:2, t:'期中考试：使用 TRAE 和外部 API，重做"纸片人男友"', d:90 },
+  { code:'B18', s:2, t:'去哪里看模型能力：别靠感觉选，学会看公开信号', d:25 },
+  { code:'B19', s:2, t:'数据库进阶：离开扣子后，怎么选数据库', d:30 },
+  { code:'B20', s:2, t:'上线后，如何根据用户行为迭代产品', d:25 },
+  { code:'B21', s:2, t:'如何迅速提升产品设计感', d:30 },
+  { code:'B22', s:2, t:'利用开源生态，加速产品开发', d:25 },
+  { code:'B23', s:2, t:'人机验证：有人用机器人来薅你的产品，怎么办', d:20 },
+  { code:'B24', s:2, t:'云存储：AI 生成的图片链接过期了，怎么办', d:20 },
+  { code:'B25', s:2, t:'邮件服务：想让产品主动联系用户，怎么办', d:25 },
+  { code:'B26', s:2, t:'定时任务：你睡了，产品还能自己干活', d:20 },
+  { code:'B27', s:2, t:'用户反馈：你的用户想吐槽，往哪儿吐', d:15 },
+  // 商业化 19 节 (stage 3)
+  { code:'C1', s:3, t:'在起心动念和开始编程之间', d:15 },
+  { code:'C2', s:3, t:'能赚钱的 AI 产品长什么样？去哪儿找？', d:25 },
+  { code:'C3', s:3, t:'学习的第一步不是创新，是像素级模仿', d:20 },
+  { code:'C4', s:3, t:'产品 Idea 从哪里来？幸福的方式', d:20 },
+  { code:'C5', s:3, t:'产品 Idea 从哪里来？功利的方式', d:20 },
+  { code:'C6', s:3, t:'为什么有些人总能抢到红利', d:20 },
+  { code:'C7', s:3, t:'"新词站"：一个闷声发财的路子', d:25 },
+  { code:'C8', s:3, t:'小而美：低风险创业的最佳起步方式', d:20 },
+  { code:'C9', s:3, t:'什么是 MicroSaaS？一个人也能做的订阅制生意', d:25 },
+  { code:'C10', s:3, t:'MicroSaaS 四件套：落地页、用户中心、核心功能、支付', d:30 },
+  { code:'C11', s:3, t:'Landing Page：你只有 8 秒，用 8 秒打动用户', d:35 },
+  { code:'C12', s:3, t:'用户登录：别自己造轮子', d:20 },
+  { code:'C13', s:3, t:'海外订阅支付是怎么回事', d:30 },
+  { code:'C14', s:3, t:'极速开发：从零到正式上线只需 1 天', d:45 },
+  { code:'C15', s:3, t:'用 AI 做一个微信小程序', d:60 },
+  { code:'C16', s:3, t:'微信小游戏：做个能在群里疯传的 AI 小游戏', d:50 },
+  { code:'C17', s:3, t:'用 AI 开发手机 App，无论安卓还是 iOS', d:80 },
+  { code:'C18', s:3, t:'用 AI 开发桌面应用，Windows 和 Mac 都行', d:60 },
+  { code:'C19', s:3, t:'商业化阶段小结', d:15 },
+  // 增长 19 节 (stage 4)
+  { code:'D1', s:4, t:'AI 不是工具，是员工：一次思维转变', d:20 },
+  { code:'D2', s:4, t:'浏览器自动化专项', d:40 },
+  { code:'D3', s:4, t:'怎么教 AI 学会你的工作方式', d:30 },
+  { code:'D4', s:4, t:'Cowork/Codex：不用看代码，直接让 AI 交付结果', d:35 },
+  { code:'D5', s:4, t:'用扣子工作流把重复劳动自动化', d:40 },
+  { code:'D6', s:4, t:'OpenClaw：用飞书指挥 AI 干活', d:30 },
+  { code:'D7', s:4, t:'从零搭建你的第一个 AI Agent', d:50 },
+  { code:'D8', s:4, t:'给 AI 定规矩', d:25 },
+  { code:'D9', s:4, t:'用 AI 完成复杂需求的方法：SPEC 驱动', d:35 },
+  { code:'D10', s:4, t:'软件工程的真谛：高内聚、低耦合', d:30 },
+  { code:'D11', s:4, t:'单元测试：让 AI 每次写完自动检查', d:25 },
+  { code:'D12', s:4, t:'上下文工程，不是 Prompt 工程', d:30 },
+  { code:'D13', s:4, t:'从 Vibe Coding 到 Vibe Engineering', d:30 },
+  { code:'D14', s:4, t:'一个 AI 不够用？那就建一支 AI 团队', d:35 },
+  { code:'D15', s:4, t:'让 AI 输出可控：从自由发挥到结构化交付', d:25 },
+  { code:'D16', s:4, t:'冷启动：找人，而不是等人', d:30 },
+  { code:'D17', s:4, t:'好产品自己会长腿：在产品里种下传播的种子', d:25 },
+  { code:'D18', s:4, t:'一个人的生意，怎么越做越大', d:30 },
+  { code:'D19', s:4, t:'毕业总结 · 下一步往哪儿走', d:15 }
+];
+const STAGE_NAMES = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
+
+function getLessonCode() {
+  return new URLSearchParams(location.search).get('code') || 'A1';
+}
+function findCourse(code) {
+  return COURSES.find(c => c.code === code) || COURSES[0];
+}
+function getPrevNext(code) {
+  const idx = COURSES.findIndex(c => c.code === code);
+  return {
+    prev: idx > 0 ? COURSES[idx - 1] : null,
+    next: idx >= 0 && idx < COURSES.length - 1 ? COURSES[idx + 1] : null
+  };
 }
 
-// demo：learn.html 当前固定展示 A1 这节课的内容
-// 实际产品里会根据 url query 切换课程
-const CURRENT_CODE = 'A1';
+function renderLesson() {
+  const code = getLessonCode();
+  const course = findCourse(code);
+  const stageName = STAGE_NAMES[course.s];
+  const stageCourses = COURSES.filter(c => c.s === course.s);
+  const idxInStage = stageCourses.findIndex(c => c.code === code) + 1;
+  const completed = (() => {
+    try { return JSON.parse(localStorage.getItem('ds_completed_demo') || '[]'); }
+    catch (e) { return []; }
+  })();
+
+  /* 侧边栏：当前阶段的所有课程 */
+  const sidebarTitle = document.querySelector('.sidebar-title');
+  if (sidebarTitle) sidebarTitle.textContent = stageName + ' · 共 ' + stageCourses.length + ' 节';
+
+  const courseList = document.querySelector('.course-list');
+  if (courseList) {
+    courseList.innerHTML = stageCourses.map(c => {
+      const isActive = c.code === code;
+      const isDone = completed.includes(c.code);
+      const cls = ['course-item'];
+      if (isActive) cls.push('active');
+      if (isDone) cls.push('done');
+      return '<li class="' + cls.join(' ') + '" onclick="goToCourse(\'' + c.code + '\')">' +
+        '<div class="check' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : '') + '</div>' +
+        '<span class="course-name">' + c.t + '</span>' +
+      '</li>';
+    }).join('');
+  }
+
+  /* 内容头 */
+  const meta = document.querySelector('.content-meta');
+  if (meta) {
+    meta.innerHTML = '图文课程<span class="dot"></span>约 ' + course.d + ' 分钟<span class="dot"></span>' +
+      stageName + ' · 第 ' + idxInStage + ' 节';
+  }
+  const title = document.querySelector('.content-title');
+  if (title) title.textContent = course.t;
+
+  /* 正文：A1 保留原图文，其他节用占位 */
+  if (code !== 'A1') {
+    const article = document.querySelector('.article');
+    if (article) {
+      article.innerHTML =
+        '<div class="callout" style="background:linear-gradient(180deg,#fff7e6 0%,#fff 100%);border-left-color:#c89854;">' +
+          '<strong>课程正文施工中</strong><br>' +
+          '这是 ' + code + ' 《' + course.t + '》 的内容展示位。' +
+          '完整图文 / 视频会从课程 CMS 同步过来。<br><br>' +
+          '本节关键点（占位示意）：' +
+          '<ul style="margin:8px 0 0 16px;">' +
+            '<li>' + course.t + ' 的核心方法论</li>' +
+            '<li>动手实操步骤</li>' +
+            '<li>本节作业</li>' +
+          '</ul>' +
+        '</div>' +
+        '<p style="margin-top:24px;color:var(--text2);font-size:14px;">' +
+          '当前预览模式仅展示骨架。V1 后期会接入真实课程内容。' +
+        '</p>';
+    }
+  }
+
+  /* 上一节 / 下一节 */
+  const { prev, next } = getPrevNext(code);
+  const navBtns = document.querySelectorAll('.nav-btn');
+  if (navBtns.length >= 2) {
+    if (prev) {
+      navBtns[0].style.opacity = '';
+      navBtns[0].style.pointerEvents = '';
+      navBtns[0].innerHTML =
+        '<span class="nav-btn-label">← 上一节</span>' +
+        '<span class="nav-btn-name">' + prev.t + '</span>';
+      navBtns[0].onclick = () => goToCourse(prev.code);
+    } else {
+      navBtns[0].style.opacity = '0.4';
+      navBtns[0].style.pointerEvents = 'none';
+      navBtns[0].innerHTML =
+        '<span class="nav-btn-label">已是第一节</span>' +
+        '<span class="nav-btn-name">—</span>';
+    }
+    if (next) {
+      navBtns[1].style.opacity = '';
+      navBtns[1].style.pointerEvents = '';
+      navBtns[1].innerHTML =
+        '<span class="nav-btn-label">下一节 →</span>' +
+        '<span class="nav-btn-name">' + next.t + '</span>';
+      navBtns[1].onclick = () => { markCurrentDone(); goToCourse(next.code); };
+    } else {
+      navBtns[1].style.opacity = '0.4';
+      navBtns[1].style.pointerEvents = 'none';
+      navBtns[1].innerHTML =
+        '<span class="nav-btn-label">已是最后一节</span>' +
+        '<span class="nav-btn-name">毕业</span>';
+      navBtns[1].onclick = null;
+    }
+  }
+}
+
+function goToCourse(code) {
+  location.href = 'learn.html?code=' + encodeURIComponent(code);
+}
 
 function markCurrentDone() {
-  const completed = JSON.parse(localStorage.getItem('ds_completed_demo') || '[]');
-  if (!completed.includes(CURRENT_CODE)) {
-    completed.push(CURRENT_CODE);
+  const code = getLessonCode();
+  let completed;
+  try { completed = JSON.parse(localStorage.getItem('ds_completed_demo') || '[]'); }
+  catch (e) { completed = []; }
+  if (!completed.includes(code)) {
+    completed.push(code);
     localStorage.setItem('ds_completed_demo', JSON.stringify(completed));
   }
   localStorage.setItem('ds_started', 'true');
@@ -328,19 +527,14 @@ function showToast(text) {
   requestAnimationFrame(() => toast.style.opacity = '1');
 }
 
-function prevLesson() {
-  // 第一节没有上一节，直接返回路线图
-  location.href = 'roadmap.html';
+/* 旧 API 兼容：保留 selectLesson 但改为内部跳转 */
+function selectLesson(el) {
+  const code = el.dataset && el.dataset.code;
+  if (code) goToCourse(code);
 }
 
-function nextLesson() {
-  // demo：标记完成 → toast → 1.2 秒后回 roadmap 看进度
-  markCurrentDone();
-  showToast('✓ 已完成 ' + CURRENT_CODE + ' · 这套课程有什么不同？');
-  setTimeout(() => {
-    location.href = 'roadmap.html';
-  }, 1200);
-}
+/* 启动：根据 URL 渲染当前课程 */
+renderLesson();
 </script>
 
 <script src="assistant.js"></script>

@@ -2238,6 +2238,28 @@ function closeSubmitModal() {
   _submitStageNum = null;
 }
 
+/* 课程 stage（1-4）完成 → 推进到的项目阶段（PROJECT_STAGES 索引）
+   Stage 1 能跑通 → 项目「原型」(idx 1)
+   Stage 2 能上线 → 项目「部署」(idx 3)
+   Stage 3 能收钱 → 项目「上线」(idx 4)
+   Stage 4 能扩张 → 保持「上线」(idx 4) */
+const STAGE_TO_PROJECT_IDX = { 1: 1, 2: 3, 3: 4, 4: 4 };
+
+function maybeAdvanceProjectFromSubmission(stageNum) {
+  const project = loadProject();
+  if (!project) return null;
+  const target = STAGE_TO_PROJECT_IDX[stageNum];
+  if (target == null) return null;
+  const cur = Math.max(0, PROJECT_STAGES.indexOf(project.stage || '需求定义'));
+  if (target > cur) {
+    project.stage = PROJECT_STAGES[target];
+    saveProject(project);
+    renderProjectBanner();
+    return project.stage;
+  }
+  return null;
+}
+
 function submitAssignment() {
   if (_submitStageNum == null) return;
   const submission = {
@@ -2260,7 +2282,14 @@ function submitAssignment() {
   localStorage.setItem('ds_submissions', JSON.stringify(submissions));
 
   closeSubmitModal();
-  showToast('作业已提交：' + submission.title);
+
+  // 联动推进项目阶段
+  const advanced = maybeAdvanceProjectFromSubmission(submission.stage);
+  if (advanced) {
+    showToast('已提交「' + submission.title + '」· 项目推进到「' + advanced + '」');
+  } else {
+    showToast('作业已提交：' + submission.title);
+  }
 
   // 重新渲染当前 callout 的作业块（如果开着）
   const assignEl = document.getElementById('kdAssignment');
