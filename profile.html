@@ -130,31 +130,8 @@ a { color:inherit; text-decoration:none; }
 
   <div class="section">
     <div class="section-title">作业历史</div>
-    <div class="hw-list">
-      <div class="hw-item">
-        <div class="hw-num">第1周</div>
-        <div class="hw-name">用 AI 做出一个能在线访问的网站</div>
-        <span class="hw-date">3.25 提交</span>
-        <span class="hw-status done">✓ 已提交</span>
-      </div>
-      <div class="hw-item">
-        <div class="hw-num">第2周</div>
-        <div class="hw-name">用 IDE 搭建一个有前后端交互的 Next.js 项目</div>
-        <span class="hw-date">4.1 提交</span>
-        <span class="hw-status star">⭐ 优秀作业</span>
-      </div>
-      <div class="hw-item">
-        <div class="hw-num">第3周</div>
-        <div class="hw-name">给产品接入 API，代码推 GitHub，部署上线</div>
-        <span class="hw-date">4.8 提交</span>
-        <span class="hw-status done">✓ 已提交</span>
-      </div>
-      <div class="hw-item">
-        <div class="hw-num">第4周</div>
-        <div class="hw-name">绑定域名 + Claude Code/MCP 优化 + 期中考试</div>
-        <span class="hw-date">截止 4.20</span>
-        <span class="hw-status pending">进行中</span>
-      </div>
+    <div class="hw-list" id="hwList">
+      <!-- populated by JS · 优先读 ds_submissions，否则用 demo 数据 -->
     </div>
   </div>
 
@@ -166,6 +143,73 @@ a { color:inherit; text-decoration:none; }
 
 </div>
 
+<script>
+/* =====================================================
+   作业历史 · 从 ds_submissions 读取真实提交，
+   没有就回退到 demo 占位数据
+   ===================================================== */
+const STAGE_LABEL = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
+const STAGE_TITLE = {
+  1: '用 AI 做出一个能在线访问的网站',
+  2: '完成产品部署上线 + 域名 + API + 数据库',
+  3: '从零搭建完整产品：落地页 + 认证 + 支付',
+  4: '毕业大作业：执行 1 个增长动作，展示产品数据变化'
+};
+const DEMO_HW = [
+  { num:'第1周', name:'用 AI 做出一个能在线访问的网站', date:'3.25 提交', cls:'done',    label:'✓ 已提交' },
+  { num:'第2周', name:'用 IDE 搭建一个有前后端交互的 Next.js 项目', date:'4.1 提交', cls:'star',    label:'⭐ 优秀作业' },
+  { num:'第3周', name:'给产品接入 API，代码推 GitHub，部署上线', date:'4.8 提交', cls:'done',    label:'✓ 已提交' },
+  { num:'第4周', name:'绑定域名 + Claude Code/MCP 优化 + 期中考试', date:'截止 4.20', cls:'pending', label:'进行中' }
+];
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderHwList() {
+  let subs = [];
+  try { subs = JSON.parse(localStorage.getItem('ds_submissions') || '[]'); }
+  catch (e) { subs = []; }
+
+  const el = document.getElementById('hwList');
+  if (!subs.length) {
+    el.innerHTML = DEMO_HW.map(h =>
+      `<div class="hw-item">
+        <div class="hw-num">${h.num}</div>
+        <div class="hw-name">${h.name}</div>
+        <span class="hw-date">${h.date}</span>
+        <span class="hw-status ${h.cls}">${h.label}</span>
+      </div>`
+    ).join('');
+    return;
+  }
+
+  // 真实提交：按 stage 排序
+  subs.sort((a, b) => (a.stage || 0) - (b.stage || 0));
+  const items = subs.map(s => {
+    const stageLabel = '第' + s.stage + '阶段 · ' + (STAGE_LABEL[s.stage] || '');
+    const desc = escapeHtml(s.title || STAGE_TITLE[s.stage] || '阶段作业');
+    const date = (s.submittedAt || '').replace(/^2026-/, '').replace('-', '.') + ' 提交';
+    const urlLink = s.url
+      ? `<a class="hw-name" href="${escapeHtml(s.url)}" target="_blank" rel="noopener" style="color:var(--teal-dark);text-decoration:underline;">${desc}</a>`
+      : `<div class="hw-name">${desc}</div>`;
+    return `<div class="hw-item">
+      <div class="hw-num">${stageLabel}</div>
+      ${urlLink}
+      <span class="hw-date">${escapeHtml(date)}</span>
+      <span class="hw-status done">✓ 已提交</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = items;
+
+  // 顶栏统计同步
+  const sd = document.querySelector('.stat-card .stat-num');
+  // 不强改 demo 统计；真实用户可后续接入
+}
+
+renderHwList();
+</script>
 <script src="assistant.js"></script>
 </body>
 </html>

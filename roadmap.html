@@ -468,6 +468,82 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .modal-btn.ghost { color: var(--text-2); }
 .modal-btn.ghost:hover { color: var(--deep-blue); }
 
+/* ---- Submit assignment modal ---- */
+.submit-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.submit-field label {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.submit-field input[type="text"],
+.submit-field input[type="url"],
+.submit-field textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--deep-blue);
+  background: var(--surface);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.submit-field input:focus,
+.submit-field textarea:focus { border-color: var(--teal); }
+.submit-field.inline { flex-direction: row; align-items: center; gap: 8px; margin-bottom: 10px; }
+.submit-field.inline label {
+  font-weight: normal;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--deep-blue);
+}
+
+/* ---- Submit button in assignment block ---- */
+.kd-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--gold);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: background 0.15s;
+}
+.kd-submit-btn:hover { background: var(--gold-bright); }
+.kd-submit-btn svg { width: 13px; height: 13px; }
+.kd-submit-btn.submitted {
+  background: var(--teal-bg);
+  color: var(--teal-active);
+  border: 1px solid var(--teal);
+}
+.kd-submit-btn.submitted:hover { background: var(--teal-light); }
+.kd-submit-edit {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.kd-submit-edit:hover { color: var(--teal); }
+
 /* ============ CALLOUT · 锚定卡（in-map anchored card）============ */
 /* 地图 dim · 卡片弹出时地图保持可见但降到 0.35 让卡片焦点清晰 */
 .km-canvas.km-dim,
@@ -1244,6 +1320,40 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
       <button class="modal-btn ghost" onclick="closePaceModal()">取消</button>
       <button class="modal-btn primary" onclick="applyPace()">确认</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ SUBMIT ASSIGNMENT MODAL ============ -->
+<div class="modal-mask" id="submitModal">
+  <div class="modal" style="max-width:540px;">
+    <h3 id="submitModalTitle">提交阶段作业</h3>
+    <p id="submitModalSubtitle">—</p>
+    <form id="submitForm" onsubmit="event.preventDefault(); submitAssignment();">
+      <div class="submit-field">
+        <label>作品名 / 标题</label>
+        <input type="text" id="sfTitle" required placeholder="例如：医考小程序 V1">
+      </div>
+      <div class="submit-field">
+        <label>部署 URL（必填）</label>
+        <input type="url" id="sfUrl" required placeholder="https://your-app.vercel.app">
+      </div>
+      <div class="submit-field">
+        <label>仓库链接（选填）</label>
+        <input type="url" id="sfRepo" placeholder="https://github.com/you/your-repo">
+      </div>
+      <div class="submit-field">
+        <label>一句话描述</label>
+        <textarea id="sfDesc" rows="3" required placeholder="你做了什么、给谁用、亮点是什么"></textarea>
+      </div>
+      <div class="submit-field inline">
+        <input type="checkbox" id="sfPublic" checked>
+        <label for="sfPublic">公开到成果墙（其他学员能看到）</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn ghost" onclick="closeSubmitModal()">取消</button>
+        <button type="submit" class="modal-btn primary">提交</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -2055,19 +2165,107 @@ function _fillCalloutContent(stageNum, clickedComp) {
   /* 阶段作业 */
   const assign = ASSIGNMENTS[stageNum];
   const assignEl = document.getElementById('kdAssignment');
-  if (assign) {
-    assignEl.innerHTML = `
-      <div class="kd-assignment-title">${assign.title}</div>
-      <div class="kd-assignment-desc">${assign.desc}</div>
-      <div class="kd-assignment-meta">
-        <span>预计用时 · ${assign.estDays} 天</span>
-        <span>提交后评审</span>
-      </div>
-    `;
-  }
+  if (assign) renderAssignmentBlock(assignEl, stageNum, assign);
 
   /* 社区链接 */
   document.getElementById('kdCommunityLink').href = `community.html?stage=${stageNum}`;
+}
+
+/* =====================================================
+   ASSIGNMENT SUBMIT FLOW — slice 5
+   ===================================================== */
+function getSubmissionForStage(stageNum) {
+  try {
+    const arr = JSON.parse(localStorage.getItem('ds_submissions') || '[]');
+    return arr.find(s => s.stage === stageNum) || null;
+  } catch (e) { return null; }
+}
+
+function renderAssignmentBlock(el, stageNum, assign) {
+  const sub = getSubmissionForStage(stageNum);
+  const submitBlock = sub
+    ? `<a class="kd-submit-btn submitted" href="${escapeHtml(sub.url)}" target="_blank" rel="noopener">
+         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 7 12 13 5"/></svg>
+         <span>已提交 · ${escapeHtml(sub.title)}</span>
+       </a>
+       <button class="kd-submit-edit" onclick="openSubmitModal(${stageNum})">重新提交 / 编辑</button>`
+    : `<button class="kd-submit-btn" onclick="openSubmitModal(${stageNum})">
+         <span>提交作业</span>
+         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+       </button>`;
+  el.innerHTML = `
+    <div class="kd-assignment-title">${escapeHtml(assign.title)}</div>
+    <div class="kd-assignment-desc">${escapeHtml(assign.desc)}</div>
+    <div class="kd-assignment-meta">
+      <span>预计用时 · ${assign.estDays} 天</span>
+      <span>提交后评审</span>
+    </div>
+    ${submitBlock}
+  `;
+}
+
+let _submitStageNum = null;
+
+function openSubmitModal(stageNum) {
+  _submitStageNum = stageNum;
+  const assign = ASSIGNMENTS[stageNum];
+  document.getElementById('submitModalTitle').textContent =
+    '提交第' + ['一','二','三','四'][stageNum-1] + '阶段作业';
+  document.getElementById('submitModalSubtitle').textContent = assign.title;
+  document.getElementById('submitForm').reset();
+  document.getElementById('sfPublic').checked = true;
+
+  // 优先用已有提交的数据回填；否则用项目名预填
+  const existing = getSubmissionForStage(stageNum);
+  if (existing) {
+    document.getElementById('sfTitle').value = existing.title || '';
+    document.getElementById('sfUrl').value   = existing.url   || '';
+    document.getElementById('sfRepo').value  = existing.repo  || '';
+    document.getElementById('sfDesc').value  = existing.desc  || '';
+    document.getElementById('sfPublic').checked = existing.public !== false;
+  } else {
+    const project = loadProject();
+    if (project) {
+      const suffix = stageNum > 1 ? ' V' + stageNum : '';
+      document.getElementById('sfTitle').value = project.name + suffix;
+    }
+  }
+  document.getElementById('submitModal').classList.add('show');
+}
+
+function closeSubmitModal() {
+  document.getElementById('submitModal').classList.remove('show');
+  _submitStageNum = null;
+}
+
+function submitAssignment() {
+  if (_submitStageNum == null) return;
+  const submission = {
+    id: 's-' + Date.now(),
+    stage: _submitStageNum,
+    title: document.getElementById('sfTitle').value.trim(),
+    url:   document.getElementById('sfUrl').value.trim(),
+    repo:  document.getElementById('sfRepo').value.trim(),
+    desc:  document.getElementById('sfDesc').value.trim(),
+    public: document.getElementById('sfPublic').checked,
+    submittedAt: TODAY_STR
+  };
+  let submissions;
+  try {
+    submissions = JSON.parse(localStorage.getItem('ds_submissions') || '[]');
+  } catch (e) { submissions = []; }
+  const idx = submissions.findIndex(s => s.stage === _submitStageNum);
+  if (idx >= 0) submissions[idx] = submission;
+  else submissions.push(submission);
+  localStorage.setItem('ds_submissions', JSON.stringify(submissions));
+
+  closeSubmitModal();
+  showToast('作业已提交：' + submission.title);
+
+  // 重新渲染当前 callout 的作业块（如果开着）
+  const assignEl = document.getElementById('kdAssignment');
+  const assign = ASSIGNMENTS[submission.stage];
+  if (assignEl && assign) renderAssignmentBlock(assignEl, submission.stage, assign);
 }
 
 function openCallout(stageNum, sourceEl, clickedComp) {
