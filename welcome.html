@@ -777,7 +777,7 @@ body::after {
   margin: 0 auto;
   padding: 32px 0 48px;
 }
-#step2.active, #step3.active, #step4.active, #step5.active {
+#step2.active, #step3.active, #step4.active, #step5.active, #step6.active {
   display: block;
 }
 .section-eyebrow {
@@ -1223,6 +1223,148 @@ body::after {
   }
   .hero-left > *, .hero-right > * { opacity: 1 !important; }
 }
+
+/* ============================================= */
+/*  STEP 4 — Idea capture + AI 刘小白 evaluation  */
+/* ============================================= */
+.idea-input-wrap {
+  margin-top: 24px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-width: 720px;
+}
+.idea-input-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.idea-textarea {
+  width: 100%;
+  min-height: 84px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-1);
+  background: var(--surface);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.idea-textarea:focus { border-color: var(--teal); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 18px;
+  border: 1px solid var(--deep-blue);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--deep-blue);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover {
+  background: var(--deep-blue);
+  color: #fff;
+}
+.btn-secondary svg { width: 14px; height: 14px; }
+
+.idea-eval {
+  margin-top: 18px;
+  padding: 20px 22px;
+  background: var(--teal-bg);
+  border: 1px solid var(--teal-light);
+  border-radius: 8px;
+  max-width: 720px;
+}
+.eval-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+.eval-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--deep-blue);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.eval-name { font-weight: 600; color: var(--deep-blue); }
+.eval-time {
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  margin-left: auto;
+}
+.eval-section { margin-top: 14px; }
+.eval-section:first-of-type { margin-top: 0; }
+.eval-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.eval-verdict {
+  font-size: 14.5px;
+  color: var(--text-1);
+  line-height: 1.6;
+}
+.eval-verdict strong {
+  color: var(--teal);
+  font-weight: 700;
+}
+.eval-map {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+.eval-map li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  font-size: 13.5px;
+}
+.cap-name { color: var(--text-1); font-weight: 500; }
+.cap-lessons {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  letter-spacing: 0.02em;
+}
+.eval-path {
+  font-size: 14px;
+  color: var(--text-1);
+  line-height: 1.65;
+}
 </style>
 </head>
 <body>
@@ -1309,7 +1451,7 @@ body::after {
 
   <!-- Step 2: Background -->
   <div class="step" id="step2">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">02</span>&nbsp;/&nbsp;05</span><span>BACKGROUND</span></div>
+    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">02</span>&nbsp;/&nbsp;06</span><span>BACKGROUND</span></div>
     <h2 class="section-title">你的<span class="hl">编程基础</span></h2>
     <p class="section-desc">选择最接近你当前状态的选项，帮我们为你定制学习路径。</p>
     <div class="option-grid" id="exp-options">
@@ -1334,7 +1476,7 @@ body::after {
 
   <!-- Step 3: Goals -->
   <div class="step" id="step3">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">03</span>&nbsp;/&nbsp;05</span><span>OBJECTIVE</span></div>
+    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">03</span>&nbsp;/&nbsp;06</span><span>OBJECTIVE</span></div>
     <h2 class="section-title">你的<span class="hl">目标</span></h2>
     <p class="section-desc">你的目标决定了我们推荐的重点内容。</p>
     <div class="option-grid" id="goal-options">
@@ -1357,9 +1499,60 @@ body::after {
     </button>
   </div>
 
-  <!-- Step 4: Daily Pace -->
+  <!-- Step 4: Your Idea -->
   <div class="step" id="step4">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">04</span>&nbsp;/&nbsp;05</span><span>CADENCE</span></div>
+    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">04</span>&nbsp;/&nbsp;06</span><span>YOUR&nbsp;IDEA</span></div>
+    <h2 class="section-title">你有想做的<span class="hl">产品 idea</span> 吗？</h2>
+    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…），如果你已经有自己的想法，可以让 AI 刘小白评估一下可行性。</p>
+    <div class="option-grid" id="idea-options">
+      <div class="option-card" onclick="selectIdeaOption(this, 'has')">
+        <div class="option-title">有，想做自己的</div>
+        <div class="option-desc">已经有产品想法，想验证一下能不能做</div>
+      </div>
+      <div class="option-card" onclick="selectIdeaOption(this, 'no')">
+        <div class="option-title">还没有，先跟课程做</div>
+        <div class="option-desc">先跟教学项目走，做完第一个 demo 再想</div>
+      </div>
+    </div>
+
+    <div class="idea-input-wrap" id="ideaInputWrap" style="display:none;">
+      <label class="idea-input-label">用一句话描述你的 idea</label>
+      <textarea class="idea-textarea" id="ideaTextarea" placeholder="例如：一个帮医学生备考的小程序，能根据用户错题智能推荐练习…"></textarea>
+      <button class="btn-secondary" onclick="evaluateIdea()">
+        <span>让 AI 刘小白看看</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+
+    <div class="idea-eval" id="ideaEval" style="display:none;">
+      <div class="eval-header">
+        <span class="eval-avatar">白</span>
+        <span class="eval-name">AI 刘小白</span>
+        <span class="eval-time">刚刚</span>
+      </div>
+      <div class="eval-section">
+        <div class="eval-label">可行性</div>
+        <div class="eval-verdict" id="evalVerdict">—</div>
+      </div>
+      <div class="eval-section">
+        <div class="eval-label">需要的能力 · 对应课程节点</div>
+        <ul class="eval-map" id="evalMap"></ul>
+      </div>
+      <div class="eval-section">
+        <div class="eval-label">建议路径</div>
+        <div class="eval-path" id="evalPath">—</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-step4" disabled onclick="goToStep(5)">
+      继续
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+    </button>
+  </div>
+
+  <!-- Step 5: Daily Pace -->
+  <div class="step" id="step5">
+    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">05</span>&nbsp;/&nbsp;06</span><span>CADENCE</span></div>
     <h2 class="section-title">你每天大概能<span class="hl">投入多久</span>？</h2>
     <p class="section-desc">我们会根据你的节奏，生成一份属于你的学习日历。节奏不是定死的，后面随时可以调。</p>
     <div class="option-grid" id="pace-options">
@@ -1380,15 +1573,15 @@ body::after {
         <div class="option-desc">不生成日历，按自己节奏自由推进</div>
       </div>
     </div>
-    <button class="btn-primary" id="btn-step4" disabled onclick="goToStep(5)">
+    <button class="btn-primary" id="btn-step5" disabled onclick="goToStep(6)">
       继续
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
     </button>
   </div>
 
-  <!-- Step 5: Ready -->
-  <div class="step" id="step5">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">05</span>&nbsp;/&nbsp;05</span><span>READY</span></div>
+  <!-- Step 6: Ready -->
+  <div class="step" id="step6">
+    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">06</span>&nbsp;/&nbsp;06</span><span>READY</span></div>
     <h2 class="section-title">欢迎加入，这是一段<span class="hl">真正的旅程</span></h2>
     <p class="section-desc">接下来，只需要做两件事。</p>
     <ul class="ready-list">
@@ -1423,6 +1616,7 @@ body::after {
   <div class="step-dot" onclick="goToStep(3)"></div>
   <div class="step-dot" onclick="goToStep(4)"></div>
   <div class="step-dot" onclick="goToStep(5)"></div>
+  <div class="step-dot" onclick="goToStep(6)"></div>
 </div>
 
 <script>
@@ -1456,13 +1650,97 @@ function selectOption(card, groupId) {
     document.getElementById('btn-step3').disabled = false;
     localStorage.setItem('ds_goal', title); // 做产品赚钱 / 提升技术 / 产品出海
   } else if (groupId === 'pace-options') {
-    document.getElementById('btn-step4').disabled = false;
+    document.getElementById('btn-step5').disabled = false;
     const minutes = parseInt(card.dataset.minutes, 10);
     localStorage.setItem('ds_daily_minutes', String(minutes));
     if (!localStorage.getItem('ds_enrolled_at')) {
       localStorage.setItem('ds_enrolled_at', '2026-05-04');
     }
   }
+}
+
+/* ============= Step 4: Idea capture + AI 刘小白 evaluation ============= */
+function selectIdeaOption(card, type) {
+  const group = document.getElementById('idea-options');
+  group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  localStorage.setItem('ds_has_idea', type);
+
+  const inputWrap = document.getElementById('ideaInputWrap');
+  const evalWrap = document.getElementById('ideaEval');
+  const btn = document.getElementById('btn-step4');
+
+  if (type === 'has') {
+    inputWrap.style.display = '';
+    evalWrap.style.display = 'none';
+    btn.disabled = true; // 必须先评估才能继续
+  } else {
+    inputWrap.style.display = 'none';
+    evalWrap.style.display = 'none';
+    btn.disabled = false;
+    localStorage.removeItem('ds_project'); // 清掉之前可能的项目
+  }
+}
+
+function evaluateIdea() {
+  const text = (document.getElementById('ideaTextarea').value || '').trim();
+  if (!text) return;
+
+  const ev = mockEvaluate(text);
+
+  document.getElementById('evalVerdict').innerHTML = ev.verdictHtml;
+  document.getElementById('evalMap').innerHTML = ev.mapHtml;
+  document.getElementById('evalPath').textContent = ev.path;
+  document.getElementById('ideaEval').style.display = '';
+  document.getElementById('btn-step4').disabled = false;
+
+  localStorage.setItem('ds_project', JSON.stringify({
+    name: extractProjectName(text),
+    ideaText: text,
+    feasibility: ev.feasibility,
+    capabilityMap: ev.capabilityMap,
+    stage: '需求定义',
+    createdAt: '2026-05-13'
+  }));
+}
+
+/* 占位评估：基于关键词匹配，给出有针对性的输出。
+   真正接入 AI 刘小白 API 时只换这个函数实现，UI 不动。 */
+function mockEvaluate(text) {
+  const t = text.toLowerCase();
+  const isMiniProgram = /小程序|小游戏/.test(text);
+  const isApp = /\bapp\b|应用/i.test(text);
+  const isAI = /ai|聊天|对话|生成|识别|推荐|chat|gpt|claude/i.test(t);
+  const isDB = /题库|笔记|记录|存|数据|历史/.test(text);
+  const isPayment = /付费|订阅|收钱|赚|变现|会员/.test(text);
+
+  const map = [];
+  if (isMiniProgram) {
+    map.push({ cap: '微信小程序基础', lessons: ['C15', 'C16'] });
+  } else if (isApp) {
+    map.push({ cap: '手机 App 开发', lessons: ['C17'] });
+  } else {
+    map.push({ cap: '前端 + 后端基础', lessons: ['B1', 'B5'] });
+  }
+  if (isAI) map.push({ cap: 'AI 能力（API 接入）', lessons: ['B9', 'B15'] });
+  if (isDB) map.push({ cap: '数据库', lessons: ['B3', 'B19'] });
+  map.push({ cap: '用户登录', lessons: ['B4', 'C12'] });
+  if (isPayment) map.push({ cap: '支付收款', lessons: ['C13'] });
+
+  return {
+    feasibility: 'doable',
+    verdictHtml: '<strong>✓ 完全能做</strong>。你的 idea 落在课程能力范围内，跟完对应节点就能搭出来。',
+    capabilityMap: map,
+    mapHtml: map.map(m =>
+      '<li><span class="cap-name">' + m.cap + '</span><span class="cap-lessons">' + m.lessons.join(' · ') + '</span></li>'
+    ).join(''),
+    path: '建议「平行模式」：跟教学项目练 SPEC 流程，同时把这个 idea 作为自选项目从需求定义阶段启动。'
+  };
+}
+
+function extractProjectName(text) {
+  /* 简单：取前 12 字，超出加省略号；用户后续可改 */
+  return text.length > 12 ? text.slice(0, 12) + '…' : text;
 }
 
 </script>
