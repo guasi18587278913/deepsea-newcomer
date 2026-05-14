@@ -1225,7 +1225,47 @@ body::after {
 }
 
 /* ============================================= */
+/*  Step navigation: 上一步 / 继续                 */
+/* ============================================= */
+.step-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-back:hover {
+  background: var(--surface);
+  border-color: var(--text-2);
+  color: var(--deep-blue);
+}
+
+/* 2-option 布局：限制宽度，让 2 个选项卡更紧凑 */
+.option-grid-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+  max-width: 720px;
+}
+@media (max-width: 640px) {
+  .option-grid-2 { grid-template-columns: 1fr !important; }
+}
+
+/* ============================================= */
 /*  STEP 4 — Idea capture + AI 刘小白 evaluation  */
+/*  (评估卡现在搬到 diagnosis.html，这些样式保留     */
+/*   但当前 step 4 不再使用 idea-input-wrap/eval)   */
 /* ============================================= */
 .idea-input-wrap {
   margin-top: 24px;
@@ -1468,10 +1508,13 @@ body::after {
         <div class="option-desc">做过产品或创业项目，想用 AI 提升效率</div>
       </div>
     </div>
-    <button class="btn-primary" id="btn-step2" disabled onclick="goToStep(3)">
-      继续
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-    </button>
+    <div class="step-actions">
+      <button class="btn-back" onclick="goToStep(1)">← 上一步</button>
+      <button class="btn-primary" id="btn-step2" disabled onclick="goToStep(3)">
+        继续
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Step 3: Goals -->
@@ -1493,61 +1536,37 @@ body::after {
         <div class="option-desc">面向全球市场，做一个国际化的产品</div>
       </div>
     </div>
-    <button class="btn-primary" id="btn-step3" disabled onclick="goToStep(4)">
-      继续
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-    </button>
+    <div class="step-actions">
+      <button class="btn-back" onclick="goToStep(2)">← 上一步</button>
+      <button class="btn-primary" id="btn-step3" disabled onclick="goToStep(4)">
+        继续
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Step 4: Your Idea -->
   <div class="step" id="step4">
     <div class="section-eyebrow"><span class="rule"></span><span><span class="num">04</span>&nbsp;/&nbsp;06</span><span>YOUR&nbsp;IDEA</span></div>
     <h2 class="section-title">你有想做的<span class="hl">产品 idea</span> 吗？</h2>
-    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…），如果你已经有自己的想法，可以让 AI 刘小白评估一下可行性。</p>
-    <div class="option-grid" id="idea-options">
+    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…）。如果你已经有自己的想法，下一步会进入 AI 刘小白的项目诊断。</p>
+    <div class="option-grid option-grid-2" id="idea-options">
       <div class="option-card" onclick="selectIdeaOption(this, 'has')">
         <div class="option-title">有，想做自己的</div>
-        <div class="option-desc">已经有产品想法，想验证一下能不能做</div>
+        <div class="option-desc">已经有产品想法，想让 AI 刘小白做一次完整诊断</div>
       </div>
       <div class="option-card" onclick="selectIdeaOption(this, 'no')">
         <div class="option-title">还没有，先跟课程做</div>
         <div class="option-desc">先跟教学项目走，做完第一个 demo 再想</div>
       </div>
     </div>
-
-    <div class="idea-input-wrap" id="ideaInputWrap" style="display:none;">
-      <label class="idea-input-label">用一句话描述你的 idea</label>
-      <textarea class="idea-textarea" id="ideaTextarea" placeholder="例如：一个帮医学生备考的小程序，能根据用户错题智能推荐练习…"></textarea>
-      <button class="btn-secondary" onclick="evaluateIdea()">
-        <span>让 AI 刘小白看看</span>
+    <div class="step-actions">
+      <button class="btn-back" onclick="goToStep(3)">← 上一步</button>
+      <button class="btn-primary" id="btn-step4" disabled onclick="continueFromIdea()">
+        继续
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
       </button>
     </div>
-
-    <div class="idea-eval" id="ideaEval" style="display:none;">
-      <div class="eval-header">
-        <span class="eval-avatar">白</span>
-        <span class="eval-name">AI 刘小白</span>
-        <span class="eval-time">刚刚</span>
-      </div>
-      <div class="eval-section">
-        <div class="eval-label">可行性</div>
-        <div class="eval-verdict" id="evalVerdict">—</div>
-      </div>
-      <div class="eval-section">
-        <div class="eval-label">需要的能力 · 对应课程节点</div>
-        <ul class="eval-map" id="evalMap"></ul>
-      </div>
-      <div class="eval-section">
-        <div class="eval-label">建议路径</div>
-        <div class="eval-path" id="evalPath">—</div>
-      </div>
-    </div>
-
-    <button class="btn-primary" id="btn-step4" disabled onclick="goToStep(5)">
-      继续
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-    </button>
   </div>
 
   <!-- Step 5: Daily Pace -->
@@ -1573,10 +1592,13 @@ body::after {
         <div class="option-desc">不生成日历，按自己节奏自由推进</div>
       </div>
     </div>
-    <button class="btn-primary" id="btn-step5" disabled onclick="goToStep(6)">
-      继续
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-    </button>
+    <div class="step-actions">
+      <button class="btn-back" onclick="goToStep(4)">← 上一步</button>
+      <button class="btn-primary" id="btn-step5" disabled onclick="goToStep(6)">
+        继续
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Step 6: Ready -->
@@ -1605,6 +1627,9 @@ body::after {
       </div>
       <svg class="action-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
     </a>
+    <div class="step-actions" style="margin-top:18px;">
+      <button class="btn-back" onclick="goToStep(5)">← 上一步</button>
+    </div>
   </div>
 
 </div>
@@ -1620,8 +1645,10 @@ body::after {
 </div>
 
 <script>
-// 支持 ?fresh=1 参数重置为全新状态（demo 专用，方便以新人身份体验）
-if (new URLSearchParams(location.search).get('fresh') === '1') {
+// ?fresh=1：重置为全新状态（demo 专用）
+// ?step=N：跳到指定步骤（用于 diagnosis 完成后返回 step 5）
+const _params = new URLSearchParams(location.search);
+if (_params.get('fresh') === '1') {
   localStorage.clear();
   history.replaceState(null, '', location.pathname);
 }
@@ -1637,6 +1664,14 @@ function goToStep(n) {
   });
   window.scrollTo({top:0, behavior:'smooth'});
 }
+
+/* 入口路由：?step=N 跳到指定步骤 */
+(function () {
+  const stepParam = parseInt(_params.get('step') || '1', 10);
+  if (stepParam >= 2 && stepParam <= 6) {
+    setTimeout(() => goToStep(stepParam), 0);
+  }
+})();
 
 function selectOption(card, groupId) {
   const group = document.getElementById(groupId);
@@ -1659,88 +1694,27 @@ function selectOption(card, groupId) {
   }
 }
 
-/* ============= Step 4: Idea capture + AI 刘小白 evaluation ============= */
+/* ============= Step 4: Idea capture (lightweight) ============= */
 function selectIdeaOption(card, type) {
   const group = document.getElementById('idea-options');
   group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   localStorage.setItem('ds_has_idea', type);
-
-  const inputWrap = document.getElementById('ideaInputWrap');
-  const evalWrap = document.getElementById('ideaEval');
-  const btn = document.getElementById('btn-step4');
-
-  if (type === 'has') {
-    inputWrap.style.display = '';
-    evalWrap.style.display = 'none';
-    btn.disabled = true; // 必须先评估才能继续
-  } else {
-    inputWrap.style.display = 'none';
-    evalWrap.style.display = 'none';
-    btn.disabled = false;
-    localStorage.removeItem('ds_project'); // 清掉之前可能的项目
-  }
-}
-
-function evaluateIdea() {
-  const text = (document.getElementById('ideaTextarea').value || '').trim();
-  if (!text) return;
-
-  const ev = mockEvaluate(text);
-
-  document.getElementById('evalVerdict').innerHTML = ev.verdictHtml;
-  document.getElementById('evalMap').innerHTML = ev.mapHtml;
-  document.getElementById('evalPath').textContent = ev.path;
-  document.getElementById('ideaEval').style.display = '';
   document.getElementById('btn-step4').disabled = false;
-
-  localStorage.setItem('ds_project', JSON.stringify({
-    name: extractProjectName(text),
-    ideaText: text,
-    feasibility: ev.feasibility,
-    capabilityMap: ev.capabilityMap,
-    stage: '需求定义',
-    createdAt: '2026-05-13'
-  }));
-}
-
-/* 占位评估：基于关键词匹配，给出有针对性的输出。
-   真正接入 AI 刘小白 API 时只换这个函数实现，UI 不动。 */
-function mockEvaluate(text) {
-  const t = text.toLowerCase();
-  const isMiniProgram = /小程序|小游戏/.test(text);
-  const isApp = /\bapp\b|应用/i.test(text);
-  const isAI = /ai|聊天|对话|生成|识别|推荐|chat|gpt|claude/i.test(t);
-  const isDB = /题库|笔记|记录|存|数据|历史/.test(text);
-  const isPayment = /付费|订阅|收钱|赚|变现|会员/.test(text);
-
-  const map = [];
-  if (isMiniProgram) {
-    map.push({ cap: '微信小程序基础', lessons: ['C15', 'C16'] });
-  } else if (isApp) {
-    map.push({ cap: '手机 App 开发', lessons: ['C17'] });
-  } else {
-    map.push({ cap: '前端 + 后端基础', lessons: ['B1', 'B5'] });
+  if (type === 'no') {
+    /* 选「没有 idea」: 清掉之前可能存在的项目数据 */
+    localStorage.removeItem('ds_project');
   }
-  if (isAI) map.push({ cap: 'AI 能力（API 接入）', lessons: ['B9', 'B15'] });
-  if (isDB) map.push({ cap: '数据库', lessons: ['B3', 'B19'] });
-  map.push({ cap: '用户登录', lessons: ['B4', 'C12'] });
-  if (isPayment) map.push({ cap: '支付收款', lessons: ['C13'] });
-
-  return {
-    feasibility: 'doable',
-    verdictHtml: '<strong>✓ 完全能做</strong>。你的 idea 落在课程能力范围内，跟完对应节点就能搭出来。',
-    capabilityMap: map,
-    mapHtml: map.map(m =>
-      '<li><span class="cap-name">' + m.cap + '</span><span class="cap-lessons">' + m.lessons.join(' · ') + '</span></li>'
-    ).join(''),
-    path: '建议「平行模式」：跟教学项目练 SPEC 流程，同时把这个 idea 作为自选项目从需求定义阶段启动。'
-  };
 }
 
-function extractProjectName(text) {
-  /* 简单：取前 12 字，超出加省略号；用户后续可改 */
-  return text.length > 12 ? text.slice(0, 12) + '…' : text;
+function continueFromIdea() {
+  const has = localStorage.getItem('ds_has_idea');
+  if (has === 'has') {
+    /* 跳到独立的诊断页；诊断完成后会跳回 welcome.html?step=5 */
+    location.href = 'diagnosis.html?from=welcome';
+  } else {
+    goToStep(5);
+  }
 }
 
 </script>

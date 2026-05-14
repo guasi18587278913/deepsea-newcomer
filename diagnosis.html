@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 刘小白 · 项目诊断 | 深海圈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Sora:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-display: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-sans: 'Sora', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --bg: #f5fafa;
+  --bg-gradient: linear-gradient(180deg, #e8f4f5 0%, #f5fafa 40%, #ffffff 100%);
+  --surface: #ffffff;
+  --surface-soft: #f0f8f8;
+
+  --deep-blue: #1e3a52;
+  --deep-blue-strong: #162c3f;
+
+  --teal: #0d9488;
+  --teal-hover: #0b7c71;
+  --teal-light: #7dd3cc;
+  --teal-bg: #e8f6f5;
+
+  --gold: #c89854;
+  --gold-soft: rgba(200, 152, 84, 0.15);
+
+  --green: #22c55e;
+  --green-bg: #ecfdf5;
+  --amber: #d97706;
+  --amber-bg: #fffbeb;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+
+  --text-1: #1a2942;
+  --text-2: #5c7a8a;
+  --text-3: #94a3b8;
+  --text-4: #b8c5cc;
+
+  --border: #dde7ea;
+  --border-soft: #e8eef0;
+  --hairline: rgba(13, 148, 136, 0.08);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-gradient);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01","cv11";
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+
+/* ============ TOP RAIL ============ */
+.top-rail {
+  width: 100%;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  background: rgba(245, 250, 250, 0.78);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 20;
+}
+.brand-mark { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--deep-blue); }
+.brand-mark .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+.brand-mark .sub { font-size: 12px; font-weight: 500; color: var(--text-3); font-family: var(--font-mono); letter-spacing: 0.04em; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-2);
+  padding: 6px 12px; border-radius: 6px;
+  transition: all 0.15s;
+}
+.back-link:hover { color: var(--teal); background: var(--teal-bg); }
+
+/* ============ MAIN CONTAINER ============ */
+.container {
+  width: 100%; max-width: 880px;
+  padding: 48px 32px 80px;
+}
+
+/* ============ HERO ============ */
+.hero { margin-bottom: 36px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--teal-hover);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.hero-eyebrow .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4vw, 46px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--deep-blue);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.hero-title .accent { color: var(--teal); font-style: italic; font-weight: 600; }
+.hero-sub {
+  font-size: 15px; color: var(--text-2); line-height: 1.7;
+  max-width: 640px;
+}
+
+/* ============ FORM ============ */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px 36px 28px;
+  box-shadow: 0 1px 2px rgba(30,58,82,.04), 0 8px 28px -16px rgba(30,58,82,.08);
+}
+.q-block { margin-bottom: 26px; }
+.q-block:last-of-type { margin-bottom: 8px; }
+.q-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.08em;
+  margin-right: 8px;
+}
+.q-label {
+  font-size: 14.5px; font-weight: 600; color: var(--deep-blue);
+  margin-bottom: 4px;
+}
+.q-hint { font-size: 12.5px; color: var(--text-3); margin-bottom: 12px; }
+.q-input, .q-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--deep-blue);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.q-textarea { min-height: 80px; line-height: 1.6; resize: vertical; }
+.q-input:focus, .q-textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-bg);
+}
+.q-radio { display: flex; flex-wrap: wrap; gap: 8px; }
+.q-radio-chip {
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.q-radio-chip:hover { border-color: var(--teal); color: var(--teal-hover); }
+.q-radio-chip.selected {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+  font-weight: 500;
+}
+
+.form-actions {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.btn-run {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: var(--deep-blue);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+}
+.btn-run:hover:not(:disabled) { background: var(--deep-blue-strong); }
+.btn-run:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-run svg { width: 14px; height: 14px; }
+
+/* ============ REPORT ============ */
+.report {
+  display: none;
+  margin-top: 32px;
+  background: var(--surface);
+  border: 1px solid var(--teal-light);
+  border-radius: 14px;
+  padding: 0;
+  box-shadow: 0 1px 2px rgba(30,58,82,.04), 0 12px 36px -16px rgba(13,148,136,.18);
+  overflow: hidden;
+}
+.report.show { display: block; animation: rise 0.4s cubic-bezier(.22,1,.36,1); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.report-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 22px 28px;
+  background: linear-gradient(180deg, var(--teal-bg) 0%, var(--surface) 100%);
+  border-bottom: 1px solid var(--border-soft);
+}
+.report-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--deep-blue) 100%);
+  color: #fff;
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+}
+.report-by-name { font-size: 14px; font-weight: 700; color: var(--deep-blue); line-height: 1.2; }
+.report-by-meta { font-size: 11.5px; color: var(--text-3); font-family: var(--font-mono); margin-top: 2px; }
+.report-time { margin-left: auto; font-size: 11.5px; color: var(--text-3); font-family: var(--font-mono); }
+
+.report-body { padding: 28px 32px 24px; }
+
+/* Verdict badge */
+.verdict-card {
+  padding: 18px 22px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.verdict-card.green { background: var(--green-bg); border: 1px solid #a7f3d0; }
+.verdict-card.amber { background: var(--amber-bg); border: 1px solid #fcd34d; }
+.verdict-card.red   { background: var(--red-bg);   border: 1px solid #fca5a5; }
+.verdict-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 16px; font-weight: 700;
+  flex-shrink: 0;
+}
+.verdict-card.green .verdict-icon { background: var(--green); color: #fff; }
+.verdict-card.amber .verdict-icon { background: var(--amber); color: #fff; }
+.verdict-card.red   .verdict-icon { background: var(--red);   color: #fff; }
+.verdict-tier {
+  font-size: 14px; font-weight: 700; margin-bottom: 4px;
+}
+.verdict-card.green .verdict-tier { color: #047857; }
+.verdict-card.amber .verdict-tier { color: #92400e; }
+.verdict-card.red   .verdict-tier { color: #991b1b; }
+.verdict-text { font-size: 13.5px; color: var(--text-1); line-height: 1.65; }
+
+/* Sections */
+.section-block { margin-bottom: 22px; }
+.section-block:last-of-type { margin-bottom: 0; }
+.section-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.section-label::before {
+  content: ''; width: 16px; height: 1px; background: var(--teal); display: block;
+}
+.section-text { font-size: 14px; line-height: 1.7; color: var(--text-1); }
+.section-text strong { color: var(--teal-hover); font-weight: 600; }
+
+.bullet-list { list-style: none; padding: 0; margin: 0; }
+.bullet-list li {
+  position: relative; padding: 6px 0 6px 22px;
+  font-size: 13.5px; color: var(--text-1); line-height: 1.6;
+}
+.bullet-list li::before {
+  content: '·'; position: absolute; left: 6px; top: 4px;
+  color: var(--teal); font-size: 22px; line-height: 1;
+}
+
+.lesson-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lesson-chip {
+  padding: 5px 11px;
+  border-radius: 5px;
+  background: var(--teal-bg);
+  border: 1px solid var(--teal-light);
+  color: var(--deep-blue);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lesson-chip:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface-soft);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+.meta-cell-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.meta-cell-value { font-size: 14px; font-weight: 600; color: var(--deep-blue); }
+
+/* Report actions */
+.report-actions {
+  padding: 20px 32px 26px;
+  border-top: 1px solid var(--border-soft);
+  background: var(--surface-soft);
+  display: flex; gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.btn-action {
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13.5px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-action.primary { background: var(--teal); color: #fff; }
+.btn-action.primary:hover { background: var(--teal-hover); }
+.btn-action.ghost { background: transparent; color: var(--text-2); border-color: var(--border); }
+.btn-action.ghost:hover { background: var(--surface); border-color: var(--text-2); color: var(--deep-blue); }
+.btn-action.ghost-warn { background: transparent; color: var(--text-3); border-color: transparent; font-weight: 500; }
+.btn-action.ghost-warn:hover { color: var(--red); background: var(--red-bg); }
+
+@media (max-width: 720px) {
+  .container { padding: 32px 20px 60px; }
+  .form-card { padding: 24px 20px; }
+  .report-body { padding: 22px 20px; }
+  .report-actions { padding: 16px 20px 22px; flex-direction: column; align-items: stretch; }
+  .btn-action { justify-content: center; }
+  .form-actions { flex-direction: column; align-items: stretch; }
+  .btn-run { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-rail">
+  <div class="brand-mark">
+    <span class="dot"></span>
+    <span>深海圈</span>
+    <span class="sub">| AI 编程</span>
+  </div>
+  <a class="back-link" href="welcome.html?step=4">← 返回入营</a>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">
+      <span class="pulse"></span>
+      <span>AI 刘小白 · DIAGNOSTIC</span>
+    </div>
+    <h1 class="hero-title">让我看看你的 <span class="accent">idea</span> 能做成什么</h1>
+    <p class="hero-sub">回答 5 个问题，AI 刘小白会基于你的方向、目标和能力，给一份结构化的可行性诊断 —— 然后告诉你下一步该走哪条路。</p>
+  </header>
+
+  <!-- Form -->
+  <section class="form-card" id="formCard">
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">01</span>用一句话描述你想做的 idea</div>
+      <div class="q-hint">越具体越好。比如"医学生备考 AI 题库"比"教育产品"准确得多。</div>
+      <textarea class="q-textarea" data-name="idea" placeholder="例如：一个帮医学生备考的小程序，能根据用户错题智能推荐相似难度的题目"></textarea>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">02</span>谁是你的目标用户？</div>
+      <div class="q-hint">具体到角色 + 数量级。"中国大学生（4000 万）"够用，但"年轻人"不够。</div>
+      <input class="q-input" data-name="audience" placeholder="例如：备考执医的医学生，全国约 60 万人">
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">03</span>你想做成什么形态？</div>
+      <div class="q-hint">如果不确定，按"哪个最容易让你的目标用户用起来"选。</div>
+      <div class="q-radio" data-name="form">
+        <div class="q-radio-chip" data-value="web" onclick="selectChip(this)">网站 / SaaS</div>
+        <div class="q-radio-chip" data-value="miniprog" onclick="selectChip(this)">微信小程序</div>
+        <div class="q-radio-chip" data-value="app" onclick="selectChip(this)">手机 App</div>
+        <div class="q-radio-chip" data-value="desktop" onclick="selectChip(this)">桌面应用</div>
+        <div class="q-radio-chip" data-value="agent" onclick="selectChip(this)">自动化 / Agent</div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">04</span>最终目标是什么？</div>
+      <div class="q-hint">不同目标会决定推荐路径的优先级。</div>
+      <div class="q-radio" data-name="goal">
+        <div class="q-radio-chip" data-value="side" onclick="selectChip(this)">副业 · 月入几千美金</div>
+        <div class="q-radio-chip" data-value="startup" onclick="selectChip(this)">全职创业 · 想做更大的事</div>
+        <div class="q-radio-chip" data-value="learn" onclick="selectChip(this)">学习练手 · 先做出来</div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">05</span>每天能投入多少时间？</div>
+      <div class="q-hint">这影响时间预估，不影响可行性结论。</div>
+      <div class="q-radio" data-name="time">
+        <div class="q-radio-chip" data-value="part" onclick="selectChip(this)">业余 · 1-2 小时/天</div>
+        <div class="q-radio-chip" data-value="half" onclick="selectChip(this)">半投入 · 4-6 小时/天</div>
+        <div class="q-radio-chip" data-value="full" onclick="selectChip(this)">全职 · 8 小时以上</div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-run" id="runBtn" disabled onclick="runDiagnose()">
+        <span>开始诊断</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Report (hidden until diagnose) -->
+  <section class="report" id="report">
+    <div class="report-header">
+      <div class="report-avatar">白</div>
+      <div>
+        <div class="report-by-name">AI 刘小白</div>
+        <div class="report-by-meta">项目诊断报告</div>
+      </div>
+      <div class="report-time" id="reportTime">—</div>
+    </div>
+
+    <div class="report-body">
+
+      <!-- Verdict -->
+      <div class="verdict-card" id="verdictCard">
+        <div class="verdict-icon" id="verdictIcon">✓</div>
+        <div>
+          <div class="verdict-tier" id="verdictTier">—</div>
+          <div class="verdict-text" id="verdictText">—</div>
+        </div>
+      </div>
+
+      <!-- Opportunity -->
+      <div class="section-block">
+        <div class="section-label">核心机会点</div>
+        <div class="section-text" id="opportunity">—</div>
+      </div>
+
+      <!-- Risks -->
+      <div class="section-block">
+        <div class="section-label">主要风险</div>
+        <ul class="bullet-list" id="risksList"></ul>
+      </div>
+
+      <!-- Path -->
+      <div class="section-block">
+        <div class="section-label">推荐执行路径</div>
+        <ol class="bullet-list" id="pathList"></ol>
+      </div>
+
+      <!-- Lessons -->
+      <div class="section-block">
+        <div class="section-label">必经课程节点</div>
+        <div class="lesson-chips" id="lessonChips"></div>
+      </div>
+
+      <!-- Meta -->
+      <div class="section-block">
+        <div class="section-label">参考</div>
+        <div class="meta-row">
+          <div>
+            <div class="meta-cell-label">预估时间</div>
+            <div class="meta-cell-value" id="metaTime">—</div>
+          </div>
+          <div>
+            <div class="meta-cell-label">技术难度</div>
+            <div class="meta-cell-value" id="metaDifficulty">—</div>
+          </div>
+          <div>
+            <div class="meta-cell-label">类似产品</div>
+            <div class="meta-cell-value" id="metaSimilar">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-actions">
+      <button class="btn-action ghost-warn" onclick="giveUpAndContinue()">放弃这个 idea，先跟课程做</button>
+      <button class="btn-action ghost" onclick="resetForm()">换个 idea 再诊断</button>
+      <button class="btn-action primary" onclick="acceptAndContinue()">
+        <span>接受诊断 · 启动项目</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===== form state ===== */
+function collectInputs() {
+  const inputs = {};
+  document.querySelectorAll('#formCard [data-name]').forEach(el => {
+    if (el.classList.contains('q-radio')) {
+      const sel = el.querySelector('.q-radio-chip.selected');
+      if (sel) inputs[el.dataset.name] = sel.dataset.value;
+    } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      inputs[el.dataset.name] = (el.value || '').trim();
+    }
+  });
+  return inputs;
+}
+
+function isFormReady() {
+  const i = collectInputs();
+  return i.idea && i.idea.length >= 4 && i.audience && i.form && i.goal && i.time;
+}
+
+function refreshRunBtn() {
+  document.getElementById('runBtn').disabled = !isFormReady();
+}
+
+function selectChip(el) {
+  const group = el.parentNode;
+  group.querySelectorAll('.q-radio-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  refreshRunBtn();
+}
+
+/* listen on text fields */
+document.querySelectorAll('#formCard input, #formCard textarea').forEach(el => {
+  el.addEventListener('input', refreshRunBtn);
+});
+
+/* ===== mock diagnose · 真接 AI 刘小白 API 时只换这个函数 ===== */
+function mockDiagnose(inputs) {
+  const idea = inputs.idea || '';
+  const aud = inputs.audience || '目标用户';
+  const form = inputs.form;
+  const goal = inputs.goal;
+  const time = inputs.time;
+
+  /* 简单的可行性评分（占位逻辑）：
+     - idea 越具体（包含具体动词/对象）越好
+     - 目标用户量级写得越具体越好
+     - form 是 web/miniprog 较容易；app/desktop 较难；agent 中等
+     - goal=startup 要求更高 */
+  let score = 70;
+  if (idea.length >= 20) score += 6;
+  if (/\d|万|亿|千|百|名/.test(aud)) score += 8;
+  if (form === 'web' || form === 'miniprog') score += 6;
+  if (form === 'app' || form === 'desktop') score -= 8;
+  if (form === 'agent') score += 2;
+  if (goal === 'learn') score += 4;
+  if (goal === 'startup') score -= 4;
+  if (idea.length < 10) score -= 12;
+
+  let tier, tierLabel, tierIcon, verdictText;
+  if (score >= 75) {
+    tier = 'green'; tierIcon = '✓'; tierLabel = '可做 · 推荐启动';
+    verdictText = '这个 idea 落在课程能力范围内，技术路径清晰、目标用户具体。建议<strong>立即启动</strong>，按推荐路径走。';
+  } else if (score >= 55) {
+    tier = 'amber'; tierIcon = '!'; tierLabel = '可做 · 但有 1-2 处要打磨';
+    verdictText = '方向 OK，但你的描述有些模糊地带。建议先<strong>把 idea 和目标用户写得更具体</strong>，再启动会少踩坑。';
+  } else {
+    tier = 'red'; tierIcon = '×'; tierLabel = '建议先打磨方向再启动';
+    verdictText = '当前信息不足以判断这个 idea 能跑通。建议<strong>先做教学项目积累感觉</strong>，或者把 idea 想得更清楚一点再来诊断。';
+  }
+
+  /* 机会点 */
+  const opportunityMap = {
+    web: '网站/SaaS 形态对你这种类型的产品最友好——上线快、迭代快、获客渠道清晰（SEO + 付费 + 社群）。',
+    miniprog: '小程序在国内冷启动有红利，社交分享天然，适合 C 端工具类产品。',
+    app: 'App 形态用户留存最强，但开发和分发成本高，建议先用网站/小程序验证后再做 App。',
+    desktop: '桌面应用门槛高但护城河也高（用户重新装的成本大），适合 B 端或专业工具。',
+    agent: 'Agent / 自动化是 2026 年最大红利方向，能切到企业付费的高客单价场景。'
+  };
+
+  /* 风险 */
+  const risks = [];
+  if (form === 'app' || form === 'desktop') risks.push('开发难度比网站/小程序高一档，建议先做网站验证再做 App');
+  if (goal === 'startup') risks.push('全职创业对收入要求高，先用副业验证 PMF 再 all in 更稳');
+  if (!/\d|万|亿|千|百|名/.test(aud)) risks.push('目标用户量级没说清楚——很可能在做"伪需求"，先做用户访谈');
+  if (idea.length < 15) risks.push('idea 描述偏短，AI 和你都不知道核心场景是什么，容易做偏');
+  risks.push('冷启动是真正的难点，不是开发——建议同步看 D16 课程');
+  if (form === 'miniprog' || form === 'web') risks.push('技术门槛低也意味着同质化竞争多，差异化要在第一周就想清楚');
+
+  /* 路径 */
+  const path = [
+    '需求定义：把 idea 写成 SPEC（A6 跟 AI 讨论需求）',
+    '原型：在扣子里跑一个能用的 demo（A5 / A9）',
+    '开发：搬到 TRAE，接数据库 + 用户认证（B6 / B3 / B4）',
+    '部署上线：Vercel + 域名（B12 / B13）',
+    '冷启动：找前 100 个用户（D16）'
+  ];
+
+  /* 必经课程节点 */
+  const lessonsByForm = {
+    web: ['A6', 'B1', 'B5', 'B12', 'C11', 'D16'],
+    miniprog: ['A6', 'C15', 'C16', 'B3', 'D16'],
+    app: ['A6', 'C17', 'B3', 'B4', 'D16'],
+    desktop: ['A6', 'C18', 'B3', 'D16'],
+    agent: ['A6', 'D5', 'D6', 'D7', 'D9']
+  };
+
+  /* 时间预估 */
+  const timeMap = {
+    part: { full: '8-12 周', short: '6 周' },
+    half: { full: '4-6 周', short: '3 周' },
+    full: { full: '2-3 周', short: '1.5 周' }
+  };
+  const t = timeMap[time] || timeMap.part;
+  const timeEstimate = t.short + '（MVP）→ ' + t.full + '（可收费版本）';
+
+  /* 难度 */
+  const difficultyMap = { web: '中', miniprog: '中', app: '中-高', desktop: '高', agent: '中-高' };
+
+  /* 类似产品（基于 idea + form 关键词的简单映射）*/
+  let similar = '需要进一步调研';
+  if (/医|题库|备考|考试|学习/.test(idea)) similar = 'Anki · 千行AI · Quizlet';
+  else if (/笔记|知识|管理/.test(idea)) similar = 'Notion · Obsidian · Heptabase';
+  else if (/翻译|语言/.test(idea)) similar = 'DeepL · iSlide · 沉浸式翻译';
+  else if (/写作|文案/.test(idea)) similar = 'Wordtune · Magai · Notion AI';
+  else if (/图|画|生成/.test(idea)) similar = 'Midjourney · Krea · Raphael';
+  else if (/聊天|对话/.test(idea)) similar = 'ChatGPT · Character.AI · Talkie';
+  else if (form === 'agent') similar = 'Cursor Background · Devin · Claude Code';
+  else if (form === 'miniprog') similar = '同类小程序数百款，需要调研';
+
+  return {
+    tier, tierIcon, tierLabel, verdictText,
+    opportunity: opportunityMap[form] || opportunityMap.web,
+    risks: risks.slice(0, 5),
+    path,
+    lessons: lessonsByForm[form] || lessonsByForm.web,
+    metaTime: timeEstimate,
+    metaDifficulty: difficultyMap[form] || '中',
+    metaSimilar: similar
+  };
+}
+
+/* ===== render ===== */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function runDiagnose() {
+  const inputs = collectInputs();
+  if (!isFormReady()) return;
+
+  const r = mockDiagnose(inputs);
+
+  const verdict = document.getElementById('verdictCard');
+  verdict.classList.remove('green','amber','red');
+  verdict.classList.add(r.tier);
+  document.getElementById('verdictIcon').textContent = r.tierIcon;
+  document.getElementById('verdictTier').textContent = r.tierLabel;
+  document.getElementById('verdictText').innerHTML = r.verdictText;
+
+  document.getElementById('opportunity').textContent = r.opportunity;
+
+  document.getElementById('risksList').innerHTML =
+    r.risks.map(x => '<li>' + esc(x) + '</li>').join('');
+
+  document.getElementById('pathList').innerHTML =
+    r.path.map((x, i) => '<li>' + esc(x) + '</li>').join('');
+
+  document.getElementById('lessonChips').innerHTML =
+    r.lessons.map(c =>
+      '<a class="lesson-chip" href="learn.html?code=' + encodeURIComponent(c) + '" target="_blank">' + esc(c) + '</a>'
+    ).join('');
+
+  document.getElementById('metaTime').textContent = r.metaTime;
+  document.getElementById('metaDifficulty').textContent = r.metaDifficulty;
+  document.getElementById('metaSimilar').textContent = r.metaSimilar;
+
+  const now = new Date();
+  document.getElementById('reportTime').textContent =
+    String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  /* save context for action handlers */
+  window._lastDiagnose = { inputs, result: r };
+
+  document.getElementById('report').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('report').scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 50);
+}
+
+/* ===== actions ===== */
+function getReturnUrl() {
+  const params = new URLSearchParams(location.search);
+  /* 来自 welcome → 回 welcome 第 5 步继续；否则去 roadmap */
+  return params.get('from') === 'welcome' ? 'welcome.html?step=5' : 'roadmap.html';
+}
+
+function extractName(text) {
+  return text.length > 14 ? text.slice(0, 14) + '…' : text;
+}
+
+function acceptAndContinue() {
+  if (!window._lastDiagnose) return;
+  const { inputs, result } = window._lastDiagnose;
+
+  const project = {
+    name: extractName(inputs.idea),
+    ideaText: inputs.idea,
+    audience: inputs.audience,
+    form: inputs.form,
+    goal: inputs.goal,
+    feasibility: result.tier,
+    feasibilityLabel: result.tierLabel,
+    capabilityMap: result.lessons.map(c => ({ cap: c, lessons: [c] })),
+    timeEstimate: result.metaTime,
+    similar: result.metaSimilar,
+    diagnosis: {
+      opportunity: result.opportunity,
+      risks: result.risks,
+      path: result.path,
+      lessons: result.lessons
+    },
+    stage: '需求定义',
+    createdAt: new Date().toISOString().slice(0,10)
+  };
+  localStorage.setItem('ds_project', JSON.stringify(project));
+  localStorage.setItem('ds_has_idea', 'has');
+  location.href = getReturnUrl();
+}
+
+function resetForm() {
+  document.querySelectorAll('#formCard input, #formCard textarea').forEach(el => el.value = '');
+  document.querySelectorAll('#formCard .q-radio-chip.selected').forEach(el => el.classList.remove('selected'));
+  document.getElementById('report').classList.remove('show');
+  document.getElementById('runBtn').disabled = true;
+  window._lastDiagnose = null;
+  document.getElementById('formCard').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function giveUpAndContinue() {
+  localStorage.removeItem('ds_project');
+  localStorage.setItem('ds_has_idea', 'no');
+  location.href = getReturnUrl();
+}
+</script>
+
+</body>
+</html>

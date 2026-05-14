@@ -1109,8 +1109,8 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   color: var(--teal);
   flex-shrink: 0;
 }
+.pb-action-group { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
 .pb-update-btn {
-  flex-shrink: 0;
   padding: 6px 14px;
   border-radius: 5px;
   font-size: 12px;
@@ -1128,6 +1128,34 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .pb-update-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+.pb-update-btn.confirm {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+  animation: pb-pulse 1.4s ease-in-out infinite;
+}
+.pb-update-btn.confirm:hover { background: var(--gold-bright); }
+@keyframes pb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 152, 84, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(200, 152, 84, 0); }
+}
+.pb-regress-btn {
+  width: 28px; height: 28px;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+  display: grid; place-items: center;
+}
+.pb-regress-btn:hover {
+  color: var(--deep-blue);
+  background: var(--bg);
+  border-color: var(--text-3);
 }
 
 @media (max-width: 900px) {
@@ -2538,6 +2566,20 @@ function renderProjectBanner() {
   }).join('');
 
   const isLast = stageIdx === PROJECT_STAGES.length - 1;
+  const isFirst = stageIdx === 0;
+
+  let advanceBtnHtml;
+  if (isLast) {
+    advanceBtnHtml = '<button class="pb-update-btn" disabled>已完成</button>';
+  } else if (_stagePendingConfirm) {
+    advanceBtnHtml = '<button class="pb-update-btn confirm" onclick="advanceProjectStage()">确定要推进?</button>';
+  } else {
+    advanceBtnHtml = '<button class="pb-update-btn" onclick="advanceProjectStage()">完成本阶段</button>';
+  }
+
+  const regressBtnHtml = !isFirst
+    ? '<button class="pb-regress-btn" onclick="regressProjectStage()" title="退回上一阶段">↶</button>'
+    : '';
 
   banner.className = 'km-banner';
   banner.innerHTML =
@@ -2554,23 +2596,57 @@ function renderProjectBanner() {
         '<span class="pb-next-action">' + escapeHtml(next.action) + '</span>' +
         '<span class="pb-next-link">→ ' + escapeHtml(next.label) + '</span>' +
       '</div>' +
-      '<button class="pb-update-btn" onclick="advanceProjectStage()"' +
-        (isLast ? ' disabled' : '') + '>' +
-        (isLast ? '已完成' : '完成本阶段') +
-      '</button>' +
+      '<div class="pb-action-group">' +
+        advanceBtnHtml +
+        regressBtnHtml +
+      '</div>' +
     '</div>';
+}
+
+/* 二次确认状态 + 自动恢复 timer */
+let _stagePendingConfirm = false;
+let _stageConfirmTimer = null;
+
+function _clearPendingConfirm() {
+  if (_stageConfirmTimer) { clearTimeout(_stageConfirmTimer); _stageConfirmTimer = null; }
+  _stagePendingConfirm = false;
 }
 
 function advanceProjectStage() {
   const project = loadProject();
   if (!project) return;
   const idx = PROJECT_STAGES.indexOf(project.stage || '需求定义');
-  if (idx >= 0 && idx < PROJECT_STAGES.length - 1) {
-    project.stage = PROJECT_STAGES[idx + 1];
-    saveProject(project);
+  if (idx < 0 || idx >= PROJECT_STAGES.length - 1) return;
+
+  if (!_stagePendingConfirm) {
+    /* 第 1 次点击：进入"待确认"状态，2.5 秒后自动撤销 */
+    _stagePendingConfirm = true;
     renderProjectBanner();
-    showToast('项目阶段更新：' + project.stage);
+    _stageConfirmTimer = setTimeout(() => {
+      _clearPendingConfirm();
+      renderProjectBanner();
+    }, 2500);
+    return;
   }
+
+  /* 第 2 次点击：确认推进 */
+  _clearPendingConfirm();
+  project.stage = PROJECT_STAGES[idx + 1];
+  saveProject(project);
+  renderProjectBanner();
+  showToast('项目阶段推进到：' + project.stage);
+}
+
+function regressProjectStage() {
+  _clearPendingConfirm(); /* 退回的话，取消进行中的确认 */
+  const project = loadProject();
+  if (!project) return;
+  const idx = PROJECT_STAGES.indexOf(project.stage || '需求定义');
+  if (idx <= 0) return;
+  project.stage = PROJECT_STAGES[idx - 1];
+  saveProject(project);
+  renderProjectBanner();
+  showToast('已退回到：' + project.stage);
 }
 
 /* =====================================================
