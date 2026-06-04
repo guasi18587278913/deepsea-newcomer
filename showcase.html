@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>深海圈 | 成果墙</title>
+<title>深海圈 | 作品墙</title>
 <style>
 :root {
   --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -60,6 +60,71 @@ a { color:inherit; text-decoration:none; }
 .work-preview.p2 { background:linear-gradient(135deg,#d1fae5 0%,#e6f7f5 100%); }
 .work-preview.p3 { background:linear-gradient(135deg,#fef3c7 0%,#fed7aa 100%); }
 .work-preview.p4 { background:linear-gradient(135deg,#e0e7ff 0%,#c7d2fe 100%); }
+
+/* ====== 产品预览小样机：纯 CSS 画出每个产品的界面，替代空占位 ====== */
+.work-preview { overflow:hidden; position:relative; }
+.mk { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:16px; }
+.mk .d { width:7px; height:7px; border-radius:50%; display:inline-block; }
+.mk .d.r { background:#ff6058; } .mk .d.y { background:#ffbd2e; } .mk .d.g { background:#28c941; }
+.mk .mk-bar { display:block; height:6px; border-radius:3px; background:rgba(28,44,68,.14); }
+.mk .w90{width:90%}.mk .w84{width:84%}.mk .w80{width:80%}.mk .w76{width:76%}.mk .w72{width:72%}.mk .w70{width:70%}.mk .w64{width:64%}.mk .w62{width:62%}.mk .w60{width:60%}.mk .w55{width:55%}.mk .w50{width:50%}.mk .w48{width:48%}
+.mkw, .mkb { width:100%; background:#fff; border-radius:11px; box-shadow:0 12px 28px -10px rgba(20,40,60,.30); overflow:hidden; }
+.mkw { max-width:286px; }
+.mkw-top, .mkb-top { display:flex; align-items:center; gap:5px; padding:8px 11px; background:#f6f7f9; border-bottom:1px solid #edf0f4; }
+.mkw-ttl { margin-left:6px; font-size:9.5px; color:#8a96a5; font-weight:600; }
+
+/* 1 · AI 周报生成器 */
+.mkw-body { padding:13px 14px 14px; }
+.mkw-body .mk-h { height:9px; width:46%; border-radius:4px; background:linear-gradient(90deg,#7c6bf0,#9d7bf5); margin-bottom:12px; }
+.mk-li { display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+.mk-ck { flex:none; width:14px; height:14px; border-radius:4px; background:#ece8fc; color:#7c6bf0; font-size:9px; font-weight:700; display:grid; place-items:center; }
+.mk-li .mk-bar { flex:1; }
+.mk-btn { margin-top:12px; height:25px; border-radius:7px; background:linear-gradient(90deg,#7c6bf0,#9d7bf5); color:#fff; font-size:10px; font-weight:600; display:grid; place-items:center; box-shadow:0 5px 12px -3px rgba(124,107,240,.55); }
+
+/* flow 容器（菜谱→清单 / 头像 before→after） */
+.mk-flow { display:flex; align-items:center; justify-content:center; gap:11px; width:100%; }
+.mk-arrow { flex:none; color:#9aa6b4; font-size:19px; font-weight:300; }
+
+/* 2 · 拍菜谱→购物清单 */
+.mk-photo { flex:none; width:76px; height:98px; border-radius:13px; background:linear-gradient(155deg,#ffe1b0,#ff9d77 58%,#f86f5f); display:grid; place-items:center; box-shadow:0 9px 20px -7px rgba(248,111,95,.55); }
+.mk-photo .gl { font-size:30px; line-height:1; }
+.mk-phone { flex:none; width:112px; background:#fff; border-radius:16px; padding:8px 8px 10px; border:1px solid #eef1f5; box-shadow:0 11px 26px -9px rgba(20,40,60,.32); }
+.mk-notch { display:block; width:32px; height:4px; border-radius:3px; background:#dfe4ea; margin:1px auto 8px; }
+.mk-ph-h { font-size:10px; font-weight:700; color:#178a5c; margin:0 3px 8px; }
+.mk-item { display:flex; align-items:center; gap:6px; margin:0 3px 8px; }
+.mk-box { flex:none; width:13px; height:13px; border-radius:4px; border:1.5px solid #cdd6df; background:#fff; }
+.mk-box.on { background:#22b07d; border-color:#22b07d; color:#fff; font-size:8px; font-weight:700; display:grid; place-items:center; }
+.mk-item .mk-bar { flex:1; }
+
+/* 3 · 头像生成器 before→after */
+.mk-avatar .mk-flow { position:relative; padding-bottom:16px; }
+.mk-ava { flex:none; width:74px; height:74px; border-radius:50%; position:relative; overflow:hidden; }
+.mk-ava.plain { background:linear-gradient(160deg,#d2d8e0,#9fb0c0); }
+.mk-ava.art { background:linear-gradient(160deg,#d2ab53,#7c5a1d); box-shadow:0 0 0 3px #f5e4b6, 0 0 0 4px #c89a3a, 0 9px 20px -5px rgba(150,110,30,.6); }
+.mk-ava::before { content:''; position:absolute; width:30%; height:30%; border-radius:50%; top:20%; left:35%; background:rgba(255,255,255,.92); }
+.mk-ava::after { content:''; position:absolute; width:58%; height:40%; border-radius:46% 46% 0 0; bottom:-4%; left:21%; background:rgba(255,255,255,.92); }
+.mk-gen { position:absolute; bottom:0; left:50%; transform:translateX(-50%); white-space:nowrap; font-size:9.5px; font-weight:600; color:#fff; background:linear-gradient(90deg,#d9892f,#b9701c); padding:4px 13px; border-radius:20px; box-shadow:0 5px 13px -3px rgba(185,112,28,.6); }
+
+/* 4 · 英语口语陪练（浏览器 + 侧栏） */
+.mkb { max-width:332px; }
+.mkb-url { flex:1; height:11px; margin-left:6px; border-radius:6px; background:#e9edf2; }
+.mkb-body { display:flex; height:120px; }
+.mkb-page { flex:1; padding:13px 12px; display:flex; flex-direction:column; gap:9px; }
+.mkb-panel { flex:none; width:112px; border-left:1px solid #eef0f4; background:#fbfcfe; padding:12px 9px; display:flex; flex-direction:column; align-items:center; gap:9px; }
+.mk-sent { font-size:11px; font-weight:600; color:#33405a; }
+.mk-sent .hl { color:#3b6ef0; border-bottom:2px solid #9db8fb; }
+.mk-wave { display:flex; align-items:flex-end; gap:2px; height:24px; }
+.mk-wave i { width:3px; border-radius:2px; background:#6f93f5; }
+.mk-wave i:nth-child(1){height:38%}.mk-wave i:nth-child(2){height:72%}.mk-wave i:nth-child(3){height:100%}.mk-wave i:nth-child(4){height:58%}.mk-wave i:nth-child(5){height:86%}.mk-wave i:nth-child(6){height:48%}.mk-wave i:nth-child(7){height:28%}
+.mk-score { font-size:19px; font-weight:800; color:#2fa56b; font-family:'SF Mono',monospace; }
+.mk-score small { font-size:9px; font-weight:600; margin-left:1px; }
+
+/* 我的作品（动态提交）通用样机 */
+.mk-generic .mkw { max-width:236px; }
+.mk-gbody { padding:15px 16px; display:flex; align-items:center; gap:12px; }
+.mk-ico { flex:none; width:40px; height:40px; border-radius:11px; background:linear-gradient(140deg,var(--teal),var(--teal-dark)); color:#fff; display:grid; place-items:center; font-size:19px; font-weight:700; box-shadow:0 6px 15px -4px rgba(13,148,136,.5); }
+.mk-gcol { flex:1; display:flex; flex-direction:column; gap:8px; }
+
 .work-body { padding:20px; }
 .work-tags { display:flex; gap:6px; margin-bottom:10px; }
 .work-tag { font-size:11px; padding:2px 8px; background:var(--teal-light); color:var(--teal-dark); border-radius:4px; font-weight:500; }
@@ -99,6 +164,19 @@ a { color:inherit; text-decoration:none; }
 .story-amount { color:var(--teal-dark); font-weight:600; }
 
 @media (max-width:768px) { .works, .revenue-stories, .stats { grid-template-columns:1fr; } .page { padding:20px; } }
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -107,14 +185,7 @@ a { color:inherit; text-decoration:none; }
   <div class="tb-inner">
     <div class="tb-left">
       <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html">学习</a>
-        <a href="discuss.html">讨论</a>
-        <a href="community.html">社区</a>
-        <a href="showcase.html" class="active">成果墙</a>
-        <a href="toolbox.html">工具箱</a>
-      </nav>
+      <nav class="snav" id="snav"></nav>
     </div>
     <a href="profile.html" class="avatar">瓜</a>
   </div>
@@ -122,7 +193,7 @@ a { color:inherit; text-decoration:none; }
 
 <section class="hero">
   <div class="hero-inner">
-    <h1>成果墙</h1>
+    <h1>作品墙</h1>
     <p>每一个作品都是从零开始的 · 学员用 AI 做出的真实产品</p>
   </div>
 </section>
@@ -156,7 +227,20 @@ a { color:inherit; text-decoration:none; }
 
   <div class="works">
     <div class="work">
-      <div class="work-preview">产品截图</div>
+      <div class="work-preview">
+        <div class="mk mk-report">
+          <div class="mkw">
+            <div class="mkw-top"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="mkw-ttl">本周周报 · W21</span></div>
+            <div class="mkw-body">
+              <div class="mk-h"></div>
+              <div class="mk-li"><span class="mk-ck">✓</span><i class="mk-bar w80"></i></div>
+              <div class="mk-li"><span class="mk-ck">✓</span><i class="mk-bar w64"></i></div>
+              <div class="mk-li"><span class="mk-ck">✓</span><i class="mk-bar w72"></i></div>
+              <div class="mk-btn">✨ 一键生成周报</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="work-body">
         <div class="work-tags"><span class="work-tag">MicroSaaS</span><span class="work-tag revenue">🔥 第一笔收入</span></div>
         <div class="work-title">AI 周报生成器</div>
@@ -169,7 +253,22 @@ a { color:inherit; text-decoration:none; }
     </div>
 
     <div class="work">
-      <div class="work-preview p2">产品截图</div>
+      <div class="work-preview p2">
+        <div class="mk mk-grocery">
+          <div class="mk-flow">
+            <div class="mk-photo"><span class="gl">🍲</span></div>
+            <span class="mk-arrow">→</span>
+            <div class="mk-phone">
+              <span class="mk-notch"></span>
+              <div class="mk-ph-h">🛒 购物清单</div>
+              <div class="mk-item"><span class="mk-box on">✓</span><i class="mk-bar w70"></i></div>
+              <div class="mk-item"><span class="mk-box on">✓</span><i class="mk-bar w55"></i></div>
+              <div class="mk-item"><span class="mk-box"></span><i class="mk-bar w62"></i></div>
+              <div class="mk-item"><span class="mk-box"></span><i class="mk-bar w48"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="work-body">
         <div class="work-tags"><span class="work-tag">微信小程序</span></div>
         <div class="work-title">拍菜谱生成购物清单</div>
@@ -182,7 +281,16 @@ a { color:inherit; text-decoration:none; }
     </div>
 
     <div class="work">
-      <div class="work-preview p3">产品截图</div>
+      <div class="work-preview p3">
+        <div class="mk mk-avatar">
+          <div class="mk-flow">
+            <div class="mk-ava plain"></div>
+            <span class="mk-arrow">→</span>
+            <div class="mk-ava art"></div>
+            <div class="mk-gen">✨ Generate</div>
+          </div>
+        </div>
+      </div>
       <div class="work-body">
         <div class="work-tags"><span class="work-tag">AI 工具</span><span class="work-tag revenue">🔥 第一笔收入</span></div>
         <div class="work-title">Raphael 风格头像生成器</div>
@@ -195,7 +303,21 @@ a { color:inherit; text-decoration:none; }
     </div>
 
     <div class="work">
-      <div class="work-preview p4">产品截图</div>
+      <div class="work-preview p4">
+        <div class="mk mk-speak">
+          <div class="mkb">
+            <div class="mkb-top"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="mkb-url"></span></div>
+            <div class="mkb-body">
+              <div class="mkb-page"><i class="mk-bar w90"></i><i class="mk-bar w76"></i><i class="mk-bar w84"></i><i class="mk-bar w60"></i></div>
+              <div class="mkb-panel">
+                <div class="mk-sent">Hello<span class="hl"> world</span></div>
+                <div class="mk-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="mk-score">92<small>分</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="work-body">
         <div class="work-tags"><span class="work-tag">Chrome 扩展</span></div>
         <div class="work-title">英语口语陪练 AI</div>
@@ -244,6 +366,13 @@ a { color:inherit; text-decoration:none; }
   let subs = [];
   try { subs = JSON.parse(localStorage.getItem('ds_submissions') || '[]'); }
   catch (e) { subs = []; }
+  // ?demo=1 时用演示数据，方便预览「我的作品」长什么样（不写入 localStorage，不影响正常访问）
+  if (!subs.length && /[?&]demo\b/.test(location.search)) {
+    subs = [
+      { stage:3, title:'AI 邮件润色器', url:'https://example.com', desc:'输入中式英语，输出地道的商务邮件。上线两周，已有 5 个朋友在用。', public:true, submittedAt:'2026-05-20' },
+      { stage:2, title:'课程表查询小工具', url:'https://example.com', desc:'给室友做的课程表查询页，第一次做出能用的东西。', public:true, submittedAt:'2026-05-12' }
+    ];
+  }
   const publics = subs.filter(s => s.public);
   if (!publics.length) return;
 
@@ -255,8 +384,15 @@ a { color:inherit; text-decoration:none; }
     const previewCls = previewClasses[i % 4];
     const date = (s.submittedAt || '').replace(/^2026-/, '').replace('-', '.') + ' 提交';
     const href = s.url ? ('href="' + esc(s.url) + '" target="_blank" rel="noopener"') : '';
+    const init = esc(((s.title || '·').trim()[0]) || '·');
     return '<a class="work" ' + href + ' style="text-decoration:none;color:inherit;">' +
-      '<div class="work-preview ' + previewCls + '">' + esc(s.title) + '</div>' +
+      '<div class="work-preview ' + previewCls + '">' +
+        '<div class="mk mk-generic"><div class="mkw">' +
+          '<div class="mkw-top"><span class="d r"></span><span class="d y"></span><span class="d g"></span></div>' +
+          '<div class="mk-gbody"><div class="mk-ico">' + init + '</div>' +
+            '<div class="mk-gcol"><i class="mk-bar w70"></i><i class="mk-bar w50"></i></div></div>' +
+        '</div></div>' +
+      '</div>' +
       '<div class="work-body">' +
         '<div class="work-tags">' +
           '<span class="work-tag mine">我的提交</span>' +
@@ -278,6 +414,21 @@ a { color:inherit; text-decoration:none; }
   section.style.display = '';
 })();
 </script>
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='作品墙';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

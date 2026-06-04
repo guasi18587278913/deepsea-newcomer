@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>深海圈 · AI 编程新人原型站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--teal:#0d9488;--teal-deep:#1f6f6a;--ink:#1e3a52;--text2:#5c7a8a;--text3:#94a3b8;--gold:#c2892f;--border:#e2ebec;
+    --serif:'Noto Serif SC','Songti SC',serif;--sans:'Sora','PingFang SC',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--sans);color:var(--ink);background:linear-gradient(180deg,#eef6f4 0%,#dcefe9 45%,#cae7df 100%);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 24px 64px;}
+  .head{text-align:center;margin-bottom:8px}
+  .brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:700;font-size:18px;color:var(--teal-deep);margin-bottom:18px}
+  .brand .sq{width:13px;height:13px;background:var(--teal);border-radius:3px}
+  h1{font-family:var(--serif);font-size:40px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
+  .sub{color:var(--text2);font-size:15px;margin-top:12px;line-height:1.7}
+  .sub b{color:var(--teal-deep)}
+  .note{display:inline-block;margin-top:14px;font-size:12px;color:var(--text3);background:rgba(255,255,255,.6);border:1px solid var(--border);border-radius:999px;padding:5px 14px}
+  .sec{margin-top:38px}
+  .sec-h{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--teal-deep);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .sec-h::after{content:"";flex:1;height:1px;background:var(--border)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+  .card{display:block;text-decoration:none;background:#fff;border:1px solid var(--border);border-radius:14px;padding:17px 18px;transition:transform .14s,box-shadow .14s,border-color .14s;box-shadow:0 1px 2px rgba(30,58,82,.04)}
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 32px -16px rgba(30,58,82,.28);border-color:#bfe0d9}
+  .card .t{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .card .t .arr{color:var(--teal);font-size:14px;opacity:0;transition:opacity .14s,transform .14s;transform:translateX(-3px)}
+  .card:hover .t .arr{opacity:1;transform:translateX(0)}
+  .card .d{font-size:12.5px;color:var(--text2);margin-top:6px;line-height:1.55}
+  .card .tag{display:inline-block;margin-top:9px;font-size:10.5px;font-weight:600;color:var(--gold);background:#fbf3e3;border-radius:6px;padding:2px 8px;letter-spacing:.02em}
+  .foot{text-align:center;color:var(--text3);font-size:12px;margin-top:46px;line-height:1.7}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div class="brand"><span class="sq"></span>深海圈</div>
+      <h1>AI 编程 · 新人原型站</h1>
+      <div class="sub">深海圈「AI 编程课程」新人常态化运营的<b>静态原型</b>。<br>纯 HTML 演示，所有数据 / AI / 推荐均为 mock。点开任意页面预览。</div>
+      <span class="note">原型 Demo · 数据均为模拟 · 状态存于浏览器本地</span>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h">学习主线</div>
+      <div class="grid">
+        <a class="card" href="calendar.html"><div class="t">我的路线 · 学习航海图<span class="arr">→</span></div><div class="d">把课程画成一张航海图，岛随进度点亮、点岛看课。</div><span class="tag">主页</span></a>
+        <a class="card" href="welcome.html"><div class="t">新人引导<span class="arr">→</span></div><div class="d">首次进来的 6 步问卷，按答案生成专属路线。</div><span class="tag">入口</span></a>
+        <a class="card" href="roadmap.html"><div class="t">学习路线 / 知识地图<span class="arr">→</span></div><div class="d">从浅滩到深海的阶段路线与能力地图。</div></a>
+        <a class="card" href="learn.html?code=A1"><div class="t">课程页<span class="arr">→</span></div><div class="d">单节课程，侧边是本阶段所有课节。</div></a>
+        <a class="card" href="diagnosis.html"><div class="t">AI 项目诊断<span class="arr">→</span></div><div class="d">把你的想法说给「刘小排」，帮你把把脉。</div></a>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h">交流社区</div>
+      <div class="grid">
+        <a class="card" href="discuss.html"><div class="t">广场<span class="arr">→</span></div><div class="d">轻量动态流：报喜、求助、唠嗑，按话题筛。</div></a>
+        <a class="card" href="feed.html"><div class="t">干货<span class="arr">→</span></div><div class="d">沉淀的经验帖（数据为交流区真实快照）。</div></a>
+        <a class="card" href="community.html"><div class="t">社区动态<span class="arr">→</span></div><div class="d">社区里的最新动态聚合。</div></a>
+        <a class="card" href="members.html"><div class="t">成员<span class="arr">→</span></div><div class="d">同城伙伴 / 认证高手。</div></a>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h">工具与展示</div>
+      <div class="grid">
+        <a class="card" href="toolbox.html"><div class="t">AI 工具箱<span class="arr">→</span></div><div class="d">想法探索 / 验证 / 选型 / 落地页 / 冷启动，5 个工具。</div></a>
+        <a class="card" href="showcase.html"><div class="t">作品墙<span class="arr">→</span></div><div class="d">学员公开提交的作品。</div></a>
+        <a class="card" href="profile.html"><div class="t">个人中心<span class="arr">→</span></div><div class="d">作业历史 / 学习记录。</div></a>
+      </div>
+    </div>
+
+    <div class="foot">深海圈 · AI 编程新人常态化运营 原型站 · 仅供预览<br>右下角浮窗是「AI 刘小白」助手（mock 实现）</div>
+  </div>
+</body>
+</html>

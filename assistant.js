@@ -1,12 +1,20 @@
 /* ==========================================================
-   AI 刘小白 · 全站浮窗助手
+   AI 刘小排 · 全站浮窗助手
    ----------------------------------------------------------
    单文件、零依赖。引入即用：<script src="assistant.js"></script>
    读取 localStorage 的 ds_project 给出上下文化欢迎语。
-   mockReply() 是占位实现；真接入 AI 刘小白 API 时替换它即可。
+   mockReply() 是占位实现；真接入 AI 刘小排 API 时替换它即可。
    ========================================================== */
 (function () {
   if (document.getElementById('assistant-root')) return; // 防重复
+
+  /* 「课程专区」按有无 idea 智能跳转：有 idea → 路线图，没 idea → 日历 */
+  try {
+    var _courseTarget = localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
+    document.querySelectorAll('.nav a').forEach(function (a) {
+      if (a.textContent.trim() === '课程专区') a.setAttribute('href', _courseTarget);
+    });
+  } catch (e) {}
 
   /* ---------------- CSS ---------------- */
   const css = `
@@ -15,18 +23,14 @@
 .assistant-btn {
   width: 56px; height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #14b8a6 0%, #1a2942 100%);
-  color: #fff;
-  display: grid; place-items: center;
-  font-size: 22px; font-weight: 700;
-  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  background: #fff url('assets/liuxiaopai-avatar.png') center / cover no-repeat;
   cursor: pointer;
   border: none;
-  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.35), 0 2px 6px rgba(0,0,0,.08);
+  box-shadow: 0 0 0 2px #0d9488, 0 6px 16px rgba(30, 41, 66, 0.16);
   transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
 }
-.assistant-btn:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(13, 148, 136, 0.45); }
+.assistant-btn:hover { transform: scale(1.06); box-shadow: 0 0 0 2px #0d9488, 0 8px 22px rgba(30, 41, 66, 0.22); }
 .assistant-btn .pulse-dot {
   position: absolute; top: 4px; right: 4px;
   width: 10px; height: 10px;
@@ -62,11 +66,9 @@
 }
 .assistant-avatar {
   width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, #14b8a6 0%, #1a2942 100%);
-  color: #fff;
-  display: grid; place-items: center;
-  font-size: 14px; font-weight: 700;
-  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  background: #fff url('assets/liuxiaopai-avatar.png') center / cover no-repeat;
+  box-shadow: 0 0 0 1.5px rgba(13, 148, 136, .45);
+  flex-shrink: 0;
 }
 .assistant-name { font-size: 14px; font-weight: 700; color: #1a2942; line-height: 1.2; }
 .assistant-status { font-size: 11px; color: #14b8a6; font-family: 'SF Mono', monospace; display: flex; align-items: center; gap: 4px; }
@@ -99,11 +101,8 @@
 .assistant-msg .msg-avatar {
   width: 26px; height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #14b8a6 0%, #1a2942 100%);
-  color: #fff;
-  display: grid; place-items: center;
-  font-size: 12px; font-weight: 700;
-  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  background: #fff url('assets/liuxiaopai-avatar.png') center / cover no-repeat;
+  box-shadow: 0 0 0 1px rgba(13, 148, 136, .35);
   flex-shrink: 0;
 }
 .assistant-msg .msg-text {
@@ -211,15 +210,14 @@
   const root = document.createElement('div');
   root.id = 'assistant-root';
   root.innerHTML = `
-<button class="assistant-btn" id="assistantBtn" title="问 AI 刘小白">
-  白
+<button class="assistant-btn" id="assistantBtn" title="问 AI 刘小排" aria-label="问 AI 刘小排">
   <span class="pulse-dot"></span>
 </button>
 <div class="assistant-panel" id="assistantPanel">
   <div class="assistant-header">
-    <div class="assistant-avatar">白</div>
+    <div class="assistant-avatar" role="img" aria-label="刘小排头像"></div>
     <div>
-      <div class="assistant-name">AI 刘小白</div>
+      <div class="assistant-name">AI 刘小排</div>
       <div class="assistant-status">在线 · 通常 5 秒内回复</div>
     </div>
     <button class="assistant-close" id="assistantClose" title="关闭">×</button>
@@ -227,7 +225,7 @@
   <div class="assistant-messages" id="assistantMessages"></div>
   <div class="assistant-suggest" id="assistantSuggest"></div>
   <div class="assistant-input-wrap">
-    <textarea class="assistant-input" id="assistantInput" rows="1" placeholder="问刘小白任何问题..."></textarea>
+    <textarea class="assistant-input" id="assistantInput" rows="1" placeholder="问刘小排任何问题..."></textarea>
     <button class="assistant-send" id="assistantSend">发送</button>
   </div>
 </div>
@@ -277,7 +275,7 @@
     const div = document.createElement('div');
     div.className = 'assistant-msg ' + role;
     div.innerHTML = role === 'ai'
-      ? '<div class="msg-avatar">白</div><div class="msg-text">' + escapeHtml(text) + '</div>'
+      ? '<div class="msg-avatar"></div><div class="msg-text">' + escapeHtml(text) + '</div>'
       : '<div class="msg-text">' + escapeHtml(text) + '</div>';
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
@@ -311,7 +309,7 @@
     const project = loadProject();
     let greet, suggestions;
     if (project) {
-      greet = 'Hi 我是 AI 刘小白 👋 看到你在做「' + project.name + '」，目前在「' + (project.stage || '需求定义') + '」阶段。\n\n有什么需要我帮的？';
+      greet = 'Hi 我是 AI 刘小排 👋 看到你在做「' + project.name + '」，目前在「' + (project.stage || '需求定义') + '」阶段。\n\n有什么需要我帮的？';
       suggestions = [
         '帮我拆解下一步要做什么',
         '这个阶段最容易踩什么坑？',
@@ -319,7 +317,7 @@
         '检查下我的 SPEC'
       ];
     } else {
-      greet = 'Hi 我是 AI 刘小白 👋\n\n你可以问我课程任何问题，或让我帮你梳理一个 idea。';
+      greet = 'Hi 我是 AI 刘小排 👋\n\n你可以问我课程任何问题，或让我帮你梳理一个 idea。';
       suggestions = [
         '怎么找一个能赚钱的 idea',
         '零基础该从哪节课开始',
@@ -335,7 +333,7 @@
     const div = document.createElement('div');
     div.className = 'assistant-msg ai';
     div.id = 'assistant-typing-row';
-    div.innerHTML = '<div class="msg-avatar">白</div><div class="msg-text" style="padding:0;background:transparent;border:none;"><div class="assistant-typing"><span></span><span></span><span></span></div></div>';
+    div.innerHTML = '<div class="msg-avatar"></div><div class="msg-text" style="padding:0;background:transparent;border:none;"><div class="assistant-typing"><span></span><span></span><span></span></div></div>';
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
   }
@@ -362,7 +360,7 @@
 
   /* ---------------- MOCK REPLY ----------------
      占位实现：基于关键词匹配返回有针对性的回答。
-     真接入 AI 刘小白 API 时只换这个函数。
+     真接入 AI 刘小排 API 时只换这个函数。
      ------------------------------------------ */
   function mockReply(text) {
     const t = text.toLowerCase();

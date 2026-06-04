@@ -96,21 +96,7 @@ a { color:inherit; text-decoration:none; }
 .discuss-title { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
 .pulse { width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-.discuss-feed { flex:1; overflow-y:auto; padding:12px; }
-.msg { padding:10px 12px; border-radius:8px; margin-bottom:8px; font-size:13px; line-height:1.55; }
-.msg-done { background:#f0fdf4; border-left:3px solid var(--success); }
-.msg-q { background:#fef6ee; border-left:3px solid #e07830; }
-.msg-reply { background:#f0f4ff; border-left:3px solid var(--blue); }
-.msg-user { font-weight:600; color:var(--text1); }
-.msg-tag { font-size:10px; font-weight:600; padding:1px 6px; border-radius:3px; margin-left:4px; background:var(--teal-light); color:var(--teal-dark); }
-.msg-text { color:var(--text2); }
-.msg-time { font-size:11px; color:var(--text3); margin-top:3px; }
-.discuss-input { border-top:1px solid var(--border); padding:12px; }
-.discuss-input textarea { width:100%; min-height:60px; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--font); font-size:13px; resize:none; outline:none; background:var(--white); }
-.discuss-input textarea:focus { border-color:var(--teal); }
-.discuss-input-footer { display:flex; justify-content:flex-end; margin-top:8px; }
-.send-btn { background:var(--teal); color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:12px; font-weight:500; cursor:pointer; }
-.send-btn:hover { background:var(--teal-dark); }
+/* 课旁讨论面板内部样式（cd-* 类）已移到 course-discuss.js 的 injectCSS，随面板一起渲染 */
 
 /* Discussion collapsed button */
 .open-discuss { position:fixed; right:16px; bottom:32px; width:48px; height:48px; border-radius:50%; background:var(--teal); color:#fff; border:none; cursor:pointer; display:none; place-items:center; box-shadow:0 4px 16px rgba(20,184,166,.3); z-index:40; font-size:20px; }
@@ -123,6 +109,19 @@ a { color:inherit; text-decoration:none; }
 }
 
 var[--blue] { color: var(--blue); }
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -131,14 +130,7 @@ var[--blue] { color: var(--blue); }
   <div class="tb-inner">
     <div class="tb-left">
       <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html" class="active">学习</a>
-        <a href="discuss.html">讨论</a>
-        <a href="community.html">社区</a>
-        <a href="showcase.html">成果墙</a>
-        <a href="toolbox.html">工具箱</a>
-      </nav>
+      <nav class="snav" id="snav"></nav>
     </div>
     <a href="profile.html" class="avatar">瓜</a>
   </div>
@@ -245,48 +237,12 @@ var[--blue] { color: var(--blue); }
     <div class="discuss-header">
       <div class="discuss-title">
         <span class="pulse"></span>
-        讨论
+        课旁讨论
       </div>
       <button class="side-toggle" onclick="toggleDiscuss()" title="收起">›</button>
     </div>
-    <div class="discuss-feed">
-      <div class="msg msg-done">
-        <span class="msg-user">张小鱼</span>
-        <span class="msg-text"> 看完了，感觉被治愈了 😄 之前一直觉得"我不是技术的料"，现在有点信心了</span>
-        <div class="msg-time">5 分钟前</div>
-      </div>
-      <div class="msg msg-q">
-        <span class="msg-user">王大锤</span>
-        <span class="msg-text"> 想问小排老师，您的 Raphael 那款产品上线第一个月是怎么冷启动的？</span>
-        <div class="msg-time">12 分钟前</div>
-      </div>
-      <div class="msg msg-reply">
-        <span class="msg-user">助教小安</span><span class="msg-tag">助教</span>
-        <span class="msg-text"> 冷启动的内容在「增长篇」会专门讲，这节课先不展开。你可以先把这个问题记下来，学到增长篇再回来看</span>
-        <div class="msg-time">8 分钟前</div>
-      </div>
-      <div class="msg msg-done">
-        <span class="msg-user">赵一一</span>
-        <span class="msg-text"> 学完第一节，已经开始期待做第一个网站了！</span>
-        <div class="msg-time">20 分钟前</div>
-      </div>
-      <div class="msg msg-q">
-        <span class="msg-user">陈小飞</span>
-        <span class="msg-text"> 完全零基础，看这节课的案例感觉差距好大，怕自己跟不上怎么办？</span>
-        <div class="msg-time">35 分钟前</div>
-      </div>
-      <div class="msg msg-reply">
-        <span class="msg-user">小排</span><span class="msg-tag" style="background:#f5f2ff;color:#7c5cbf">讲师</span>
-        <span class="msg-text"> 放心，案例都是普通人，58 岁的钢铁的铁、纯文科的良辰美都做到了。课程第一周就是让你做出第一个网站，一步一步来</span>
-        <div class="msg-time">30 分钟前</div>
-      </div>
-    </div>
-    <div class="discuss-input">
-      <textarea placeholder="分享你的想法或提问..."></textarea>
-      <div class="discuss-input-footer">
-        <button class="send-btn">发送</button>
-      </div>
-    </div>
+    <!-- 整块面板（本节问答 + 本章动态 + 精华 + 意图发布框）由 course-discuss.js（CourseDiscuss.initLesson）渲染；数据源 ds_course_discuss -->
+    <div id="cdWrap"></div>
   </aside>
 
 </div>
@@ -294,6 +250,8 @@ var[--blue] { color: var(--blue); }
 <button class="open-sidebar" onclick="toggleSidebar()" title="打开目录">☰</button>
 <button class="open-discuss" onclick="toggleDiscuss()" title="打开讨论">💬</button>
 
+<script src="course-data.js"></script>
+<script src="course-discuss.js?v=5"></script>
 <script>
 function toggleSidebar() {
   document.getElementById('main').classList.toggle('sidebar-collapsed');
@@ -303,93 +261,11 @@ function toggleDiscuss() {
 }
 
 /* ============= COURSES DATA · 与 roadmap.html 同步 ============= */
-const COURSES = [
-  // 快速入门 12 节 (stage 1)
-  { code:'A1', s:1, t:'这套课程有什么不同？', d:15 },
-  { code:'A2', s:1, t:'我祖上十八代都不会编程，我为什么需要会？', d:18 },
-  { code:'A3', s:1, t:'开挂式学习：用 AI 来学 AI', d:12 },
-  { code:'A4', s:1, t:'AI 到底是什么？别怕，它就是个超级实习生', d:20 },
-  { code:'A5', s:1, t:'初体验：10 分钟，做出你的第一个网站', d:30 },
-  { code:'A6', s:1, t:'跟 AI 讨论需求：从模糊想法到清晰指令', d:25 },
-  { code:'A7', s:1, t:'什么是 AI 产品？跟普通产品到底差在哪？', d:18 },
-  { code:'A8', s:1, t:'开发 AI 产品的核心秘密：预制菜思维 + 积木思维', d:22 },
-  { code:'A9', s:1, t:'动手开发第一个 AI 产品：互联网黑话翻译器', d:45 },
-  { code:'A10', s:1, t:'难度升级！第二个 AI 产品：哄哄模拟器', d:50 },
-  { code:'A11', s:1, t:'再次升级！从零打造"纸片人男友"', d:60 },
-  { code:'A12', s:1, t:'入门篇总结：你已经不是只会用 AI 聊天的人了', d:10 },
-  // 实战进阶 27 节 (stage 2)
-  { code:'B1', s:2, t:'前端和后端：一个管脸，一个管脑', d:25 },
-  { code:'B2', s:2, t:'源代码管理：你的代码也需要网盘', d:20 },
-  { code:'B3', s:2, t:'数据库：你的数据存在哪？', d:25 },
-  { code:'B4', s:2, t:'用户认证：怎么让用户注册登录你的产品', d:30 },
-  { code:'B5', s:2, t:'Next.js 最核心的内容：你一直在用，只是不知道', d:35 },
-  { code:'B6', s:2, t:'离开扣子编程，进入深水区', d:20 },
-  { code:'B7', s:2, t:'IDE 类 AI 编程工具速通', d:40 },
-  { code:'B8', s:2, t:'使用 Github 做源代码管理', d:45 },
-  { code:'B9', s:2, t:'去 API 超市进货：给你的产品加上现成的 AI 超能力', d:50 },
-  { code:'B10', s:2, t:'环境变量：为什么密码不能直接写在代码里', d:15 },
-  { code:'B11', s:2, t:'Bug 和报错：你的产品一定会出问题，然后呢', d:30 },
-  { code:'B12', s:2, t:'服务器、部署、上线：你的产品怎么跑到全世界', d:60 },
-  { code:'B13', s:2, t:'域名：给你的产品起个好记的名字', d:15 },
-  { code:'B14', s:2, t:'Claude Code：TRAE/Cursor 够了，为什么还要用它', d:35 },
-  { code:'B15', s:2, t:'MCP：AI 的万能插头 — 让 AI 连上一切工具', d:40 },
-  { code:'B16', s:2, t:'Skill：给 AI 写一份上岗 SOP', d:35 },
-  { code:'B17', s:2, t:'期中考试：使用 TRAE 和外部 API，重做"纸片人男友"', d:90 },
-  { code:'B18', s:2, t:'去哪里看模型能力：别靠感觉选，学会看公开信号', d:25 },
-  { code:'B19', s:2, t:'数据库进阶：离开扣子后，怎么选数据库', d:30 },
-  { code:'B20', s:2, t:'上线后，如何根据用户行为迭代产品', d:25 },
-  { code:'B21', s:2, t:'如何迅速提升产品设计感', d:30 },
-  { code:'B22', s:2, t:'利用开源生态，加速产品开发', d:25 },
-  { code:'B23', s:2, t:'人机验证：有人用机器人来薅你的产品，怎么办', d:20 },
-  { code:'B24', s:2, t:'云存储：AI 生成的图片链接过期了，怎么办', d:20 },
-  { code:'B25', s:2, t:'邮件服务：想让产品主动联系用户，怎么办', d:25 },
-  { code:'B26', s:2, t:'定时任务：你睡了，产品还能自己干活', d:20 },
-  { code:'B27', s:2, t:'用户反馈：你的用户想吐槽，往哪儿吐', d:15 },
-  // 商业化 19 节 (stage 3)
-  { code:'C1', s:3, t:'在起心动念和开始编程之间', d:15 },
-  { code:'C2', s:3, t:'能赚钱的 AI 产品长什么样？去哪儿找？', d:25 },
-  { code:'C3', s:3, t:'学习的第一步不是创新，是像素级模仿', d:20 },
-  { code:'C4', s:3, t:'产品 Idea 从哪里来？幸福的方式', d:20 },
-  { code:'C5', s:3, t:'产品 Idea 从哪里来？功利的方式', d:20 },
-  { code:'C6', s:3, t:'为什么有些人总能抢到红利', d:20 },
-  { code:'C7', s:3, t:'"新词站"：一个闷声发财的路子', d:25 },
-  { code:'C8', s:3, t:'小而美：低风险创业的最佳起步方式', d:20 },
-  { code:'C9', s:3, t:'什么是 MicroSaaS？一个人也能做的订阅制生意', d:25 },
-  { code:'C10', s:3, t:'MicroSaaS 四件套：落地页、用户中心、核心功能、支付', d:30 },
-  { code:'C11', s:3, t:'Landing Page：你只有 8 秒，用 8 秒打动用户', d:35 },
-  { code:'C12', s:3, t:'用户登录：别自己造轮子', d:20 },
-  { code:'C13', s:3, t:'海外订阅支付是怎么回事', d:30 },
-  { code:'C14', s:3, t:'极速开发：从零到正式上线只需 1 天', d:45 },
-  { code:'C15', s:3, t:'用 AI 做一个微信小程序', d:60 },
-  { code:'C16', s:3, t:'微信小游戏：做个能在群里疯传的 AI 小游戏', d:50 },
-  { code:'C17', s:3, t:'用 AI 开发手机 App，无论安卓还是 iOS', d:80 },
-  { code:'C18', s:3, t:'用 AI 开发桌面应用，Windows 和 Mac 都行', d:60 },
-  { code:'C19', s:3, t:'商业化阶段小结', d:15 },
-  // 增长 19 节 (stage 4)
-  { code:'D1', s:4, t:'AI 不是工具，是员工：一次思维转变', d:20 },
-  { code:'D2', s:4, t:'浏览器自动化专项', d:40 },
-  { code:'D3', s:4, t:'怎么教 AI 学会你的工作方式', d:30 },
-  { code:'D4', s:4, t:'Cowork/Codex：不用看代码，直接让 AI 交付结果', d:35 },
-  { code:'D5', s:4, t:'用扣子工作流把重复劳动自动化', d:40 },
-  { code:'D6', s:4, t:'OpenClaw：用飞书指挥 AI 干活', d:30 },
-  { code:'D7', s:4, t:'从零搭建你的第一个 AI Agent', d:50 },
-  { code:'D8', s:4, t:'给 AI 定规矩', d:25 },
-  { code:'D9', s:4, t:'用 AI 完成复杂需求的方法：SPEC 驱动', d:35 },
-  { code:'D10', s:4, t:'软件工程的真谛：高内聚、低耦合', d:30 },
-  { code:'D11', s:4, t:'单元测试：让 AI 每次写完自动检查', d:25 },
-  { code:'D12', s:4, t:'上下文工程，不是 Prompt 工程', d:30 },
-  { code:'D13', s:4, t:'从 Vibe Coding 到 Vibe Engineering', d:30 },
-  { code:'D14', s:4, t:'一个 AI 不够用？那就建一支 AI 团队', d:35 },
-  { code:'D15', s:4, t:'让 AI 输出可控：从自由发挥到结构化交付', d:25 },
-  { code:'D16', s:4, t:'冷启动：找人，而不是等人', d:30 },
-  { code:'D17', s:4, t:'好产品自己会长腿：在产品里种下传播的种子', d:25 },
-  { code:'D18', s:4, t:'一个人的生意，怎么越做越大', d:30 },
-  { code:'D19', s:4, t:'毕业总结 · 下一步往哪儿走', d:15 }
-];
+/* COURSES 来自 course-data.js（单一数据源）*/
 const STAGE_NAMES = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
 
 function getLessonCode() {
-  return new URLSearchParams(location.search).get('code') || 'A1';
+  return new URLSearchParams(location.search).get('code') || 'M1.1';
 }
 function findCourse(code) {
   return COURSES.find(c => c.code === code) || COURSES[0];
@@ -533,10 +409,29 @@ function selectLesson(el) {
   if (code) goToCourse(code);
 }
 
-/* 启动：根据 URL 渲染当前课程 */
+/* 课旁讨论的数据 / 渲染 / 回复 / 发到广场 已抽到 course-discuss.js
+   （与广场「课程讨论」共用同一数据源 ds_course_discuss）*/
+
+/* 启动：根据 URL 渲染当前课程 + 课旁讨论 */
 renderLesson();
+CourseDiscuss.initLesson();
 </script>
 
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='课程专区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

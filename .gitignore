@@ -2,3 +2,18 @@
 .gstack/
 _archive/
 mockups/
+
+# 干货页构建中间产物（原始抓取快照；运行时用不到，feed.html 只读 feed-data.js）
+feed-raw.json
+raw-liuliang.json
+raw-jingyan.json
+
+# 开发产物（不部署）
+.claude/
+.qa-screenshots/
+.playwright-mcp/
+.course-cards/
+prototype/
+
+# 备份文件
+*.bak

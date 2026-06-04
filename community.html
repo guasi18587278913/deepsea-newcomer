@@ -81,6 +81,19 @@ a { color:inherit; text-decoration:none; }
 .fab:hover { background:var(--teal-dark); transform:scale(1.05); }
 
 @media (max-width:768px) { .page { grid-template-columns:1fr; padding:20px; } }
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -89,14 +102,7 @@ a { color:inherit; text-decoration:none; }
   <div class="tb-inner">
     <div class="tb-left">
       <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html">学习</a>
-        <a href="discuss.html">讨论</a>
-        <a href="community.html" class="active">社区</a>
-        <a href="showcase.html">成果墙</a>
-        <a href="toolbox.html">工具箱</a>
-      </nav>
+      <nav class="snav" id="snav"></nav>
     </div>
     <a href="profile.html" class="avatar">瓜</a>
   </div>
@@ -156,7 +162,7 @@ a { color:inherit; text-decoration:none; }
           </div>
         </div>
         <div class="post-title">整理了一份 Next.js + Supabase + Stripe 的 boilerplate</div>
-        <div class="post-excerpt">把这几天折腾的样板代码整理好了，开箱即用，包含完整的用户认证、支付、订阅管理。小排老师说的 MicroSaaS 四件套齐全...</div>
+        <div class="post-excerpt">把这几天折腾的样板代码整理好了，开箱即用，包含完整的用户认证、支付、订阅管理。刘小排老师说的 MicroSaaS 四件套齐全...</div>
         <div class="post-stats"><span>👁 1,823</span><span>👍 67</span><span>💬 21</span></div>
       </div>
 
@@ -215,6 +221,21 @@ a { color:inherit; text-decoration:none; }
 
 <button class="fab" title="发帖">+</button>
 
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='交流区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

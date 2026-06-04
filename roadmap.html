@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  /* 路线图是「有 idea」的家。没 idea 的人不该停在这里——自动送回日历。
+     在 head 最早处执行，避免闪一下 roadmap 再跳。 */
+  if (localStorage.getItem('ds_has_idea') !== 'has') {
+    location.replace('calendar.html');
+  }
+</script>
 <title>深海圈 · 你的学习路线</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,7 +73,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
    ===================================================== */
 .km-app {
   display: grid;
-  grid-template-rows: 52px 52px 1fr 84px;
+  grid-template-rows: 52px 42px 1fr 84px;
   height: 100vh;
   width: 100%;
 }
@@ -91,6 +98,10 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   color: var(--teal);
   letter-spacing: -0.01em;
 }
+.km-topbar .nav { display: flex; gap: 20px; }
+.km-topbar .nav a { font-size: 14px; color: var(--text-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; transition: color 0.15s ease; }
+.km-topbar .nav a:hover { color: var(--deep-blue); }
+.km-topbar .nav a.active { color: var(--deep-blue); font-weight: 600; border-bottom-color: var(--teal); }
 .tb-back {
   font-size: 13px;
   color: var(--text-2);
@@ -186,16 +197,17 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 /* ============ MAIN CANVAS ============ */
 .km-main {
   position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   padding: 8px 32px;
+  min-height: 0;      /* 允许 1fr 行收缩，否则项目面板内容会撑大行高、把底栏顶出视口 */
+  overflow-y: auto;   /* 主区内部滚动：顶栏/banner/底栏保持钉住，只有这块滚 */
 }
+/* 架构图在折叠区内展开时撑满面板宽度（stretch 让 SVG 的 width:100% 生效，否则塌成默认 300px）*/
+.km-map-wrap[open] { display: flex; flex-direction: column; align-items: stretch; }
 .km-canvas {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;       /* 按 viewBox 比例自动算高；用 100% 会因父级高度不定而塌回默认 300px */
   max-height: 100%;
   user-select: none;
 }
@@ -543,6 +555,32 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   transition: color 0.15s;
 }
 .kd-submit-edit:hover { color: var(--teal); }
+/* 已提交后的常驻闭环入口 */
+.kd-submit-links {
+  display: flex; gap: 16px; justify-content: center; margin-top: 8px;
+}
+.kd-submit-links a {
+  font-size: 11.5px; color: var(--text-3); text-decoration: none;
+}
+.kd-submit-links a:hover { color: var(--teal); text-decoration: underline; }
+/* 提交成功 · 闭环弹窗 */
+.done-public-note {
+  background: var(--teal-bg); color: var(--teal-active);
+  border-radius: 8px; padding: 9px 12px; font-size: 12.5px; line-height: 1.5;
+  margin: 6px 0 14px;
+}
+.done-cta-row { display: flex; flex-direction: column; gap: 9px; }
+.done-cta-row a {
+  display: block; text-align: center; text-decoration: none;
+  padding: 11px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.done-cta-row a.primary { background: var(--teal); color: #fff; }
+.done-cta-row a.primary:hover { background: var(--teal-hover); }
+.done-cta-row a.alt {
+  background: var(--surface); color: var(--deep-blue); border: 1px solid var(--border);
+}
+.done-cta-row a.alt:hover { border-color: var(--teal); color: var(--teal); }
 
 /* ============ CALLOUT · 锚定卡（in-map anchored card）============ */
 /* 地图 dim · 卡片弹出时地图保持可见但降到 0.35 让卡片焦点清晰 */
@@ -1164,6 +1202,55 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   .pb-name { max-width: 110px; }
 }
 
+/* ===== 项目引擎（重构后的主体）===== */
+.km-engine { max-width: 900px; margin: 0 auto; padding: 22px 24px 6px; }
+.pe-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid rgba(30,58,82,0.08); }
+.pe-label { font-size:12px; color:#8a96a3; letter-spacing:0.05em; }
+.pe-name { font-size:22px; font-weight:700; color:#1a2942; font-family:'Noto Serif SC',serif; }
+.pe-form { font-size:13px; color:#0d9488; }
+.pe-progress { margin-left:auto; font-size:12.5px; color:#8a96a3; }
+.pe-stages { display:flex; flex-direction:column; gap:10px; }
+.pe-stage { display:flex; gap:14px; padding:13px 16px; border-radius:12px; border:1px solid rgba(30,58,82,0.08); background:#fbfcfd; transition:.2s; }
+.pe-stage.done { background:#f0f9f7; border-color:rgba(13,148,136,0.22); }
+.pe-stage.current { background:#fffaf0; border-color:rgba(200,152,84,0.45); box-shadow:0 4px 16px rgba(200,152,84,0.10); }
+.pe-stage.locked { opacity:.65; }
+.pe-stage-mark { width:26px; height:26px; flex:0 0 26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; margin-top:1px; }
+.pe-stage.done .pe-stage-mark { background:#0d9488; color:#fff; }
+.pe-stage.current .pe-stage-mark { background:#c89854; color:#fff; }
+.pe-stage.locked .pe-stage-mark { background:#e3e9ee; color:#aab4c0; }
+.pe-stage-body { flex:1; min-width:0; }
+.pe-stage-name { font-size:15px; font-weight:600; color:#1a2942; margin-bottom:2px; }
+.pe-stage.locked .pe-stage-name { color:#8a96a3; }
+.pe-stage-note { font-size:12.5px; color:#5c7a8a; margin-bottom:9px; }
+.pe-stage-course { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:#0d9488; text-decoration:none; padding:5px 11px; border-radius:7px; background:rgba(13,148,136,0.07); transition:.15s; }
+.pe-stage-course:hover { background:rgba(13,148,136,0.15); }
+.pe-stage-code { font-family:'JetBrains Mono',monospace; font-size:11px; opacity:.65; }
+.pe-actions { margin-top:18px; display:flex; justify-content:center; gap:10px; }
+.pe-advance-btn { padding:9px 24px; border-radius:9px; border:none; background:#0d9488; color:#fff; font-size:13.5px; font-weight:600; cursor:pointer; transition:.15s; }
+.pe-advance-btn:hover { background:#0b7c72; }
+.pe-advance-btn.confirm { background:#c89854; }
+.pe-advance-btn:disabled { background:#cdd6de; cursor:default; }
+
+/* 能力地图折叠区 */
+.km-map-wrap { max-width:1100px; margin:10px auto 0; border-top:1px solid rgba(30,58,82,0.06); }
+.km-map-summary { cursor:pointer; padding:14px 24px; font-size:13px; color:#5c7a8a; display:flex; align-items:center; gap:8px; list-style:none; user-select:none; transition:.15s; }
+.km-map-summary::-webkit-details-marker { display:none; }
+.km-map-summary:hover, .km-map-wrap[open] .km-map-summary { color:#0d9488; }
+.km-map-summary svg { width:15px; height:15px; }
+
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -1173,18 +1260,8 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   <!-- ============ TOPBAR ============ -->
   <header class="km-topbar">
     <div class="tb-group">
-      <a href="welcome.html" class="tb-logo">深海圈</a>
-    </div>
-    <div class="tb-center">
-      <span class="tb-cohort">第 3 期 · 2026 春</span>
-      <span class="sep">◆</span>
-      <span class="tb-day">第 <strong id="tbDay">8</strong> 天</span>
-      <span class="sep">◆</span>
-      <div class="tb-progress">
-        <strong id="tbDone">6</strong><span>/</span><strong id="tbTotal">77</strong>
-        <div class="tb-progress-bar"><div class="tb-progress-fill" id="tbProgressFill" style="width:8%"></div></div>
-        <em id="tbPct">8%</em>
-      </div>
+      <a href="roadmap.html" class="tb-logo">深海圈</a>
+      <nav class="snav" id="snav"></nav>
     </div>
     <div class="tb-group">
       <a href="toolbox.html" class="tb-tool-link" title="AI 工具箱">
@@ -1194,6 +1271,13 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
           <path d="M8 9v2"/>
         </svg>
         <span>工具箱</span>
+      </a>
+      <a href="calendar.html" class="tb-tool-link" title="学习日历">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2.5" y="3.5" width="11" height="10" rx="1.5"/>
+          <path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/>
+        </svg>
+        <span>日历</span>
       </a>
       <button class="tb-pace" onclick="openPaceModal()">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -1211,14 +1295,24 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
     <!-- populated by renderProjectBanner() -->
   </section>
 
-  <!-- ============ MAIN CANVAS ============ -->
+  <!-- ============ MAIN ============ -->
   <main class="km-main">
-    <svg class="km-canvas" id="kmCanvas" viewBox="0 80 1440 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="你的学习路线 · 产品架构演化图">
+    <!-- 项目引擎（主体）：你的项目 + 5 阶段 + 每阶段定制课 -->
+    <section class="km-engine" id="kmEngine"><!-- renderProjectEngine() --></section>
+
+    <!-- 完整能力地图（架构演化图，默认折叠，作为全景辅助）-->
+    <details class="km-map-wrap" id="kmMapWrap">
+      <summary class="km-map-summary">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4-2 4 2 4-2v10l-4 2-4-2-4 2V4z"/><path d="M6 2v10M10 4v10"/></svg>
+        查看完整能力地图 · 产品架构演化全景
+      </summary>
+    <svg class="km-canvas" id="kmCanvas" viewBox="20 105 1418 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="你的学习路线 · 产品架构演化图">
       <!-- injected by render() -->
     </svg>
     <div class="km-mobile-stack" id="kmMobileStack">
       <!-- injected on mobile -->
     </div>
+    </details>
     <!-- 引出线 SVG 覆盖层 + 锚定卡 -->
     <svg class="km-leader-svg" id="kmLeader" aria-hidden="true"></svg>
     <aside class="km-callout" id="kmCallout" aria-hidden="true" role="dialog">
@@ -1375,7 +1469,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
       </div>
       <div class="submit-field inline">
         <input type="checkbox" id="sfPublic" checked>
-        <label for="sfPublic">公开到成果墙（其他学员能看到）</label>
+        <label for="sfPublic">公开到作品墙（其他学员能看到）</label>
       </div>
       <div class="modal-actions">
         <button type="button" class="modal-btn ghost" onclick="closeSubmitModal()">取消</button>
@@ -1385,99 +1479,32 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   </div>
 </div>
 
+<!-- 提交成功 · 闭环 CTA modal -->
+<div class="modal-mask" id="submitDoneModal">
+  <div class="modal" style="max-width:460px;">
+    <h3>🎉 作业已提交</h3>
+    <p id="submitDoneSubtitle" style="color:var(--text-2);font-size:13px;margin:-2px 0 12px;">—</p>
+    <div class="done-public-note" id="submitDonePublic">你的作品已公开到作品墙，其他学员现在能看到它了。</div>
+    <div class="done-cta-row">
+      <a class="primary" id="doneShowcase" href="showcase.html">去作品墙看看 →</a>
+      <a class="alt" id="doneProfile" href="profile.html">我的提交历史</a>
+      <a class="alt" id="doneDiscuss" href="discuss.html">去广场聊聊</a>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn ghost" onclick="closeSubmitDone()">继续学习</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ TOAST ============ -->
 <div class="toast" id="kmToast"></div>
 
+<script src="course-data.js"></script>
 <script>
 /* =====================================================
    DATA · COURSES (保留自旧版本)
    ===================================================== */
-const COURSES = [
-  // 快速入门 12 节 (stage 1)
-  { code:'A1', s:1, t:'这套课程有什么不同？', d:15 },
-  { code:'A2', s:1, t:'我祖上十八代都不会编程，我为什么需要会？', d:18 },
-  { code:'A3', s:1, t:'开挂式学习：用 AI 来学 AI', d:12 },
-  { code:'A4', s:1, t:'AI 到底是什么？别怕，它就是个超级实习生', d:20 },
-  { code:'A5', s:1, t:'初体验：10 分钟，做出你的第一个网站', d:30 },
-  { code:'A6', s:1, t:'跟 AI 讨论需求：从模糊想法到清晰指令', d:25 },
-  { code:'A7', s:1, t:'什么是 AI 产品？跟普通产品到底差在哪？', d:18 },
-  { code:'A8', s:1, t:'开发 AI 产品的核心秘密：预制菜思维 + 积木思维', d:22 },
-  { code:'A9', s:1, t:'动手开发第一个 AI 产品：互联网黑话翻译器', d:45 },
-  { code:'A10', s:1, t:'难度升级！第二个 AI 产品：哄哄模拟器', d:50 },
-  { code:'A11', s:1, t:'再次升级！从零打造"纸片人男友"', d:60 },
-  { code:'A12', s:1, t:'入门篇总结：你已经不是只会用 AI 聊天的人了', d:10 },
-
-  // 实战进阶 27 节 (stage 2)
-  { code:'B1', s:2, t:'前端和后端：一个管脸，一个管脑', d:25 },
-  { code:'B2', s:2, t:'源代码管理：你的代码也需要网盘', d:20 },
-  { code:'B3', s:2, t:'数据库:你的数据存在哪？', d:25 },
-  { code:'B4', s:2, t:'用户认证：怎么让用户注册登录你的产品', d:30 },
-  { code:'B5', s:2, t:'Next.js 最核心的内容：你一直在用，只是不知道', d:35 },
-  { code:'B6', s:2, t:'离开扣子编程，进入深水区', d:20 },
-  { code:'B7', s:2, t:'IDE 类 AI 编程工具速通', d:40 },
-  { code:'B8', s:2, t:'使用 Github 做源代码管理', d:45 },
-  { code:'B9', s:2, t:'去 API 超市进货：给你的产品加上现成的 AI 超能力', d:50 },
-  { code:'B10', s:2, t:'环境变量：为什么密码不能直接写在代码里', d:15 },
-  { code:'B11', s:2, t:'Bug 和报错：你的产品一定会出问题，然后呢', d:30 },
-  { code:'B12', s:2, t:'服务器、部署、上线：你的产品怎么跑到全世界', d:60 },
-  { code:'B13', s:2, t:'域名：给你的产品起个好记的名字', d:15 },
-  { code:'B14', s:2, t:'Claude Code：TRAE/Cursor 够了，为什么还要用它', d:35 },
-  { code:'B15', s:2, t:'MCP：AI 的万能插头 — 让 AI 连上一切工具', d:40 },
-  { code:'B16', s:2, t:'Skill：给 AI 写一份上岗 SOP', d:35 },
-  { code:'B17', s:2, t:'期中考试：使用 TRAE 和外部 API，重做"纸片人男友"', d:90 },
-  { code:'B18', s:2, t:'去哪里看模型能力：别靠感觉选，学会看公开信号', d:25 },
-  { code:'B19', s:2, t:'数据库进阶：离开扣子后，怎么选数据库', d:30 },
-  { code:'B20', s:2, t:'上线后，如何根据用户行为迭代产品', d:25 },
-  { code:'B21', s:2, t:'如何迅速提升产品设计感', d:30 },
-  { code:'B22', s:2, t:'利用开源生态，加速产品开发', d:25 },
-  { code:'B23', s:2, t:'人机验证：有人用机器人来薅你的产品，怎么办', d:20 },
-  { code:'B24', s:2, t:'云存储：AI 生成的图片链接过期了，怎么办', d:20 },
-  { code:'B25', s:2, t:'邮件服务：想让产品主动联系用户，怎么办', d:25 },
-  { code:'B26', s:2, t:'定时任务：你睡了，产品还能自己干活', d:20 },
-  { code:'B27', s:2, t:'用户反馈：你的用户想吐槽，往哪儿吐', d:15 },
-
-  // 商业化 19 节 (stage 3)
-  { code:'C1', s:3, t:'在起心动念和开始编程之间', d:15 },
-  { code:'C2', s:3, t:'能赚钱的 AI 产品长什么样？去哪儿找？', d:25 },
-  { code:'C3', s:3, t:'学习的第一步不是创新，是像素级模仿', d:20 },
-  { code:'C4', s:3, t:'产品 Idea 从哪里来？幸福的方式', d:20 },
-  { code:'C5', s:3, t:'产品 Idea 从哪里来？功利的方式', d:20 },
-  { code:'C6', s:3, t:'为什么有些人总能抢到红利', d:20 },
-  { code:'C7', s:3, t:'"新词站"：一个闷声发财的路子', d:25 },
-  { code:'C8', s:3, t:'小而美：低风险创业的最佳起步方式', d:20 },
-  { code:'C9', s:3, t:'什么是 MicroSaaS？一个人也能做的订阅制生意', d:25 },
-  { code:'C10', s:3, t:'MicroSaaS 四件套：落地页、用户中心、核心功能、支付', d:30 },
-  { code:'C11', s:3, t:'Landing Page：你只有 8 秒，用 8 秒打动用户', d:35 },
-  { code:'C12', s:3, t:'用户登录：别自己造轮子', d:20 },
-  { code:'C13', s:3, t:'海外订阅支付是怎么回事', d:30 },
-  { code:'C14', s:3, t:'极速开发：从零到正式上线只需 1 天', d:45 },
-  { code:'C15', s:3, t:'用 AI 做一个微信小程序', d:60 },
-  { code:'C16', s:3, t:'微信小游戏：做个能在群里疯传的 AI 小游戏', d:50 },
-  { code:'C17', s:3, t:'用 AI 开发手机 App，无论安卓还是 iOS', d:80 },
-  { code:'C18', s:3, t:'用 AI 开发桌面应用，Windows 和 Mac 都行', d:60 },
-  { code:'C19', s:3, t:'商业化阶段小结', d:15 },
-
-  // 增长 19 节 (stage 4)
-  { code:'D1', s:4, t:'AI 不是工具，是员工：一次思维转变', d:20 },
-  { code:'D2', s:4, t:'浏览器自动化专项', d:40 },
-  { code:'D3', s:4, t:'怎么教 AI 学会你的工作方式', d:30 },
-  { code:'D4', s:4, t:'Cowork/Codex：不用看代码，直接让 AI 交付结果', d:35 },
-  { code:'D5', s:4, t:'用扣子工作流把重复劳动自动化', d:40 },
-  { code:'D6', s:4, t:'OpenClaw：用飞书指挥 AI 干活', d:30 },
-  { code:'D7', s:4, t:'从零搭建你的第一个 AI Agent', d:50 },
-  { code:'D8', s:4, t:'给 AI 定规矩', d:25 },
-  { code:'D9', s:4, t:'用 AI 完成复杂需求的方法：SPEC 驱动', d:35 },
-  { code:'D10', s:4, t:'软件工程的真谛：高内聚、低耦合', d:30 },
-  { code:'D11', s:4, t:'单元测试：让 AI 每次写完自动检查', d:25 },
-  { code:'D12', s:4, t:'上下文工程，不是 Prompt 工程', d:30 },
-  { code:'D13', s:4, t:'从 Vibe Coding 到 Vibe Engineering', d:30 },
-  { code:'D14', s:4, t:'一个 AI 不够用？那就建一支 AI 团队', d:35 },
-  { code:'D15', s:4, t:'让 AI 输出可控：从自由发挥到结构化交付', d:25 },
-  { code:'D16', s:4, t:'冷启动：找人，而不是等人', d:30 },
-  { code:'D17', s:4, t:'好产品自己会长腿：在产品里种下传播的种子', d:25 },
-  { code:'D18', s:4, t:'一个人的生意，怎么越做越大', d:30 },
-  { code:'D19', s:4, t:'毕业总结 · 下一步往哪儿走', d:15 },
-];
+/* COURSES / COURSE_STAGES / COURSE_MODULES 来自 course-data.js（单一数据源）*/
 
 const STAGE_NAMES = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
 const STAGE_PROMISES = {
@@ -1499,29 +1526,33 @@ const STAGE_BADGES = {
    每个 stage 包含：centerX + 本阶段呈现的组件位置 + 连接线
    组件的 origin 字段表示它最早出现在哪个阶段（用于状态判定）
    ===================================================== */
+/* 垂直居中布局：4 个 stage frame 中心对齐 CY=335；
+   每阶段的 backend(后端)/demo 落在 CY，跨阶段主干箭头沿此线水平贯穿。
+   行距 RH=128、节点放大(108×60)、demo 加大(160×80)以撑高地图、填充上下留白。
+   横向 gap 统一 40px，总宽 ≤1440。 */
 const KMAP_STAGES = [
   {
     num: 1,
-    centerX: 165,
-    frame: { x: 80, y: 445, w: 170, h: 125 },
+    centerX: 140,
+    frame: { x: 40, y: 250, w: 200, h: 170 },
     components: [
       { key:'demo', label:'第一个 demo', en:'First Demo',
-        desc:'用 AI 做一个能访问的最小产品', dx: 0, dy: 520, origin: 1 },
+        desc:'用 AI 做一个能访问的最小产品', dx: 0, dy: 335, origin: 1 },
     ],
     connections: [],
   },
   {
     num: 2,
-    centerX: 455,
-    frame: { x: 290, y: 445, w: 330, h: 125 },
+    centerX: 480,
+    frame: { x: 280, y: 250, w: 400, h: 170 },
     compact: true,
     components: [
       { key:'frontend', label:'前端界面', en:'Frontend',
-        desc:'用户看到和点的页面', dx: -110, dy: 520, origin: 2 },
+        desc:'用户看到和点的页面', dx: -128, dy: 335, origin: 2 },
       { key:'backend',  label:'后端服务', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: 0, dy: 520, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: 0, dy: 335, origin: 2 },
       { key:'db',       label:'数据库',   en:'Database',
-        desc:'产品所有数据的持久存储', dx: 110, dy: 520, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: 128, dy: 335, origin: 2 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1530,22 +1561,22 @@ const KMAP_STAGES = [
   },
   {
     num: 3,
-    centerX: 820,
-    frame: { x: 660, y: 355, w: 320, h: 215 },
+    centerX: 858,
+    frame: { x: 720, y: 150, w: 276, h: 385 },
     compact: true,
     components: [
       // 继承自 Stage 2
       { key:'frontend', label:'前端界面', en:'Frontend',
-        desc:'用户看到和点的页面', dx: -75, dy: 420, origin: 2 },
+        desc:'用户看到和点的页面', dx: -64, dy: 207, origin: 2 },
       { key:'backend',  label:'后端服务', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: -75, dy: 475, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: -64, dy: 335, origin: 2 },
       { key:'db',       label:'数据库',   en:'Database',
-        desc:'产品所有数据的持久存储', dx: -75, dy: 530, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: -64, dy: 463, origin: 2 },
       // 本阶段新增
       { key:'auth',     label:'用户登录', en:'Auth',
-        desc:'让用户注册、登录、找回密码', dx:  75, dy: 445, origin: 3 },
+        desc:'让用户注册、登录、找回密码', dx:  64, dy: 271, origin: 3 },
       { key:'payment',  label:'支付模块', en:'Payment',
-        desc:'接入订阅、单次付款、海外支付', dx:  75, dy: 500, origin: 3 },
+        desc:'接入订阅、单次付款、海外支付', dx:  64, dy: 399, origin: 3 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1556,30 +1587,30 @@ const KMAP_STAGES = [
   },
   {
     num: 4,
-    centerX: 1220,
-    frame: { x: 1020, y: 100, w: 400, h: 340 },
+    centerX: 1236,
+    frame: { x: 1036, y: 125, w: 400, h: 420 },
     compact: true,
     components: [
       // 继承
       { key:'frontend', label:'前端', en:'Frontend',
-        desc:'用户看到和点的页面', dx: -130, dy: 190, origin: 2 },
+        desc:'用户看到和点的页面', dx: -128, dy: 207, origin: 2 },
       { key:'backend',  label:'后端', en:'Backend',
-        desc:'处理业务逻辑和数据的服务', dx: -130, dy: 270, origin: 2 },
+        desc:'处理业务逻辑和数据的服务', dx: -128, dy: 335, origin: 2 },
       { key:'db',       label:'数据库', en:'Database',
-        desc:'产品所有数据的持久存储', dx: -130, dy: 350, origin: 2 },
+        desc:'产品所有数据的持久存储', dx: -128, dy: 463, origin: 2 },
       { key:'auth',     label:'用户登录', en:'Auth',
-        desc:'让用户注册、登录、找回密码', dx: 0, dy: 190, origin: 3 },
+        desc:'让用户注册、登录、找回密码', dx: 0, dy: 207, origin: 3 },
       { key:'payment',  label:'支付', en:'Payment',
-        desc:'接入订阅、单次付款、海外支付', dx: 0, dy: 270, origin: 3 },
+        desc:'接入订阅、单次付款、海外支付', dx: 0, dy: 335, origin: 3 },
       { key:'analytics',label:'数据看板', en:'Analytics',
-        desc:'观测用户行为和核心指标', dx: 0, dy: 350, origin: 4 },
+        desc:'观测用户行为和核心指标', dx: 0, dy: 463, origin: 4 },
       // 本阶段新增
       { key:'cdn',      label:'内容加速', en:'CDN',
-        desc:'全球分发静态资源、图片', dx: 130, dy: 190, origin: 4 },
+        desc:'全球分发静态资源、图片', dx: 128, dy: 207, origin: 4 },
       { key:'queue',    label:'任务队列', en:'Queue',
-        desc:'定时任务、异步邮件、批量处理', dx: 130, dy: 270, origin: 4 },
+        desc:'定时任务、异步邮件、批量处理', dx: 128, dy: 335, origin: 4 },
       { key:'agent',    label:'智能助手', en:'AI Agent',
-        desc:'让 AI 自动处理重复工作、客户互动', dx: 130, dy: 350, origin: 4 },
+        desc:'让 AI 自动处理重复工作、客户互动', dx: 128, dy: 463, origin: 4 },
     ],
     connections: [
       ['frontend', 'backend'],
@@ -1620,7 +1651,7 @@ const TODAY_STR = '2026-05-11';
 const STATE = {
   enrolledAt: localStorage.getItem('ds_enrolled_at') || '2026-05-04',
   dailyMinutes: parseInt(localStorage.getItem('ds_daily_minutes') || '60', 10),
-  completed: JSON.parse(localStorage.getItem('ds_completed_demo') || '["A1","A2","A3","A4","A5","A6"]'),
+  completed: JSON.parse(localStorage.getItem('ds_completed_demo') || '["M1.1","M1.2","M1.3","M2.1","M2.2","M2.3"]'),
 };
 
 /* =====================================================
@@ -1714,10 +1745,32 @@ function computeComponentStates() {
 }
 
 /* =====================================================
+   个性化引擎 · 按「问卷 / 诊断后的项目」决定架构图各组件相关度
+   - 有 idea（ds_project.form 存在）→ 路线二：按产品形态分 core/optional/off
+   - 无 idea → 路线一：全部 core（完整跟教学项目走）
+   relevance 只影响"未解锁"组件的视觉淡化，不动已学/在学状态
+   ===================================================== */
+function getPersonalization() {
+  const project = (typeof loadProject === 'function') ? loadProject() : null;
+  const form = project && project.form;
+  const all = Object.keys(COMPONENT_COURSES);
+  const rel = {};
+  if (form && typeof FORM_COMPONENTS !== 'undefined' && FORM_COMPONENTS[form]) {
+    const g = FORM_COMPONENTS[form];
+    all.forEach(k => {
+      rel[k] = g.core.includes(k) ? 'core' : (g.optional.includes(k) ? 'optional' : 'off');
+    });
+    return { route: 'project', form, relevance: rel, project };
+  }
+  all.forEach(k => { rel[k] = 'core'; });
+  return { route: 'full', relevance: rel };
+}
+
+/* =====================================================
    RENDER · SVG KNOWLEDGE MAP
    ===================================================== */
 function boxSize(stage) {
-  return stage.compact ? { w: 96, h: 40 } : { w: 128, h: 52 };
+  return stage.compact ? { w: 108, h: 60 } : { w: 160, h: 80 };
 }
 function compPos(stage, comp) {
   return { x: stage.centerX + comp.dx, y: comp.dy };
@@ -1726,7 +1779,22 @@ function findComp(stage, key) {
   return stage.components.find(c => c.key === key);
 }
 
-function renderComponent(stage, comp, state) {
+/* 类型图标 · 单色细线，绘制在以原点为中心的 ~16×16 区域内（stroke-only） */
+const COMP_ICONS = {
+  demo:      '<path d="M0 -7 C3 -4 3 2 0 5 C-3 2 -3 -4 0 -7 Z"/><circle cx="0" cy="-2" r="1.5"/><path d="M-2.5 4 L-4 7 M2.5 4 L4 7"/>',
+  frontend:  '<rect x="-8" y="-6" width="16" height="12" rx="1.5"/><path d="M-8 -2 H8"/>',
+  backend:   '<rect x="-8" y="-7" width="16" height="6" rx="1.2"/><rect x="-8" y="1" width="16" height="6" rx="1.2"/>',
+  db:        '<ellipse cx="0" cy="-4.5" rx="7" ry="2.6"/><path d="M-7 -4.5 V4.5 a7 2.6 0 0 0 14 0 V-4.5"/>',
+  auth:      '<circle cx="0" cy="-3" r="3"/><path d="M-6 7 a6 5 0 0 1 12 0"/>',
+  payment:   '<rect x="-8" y="-5.5" width="16" height="11" rx="1.5"/><path d="M-8 -1.5 H8 M-5 2.5 H-1"/>',
+  analytics: '<path d="M-7 7 H7"/><path d="M-5 7 V1 M0 7 V-3 M5 7 V-1"/>',
+  cdn:       '<circle cx="0" cy="0" r="7"/><ellipse cx="0" cy="0" rx="3" ry="7"/><path d="M-7 0 H7"/>',
+  queue:     '<circle cx="0" cy="0" r="7"/><path d="M0 -4 V0 L3 2.5"/>',
+  agent:     '<path d="M0 -7 L1.7 -1.7 L7 0 L1.7 1.7 L0 7 L-1.7 1.7 L-7 0 L-1.7 -1.7 Z"/>',
+};
+function compIcon(key) { return COMP_ICONS[key] || ''; }
+
+function renderComponent(stage, comp, state, relevance = 'core') {
   const { x, y } = compPos(stage, comp);
   const { w, h } = boxSize(stage);
   const left = x - w/2, top = y - h/2;
@@ -1734,37 +1802,41 @@ function renderComponent(stage, comp, state) {
   // state-based styling
   const styles = {
     done: {
-      fill: '#e8f6f5',
+      fill: '#e6f5f3',
       stroke: '#0d9488',
-      sw: 1.2,
+      sw: 1.3,
       dash: 'none',
-      textFill: '#1a2942',
+      textFill: '#0f766e',
       dotFill: '#0d9488',
       showCheck: true,
     },
     current: {
-      fill: '#fffcf5',
+      fill: '#fffaf0',
       stroke: '#c89854',
-      sw: 1.6,
+      sw: 1.8,
       dash: 'none',
       textFill: '#1a2942',
       dotFill: '#c89854',
       showCheck: false,
     },
     locked: {
-      fill: '#ffffff',
-      stroke: '#b8c5d0',
+      fill: '#fbfcfd',
+      stroke: '#cdd6de',
       sw: 1,
       dash: '3 2',
-      textFill: '#94a3b8',
-      dotFill: '#b8c5d0',
+      textFill: '#aab4c0',
+      dotFill: '#cdd6de',
       showCheck: false,
     },
   };
   const s = styles[state];
 
-  const fontSize = stage.compact ? 11.5 : 13.5;
-  const labelY = top + h/2 + 4;
+  const fontSize = stage.compact ? 12 : 15;
+  /* 图标在上、文字在下的纵向布局 */
+  const iconCY    = top + (stage.compact ? 22 : 30);
+  const iconScale = stage.compact ? 1 : 1.35;
+  const iconColor = s.dotFill;
+  const labelY    = top + h - (stage.compact ? 14 : 18);
 
   // pulse ring for current
   let pulse = '';
@@ -1790,15 +1862,21 @@ function renderComponent(stage, comp, state) {
     glow = `<rect x="${left}" y="${top}" width="${w}" height="${h}" rx="7" fill="url(#gradCurrent)" opacity="1"/>`;
   }
 
+  // 个性化：仅未解锁(locked)组件按"你的产品需不需要"淡化；已学/在学不动
+  const relDim = (state === 'locked' && relevance === 'off') ? 0.32
+               : (state === 'locked' && relevance === 'optional') ? 0.62 : 1;
+
   return `
-    <g class="km-comp km-comp-${state}" data-stage="${stage.num}" data-key="${comp.key}"
-       data-label="${comp.label}" data-en="${comp.en}" data-desc="${comp.desc}">
+    <g class="km-comp km-comp-${state} km-rel-${relevance}" data-stage="${stage.num}" data-key="${comp.key}"
+       data-label="${comp.label}" data-en="${comp.en}" data-desc="${comp.desc}" opacity="${relDim}">
       ${pulse}
       <rect class="km-comp-box" x="${left}" y="${top}" width="${w}" height="${h}" rx="7"
             fill="${s.fill}" stroke="${s.stroke}" stroke-width="${s.sw}"
             ${s.dash !== 'none' ? `stroke-dasharray="${s.dash}"` : ''}/>
       ${glow}
-      <circle cx="${left + 10}" cy="${top + 9}" r="2.4" fill="${s.dotFill}"/>
+      <g class="km-comp-icon" transform="translate(${x}, ${iconCY}) scale(${iconScale})"
+         fill="none" stroke="${iconColor}" stroke-width="1.4"
+         stroke-linecap="round" stroke-linejoin="round">${compIcon(comp.key)}</g>
       <text x="${x}" y="${labelY}" text-anchor="middle"
             font-size="${fontSize}" font-weight="500" fill="${s.textFill}"
             letter-spacing="-0.01em">${comp.label}</text>
@@ -1857,12 +1935,12 @@ function renderConnection(stage, fromKey, toKey, stateFn) {
 }
 
 function renderStageFrame(stage, stageState) {
-  const fill   = stageState === 'current' ? '#fdfaf4'
-               : stageState === 'done'    ? '#f3faf9'
-               : '#fbf9f4';
-  const stroke = stageState === 'current' ? 'rgba(200,152,84,0.28)'
-               : stageState === 'done'    ? 'rgba(13,148,136,0.22)'
-               : 'rgba(30,58,82,0.08)';
+  const fill   = stageState === 'current' ? '#fdf8ef'
+               : stageState === 'done'    ? '#ecf7f5'
+               : '#f8fafb';
+  const stroke = stageState === 'current' ? 'rgba(200,152,84,0.42)'
+               : stageState === 'done'    ? 'rgba(13,148,136,0.30)'
+               : 'rgba(30,58,82,0.07)';
   const { x, y, w, h } = stage.frame;
   return `<rect class="km-stage-frame" x="${x}" y="${y}" width="${w}" height="${h}" rx="10"
                 fill="${fill}" stroke="${stroke}" stroke-width="0.8"/>`;
@@ -1876,7 +1954,7 @@ function renderStageLabel(stage, stageState) {
   const y  = stage.frame.y + 22;
   const color = stageState === 'current' ? '#c89854'
               : stageState === 'done'    ? '#0d9488'
-              : '#1a2942';
+              : '#aab4c0';
   return `
     <g class="km-stage-label">
       <text x="${cx}" y="${y}" text-anchor="middle" class="t-mono"
@@ -1889,16 +1967,19 @@ function renderStageLabel(stage, stageState) {
 /* 跨阶段演化连接线 —— 粗实心深色箭头，表达"一步步长出真产品"的主干流向 */
 function renderCrossStageConnectors(currentStage) {
   const arrows = [
-    { x1: 252, y1: 520, x2: 288, y2: 520, label: 'deploy',   from:1, to:2, curve:false },
-    { x1: 622, y1: 520, x2: 658, y2: 520, label: 'monetize', from:2, to:3, curve:false },
-    { x1: 980, y1: 465, x2: 1020, y2: 270, label: 'scale',   from:3, to:4, curve:true  },
+    { x1: 242, y1: 335, x2: 278, y2: 335, label: 'deploy',   from:1, to:2, curve:false },
+    { x1: 682, y1: 335, x2: 718, y2: 335, label: 'monetize', from:2, to:3, curve:false },
+    { x1: 998, y1: 335, x2: 1034, y2: 335, label: 'scale',   from:3, to:4, curve:false },
   ];
   return arrows.map(a => {
     /* 主干箭头一律深色实线；locked（未到达）用浅一档 */
     const unreached = a.to > currentStage && a.from !== currentStage;
-    const stroke   = unreached ? '#8a96a3' : '#1a2942';
-    const opacity  = unreached ? 0.45 : 0.95;
+    const stroke   = unreached ? '#a3b0bd' : '#1a2942';
+    const opacity  = unreached ? 0.5 : 0.95;
     const marker   = unreached ? 'url(#arrowHeavyMuted)' : 'url(#arrowHeavy)';
+    /* 标签文字独立着色：即便指向未解锁阶段也清晰可读 */
+    const labelColor = unreached ? '#5c7a8a' : '#1a2942';
+    const labelOp    = unreached ? 0.95 : 1;
     let path, labelX, labelY;
     if (a.curve) {
       /* 三次贝塞尔：stage 3 右侧出发，先横后上再横，接入 stage 4 左侧 */
@@ -1915,8 +1996,10 @@ function renderCrossStageConnectors(currentStage) {
         <path d="${path}" fill="none" stroke="${stroke}" stroke-width="2.2"
               opacity="${opacity}" marker-end="${marker}" stroke-linecap="round"/>
         <text x="${labelX}" y="${labelY}" text-anchor="middle" class="t-mono"
-              font-size="10.5" letter-spacing="0.16em" font-weight="500"
-              fill="${stroke}" opacity="${opacity}">${a.label}</text>
+              font-size="11" letter-spacing="0.16em" font-weight="600"
+              fill="${labelColor}" opacity="${labelOp}"
+              stroke="#eef4f4" stroke-width="3.5" paint-order="stroke"
+              stroke-linejoin="round">${a.label}</text>
       </g>
     `;
   }).join('');
@@ -1928,6 +2011,7 @@ function renderKnowledgeMap() {
   const svg = document.getElementById('kmCanvas');
   if (!svg) return;
   const { currentStage, stateFor } = computeComponentStates();
+  const PERS = getPersonalization();
 
   const defs = `
     <defs>
@@ -1973,7 +2057,8 @@ function renderKnowledgeMap() {
     let compSvg = '';
     stage.components.forEach(comp => {
       const state = stateFor(idx, comp);
-      compSvg += renderComponent(stage, comp, state);
+      const rel = (PERS.relevance && PERS.relevance[comp.key]) || 'core';
+      compSvg += renderComponent(stage, comp, state, rel);
     });
 
     body += `
@@ -1988,8 +2073,8 @@ function renderKnowledgeMap() {
 
   svg.innerHTML = `
     ${defs}
-    ${renderCrossStageConnectors(currentStage)}
     ${body}
+    ${renderCrossStageConnectors(currentStage)}
   `;
 
   bindInteractions();
@@ -1999,17 +2084,7 @@ function renderKnowledgeMap() {
    TOPBAR / ACTIONBAR
    ===================================================== */
 function renderTopBar() {
-  const enrolledMs = new Date(STATE.enrolledAt).getTime();
-  const todayMs = new Date(TODAY_STR).getTime();
-  const days = Math.max(1, Math.round((todayMs - enrolledMs) / 86400000) + 1);
-  const done = STATE.completed.length;
-  const total = COURSES.length;
-  const pct = Math.round(done / total * 100);
-  document.getElementById('tbDay').textContent = days;
-  document.getElementById('tbDone').textContent = done;
-  document.getElementById('tbTotal').textContent = total;
-  document.getElementById('tbPct').textContent = pct + '%';
-  document.getElementById('tbProgressFill').style.width = pct + '%';
+  // 顶栏已精简为统一导航；天数/进度移除（项目阶段与底部进度已体现），此处只更新节奏
   document.getElementById('tbPaceText').textContent = paceText(STATE.dailyMinutes);
 }
 
@@ -2138,8 +2213,22 @@ function _fillCalloutContent(stageNum, clickedComp) {
   document.getElementById('kdTitle').textContent = STAGE_NAMES[stageNum];
   document.getElementById('kdPromise').textContent = STAGE_PROMISES[stageNum];
 
+  /* 课程范围：点组件 → 该组件相关课（跨阶段，来自 COMPONENT_COURSES）；点阶段 → 全阶段课 */
+  const byComp = clickedComp && clickedComp.key
+    && typeof COMPONENT_COURSES !== 'undefined' && COMPONENT_COURSES[clickedComp.key];
+  let courses;
+  if (byComp) {
+    courses = COMPONENT_COURSES[clickedComp.key]
+      .map(code => COURSES.find(c => c.code === code)).filter(Boolean);
+  } else {
+    courses = COURSES.filter(c => c.s === stageNum);
+  }
+
   const clickedEl = document.getElementById('kdClicked');
-  if (clickedComp && clickedComp.label) {
+  if (byComp) {
+    clickedEl.innerHTML = `搭建 <strong>「${clickedComp.label}」</strong> 要掌握下面这 ${courses.length} 节 ↓`;
+    clickedEl.style.display = '';
+  } else if (clickedComp && clickedComp.label) {
     clickedEl.innerHTML = `你点开的是 <strong>「${clickedComp.label}」</strong>·架构中的一环`;
     clickedEl.style.display = '';
   } else {
@@ -2147,7 +2236,6 @@ function _fillCalloutContent(stageNum, clickedComp) {
   }
 
   /* 图文章节 */
-  const courses = COURSES.filter(c => c.s === stageNum);
   document.getElementById('kdCoursesCount').textContent = `${courses.length} 节`;
   const coursesEl = document.getElementById('kdCourses');
   const nextCourse = COURSES.find(c => !STATE.completed.includes(c.code));
@@ -2156,12 +2244,13 @@ function _fillCalloutContent(stageNum, clickedComp) {
     const isCurrent = nextCourse && c.code === nextCourse.code;
     const state = done ? 'done' : (isCurrent ? 'current' : 'locked');
     const mark = done ? '✓' : (isCurrent ? '▸' : '');
+    const title = c.t.replace(/^[一二三四五六七八九十百]+、/, '');
     return `
       <li class="kd-course ${state}" data-code="${c.code}"
           onclick="gotoCourse('${c.code}', '${state}')">
         <span class="kd-course-mark">${mark}</span>
         <span class="kd-course-code">${c.code}</span>
-        <span class="kd-course-title">${c.t}</span>
+        <span class="kd-course-title">${title}</span>
         <span class="kd-course-dur">${c.d}min</span>
         <svg class="kd-course-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 3l5 5-5 5"/>
@@ -2216,7 +2305,12 @@ function renderAssignmentBlock(el, stageNum, assign) {
          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 7 12 13 5"/></svg>
          <span>已提交 · ${escapeHtml(sub.title)}</span>
        </a>
-       <button class="kd-submit-edit" onclick="openSubmitModal(${stageNum})">重新提交 / 编辑</button>`
+       <button class="kd-submit-edit" onclick="openSubmitModal(${stageNum})">重新提交 / 编辑</button>
+       <div class="kd-submit-links">
+         <a href="showcase.html">作品墙</a>
+         <a href="profile.html">我的提交</a>
+         <a href="discuss.html">广场</a>
+       </div>`
     : `<button class="kd-submit-btn" onclick="openSubmitModal(${stageNum})">
          <span>提交作业</span>
          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
@@ -2266,6 +2360,19 @@ function closeSubmitModal() {
   _submitStageNum = null;
 }
 
+function openSubmitDone(sub, advancedStage) {
+  document.getElementById('submitDoneSubtitle').textContent =
+    '「' + sub.title + '」已提交' + (advancedStage ? ' · 项目推进到「' + advancedStage + '」' : '');
+  document.getElementById('submitDonePublic').style.display = sub.public ? '' : 'none';
+  document.getElementById('doneShowcase').textContent =
+    sub.public ? '去作品墙看看 →' : '去作品墙逛逛 →';
+  document.getElementById('submitDoneModal').classList.add('show');
+}
+
+function closeSubmitDone() {
+  document.getElementById('submitDoneModal').classList.remove('show');
+}
+
 /* 课程 stage（1-4）完成 → 推进到的项目阶段（PROJECT_STAGES 索引）
    Stage 1 能跑通 → 项目「原型」(idx 1)
    Stage 2 能上线 → 项目「部署」(idx 3)
@@ -2282,6 +2389,7 @@ function maybeAdvanceProjectFromSubmission(stageNum) {
   if (target > cur) {
     project.stage = PROJECT_STAGES[target];
     saveProject(project);
+    renderProjectEngine();
     renderProjectBanner();
     return project.stage;
   }
@@ -2313,11 +2421,9 @@ function submitAssignment() {
 
   // 联动推进项目阶段
   const advanced = maybeAdvanceProjectFromSubmission(submission.stage);
-  if (advanced) {
-    showToast('已提交「' + submission.title + '」· 项目推进到「' + advanced + '」');
-  } else {
-    showToast('作业已提交：' + submission.title);
-  }
+
+  // 提交闭环：弹成功窗，把人导回作品墙 / 我的提交 / 广场
+  openSubmitDone(submission, advanced);
 
   // 重新渲染当前 callout 的作业块（如果开着）
   const assignEl = document.getElementById('kdAssignment');
@@ -2520,13 +2626,6 @@ function showToast(msg) {
    读取 welcome.html 写入的 ds_project，渲染顶栏下方的项目状态条
    ===================================================== */
 const PROJECT_STAGES = ['需求定义', '原型', '开发', '部署', '上线'];
-const STAGE_NEXT = {
-  '需求定义': { action: '把产品需求写清楚（SPEC）', label: 'A6 · 跟 AI 讨论需求' },
-  '原型':     { action: '在扣子里跑出第一版可用 demo', label: 'A5/A9 · 第一个 AI 产品' },
-  '开发':     { action: '从扣子搬到 TRAE，接数据库 + 认证', label: 'B6/B3/B4 · 进入深水区' },
-  '部署':     { action: '部署上线 + 绑定域名', label: 'B12/B13 · 部署 + 域名' },
-  '上线':     { action: '冷启动，找到第一批真实用户', label: 'D16 · 冷启动' }
-};
 
 function loadProject() {
   try { return JSON.parse(localStorage.getItem('ds_project') || 'null'); }
@@ -2538,69 +2637,73 @@ function escapeHtml(s) {
     c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
+/* 当前项目：有诊断结果用真实项目；无 idea 自动用「默认教学项目」（人人有项目）*/
+function getActiveProject() {
+  const p = loadProject();
+  if (p && p.form) return p;
+  return { name: '你的第一个 AI 产品', form: 'teach', stage: '需求定义', _isDefault: true };
+}
+
+const PE_FORM_LABELS = { teach:'跟教学项目', web:'海外 Web', miniprog:'微信小程序', app:'手机 App', desktop:'桌面应用', agent:'AI 员工' };
+
+/* 项目引擎（重构后的主体）：你的项目 + 5 个阶段 + 每阶段定制课 */
+function renderProjectEngine() {
+  const el = document.getElementById('kmEngine');
+  if (!el) return;
+  const project = getActiveProject();
+  const form = project.form || 'teach';
+  const path = (typeof FORM_PATHS !== 'undefined' && (FORM_PATHS[form] || FORM_PATHS.teach)) || [];
+  const curIdx = Math.max(0, PROJECT_STAGES.indexOf(project.stage || '需求定义'));
+  const formLabel = PE_FORM_LABELS[form] || '';
+
+  const stagesHtml = path.map((step, i) => {
+    const status = i < curIdx ? 'done' : (i === curIdx ? 'current' : 'locked');
+    const mark = status === 'done' ? '✓' : (i + 1);
+    const course = COURSES.find(c => c.code === step.code);
+    const title = course ? course.t.replace(/^[一二三四五六七八九十百]+、/, '') : step.code;
+    const link = status === 'locked'
+      ? `<span class="pe-stage-course" style="opacity:.55;cursor:default"><span class="pe-stage-code">${step.code}</span>${escapeHtml(title)} 🔒</span>`
+      : `<a class="pe-stage-course" href="learn.html?code=${encodeURIComponent(step.code)}"><span class="pe-stage-code">${step.code}</span>${escapeHtml(title)} →</a>`;
+    return `
+      <div class="pe-stage ${status}">
+        <div class="pe-stage-mark">${mark}</div>
+        <div class="pe-stage-body">
+          <div class="pe-stage-name">${escapeHtml(step.phase)}${status==='current' ? ' · 进行中' : ''}</div>
+          <div class="pe-stage-note">${escapeHtml(step.note)}</div>
+          ${link}
+        </div>
+      </div>`;
+  }).join('');
+
+  const isLast = curIdx >= PROJECT_STAGES.length - 1;
+  const advanceBtn = isLast
+    ? `<button class="pe-advance-btn" disabled>已完成全部阶段 🎉</button>`
+    : (_stagePendingConfirm
+        ? `<button class="pe-advance-btn confirm" onclick="advanceProjectStage()">确定推进到下一阶段?</button>`
+        : `<button class="pe-advance-btn" onclick="advanceProjectStage()">完成「${escapeHtml(project.stage||'需求定义')}」，进入下一阶段 →</button>`);
+
+  el.innerHTML = `
+    <div class="pe-head">
+      <span class="pe-label">${project._isDefault ? '当前路线' : '你的项目'}</span>
+      <span class="pe-name">${escapeHtml(project.name)}</span>
+      ${formLabel ? `<span class="pe-form">· ${formLabel}方向</span>` : ''}
+      <span class="pe-progress">阶段 ${curIdx + 1} / ${PROJECT_STAGES.length}</span>
+    </div>
+    <div class="pe-stages">${stagesHtml}</div>
+    <div class="pe-actions">${advanceBtn}</div>
+  `;
+}
+
+/* 项目信息已移到项目引擎(renderProjectEngine)，banner 简化为轻量分流/切换入口 */
 function renderProjectBanner() {
   const banner = document.getElementById('kmBanner');
   if (!banner) return;
-  const project = loadProject();
-
-  if (!project) {
-    banner.className = 'km-banner pb-empty';
-    banner.innerHTML =
-      '尚未启动自选项目。' +
-      '<a href="welcome.html?fresh=1">补充你的 idea</a>' +
-      '<span class="sep">·</span>或先跟教学项目走';
-    return;
-  }
-
-  const stage = project.stage || '需求定义';
-  const stageIdx = Math.max(0, PROJECT_STAGES.indexOf(stage));
-  const next = STAGE_NEXT[stage] || STAGE_NEXT['需求定义'];
-
-  const chipsHtml = PROJECT_STAGES.map((s, i) => {
-    let cls = 'pb-stage-chip';
-    if (i < stageIdx) cls += ' done';
-    else if (i === stageIdx) cls += ' current';
-    const sep = i < PROJECT_STAGES.length - 1
-      ? '<span class="pb-stage-arrow">›</span>' : '';
-    return '<span class="' + cls + '">' + s + '</span>' + sep;
-  }).join('');
-
-  const isLast = stageIdx === PROJECT_STAGES.length - 1;
-  const isFirst = stageIdx === 0;
-
-  let advanceBtnHtml;
-  if (isLast) {
-    advanceBtnHtml = '<button class="pb-update-btn" disabled>已完成</button>';
-  } else if (_stagePendingConfirm) {
-    advanceBtnHtml = '<button class="pb-update-btn confirm" onclick="advanceProjectStage()">确定要推进?</button>';
-  } else {
-    advanceBtnHtml = '<button class="pb-update-btn" onclick="advanceProjectStage()">完成本阶段</button>';
-  }
-
-  const regressBtnHtml = !isFirst
-    ? '<button class="pb-regress-btn" onclick="regressProjectStage()" title="退回上一阶段">↶</button>'
-    : '';
-
-  banner.className = 'km-banner';
-  banner.innerHTML =
-    '<div class="pb-inner">' +
-      '<div class="pb-meta">' +
-        '<span class="pb-label">你的项目</span>' +
-        '<span class="pb-name" title="' + escapeHtml(project.ideaText || project.name) + '">' +
-          escapeHtml(project.name) +
-        '</span>' +
-      '</div>' +
-      '<div class="pb-stages">' + chipsHtml + '</div>' +
-      '<div class="pb-next">' +
-        '<span class="pb-next-label">下一步</span>' +
-        '<span class="pb-next-action">' + escapeHtml(next.action) + '</span>' +
-        '<span class="pb-next-link">→ ' + escapeHtml(next.label) + '</span>' +
-      '</div>' +
-      '<div class="pb-action-group">' +
-        advanceBtnHtml +
-        regressBtnHtml +
-      '</div>' +
-    '</div>';
+  const p = loadProject();
+  const hasReal = p && p.form;
+  banner.className = 'km-banner pb-empty';
+  banner.innerHTML = hasReal
+    ? '已按你的项目定制路线 · <a href="diagnosis.html?from=roadmap">换个想法，重新诊断 →</a>'
+    : '当前跟教学项目走 · <a href="diagnosis.html?from=roadmap">有自己的想法了？做个诊断，定制专属路线 →</a>';
 }
 
 /* 二次确认状态 + 自动恢复 timer */
@@ -2613,39 +2716,40 @@ function _clearPendingConfirm() {
 }
 
 function advanceProjectStage() {
-  const project = loadProject();
-  if (!project) return;
+  const project = getActiveProject();
   const idx = PROJECT_STAGES.indexOf(project.stage || '需求定义');
   if (idx < 0 || idx >= PROJECT_STAGES.length - 1) return;
 
   if (!_stagePendingConfirm) {
     /* 第 1 次点击：进入"待确认"状态，2.5 秒后自动撤销 */
     _stagePendingConfirm = true;
-    renderProjectBanner();
+    renderProjectEngine();
     _stageConfirmTimer = setTimeout(() => {
       _clearPendingConfirm();
-      renderProjectBanner();
+      renderProjectEngine();
     }, 2500);
     return;
   }
 
-  /* 第 2 次点击：确认推进 */
+  /* 第 2 次点击：确认推进（teach 默认项目首次推进会落盘成真实项目）*/
   _clearPendingConfirm();
   project.stage = PROJECT_STAGES[idx + 1];
+  delete project._isDefault;
   saveProject(project);
+  renderProjectEngine();
   renderProjectBanner();
   showToast('项目阶段推进到：' + project.stage);
 }
 
 function regressProjectStage() {
-  _clearPendingConfirm(); /* 退回的话，取消进行中的确认 */
-  const project = loadProject();
-  if (!project) return;
+  _clearPendingConfirm();
+  const project = getActiveProject();
   const idx = PROJECT_STAGES.indexOf(project.stage || '需求定义');
   if (idx <= 0) return;
   project.stage = PROJECT_STAGES[idx - 1];
+  delete project._isDefault;
   saveProject(project);
-  renderProjectBanner();
+  renderProjectEngine();
   showToast('已退回到：' + project.stage);
 }
 
@@ -2653,6 +2757,7 @@ function regressProjectStage() {
    BOOT
    ===================================================== */
 function renderAll() {
+  renderProjectEngine();
   renderKnowledgeMap();
   renderTopBar();
   renderActionBar();
@@ -2676,6 +2781,21 @@ renderAll();
 })();
 </script>
 
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='课程专区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

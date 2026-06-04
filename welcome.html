@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 老用户入口闸门：填过问卷的人，再进来不再走问卷，按「有无 idea」直接进各自主页。
+     放在 <head> 最顶（早于字体/样式加载），跳得最快、不会先闪一下问卷。 -->
+<script>
+window.dsHomeUrl = function () {
+  // 统一的「主页去向」规则，问卷结营卡也共用这一条，避免两处飘走
+  return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
+};
+(function () {
+  var p = new URLSearchParams(location.search);
+  if (p.get('fresh') === '1' || p.has('step')) return;            // 重置 / 诊断回跳 → 放行，照常走问卷
+  var onboarded = localStorage.getItem('ds_onboarded') === 'true'
+               || !!localStorage.getItem('ds_enrolled_at');        // 填过问卷的老用户（含已有 demo 数据）
+  if (onboarded) location.replace(dsHomeUrl());                    // 直接进主页，replace 不留历史（后退键不会弹回问卷）
+})();
+</script>
 <title>欢迎来到深海圈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -222,51 +237,10 @@ body::after {
 #step1.active .hero-right > * {
   animation: staggerRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-#step1.active .hero-eyebrow        { animation-delay: 0.04s; }
 #step1.active .hero-title          { animation-delay: 0.14s; }
-#step1.active .hero-subtitle       { animation-delay: 0.26s; }
 #step1.active .instructor-card     { animation-delay: 0.38s; }
 #step1.active .hero-cta-wrap       { animation-delay: 0.50s; }
 #step1.active .hero-right .video-plate { animation-delay: 0.22s; animation-duration: 0.9s; }
-
-/* ============================================= */
-/*  EYEBROW — refined pill                         */
-/* ============================================= */
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
-  padding: 7px 14px 7px 10px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-2);
-  letter-spacing: 0.06em;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgba(30, 58, 82, 0.03);
-}
-.hero-eyebrow .pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--teal);
-  position: relative;
-}
-.hero-eyebrow .pulse::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 1px solid var(--teal);
-  opacity: 0.5;
-  animation: breathe 2.6s ease-in-out infinite;
-}
-.hero-eyebrow .sep { color: var(--text-4); }
-.hero-eyebrow .accent { color: var(--teal); font-weight: 600; }
-.hero-eyebrow .mono-token { color: var(--deep-blue); font-weight: 600; letter-spacing: 0.08em; }
 
 /* ============================================= */
 /*  TITLE — serif editorial display                */
@@ -308,42 +282,6 @@ body::after {
   color: var(--teal);
   font-style: italic;
   font-weight: 600;
-}
-
-/* ============================================= */
-/*  SUBTITLE                                       */
-/* ============================================= */
-.hero-subtitle {
-  font-family: var(--font-sans);
-  font-size: 15.5px;
-  font-weight: 400;
-  line-height: 1.75;
-  color: var(--text-2);
-  margin-bottom: 32px;
-  max-width: 32em;
-  text-wrap: pretty;
-}
-.hero-subtitle .inline-hl {
-  background: linear-gradient(180deg, transparent 62%, var(--teal-bg) 62%, var(--teal-bg) 100%);
-  color: var(--deep-blue);
-  font-weight: 500;
-  padding: 0 2px;
-}
-.hero-subtitle strong {
-  color: var(--deep-blue);
-  font-weight: 600;
-}
-.hero-subtitle .mono-frag {
-  font-family: var(--font-mono);
-  font-size: 0.88em;
-  color: var(--deep-blue);
-  background: var(--teal-bg);
-  border: 1px solid var(--hairline);
-  padding: 1px 8px;
-  border-radius: 4px;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  font-weight: 500;
 }
 
 /* ============================================= */
@@ -546,26 +484,6 @@ body::after {
 }
 .btn-primary-big:hover .arrow-line { transform: translateY(-50%) translateX(3px); background: #fff; }
 .btn-primary-big:hover .arrow-tip  { transform: translateY(-50%) translateX(3px) rotate(45deg); border-top-color: #fff; border-right-color: #fff; }
-
-.cta-hint {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--text-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.cta-hint .kbd {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--deep-blue);
-  background: var(--teal-bg);
-  border: 1px solid var(--hairline);
-  padding: 3px 8px;
-  border-radius: 5px;
-  font-weight: 500;
-}
-.cta-hint .dash { color: var(--text-4); margin: 0 1px; }
 
 /* ============================================= */
 /*  VIDEO PLATE — clean white with teal edge       */
@@ -1136,8 +1054,6 @@ body::after {
     padding-bottom: 40px;
   }
   .hero-title { font-size: clamp(44px, 4.6vw, 60px); }
-  .hero-subtitle { margin-bottom: 26px; font-size: 15px; }
-  .hero-eyebrow { margin-bottom: 22px; }
   .instructor-card { padding: 20px 22px; margin-bottom: 26px; }
   .instructor-avatar { width: 56px; height: 56px; font-size: 22px; }
   .stat-value { font-size: 16px; }
@@ -1152,9 +1068,7 @@ body::after {
     padding-bottom: 32px;
     column-gap: 52px;
   }
-  .hero-eyebrow { margin-bottom: 18px; padding: 5px 12px 5px 8px; font-size: 10.5px; }
   .hero-title { font-size: clamp(40px, 4.2vw, 52px); margin-bottom: 16px; line-height: 1.08; }
-  .hero-subtitle { margin-bottom: 20px; font-size: 14.5px; line-height: 1.65; }
   .instructor-card { padding: 18px 20px; margin-bottom: 22px; }
   .instructor-avatar { width: 52px; height: 52px; font-size: 20px; }
   .instructor-name { font-size: 15.5px; }
@@ -1190,8 +1104,6 @@ body::after {
   .welcome-container { padding: 64px 20px 110px; }
   #step1 { padding: 4px 0; }
   .hero-title { font-size: clamp(34px, 9vw, 44px); letter-spacing: -0.02em; }
-  .hero-subtitle { font-size: 15px; margin-bottom: 26px; }
-  .hero-eyebrow { flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
   .instructor-card {
     padding: 18px 20px;
     grid-template-columns: 52px 1fr;
@@ -1263,7 +1175,7 @@ body::after {
 }
 
 /* ============================================= */
-/*  STEP 4 — Idea capture + AI 刘小白 evaluation  */
+/*  STEP 4 — Idea capture + AI 刘小排 evaluation  */
 /*  (评估卡现在搬到 diagnosis.html，这些样式保留     */
 /*   但当前 step 4 不再使用 idea-input-wrap/eval)   */
 /* ============================================= */
@@ -1425,23 +1337,9 @@ body::after {
   <!-- Step 1: Welcome — light editorial two-column hero -->
   <div class="step active" id="step1">
     <div class="hero-left">
-      <div class="hero-eyebrow">
-        <span class="pulse"></span>
-        <span class="mono-token">S03&nbsp;·&nbsp;SPRING&nbsp;2026</span>
-        <span class="sep">/</span>
-        <span>独家课程&nbsp;·</span>
-        <span class="accent">77&nbsp;lessons</span>
-      </div>
-
       <h1 class="hero-title">
         用&nbsp;AI&nbsp;编程，<span class="line-2">做<span class="hl">可持续</span>的<span class="serif-acc">&nbsp;生意</span>。</span>
       </h1>
-
-      <p class="hero-subtitle">
-        <span class="mono-frag">77 lessons</span>&nbsp;四个阶段，带你从一个能写下来的想法，做到
-        <strong>真正有人付钱的产品</strong>。不需要编程基础，不需要孤军奋战——我们陪你走
-        <span class="inline-hl">可持续生意的全流程</span>。
-      </p>
 
       <div class="hero-cta-wrap">
         <button class="btn-primary-big" onclick="goToStep(2)">
@@ -1451,11 +1349,6 @@ body::after {
             <span class="arrow-tip"></span>
           </span>
         </button>
-        <p class="cta-hint">
-          <span class="kbd">~3 min</span>
-          <span class="dash">·</span>
-          完成后你会拿到专属于你的学习路线
-        </p>
       </div>
     </div>
 
@@ -1478,7 +1371,7 @@ body::after {
         <div class="plate-overlay">
           <div class="plate-title">致辞：为什么是现在，<br>为什么是你</div>
           <div class="plate-meta">
-            <span class="by">张小排</span>
+            <span class="by">刘小排</span>
             <span class="dot"></span>
             <span>FOUNDER</span>
             <span class="dot"></span>
@@ -1549,11 +1442,11 @@ body::after {
   <div class="step" id="step4">
     <div class="section-eyebrow"><span class="rule"></span><span><span class="num">04</span>&nbsp;/&nbsp;06</span><span>YOUR&nbsp;IDEA</span></div>
     <h2 class="section-title">你有想做的<span class="hl">产品 idea</span> 吗？</h2>
-    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…）。如果你已经有自己的想法，下一步会进入 AI 刘小白的项目诊断。</p>
+    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…）。如果你已经有自己的想法，下一步会进入 AI 刘小排的项目诊断。</p>
     <div class="option-grid option-grid-2" id="idea-options">
       <div class="option-card" onclick="selectIdeaOption(this, 'has')">
         <div class="option-title">有，想做自己的</div>
-        <div class="option-desc">已经有产品想法，想让 AI 刘小白做一次完整诊断</div>
+        <div class="option-desc">已经有产品想法，想让 AI 刘小排做一次完整诊断</div>
       </div>
       <div class="option-card" onclick="selectIdeaOption(this, 'no')">
         <div class="option-title">还没有，先跟课程做</div>
@@ -1619,10 +1512,10 @@ body::after {
         </div>
       </li>
     </ul>
-    <a href="roadmap.html" class="action-card">
+    <a href="roadmap.html" class="action-card" id="finalCard">
       <div class="action-dot"></div>
       <div class="action-content">
-        <div class="action-title">查看我的学习路线</div>
+        <div class="action-title" id="finalCardTitle">查看我的学习路线</div>
         <div class="action-desc">根据你刚才的回答，我们已经为你生成了个性化的学习日历</div>
       </div>
       <svg class="action-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
@@ -1646,7 +1539,7 @@ body::after {
 
 <script>
 // ?fresh=1：重置为全新状态（demo 专用）
-// ?step=N：跳到指定步骤（用于 diagnosis 完成后返回 step 5）
+// ?step=N：跳到指定步骤（diagnosis 返回入营→step4；诊断完成→step6）
 const _params = new URLSearchParams(location.search);
 if (_params.get('fresh') === '1') {
   localStorage.clear();
@@ -1662,7 +1555,19 @@ function goToStep(n) {
   document.querySelectorAll('.step-dot').forEach((dot, i) => {
     dot.classList.toggle('active', i === n - 1);
   });
+  if (n === 6) setupFinalCard();
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* 第 6 步那张卡片按「有没有 idea」决定去向：没 idea → 学习日历，有 idea → 学习路线 */
+function setupFinalCard() {
+  const card = document.getElementById('finalCard');
+  if (!card) return;
+  /* 走到第 6 步 = 问卷答完，置「已入营」标记：以后再进 welcome 会被顶部闸门直接放进主页 */
+  localStorage.setItem('ds_onboarded', 'true');
+  const hasIdea = localStorage.getItem('ds_has_idea') === 'has';
+  card.href = dsHomeUrl();   // 跟顶部闸门同一条规则
+  document.getElementById('finalCardTitle').textContent = hasIdea ? '查看我的学习路线' : '查看我的学习日历';
 }
 
 /* 入口路由：?step=N 跳到指定步骤 */
@@ -1718,5 +1623,6 @@ function continueFromIdea() {
 }
 
 </script>
+  <script src="demo-switcher.js"></script>
 </body>
 </html>

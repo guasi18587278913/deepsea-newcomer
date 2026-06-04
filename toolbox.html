@@ -113,7 +113,7 @@ button { font-family:inherit; border:none; background:none; cursor:pointer; colo
 @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
 .output-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
-.output-avatar { width:30px; height:30px; border-radius:50%; background:var(--deep-blue); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:600; }
+.output-avatar { width:30px; height:30px; border-radius:50%; background:#fff url('assets/liuxiaopai-avatar.png') center / cover no-repeat; box-shadow:0 0 0 1px rgba(13,148,136,.35); display:grid; }
 .output-by { font-size:13px; font-weight:600; color:var(--deep-blue); }
 .output-by-role { font-size:11.5px; color:var(--text3); font-family:var(--mono); margin-left:auto; }
 
@@ -194,6 +194,19 @@ button { font-family:inherit; border:none; background:none; cursor:pointer; colo
   .panel { padding:24px 20px; min-height:auto; }
   .landing-points { grid-template-columns:1fr; }
 }
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -202,14 +215,7 @@ button { font-family:inherit; border:none; background:none; cursor:pointer; colo
   <div class="tb-inner">
     <div class="tb-left">
       <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html">学习</a>
-        <a href="discuss.html">讨论</a>
-        <a href="community.html">社区</a>
-        <a href="showcase.html">成果墙</a>
-        <a href="toolbox.html" class="active">工具箱</a>
-      </nav>
+      <nav class="snav" id="snav"></nav>
     </div>
     <a href="profile.html" class="avatar">瓜</a>
   </div>
@@ -265,7 +271,7 @@ button { font-family:inherit; border:none; background:none; cursor:pointer; colo
 /* =====================================================
    TOOLBOX · 5 个 mock AI 工具
    单次输入 → 结构化输出。
-   真正接入 AI 刘小白 API 时，替换每个 tool 的 evaluate() 即可。
+   真正接入 AI 刘小排 API 时，替换每个 tool 的 evaluate() 即可。
    ===================================================== */
 
 const TOOLS = {
@@ -273,7 +279,7 @@ const TOOLS = {
     icon: '💡',
     stage: '商业化 / 找方向',
     title: 'Idea 探索器',
-    desc: '没想法不要紧。把你的兴趣、能力、目标说清楚，刘小白帮你找 5 个潜在 idea。',
+    desc: '没想法不要紧。把你的兴趣、能力、目标说清楚，刘小排帮你找 5 个潜在 idea。',
     render: renderIdeaExploreForm,
     evaluate: evalIdeaExplore
   },
@@ -281,7 +287,7 @@ const TOOLS = {
     icon: '✓',
     stage: '商业化 / 验证',
     title: 'Idea 验证器',
-    desc: '已有 idea，但不确定能不能做。让刘小白看看可行性、市场、风险点、切入点。',
+    desc: '已有 idea，但不确定能不能做。让刘小排看看可行性、市场、风险点、切入点。',
     render: renderIdeaValidateForm,
     evaluate: evalIdeaValidate
   },
@@ -289,7 +295,7 @@ const TOOLS = {
     icon: '⚙',
     stage: '实战进阶 / 技术选型',
     title: '技术栈推荐',
-    desc: '不知道用什么框架、数据库、AI API？把产品类型告诉刘小白，给你一套上手就能开干的栈。',
+    desc: '不知道用什么框架、数据库、AI API？把产品类型告诉刘小排，给你一套上手就能开干的栈。',
     render: renderStackForm,
     evaluate: evalStack
   },
@@ -297,7 +303,7 @@ const TOOLS = {
     icon: '★',
     stage: '商业化 / Landing',
     title: '落地页文案生成器',
-    desc: '"8 秒打动用户" 是落地页的铁律。给刘小白产品信息，得到 8 秒能 hook 住人的标题、副标题、CTA 和 5 个卖点。',
+    desc: '"8 秒打动用户" 是落地页的铁律。给刘小排产品信息，得到 8 秒能 hook 住人的标题、副标题、CTA 和 5 个卖点。',
     render: renderLandingForm,
     evaluate: evalLanding
   },
@@ -305,7 +311,7 @@ const TOOLS = {
     icon: '↗',
     stage: '增长 / 冷启动',
     title: '冷启动剧本',
-    desc: '上线了没人用？刘小白给你 5–10 个具体动作：去哪个平台、发什么内容、多大成本、预期效果。',
+    desc: '上线了没人用？刘小排给你 5–10 个具体动作：去哪个平台、发什么内容、多大成本、预期效果。',
     render: renderColdStartForm,
     evaluate: evalColdStart
   }
@@ -624,8 +630,8 @@ function runCurrentTool() {
   const out = document.getElementById('toolOutput');
   out.innerHTML =
     '<div class="output-header">' +
-      '<span class="output-avatar">白</span>' +
-      '<span class="output-by">AI 刘小白</span>' +
+      '<span class="output-avatar" role="img" aria-label="刘小排头像"></span>' +
+      '<span class="output-by">AI 刘小排</span>' +
       '<span class="output-by-role">/ ' + TOOLS[activeKey].title + '</span>' +
     '</div>' +
     TOOLS[activeKey].evaluate(inputs);
@@ -669,6 +675,21 @@ function listCard(items) {
 })();
 </script>
 
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

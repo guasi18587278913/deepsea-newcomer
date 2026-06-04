@@ -4,82 +4,127 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>深海圈 | 个人中心</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --bg: #f7f8fa;
-  --white: #ffffff;
-  --teal: #14b8a6;
-  --teal-light: #e6f7f5;
-  --teal-dark: #0d9488;
-  --text1: #1a1a2e;
-  --text2: #666666;
-  --text3: #999999;
-  --border: #e8eaed;
-  --success: #22c55e;
-  --gradient: linear-gradient(180deg, #e8f4f2 0%, #f7f8fa 100%);
-  --radius: 12px;
+:root{
+  --font-serif:'Noto Serif SC','Songti SC',serif;
+  --font:'Sora','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+  --bg-gradient:linear-gradient(180deg,#eef4f5 0%,#f7fafa 42%,#fdfefe 100%);
+  --surface:#ffffff; --surface-soft:#f4f7f8;
+  --teal:#0d9488; --teal-hover:#0b7c71; --teal-bg:#e8f3f2; --teal-tint:rgba(13,148,136,.06);
+  --deep-blue:#22384e; --gold:#9e7438;
+  --text1:#1d2b3a; --text2:#5e7280; --text3:#93a2ac; --text4:#aebac3;
+  --border:#e3eaec; --border-soft:#eef3f4;
+  --gold-from:#ffe9a8; --gold-to:#ffd166; --gold-ring:#f3b228;
+  --placeholder:#eaeff1;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:var(--font); background:var(--bg); color:var(--text1); -webkit-font-smoothing:antialiased; min-height:100vh; }
-a { color:inherit; text-decoration:none; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg-gradient);background-attachment:fixed;color:var(--text1);-webkit-font-smoothing:antialiased;min-height:100vh;line-height:1.5;}
+a{color:inherit;text-decoration:none;}
+svg{display:block;}
 
-.topbar { position:sticky; top:0; z-index:50; background:rgba(247,248,250,.9); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; }
-.tb-inner { max-width:720px; width:100%; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
-.tb-left { display:flex; align-items:center; gap:28px; }
-.logo { font-size:17px; font-weight:700; color:var(--teal); }
-.nav { display:flex; gap:18px; }
-.nav a { font-size:13.5px; color:var(--text2); transition:color .15s; padding:4px 0; border-bottom:2px solid transparent; }
-.nav a:hover { color:var(--text1); }
-.nav a.active { color:var(--text1); font-weight:600; border-bottom-color:var(--teal); }
-.back-link { font-size:14px; color:var(--text2); cursor:pointer; transition:color .2s; background:none; border:none; font-family:inherit; }
-.back-link:hover { color:var(--teal); }
+/* 顶栏 */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(18px);border-bottom:1px solid var(--border-soft);height:54px;display:flex;align-items:center;padding:0 30px;}
+.tb-inner{max-width:860px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.tb-left{display:flex;align-items:center;gap:26px;}
+.brand{font-family:var(--font-serif);font-weight:700;font-size:17px;color:var(--teal);}
+.brand .sq{display:inline-block;width:10px;height:10px;background:var(--teal);border-radius:2px;margin-right:8px;vertical-align:middle;}
+.nav{display:flex;gap:2px;}
+.nav a{font-size:13px;color:var(--text3);padding:6px 11px;border-radius:7px;transition:.15s;}
+.nav a:hover{color:var(--text1);}
+.tb-avatar{width:31px;height:31px;border-radius:50%;background:var(--deep-blue);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:600;}
 
-.page { max-width:720px; margin:0 auto; padding:32px; }
+.page{max-width:860px;margin:0 auto;padding:28px 30px 60px;display:flex;flex-direction:column;gap:16px;}
 
-.user-card { background:var(--gradient); border:1px solid var(--border); border-radius:var(--radius); padding:32px; margin-bottom:16px; display:flex; align-items:center; gap:20px; }
-.user-avatar { width:72px; height:72px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:28px; font-weight:600; flex-shrink:0; }
-.user-info { flex:1; }
-.user-name { font-size:22px; font-weight:700; margin-bottom:4px; }
-.user-role { font-size:13px; color:var(--teal-dark); background:var(--teal-light); display:inline-block; padding:3px 10px; border-radius:5px; margin-bottom:10px; }
-.user-meta { font-size:13px; color:var(--text2); line-height:1.7; }
-.edit-btn { background:var(--white); border:1px solid var(--border); padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; color:var(--text2); }
-.edit-btn:hover { border-color:var(--teal); color:var(--teal); }
+/* 用户卡 */
+.user-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 28px;display:flex;align-items:center;gap:20px;box-shadow:0 1px 3px rgba(34,56,78,.03);}
+.user-avatar{width:68px;height:68px;border-radius:50%;background:var(--deep-blue);color:#fff;display:grid;place-items:center;font-size:26px;font-weight:600;flex-shrink:0;font-family:var(--font-serif);}
+.user-info{flex:1;min-width:0;}
+.user-name{font-family:var(--font-serif);font-size:21px;font-weight:700;color:var(--deep-blue);}
+.user-tags{display:flex;gap:7px;margin:7px 0 9px;flex-wrap:wrap;}
+.u-tag{font-size:12px;font-weight:500;color:var(--teal-hover);background:var(--teal-bg);padding:3px 11px;border-radius:999px;}
+.user-meta{font-size:12.5px;color:var(--text3);line-height:1.7;}
+.edit-btn{background:var(--surface);border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--text2);font-family:var(--font);transition:.15s;flex-shrink:0;}
+.edit-btn:hover{border-color:var(--teal);color:var(--teal);}
 
-.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
-.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:18px 16px; text-align:center; }
-.stat-num { font-size:24px; font-weight:700; color:var(--text1); letter-spacing:-.5px; font-family:'SF Mono',monospace; }
-.stat-label { font-size:12px; color:var(--text3); margin-top:2px; }
+/* 统计 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 16px;text-align:center;}
+.stat-num{font-family:var(--font-serif);font-size:25px;font-weight:700;color:var(--teal);letter-spacing:-.5px;}
+.stat-num small{font-size:14px;color:var(--text3);font-weight:400;}
+.stat-label{font-size:12px;color:var(--text3);margin-top:3px;}
 
-.section { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
-.section-title { font-size:15px; font-weight:600; margin-bottom:16px; }
+/* 区块 */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(34,56,78,.03);}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;}
+.section-title{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--deep-blue);}
+.section-more{font-size:12.5px;color:var(--text3);transition:.15s;}
+.section-more:hover{color:var(--teal);}
 
-.milestones { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.milestone { padding:16px; border-radius:10px; border:1px solid var(--border); text-align:center; transition:all .2s; }
-.milestone.earned { background:var(--teal-light); border-color:var(--teal); }
-.milestone.locked { opacity:.5; border-style:dashed; }
-.ms-icon { font-size:28px; margin-bottom:8px; }
-.ms-name { font-size:13px; font-weight:600; margin-bottom:2px; }
-.earned .ms-name { color:var(--teal-dark); }
-.ms-date { font-size:11px; color:var(--text3); }
+/* 我的徽章 */
+.badges{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.badge{text-align:center;}
+.badge-ring{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;font-size:33px;margin:0 auto 11px;transition:transform .15s;}
+.badge.earned .badge-ring{background:linear-gradient(145deg,var(--gold-from),var(--gold-to));border:2px solid var(--gold-ring);box-shadow:0 5px 16px rgba(243,178,40,.28);}
+.badge.earned:hover .badge-ring{transform:translateY(-2px);}
+.badge.locked .badge-ring{background:var(--surface-soft);border:2px dashed var(--border);opacity:.6;filter:grayscale(.7);}
+.badge-name{font-size:13px;font-weight:600;color:var(--text1);}
+.badge.locked .badge-name{color:var(--text3);font-weight:500;}
+.badge-date{font-size:11px;color:var(--text3);margin-top:2px;}
 
-.hw-list { display:flex; flex-direction:column; gap:8px; }
-.hw-item { display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:10px; }
-.hw-num { font-family:'SF Mono',monospace; font-size:12px; color:var(--text3); width:44px; flex-shrink:0; }
-.hw-name { flex:1; font-size:14px; }
-.hw-status { font-size:11px; font-weight:600; padding:3px 10px; border-radius:5px; }
-.hw-status.done { background:var(--teal-light); color:var(--teal-dark); }
-.hw-status.star { background:#fef3c7; color:#d97706; }
-.hw-status.pending { background:#fff; border:1px solid var(--border); color:var(--text3); }
-.hw-date { font-size:12px; color:var(--text3); }
+/* 课程列表 */
+.course-list{display:flex;flex-direction:column;gap:7px;}
+.course-list.done-scroll{max-height:228px;overflow-y:auto;padding-right:4px;}
+.course-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;background:var(--surface-soft);transition:.12s;}
+.course-row:hover{background:var(--teal-bg);}
+.course-row.next{background:var(--teal-bg);border:1px solid var(--teal);}
+.cc-mark{width:18px;flex-shrink:0;display:grid;place-items:center;color:var(--teal);}
+.cc-mark svg{width:15px;height:15px;}
+.cc-code{font-family:var(--mono);font-size:11px;color:var(--teal);background:var(--surface);border:1px solid var(--border-soft);padding:2px 7px;border-radius:5px;flex-shrink:0;}
+.cc-name{flex:1;font-size:13.5px;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.course-row.done .cc-name{color:var(--text3);}
+.cc-tail{font-size:11.5px;color:var(--text3);font-family:var(--mono);flex-shrink:0;}
+.course-row.next .cc-tail{color:var(--teal-hover);font-weight:600;font-family:var(--font);}
+.empty-note{font-size:13px;color:var(--text3);padding:6px 2px;}
 
-.renewal { background:var(--gradient); border:1px solid var(--teal); border-radius:var(--radius); padding:24px; text-align:center; }
-.renewal-title { font-size:15px; font-weight:600; margin-bottom:6px; }
-.renewal-date { font-size:13px; color:var(--text2); margin-bottom:16px; }
-.renew-btn { background:var(--teal); color:#fff; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
-.renew-btn:hover { background:var(--teal-dark); }
+/* 我的作品 */
+.works{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.work{border:1px solid var(--border-soft);border-radius:11px;overflow:hidden;transition:.15s;display:block;}
+.work:hover{border-color:var(--border);box-shadow:0 3px 12px rgba(34,56,78,.05);}
+.work-preview{height:96px;background:var(--placeholder);display:grid;place-items:center;color:var(--text4);}
+.work-preview svg{width:26px;height:26px;}
+.work-body{padding:13px 15px;}
+.work-tags{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
+.work-tag{font-size:10.5px;font-weight:500;color:var(--teal-hover);background:var(--teal-bg);padding:2px 8px;border-radius:5px;}
+.work-tag.stage{color:var(--gold);background:#fbf3e6;}
+.work-title{font-size:14.5px;font-weight:600;color:var(--text1);margin-bottom:4px;}
+.work-desc{font-size:12.5px;color:var(--text2);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.work-date{font-size:11px;color:var(--text4);margin-top:9px;}
 
-@media (max-width:640px) { .stats, .milestones { grid-template-columns:repeat(2,1fr); } }
+/* 续费 */
+.renewal{background:linear-gradient(135deg,var(--teal-bg),#fdfefe);border:1px solid var(--teal);border-radius:14px;padding:22px 24px;text-align:center;}
+.renewal-title{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--deep-blue);margin-bottom:5px;}
+.renewal-date{font-size:12.5px;color:var(--text2);margin-bottom:15px;}
+.renew-btn{background:var(--teal);color:#fff;border:none;padding:10px 24px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s;}
+.renew-btn:hover{background:var(--teal-hover);}
+
+@media (max-width:680px){.stats{grid-template-columns:repeat(2,1fr);}.badges{grid-template-columns:repeat(3,1fr);}.works{grid-template-columns:1fr;}}
+.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
+.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
+.snav-a.active{color:#22384e;font-weight:600;}
+.snav-a.open{color:#0b7c71;background:#e8f3f2;}
+.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
+.snav-pop a .ext{font-size:11px;color:#aab6c1;}
 </style>
 </head>
 <body>
@@ -87,141 +132,174 @@ a { color:inherit; text-decoration:none; }
 <div class="topbar">
   <div class="tb-inner">
     <div class="tb-left">
-      <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html">学习</a>
-        <a href="discuss.html">讨论</a>
-        <a href="community.html">社区</a>
-        <a href="showcase.html">成果墙</a>
-        <a href="toolbox.html">工具箱</a>
-      </nav>
+      <a href="roadmap.html" class="brand"><span class="sq"></span>深海圈</a>
+      <nav class="snav" id="snav"></nav>
     </div>
+    <div class="tb-avatar">瓜</div>
   </div>
 </div>
 
 <div class="page">
 
+  <!-- 用户卡 -->
   <div class="user-card">
     <div class="user-avatar">瓜</div>
     <div class="user-info">
       <div class="user-name">瓜斯</div>
-      <div class="user-role">AI 编程 第3期学员</div>
-      <div class="user-meta">加入时间：2026 年 3 月 19 日<br>会员有效期：至 2027 年 3 月 18 日</div>
+      <div class="user-tags" id="userTags"><span class="u-tag">零基础</span></div>
+      <div class="user-meta">加入：2026 年 5 月 4 日 · 会员有效期至 2027 年 5 月 3 日</div>
     </div>
     <button class="edit-btn">编辑资料</button>
   </div>
 
+  <!-- 统计 -->
   <div class="stats">
-    <div class="stat-card"><div class="stat-num">15<span style="font-size:14px;color:var(--text3)">/77</span></div><div class="stat-label">已学课程</div></div>
+    <div class="stat-card"><div class="stat-num" id="statDone">15<small>/77</small></div><div class="stat-label">已学课程</div></div>
     <div class="stat-card"><div class="stat-num">26</div><div class="stat-label">学习天数</div></div>
-    <div class="stat-card"><div class="stat-num">3<span style="font-size:14px;color:var(--text3)">/4</span></div><div class="stat-label">作业提交</div></div>
-    <div class="stat-card"><div class="stat-num">48<span style="font-size:14px;color:var(--text3)">h</span></div><div class="stat-label">在线时长</div></div>
+    <div class="stat-card"><div class="stat-num">3<small>/4</small></div><div class="stat-label">作业提交</div></div>
+    <div class="stat-card"><div class="stat-num">48<small>h</small></div><div class="stat-label">在线时长</div></div>
   </div>
 
+  <!-- 我的徽章 -->
   <div class="section">
-    <div class="section-title">学习里程碑</div>
-    <div class="milestones">
-      <div class="milestone earned">
-        <div class="ms-icon">🌐</div>
-        <div class="ms-name">第一个网站</div>
-        <div class="ms-date">3 月 25 日获得</div>
-      </div>
-      <div class="milestone locked">
-        <div class="ms-icon">⚡</div>
-        <div class="ms-name">第一个产品</div>
-        <div class="ms-date">待解锁</div>
-      </div>
-      <div class="milestone locked">
-        <div class="ms-icon">🎓</div>
-        <div class="ms-name">全程毕业</div>
-        <div class="ms-date">待解锁</div>
-      </div>
+    <div class="section-head"><span class="section-title">我的徽章</span><span class="section-more">已点亮 3 / 5</span></div>
+    <div class="badges">
+      <div class="badge earned"><div class="badge-ring">🚀</div><div class="badge-name">首航成功</div><div class="badge-date">2026.5.7 获得</div></div>
+      <div class="badge earned"><div class="badge-ring">🎯</div><div class="badge-name">MVP 大师</div><div class="badge-date">2026.5.15 获得</div></div>
+      <div class="badge earned"><div class="badge-ring">⚡</div><div class="badge-name">部署达人</div><div class="badge-date">2026.5.20 获得</div></div>
+      <div class="badge locked"><div class="badge-ring">💰</div><div class="badge-name">收款专家</div><div class="badge-date">待解锁</div></div>
+      <div class="badge locked"><div class="badge-ring">🏆</div><div class="badge-name">全能船长</div><div class="badge-date">待解锁</div></div>
     </div>
   </div>
 
+  <!-- 正在学习的课程 -->
   <div class="section">
-    <div class="section-title">作业历史</div>
-    <div class="hw-list" id="hwList">
-      <!-- populated by JS · 优先读 ds_submissions，否则用 demo 数据 -->
-    </div>
+    <div class="section-head"><span class="section-title">正在学习</span><a href="learn.html" class="section-more">去上课 →</a></div>
+    <div class="course-list" id="learningList"></div>
   </div>
 
+  <!-- 已完成的课程 -->
+  <div class="section">
+    <div class="section-head"><span class="section-title">已完成的课程</span><span class="section-more" id="doneCount">—</span></div>
+    <div class="course-list done-scroll" id="doneList"></div>
+  </div>
+
+  <!-- 我的作品 -->
+  <div class="section">
+    <div class="section-head"><span class="section-title">我的作品</span><a href="showcase.html" class="section-more">去成果墙 →</a></div>
+    <div class="works" id="worksGrid"></div>
+  </div>
+
+  <!-- 续费 -->
   <div class="renewal">
     <div class="renewal-title">会员续费</div>
-    <div class="renewal-date">你的会员将于 2027 年 3 月 18 日到期 · 提前续费可享老学员折扣</div>
+    <div class="renewal-date">你的会员将于 2027 年 5 月 3 日到期 · 提前续费可享老学员折扣</div>
     <button class="renew-btn">查看续费权益</button>
   </div>
 
 </div>
 
+<script src="course-data.js"></script>
 <script>
-/* =====================================================
-   作业历史 · 从 ds_submissions 读取真实提交，
-   没有就回退到 demo 占位数据
-   ===================================================== */
-const STAGE_LABEL = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
-const STAGE_TITLE = {
-  1: '用 AI 做出一个能在线访问的网站',
-  2: '完成产品部署上线 + 域名 + API + 数据库',
-  3: '从零搭建完整产品：落地页 + 认证 + 支付',
-  4: '毕业大作业：执行 1 个增长动作，展示产品数据变化'
-};
-const DEMO_HW = [
-  { num:'第1周', name:'用 AI 做出一个能在线访问的网站', date:'3.25 提交', cls:'done',    label:'✓ 已提交' },
-  { num:'第2周', name:'用 IDE 搭建一个有前后端交互的 Next.js 项目', date:'4.1 提交', cls:'star',    label:'⭐ 优秀作业' },
-  { num:'第3周', name:'给产品接入 API，代码推 GitHub，部署上线', date:'4.8 提交', cls:'done',    label:'✓ 已提交' },
-  { num:'第4周', name:'绑定域名 + Claude Code/MCP 优化 + 期中考试', date:'截止 4.20', cls:'pending', label:'进行中' }
-];
+const STAGE_NAMES = { 1:'快速入门', 2:'实战进阶', 3:'商业化', 4:'增长' };
+function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function cleanTitle(t){return String(t).replace(/^[一二三四五六七八九十百]+、\s*/,'');}
 
-function escapeHtml(s) {
-  return String(s == null ? '' : s).replace(/[&<>"']/g,
-    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+const ICON_PLAY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>';
+const ICON_IMG   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
 
-function renderHwList() {
+/* 身份标签：用 welcome 问卷的 ds_experience / ds_goal */
+(function renderTags(){
+  const exp = localStorage.getItem('ds_experience');
+  const goal = localStorage.getItem('ds_goal');
+  const tags = [];
+  tags.push(['零基础','有基础','有产品经验'].includes(exp) ? exp : '零基础');
+  if (['做产品赚钱','提升技术','产品出海'].includes(goal)) tags.push(goal);
+  document.getElementById('userTags').innerHTML = tags.map(t=>`<span class="u-tag">${escapeHtml(t)}</span>`).join('');
+})();
+
+/* 课程：已完成 / 正在学习 —— 读 ds_completed_demo，空则用 demo（前 15 节为已完成）*/
+(function renderCourses(){
+  const all = (typeof COURSES !== 'undefined') ? COURSES : [];
+  if (!all.length) return;
+  let completed;
+  try { completed = JSON.parse(localStorage.getItem('ds_completed_demo') || '[]'); }
+  catch (e) { completed = []; }
+  if (!completed.length) completed = all.slice(0, 15).map(c => c.code);   // demo 兜底
+  const cset = new Set(completed);
+
+  const doneCourses = all.filter(c => cset.has(c.code));
+  const remaining   = all.filter(c => !cset.has(c.code));
+
+  document.getElementById('statDone').innerHTML = doneCourses.length + '<small>/' + all.length + '</small>';
+  document.getElementById('doneCount').textContent = '共 ' + doneCourses.length + ' 节';
+
+  // 正在学习：剩余的前 3 节，第 1 节为「下一节」
+  const learning = remaining.slice(0, 3);
+  document.getElementById('learningList').innerHTML = learning.length ? learning.map((c,i) =>
+    `<a class="course-row${i===0?' next':''}" href="learn.html?code=${encodeURIComponent(c.code)}">
+       <span class="cc-mark">${i===0?ICON_PLAY:''}</span>
+       <span class="cc-code">${escapeHtml(c.code)}</span>
+       <span class="cc-name">${escapeHtml(cleanTitle(c.t))}</span>
+       <span class="cc-tail">${i===0?'下一节 →':(c.mins+'′')}</span>
+     </a>`).join('')
+    : '<div class="empty-note">🎉 全部课程已学完，恭喜走完全程！</div>';
+
+  // 已完成：列表（标✓、灰）
+  document.getElementById('doneList').innerHTML = doneCourses.length ? doneCourses.map(c =>
+    `<a class="course-row done" href="learn.html?code=${encodeURIComponent(c.code)}">
+       <span class="cc-mark">${ICON_CHECK}</span>
+       <span class="cc-code">${escapeHtml(c.code)}</span>
+       <span class="cc-name">${escapeHtml(cleanTitle(c.t))}</span>
+       <span class="cc-tail">阶段 ${c.stage} · ${STAGE_NAMES[c.stage]||''}</span>
+     </a>`).join('')
+    : '<div class="empty-note">还没有完成的课程，去上第一节吧。</div>';
+})();
+
+/* 我的作品：读 ds_submissions 的公开提交，空则 demo 占位 */
+(function renderWorks(){
   let subs = [];
   try { subs = JSON.parse(localStorage.getItem('ds_submissions') || '[]'); }
   catch (e) { subs = []; }
-
-  const el = document.getElementById('hwList');
-  if (!subs.length) {
-    el.innerHTML = DEMO_HW.map(h =>
-      `<div class="hw-item">
-        <div class="hw-num">${h.num}</div>
-        <div class="hw-name">${h.name}</div>
-        <span class="hw-date">${h.date}</span>
-        <span class="hw-status ${h.cls}">${h.label}</span>
-      </div>`
-    ).join('');
-    return;
+  let works = subs.filter(s => s.public);
+  if (!works.length) {
+    works = [
+      { stage:3, title:'AI 邮件润色器', url:'', desc:'输入中式英语，输出地道的商务邮件。上线两周，已有 5 个朋友在用。', submittedAt:'2026-05-20' },
+      { stage:2, title:'课程表查询小工具', url:'', desc:'给室友做的课程表查询页，第一次做出能用的东西。', submittedAt:'2026-05-12' }
+    ];
   }
-
-  // 真实提交：按 stage 排序
-  subs.sort((a, b) => (a.stage || 0) - (b.stage || 0));
-  const items = subs.map(s => {
-    const stageLabel = '第' + s.stage + '阶段 · ' + (STAGE_LABEL[s.stage] || '');
-    const desc = escapeHtml(s.title || STAGE_TITLE[s.stage] || '阶段作业');
-    const date = (s.submittedAt || '').replace(/^2026-/, '').replace('-', '.') + ' 提交';
-    const urlLink = s.url
-      ? `<a class="hw-name" href="${escapeHtml(s.url)}" target="_blank" rel="noopener" style="color:var(--teal-dark);text-decoration:underline;">${desc}</a>`
-      : `<div class="hw-name">${desc}</div>`;
-    return `<div class="hw-item">
-      <div class="hw-num">${stageLabel}</div>
-      ${urlLink}
-      <span class="hw-date">${escapeHtml(date)}</span>
-      <span class="hw-status done">✓ 已提交</span>
-    </div>`;
+  document.getElementById('worksGrid').innerHTML = works.map(w => {
+    const date = (w.submittedAt||'').replace(/^2026-/, '').replace('-', '.');
+    const tag = STAGE_NAMES[w.stage] ? `<span class="work-tag stage">${STAGE_NAMES[w.stage]}阶段</span>` : '';
+    const open = w.url ? `href="${escapeHtml(w.url)}" target="_blank" rel="noopener"` : 'href="showcase.html"';
+    return `<a class="work" ${open}>
+      <div class="work-preview">${ICON_IMG}</div>
+      <div class="work-body">
+        <div class="work-tags"><span class="work-tag">我的提交</span>${tag}</div>
+        <div class="work-title">${escapeHtml(w.title)}</div>
+        <div class="work-desc">${escapeHtml(w.desc||'')}</div>
+        <div class="work-date">${escapeHtml(date)} 提交</div>
+      </div>
+    </a>`;
   }).join('');
-  el.innerHTML = items;
-
-  // 顶栏统计同步
-  const sd = document.querySelector('.stat-card .stat-num');
-  // 不强改 demo 统计；真实用户可后续接入
-}
-
-renderHwList();
+})();
 </script>
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+  <script src="demo-switcher.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
 </body>
 </html>

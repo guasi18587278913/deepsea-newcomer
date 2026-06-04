@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 课旁讨论</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-serif:'Fraunces','Noto Serif SC','Songti SC',serif;
+  --font:'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+  --bg:#f5fafa; --bg-gradient:linear-gradient(180deg,#e8f4f5 0%,#f5fafa 40%,#ffffff 100%); --surface:#ffffff; --surface-2:#f0f8f8;
+  --brand:#0d9488; --brand-2:#0a7a70; --brand-bg:#e8f6f5;
+  --teal:#0d9488; --teal-2:#0a7a70; --teal-bg:#e8f6f5; --gold:#c89854;
+  --amber:#c89854; --amber-bg:#f6ecd9;
+  --orange:#c2742a; --rose:#cf5b49;
+  --ink:#1a2942; --t1:#1a2942; --t2:#5c7a8a; --t3:#94a3b8; --t4:#b8c5d0;
+  --line:#dde7ea; --line-soft:#e6eef0;
+  --sh-sm:0 1px 2px rgba(16,74,74,.05);
+  --sh:0 1px 2px rgba(16,74,74,.05),0 10px 30px -14px rgba(16,74,74,.13);
+  --sh-lg:0 2px 6px rgba(16,74,74,.05),0 20px 50px -18px rgba(16,74,74,.20);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg-gradient);background-attachment:fixed;color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.5;}
+a{color:inherit;text-decoration:none;}
+svg{display:block;}
+button{font-family:inherit;}
+
+/* ============ 顶栏 ============ */
+.top{position:relative;background:linear-gradient(180deg,#e9f5f3 0%,#eef8f7 60%,var(--bg) 100%);border-bottom:1px solid var(--line);}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 34px;max-width:1320px;margin:0 auto;}
+.tb-l{display:flex;align-items:center;gap:30px;}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-serif);font-weight:700;font-size:18px;color:var(--ink);}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#22d3ee,var(--brand) 60%,#0891b2);display:grid;place-items:center;box-shadow:0 4px 14px rgba(56,189,248,.45);}
+.brand .mark svg{width:15px;height:15px;color:#fff;}
+.snav{display:flex;gap:2px;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:var(--font);font-size:13.5px;color:var(--t2);padding:6px 12px;border-radius:8px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:var(--t4);transition:transform .2s;}
+.snav-a:hover{color:var(--ink);background:var(--surface-2);}
+.snav-a.active{color:var(--ink);font-weight:600;}
+.snav-a.open{color:var(--teal-2);background:var(--teal-bg);}
+.snav-a.open::after{transform:rotate(180deg);color:var(--teal-2);}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-lg);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--ink);padding:9px 12px;border-radius:8px;transition:background .12s;white-space:nowrap;}
+.snav-pop a:hover{background:var(--teal-bg);color:var(--teal-2);}
+.snav-pop a .ext{font-size:11px;color:var(--t4);}
+.tb-r{display:flex;align-items:center;gap:16px;}
+.tb-online{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t2);}
+.tb-online .d{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#0e7490);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;border:1.5px solid rgba(255,255,255,.25);background-size:cover;background-position:center;}
+
+/* ============ 页面布局 ============ */
+.page{max-width:1320px;margin:0 auto;padding:18px 34px 60px;}
+.crumb{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--t3);margin-bottom:16px;flex-wrap:wrap;}
+.crumb a:hover{color:var(--teal-2);}
+.crumb .sep{color:var(--t4);}
+.crumb .cur{color:var(--t1);font-weight:600;}
+.layout{display:grid;grid-template-columns:194px 1fr 388px;gap:24px;align-items:start;}
+
+/* 左：课节导航 */
+.rail{position:sticky;top:18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:var(--sh-sm);}
+.rail-h{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.08em;padding:6px 10px 9px;text-transform:uppercase;}
+.rail-h b{color:var(--teal-2);}
+.rail a{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--t2);padding:9px 10px;border-radius:9px;transition:.12s;}
+.rail a:hover{background:var(--surface-2);color:var(--t1);}
+.rail a.on{background:var(--brand-bg);color:var(--brand-2);font-weight:600;}
+.rail a .num{font-family:var(--mono);font-size:11px;color:var(--t4);width:20px;flex-shrink:0;}
+.rail a.on .num{color:var(--brand);}
+.rail a .dot{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+.rail a .done{margin-left:auto;color:var(--teal);flex-shrink:0;}
+.rail a .done svg{width:14px;height:14px;}
+
+/* 中：手册正文 */
+.manual{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px 34px 34px;box-shadow:var(--sh);}
+.m-stage{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--brand-2);background:var(--brand-bg);padding:5px 12px;border-radius:8px;}
+.m-title{font-family:var(--font-serif);font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin:14px 0 10px;line-height:1.25;}
+.m-meta{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--t3);padding-bottom:20px;border-bottom:1px solid var(--line-soft);margin-bottom:22px;}
+.m-meta span{display:inline-flex;align-items:center;gap:5px;}
+.m-meta svg{width:13px;height:13px;}
+.manual h3{font-size:17px;font-weight:700;color:var(--ink);margin:26px 0 10px;}
+.manual p{font-size:15px;line-height:1.8;color:#2e3d4d;margin:10px 0;}
+.manual .code{background:#0c2a2e;border-radius:11px;padding:15px 18px;font-family:var(--mono);font-size:13px;line-height:1.7;color:#a7e6dc;margin:14px 0;overflow-x:auto;}
+.manual .code .c{color:#5b8a88;}
+.manual .code .k{color:#5eead4;}
+.manual .shot{margin:16px 0;height:188px;border-radius:12px;background:linear-gradient(135deg,#eef3f8,#e6edf4);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--t4);}
+.manual .shot svg{width:30px;height:30px;}
+.manual .shot span{font-size:12px;}
+.callout{display:flex;gap:11px;background:var(--amber-bg);border:1px solid #ecd9b6;border-radius:12px;padding:13px 16px;margin:18px 0;}
+.callout .ic{color:var(--gold);flex-shrink:0;}
+.callout .ic svg{width:18px;height:18px;}
+.callout p{margin:0;font-size:13.5px;line-height:1.65;color:#7a6024;}
+.m-foot{display:flex;align-items:center;justify-content:space-between;margin-top:30px;padding-top:20px;border-top:1px solid var(--line-soft);}
+.m-done{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;border:none;font-size:14px;font-weight:600;padding:11px 22px;border-radius:11px;cursor:pointer;transition:.15s;}
+.m-done svg{width:16px;height:16px;}
+.m-done:hover{filter:brightness(1.06);}
+.m-next{font-size:13px;color:var(--t3);}
+.m-next b{color:var(--teal-2);}
+
+/* 右：课旁讨论面板 */
+.panel{position:sticky;top:18px;display:flex;flex-direction:column;height:calc(100vh - 128px);max-height:760px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);overflow:hidden;}
+.p-head{padding:13px 18px 0;flex-shrink:0;}
+.p-h1{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.p-h1 .ttl{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:700;color:var(--ink);}
+.p-h1 .ttl svg{width:17px;height:17px;color:var(--brand);}
+.p-here{margin-top:7px;font-size:12px;color:var(--t3);}
+.p-here b{color:var(--teal-2);font-weight:600;}
+.p-tabs{display:flex;gap:4px;margin:14px 0 0;border-bottom:1px solid var(--line-soft);}
+.p-tab{position:relative;font-size:13.5px;color:var(--t2);background:none;border:none;padding:9px 4px;margin-right:14px;cursor:pointer;font-weight:500;transition:.13s;}
+.p-tab .badge{font-family:var(--mono);font-size:11px;color:var(--t4);margin-left:5px;}
+.p-tab:hover{color:var(--t1);}
+.p-tab.on{color:var(--brand-2);font-weight:700;}
+.p-tab.on .badge{color:var(--brand);}
+.p-tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:var(--brand);}
+
+.p-body{flex:1;min-height:0;overflow-y:auto;padding:4px 18px 6px;}
+.zone{display:none;}
+.zone.on{display:block;}
+
+/* 精华 */
+.star{position:relative;background:linear-gradient(180deg,#fbf3e2 0%,#fefcf8 60%);border:1px solid #ecd9b6;border-radius:13px;padding:11px 14px;margin:8px 0 4px;}
+.star-tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--gold),#b9863f);padding:2px 8px;border-radius:6px;}
+.star-tag svg{width:11px;height:11px;}
+.star-row{display:flex;align-items:center;gap:9px;margin-top:9px;}
+.av{border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:700;flex-shrink:0;background-size:cover;background-position:center;}
+.star .av{width:28px;height:28px;font-size:12px;}
+.star-nm{font-size:13px;font-weight:600;color:var(--t1);}
+.role{font-size:10px;color:#fff;background:var(--teal);font-weight:700;padding:1px 6px;border-radius:5px;margin-left:6px;}
+.star-tx{font-size:13.5px;line-height:1.66;color:#3c4b5a;margin-top:9px;}
+.star-tx code{font-family:var(--mono);font-size:12px;background:#fff;border:1px solid #eadfca;padding:1px 5px;border-radius:5px;color:#0b7c71;}
+.star-foot{margin-top:10px;display:flex;align-items:center;gap:8px;}
+.helpful{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--brand-2);background:#fff;border:1px solid #d6e8e3;border-radius:8px;padding:5px 11px;cursor:pointer;transition:.14s;}
+.helpful svg{width:13px;height:13px;}
+.helpful:hover{background:var(--brand-bg);}
+.helpful.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+
+.zone-lab{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.06em;margin:16px 2px 4px;text-transform:uppercase;}
+
+/* 问答帖 */
+.qa{padding:13px 4px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:.12s;border-radius:9px;}
+.qa:hover{background:var(--surface-2);}
+.qa-top{display:flex;align-items:center;gap:9px;}
+.qa-top .av{width:26px;height:26px;font-size:11px;}
+.qa-nm{font-size:12.5px;font-weight:600;color:var(--t1);}
+.qa-sub{font-size:11px;color:var(--t4);}
+.qa-type{font-size:10px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:auto;}
+.qa-type.q{color:var(--orange);background:#fbe9da;}
+.qa-type.add{color:var(--teal-2);background:var(--teal-bg);}
+.qa-tx{font-size:13.5px;line-height:1.6;color:#33414f;margin:8px 0 0;}
+.qa-foot{display:flex;align-items:center;gap:12px;margin-top:9px;font-size:11.5px;color:var(--t3);}
+.qa-foot .it{display:inline-flex;align-items:center;gap:4px;}
+.qa-foot .it svg{width:13px;height:13px;}
+.solved{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;}
+.solved.ok{color:var(--teal-2);background:var(--teal-bg);}
+.solved.wait{color:var(--orange);background:#fbe9da;}
+.qa-replies{display:none;margin-top:10px;padding-left:35px;border-left:2px solid var(--line-soft);margin-left:12px;}
+.qa.open .qa-replies{display:block;}
+.rep{display:flex;gap:8px;padding:7px 0;}
+.rep .av{width:22px;height:22px;font-size:10px;}
+.rep-bd{flex:1;min-width:0;}
+.rep-nm{font-size:11.5px;font-weight:600;color:var(--t1);}
+.rep-tx{font-size:12.5px;line-height:1.55;color:#3c4b5a;margin-top:1px;}
+.rep-box{display:flex;gap:7px;margin-top:8px;}
+.rep-box input{flex:1;border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:7px 11px;font-family:var(--font);font-size:12.5px;outline:none;}
+.rep-box input:focus{background:#fff;border-color:var(--brand);}
+.rep-box button{background:var(--brand);color:#fff;border:none;font-size:12px;font-weight:600;padding:7px 13px;border-radius:9px;cursor:pointer;}
+
+/* 本章动态（活水流） */
+.flow-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);background:var(--surface-2);border-radius:10px;padding:9px 13px;margin:12px 0 6px;}
+.flow-head .live{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:beat 2s infinite;flex-shrink:0;}
+.flow-head b{color:var(--ink);font-weight:600;}
+@keyframes beat{0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);}70%{box-shadow:0 0 0 7px rgba(52,211,153,0);}100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}}
+@media (prefers-reduced-motion:reduce){.flow-head .live{animation:none;}}
+.fl{display:flex;gap:9px;padding:10px 4px;border-bottom:1px solid var(--line-soft);}
+.fl .av{width:26px;height:26px;font-size:11px;}
+.fl-bd{flex:1;min-width:0;}
+.fl-l1{font-size:12.5px;color:var(--t1);line-height:1.5;}
+.fl-l1 b{font-weight:600;}
+.fl-l1 .good{color:var(--brand-2);}
+.fl-tm{font-size:10.5px;color:var(--t4);margin-top:2px;}
+.evt-link{color:var(--brand-2);font-weight:600;cursor:pointer;}
+.evt-link:hover{text-decoration:underline;}
+
+/* 发布框 */
+.p-comp{flex-shrink:0;border-top:1px solid var(--line-soft);background:var(--surface);padding:10px 16px 12px;}
+.pc-in{display:flex;gap:9px;align-items:flex-start;}
+.pc-in .av{width:30px;height:30px;font-size:12px;background:var(--surface-2);}
+.pc-in textarea{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:11px;padding:8px 12px;font-family:var(--font);font-size:13px;color:var(--t1);outline:none;resize:none;height:34px;line-height:1.4;transition:.15s;}
+.pc-in textarea:focus{background:#fff;border-color:var(--brand);height:52px;}
+.pc-bar{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
+.pc-intents{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
+.pc-intent{font-size:12px;color:var(--t2);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:5px 11px;cursor:pointer;font-family:var(--font);transition:.14s;}
+.pc-intent:hover{border-color:var(--brand);color:var(--brand-2);}
+.pc-intent.on{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600;}
+.pc-land{font-size:12px;color:var(--t3);}
+.pc-land b{color:var(--brand-2);font-weight:600;}
+.pc-send{background:var(--brand);color:#fff;border:none;font-size:13px;font-weight:600;padding:8px 18px;border-radius:9px;cursor:pointer;transition:.15s;}
+.pc-send:hover{filter:brightness(1.06);}
+
+@media (max-width:1180px){.layout{grid-template-columns:1fr 360px;}.rail{display:none;}}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}.panel{position:static;max-height:none;}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <header class="topbar">
+    <div class="tb-l">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>深海圈</span>
+      <nav class="snav" id="snav"></nav>
+    </div>
+    <div class="tb-r">
+      <span class="tb-online"><span class="d"></span> 47 人在线</span>
+      <div class="tb-avatar" data-nm="瓜哥">瓜</div>
+    </div>
+  </header>
+</div>
+
+<div class="page">
+  <div class="crumb">
+    <a href="#">课程专区</a><span class="sep">›</span>
+    <a href="#">A · 快速入门</a><span class="sep">›</span>
+    <span class="cur">A3 · 10 分钟做出第一个网站</span>
+  </div>
+
+  <div class="layout">
+
+    <!-- 左：课节导航 -->
+    <aside class="rail">
+      <div class="rail-h">A 阶段 · 快速入门 <b>· 3/8</b></div>
+      <a href="#"><span class="num done-n">✓</span> 认识 AI 编程</a>
+      <a href="#"><span class="num done-n">✓</span> 把环境配明白</a>
+      <a href="#" class="on"><span class="num">A3</span> 10 分钟做出第一个网站 <span class="dot"></span></a>
+      <a href="#"><span class="num">A4</span> 让 AI 帮你改页面</a>
+      <a href="#"><span class="num">A5</span> 加一个能点的按钮</a>
+      <a href="#"><span class="num">A6</span> 把它发到网上</a>
+      <a href="#"><span class="num">A7</span> 常见报错急救包</a>
+      <a href="#"><span class="num">A8</span> 阶段作业：你的主页</a>
+    </aside>
+
+    <!-- 中：手册正文 -->
+    <main class="manual">
+      <span class="m-stage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A 阶段 · 快速入门</span>
+      <h1 class="m-title">10 分钟做出第一个网站</h1>
+      <div class="m-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> 约 10 分钟</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/><circle cx="12" cy="12" r="3"/></svg> 1243 人学过</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg> 18 条讨论</span>
+      </div>
+
+      <p>这一节，我们不讲一堆概念，直接动手——让浏览器里出现一个属于你自己的网页。你只要会复制粘贴，就能跟下来。</p>
+
+      <h3>① 新建一个文件夹</h3>
+      <p>在桌面上新建一个文件夹，随便起个名字，比如 <code style="font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1px 6px;border-radius:5px;color:#0b7c71;">my-first-site</code>。它就是你这个网站的家。</p>
+
+      <h3>② 写下第一行 HTML</h3>
+      <p>在文件夹里新建一个文件叫 <code style="font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1px 6px;border-radius:5px;color:#0b7c71;">index.html</code>，把下面这几行粘进去：</p>
+      <div class="code"><span class="c">&lt;!-- 我的第一个网页 --&gt;</span><br><span class="k">&lt;h1&gt;</span>你好，世界 👋<span class="k">&lt;/h1&gt;</span><br><span class="k">&lt;p&gt;</span>这是我用 10 分钟做出来的第一个网站。<span class="k">&lt;/p&gt;</span></div>
+
+      <h3>③ 在浏览器里打开它</h3>
+      <p>双击这个 <code style="font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1px 6px;border-radius:5px;color:#0b7c71;">index.html</code>，浏览器里就会出现你刚写的字。就这么简单——你已经做出第一个网页了。</p>
+      <div class="shot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>效果示意图</span></div>
+
+      <div class="callout"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><p>卡住了别自己扛——右边「本节问答」里大概率有同款坑。最常见的是 Node 版本，置顶那条就是。</p></div>
+
+      <div class="m-foot">
+        <button class="m-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 标记完成</button>
+        <span class="m-next">下一节 · <b>A4 让 AI 帮你改页面 ›</b></span>
+      </div>
+    </main>
+
+    <!-- 右：课旁讨论 -->
+    <aside class="panel">
+      <div class="p-head">
+        <div class="p-h1">
+          <span class="ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg> 课旁讨论</span>
+        </div>
+        <div class="p-here">就着 <b>A3 · 10 分钟做出第一个网站</b> 的讨论</div>
+        <div class="p-tabs">
+          <button class="p-tab on" data-zone="qa" onclick="switchZone(this)">本节问答<span class="badge" id="qaCount">5</span></button>
+          <button class="p-tab" data-zone="flow" onclick="switchZone(this)">本章动态<span class="badge">实时</span></button>
+        </div>
+      </div>
+
+      <div class="p-body">
+
+        <!-- 沉淀：本节问答 -->
+        <div class="zone on" id="zone-qa">
+          <div class="star">
+            <span class="star-tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg> 精华 · 助教置顶</span>
+            <div class="star-row"><div class="av" data-nm="王大锤">王</div><div><span class="star-nm">王大锤<span class="role">助教</span></span></div></div>
+            <p class="star-tx">跑不通 90% 是 <b>Node 版本</b>太老。装个 nvm，然后 <code>nvm install 18 && nvm use 18</code>，关掉重开终端再试，基本就好了。</p>
+            <div class="star-foot"><button class="helpful" onclick="toggleHelpful(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88z"/></svg> 有用 <b>32</b></button></div>
+          </div>
+
+          <div class="zone-lab">还在解决中 · 帮一把</div>
+
+          <div class="qa" onclick="toggleQa(this)">
+            <div class="qa-top"><div class="av" data-nm="瓜哥">瓜</div><div><div class="qa-nm">瓜哥</div><div class="qa-sub">零基础 · 8 分钟前</div></div><span class="qa-type q">求助</span></div>
+            <p class="qa-tx">跑到第 3 步，双击 index.html 浏览器是空白的，啥都没有，是哪儿错了？😭</p>
+            <div class="qa-foot"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-7.6 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg> 3 回复</span><span class="solved wait">待解决</span></div>
+            <div class="qa-replies">
+              <div class="rep"><div class="av" data-nm="周杰">周</div><div class="rep-bd"><div class="rep-nm">周杰<span class="role">高手</span></div><div class="rep-tx">文件名是不是存成了 index.html.txt？把后缀的 .txt 去掉。</div></div></div>
+              <div class="rep"><div class="av" data-nm="瓜哥">瓜</div><div class="rep-bd"><div class="rep-nm">瓜哥</div><div class="rep-tx">真的是！显示扩展名一看果然多了个 .txt，改完就出来了，谢谢 🙏</div></div></div>
+              <div class="rep-box" onclick="event.stopPropagation()"><input placeholder="也来搭把手…"><button>回复</button></div>
+            </div>
+          </div>
+
+          <div class="qa" onclick="toggleQa(this)">
+            <div class="qa-top"><div class="av" data-nm="何丽">何</div><div><div class="qa-nm">何丽</div><div class="qa-sub">Lv.4 · 1 小时前</div></div><span class="qa-type q">求助</span></div>
+            <p class="qa-tx">想让标题居中，问 AI 给了 CSS 但不知道贴哪儿，求个最笨的办法。</p>
+            <div class="qa-foot"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-7.6 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg> 1 回复</span><span class="solved wait">待解决</span></div>
+            <div class="qa-replies">
+              <div class="rep"><div class="av" data-nm="赵薇薇">赵</div><div class="rep-bd"><div class="rep-nm">赵薇薇</div><div class="rep-tx">最笨办法：在 h1 后面加 style="text-align:center"，先跑通再说优雅。</div></div></div>
+              <div class="rep-box" onclick="event.stopPropagation()"><input placeholder="也来搭把手…"><button>回复</button></div>
+            </div>
+          </div>
+
+          <div class="zone-lab">已解决 & 补充</div>
+
+          <div class="qa" onclick="toggleQa(this)">
+            <div class="qa-top"><div class="av" data-nm="林浩">林</div><div><div class="qa-nm">林浩</div><div class="qa-sub">Lv.4 · 2 小时前</div></div><span class="qa-type q">求助</span></div>
+            <p class="qa-tx">中文显示成乱码了，怎么办？</p>
+            <div class="qa-foot"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-7.6 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg> 2 回复</span><span class="solved ok">已解决</span></div>
+            <div class="qa-replies">
+              <div class="rep"><div class="av" data-nm="王大锤">王</div><div class="rep-bd"><div class="rep-nm">王大锤<span class="role">助教</span></div><div class="rep-tx">文件第一行加 &lt;meta charset="UTF-8"&gt; 就好，编码问题。</div></div></div>
+              <div class="rep-box" onclick="event.stopPropagation()"><input placeholder="也来搭把手…"><button>回复</button></div>
+            </div>
+          </div>
+
+          <div class="qa" onclick="toggleQa(this)">
+            <div class="qa-top"><div class="av" data-nm="周杰">周</div><div><div class="qa-nm">周杰</div><div class="qa-sub">高手 · 3 小时前</div></div><span class="qa-type add">补充</span></div>
+            <p class="qa-tx">补充个提效：装个 VS Code 的 Live Server 插件，改完自动刷新，不用反复双击，跟这节配合很顺。</p>
+            <div class="qa-foot"><span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88z"/></svg> 18 赞</span></div>
+            <div class="qa-replies">
+              <div class="rep"><div class="av" data-nm="黄小美">美</div><div class="rep-bd"><div class="rep-nm">黄小美</div><div class="rep-tx">学到了！这个比双击爽多了。</div></div></div>
+              <div class="rep-box" onclick="event.stopPropagation()"><input placeholder="也来搭把手…"><button>回复</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 流动：本章动态（自动学习事件 + 用户报喜/闲聊）-->
+        <div class="zone" id="zone-flow">
+          <div class="flow-head"><span class="live"></span> 本章此刻 <b>8 人</b>在学 · 学习动态 + 大家唠嗑</div>
+          <div class="fl evt"><div class="av" data-nm="赵薇薇">赵</div><div class="fl-bd"><div class="fl-l1"><b>赵薇薇</b> 提交了 A 阶段作业 <span class="evt-link">「我的待办清单」›</span></div><div class="fl-tm">5 分钟前 · 自动播报</div></div></div>
+          <div class="fl"><div class="av" data-nm="孙大伟">孙</div><div class="fl-bd"><div class="fl-l1"><b>孙大伟</b> <span class="good">把第一个网页部署上线了，激动 🚀</span></div><div class="fl-tm">11 分钟前 · 报喜</div></div></div>
+          <div class="fl evt"><div class="av" data-nm="黄小美">美</div><div class="fl-bd"><div class="fl-l1"><b>黄小美</b> 学完了 A3 · 解锁了 A4</div><div class="fl-tm">20 分钟前 · 自动播报</div></div></div>
+          <div class="fl"><div class="av" data-nm="马飞">马</div><div class="fl-bd"><div class="fl-l1"><b>马飞</b> 刚开始啃 A2，有一起的同学吗？</div><div class="fl-tm">34 分钟前</div></div></div>
+          <div class="fl"><div class="av" data-nm="郑涛">郑</div><div class="fl-bd"><div class="fl-l1"><b>郑涛</b> 求个 A 阶段学习节奏建议，每天多久合适？</div><div class="fl-tm">1 小时前</div></div></div>
+        </div>
+
+      </div>
+
+      <!-- 发布框：先选你想干嘛，自动归位 -->
+      <div class="p-comp">
+        <div class="pc-intents" id="pcIntents">
+          <button class="pc-intent on" data-i="提问">🆘 提问</button>
+          <button class="pc-intent" data-i="补充">💡 补充经验</button>
+          <button class="pc-intent" data-i="报喜">🎉 报喜打卡</button>
+          <button class="pc-intent" data-i="唠两句">💬 唠两句</button>
+        </div>
+        <div class="pc-in">
+          <div class="av" data-nm="瓜哥">瓜</div>
+          <textarea id="pcText" placeholder="卡在哪一步？贴上报错 / 截图，说说你试过啥，大家好帮你看 🙏"></textarea>
+        </div>
+        <div class="pc-bar">
+          <span class="pc-land">会进 → <b id="pcLand">本节问答</b></span>
+          <button class="pc-send" onclick="sendPost()">发布</button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script>
+/* ===== 顶栏导航 ===== */
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['同城伙伴','members.html']]};
+  var ACTIVE='课程专区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop');var open=pop.classList.contains('open');nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(!open){pop.classList.add('open');btn.classList.add('open');}});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});});
+})();
+
+/* ===== 头像（沿用全站映射）===== */
+const AV_PALETTE=['#0d9488','#0e7490','#0891b2','#2f8f6e','#157f7a','#3a7d8c','#d97a0c','#52708a'];
+function avColor(seed){let h=0;const s=String(seed||'');for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return AV_PALETTE[h%AV_PALETTE.length];}
+const AV_MAP={'陈晨':1,'林浩':2,'王悦':3,'张帆':4,'周宁':5,'瓜哥':6,'瓜':6,'黄小美':7,'郑涛':8,'赵薇薇':9,'马飞':10,'何丽':11,'孙大伟':12,'周杰':13,'王大锤':14,'刘小排':15};
+function avFile(seed){let i=AV_MAP[seed];if(!i){let h=0;const s=String(seed||'');for(let k=0;k<s.length;k++)h=(h*31+s.charCodeAt(k))>>>0;i=(h%15)+1;}return 'assets/avatars/a'+i+'.jpg';}
+function paintAvatars(scope){
+  (scope||document).querySelectorAll('.av,.tb-avatar').forEach(el=>{
+    if(el.dataset.painted) return;
+    const seed=el.dataset.nm||el.textContent.trim();
+    el.style.background=avColor(seed);
+    el.style.backgroundImage='url("'+avFile(seed)+'")';
+    el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.style.color='transparent';
+    el.dataset.painted='1';
+  });
+}
+paintAvatars(document);
+
+/* ===== 两区切换 ===== */
+function switchZone(btn){
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  const z=btn.dataset.zone;
+  document.getElementById('zone-qa').classList.toggle('on',z==='qa');
+  document.getElementById('zone-flow').classList.toggle('on',z==='flow');
+  document.querySelector('.p-body').scrollTop=0;
+}
+
+/* ===== 问答展开 ===== */
+function toggleQa(card){ card.classList.toggle('open'); }
+function toggleHelpful(b){
+  const on=b.classList.toggle('on');
+  const n=b.querySelector('b'); const v=parseInt(n.textContent,10)||0;
+  n.textContent=on?v+1:v-1;
+}
+
+/* ===== 发布意图：选你想干嘛，自动归位（沉淀 vs 活水）===== */
+const INTENT_META={
+  '提问':  {ph:'卡在哪一步？贴上报错 / 截图，说说你试过啥，大家好帮你看 🙏', zone:'qa', type:'求助', cls:'q', q:true,  land:'本节问答'},
+  '补充':  {ph:'你发现的技巧 / 坑，留给后面学到这节的同学 💡',                zone:'qa', type:'补充', cls:'add', q:false, land:'本节问答'},
+  '报喜':  {ph:'做出来了 / 过了这节？晒一下，让同学看见你的进度 🎉',          zone:'flow', good:true,  land:'本章动态'},
+  '唠两句':{ph:'找同伴 / 闲聊，本章的同学都在 ☕',                          zone:'flow', good:false, land:'本章动态'}
+};
+let pcIntent='提问';
+function selectIntent(name){
+  const m=INTENT_META[name]; if(!m) return;
+  pcIntent=name;
+  document.querySelectorAll('.pc-intent').forEach(b=>b.classList.toggle('on',b.dataset.i===name));
+  document.getElementById('pcText').placeholder=m.ph;
+  document.getElementById('pcLand').textContent=m.land;
+}
+document.getElementById('pcIntents').addEventListener('click',function(e){var b=e.target.closest('.pc-intent');if(b)selectIntent(b.dataset.i);});
+
+var REP_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-7.6 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg>';
+var THUMB_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88z"/></svg>';
+function sendPost(){
+  const ta=document.getElementById('pcText'); const text=ta.value.trim(); if(!text) return;
+  const m=INTENT_META[pcIntent];
+  if(m.zone==='qa'){
+    // 沉淀：进本节问答
+    document.querySelector('.p-tab[data-zone="qa"]').click();
+    const zone=document.getElementById('zone-qa');
+    const foot = m.q
+      ? '<span class="it">'+REP_ICON+' 0 回复</span><span class="solved wait">待解决</span>'
+      : '<span class="it">'+THUMB_ICON+' 0 赞</span>';
+    const card=document.createElement('div'); card.className='qa'; card.setAttribute('onclick','toggleQa(this)');
+    card.innerHTML='<div class="qa-top"><div class="av" data-nm="瓜哥">瓜</div><div><div class="qa-nm">瓜哥</div><div class="qa-sub">零基础 · 刚刚</div></div><span class="qa-type '+m.cls+'">'+m.type+'</span></div>'
+      +'<p class="qa-tx">'+esc(text)+'</p>'
+      +'<div class="qa-foot">'+foot+'</div>'
+      +'<div class="qa-replies"><div class="rep-box" onclick="event.stopPropagation()"><input placeholder="也来搭把手…"><button>回复</button></div></div>';
+    const firstLab=zone.querySelector('.zone-lab');
+    zone.insertBefore(card, firstLab.nextSibling);
+    paintAvatars(card);
+    const c=document.getElementById('qaCount'); c.textContent=(parseInt(c.textContent,10)||0)+1;
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+  }else{
+    // 活水：进本章动态
+    document.querySelector('.p-tab[data-zone="flow"]').click();
+    const zone=document.getElementById('zone-flow');
+    const body=m.good?'<span class="good">'+esc(text)+'</span>':esc(text);
+    const fl=document.createElement('div'); fl.className='fl';
+    fl.innerHTML='<div class="av" data-nm="瓜哥">瓜</div><div class="fl-bd"><div class="fl-l1"><b>瓜哥</b> '+body+'</div><div class="fl-tm">刚刚</div></div>';
+    zone.insertBefore(fl, zone.querySelector('.fl'));
+    paintAvatars(fl);
+  }
+  ta.value='';
+}
+selectIntent('提问');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* 深链：?zone=flow 直达本章动态 */
+(function(){var z=new URLSearchParams(location.search).get('zone');if(z==='flow'){var b=document.querySelector('.p-tab[data-zone="flow"]');if(b)b.click();}})();
+</script>
+</body>
+</html>

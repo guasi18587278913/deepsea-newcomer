@@ -3,1729 +3,1175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>深海圈 | 编辑室</title>
+<title>深海圈 | 广场</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --font-serif: 'Noto Serif SC', 'Songti SC', serif;
-  --font: 'Sora', -apple-system, 'PingFang SC', BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-  --mono: 'SF Mono', 'Menlo', 'Monaco', monospace;
+:root{
+  --font-serif:'Fraunces','Noto Serif SC','Songti SC',serif;
+  --font:'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
 
-  --bg: #ffffff;
-  --bg-warm: #faf9f7;
-  --bg-hover: #f8f8f6;
-  --white: #ffffff;
+  /* 深色 hero（深海科技） */
+  --hero-1:#05161a; --hero-2:#0a2e35; --hero-3:#072027;
+  --glow-cyan:#22d3ee; --glow-blue:#2dd4bf; --glow-indigo:#0891b2;
 
-  --teal: #0d9488;
-  --teal-hover: #0b7c71;
+  /* 浅色应用区 */
+  --bg:#f5fafa; --bg-gradient:linear-gradient(180deg,#e8f4f5 0%,#f5fafa 40%,#ffffff 100%); --surface:#ffffff; --surface-2:#f0f8f8;
+  --brand:#0d9488; --brand-2:#0a7a70; --brand-bg:#e8f6f5;
+  --teal:#0d9488; --teal-2:#0a7a70; --teal-bg:#e8f6f5; --gold:#c89854;
+  --amber:#c89854; --amber-bg:#f6ecd9;
+  --orange:#c2742a; --rose:#cf5b49;
 
-  --text1: #1e293b;
-  --text2: #64748b;
-  --text3: #94a3b8;
-  --text4: #a1aebe;
+  --ink:#1a2942; --t1:#1a2942; --t2:#5c7a8a; --t3:#94a3b8; --t4:#b8c5d0;
+  --line:#dde7ea; --line-soft:#e6eef0;
 
-  --border: #e8e6e1;
-  --border-soft: #f1f0ed;
+  --sh-sm:0 1px 2px rgba(16,74,74,.05);
+  --sh:0 1px 2px rgba(16,74,74,.05),0 10px 30px -14px rgba(16,74,74,.13);
+  --sh-lg:0 2px 6px rgba(16,74,74,.05),0 20px 50px -18px rgba(16,74,74,.20);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg-gradient);background-attachment:fixed;color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.5;}
+a{color:inherit;text-decoration:none;}
+svg{display:block;}
+button{font-family:inherit;}
 
-  --monogram-bg: #f0eeeb;
-}
+/* ============ 深色顶部块（顶栏 + hero 合一） ============ */
+.top{position:relative;background:radial-gradient(110% 80% at 16% 6%,#d2efe8 0%,rgba(210,239,232,0) 55%),radial-gradient(110% 80% at 86% 14%,#dcf1ee 0%,rgba(220,241,238,0) 52%),radial-gradient(120% 100% at 72% 96%,#c9e9e4 0%,rgba(201,233,228,0) 55%),radial-gradient(120% 110% at 6% 100%,#e4f4f2 0%,rgba(228,244,242,0) 52%),linear-gradient(180deg,#e9f5f3 0%,#eef8f7 50%,var(--bg) 100%);overflow:hidden;border-bottom:1px solid var(--line);}
+.top::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
+.hero-net{display:none;}
+.hero-glow{display:none;}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: var(--font);
-  background: var(--bg-warm);
-  color: var(--text1);
-  -webkit-font-smoothing: antialiased;
-  height: 100vh;
-  overflow: hidden;
-}
-a { color: inherit; text-decoration: none; }
+.topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 34px;max-width:1280px;margin:0 auto;}
+.tb-l{display:flex;align-items:center;gap:30px;}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-serif);font-weight:700;font-size:18px;color:var(--ink);}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--glow-cyan),var(--brand) 60%,var(--glow-indigo));display:grid;place-items:center;box-shadow:0 4px 14px rgba(56,189,248,.45);}
+.brand .mark svg{width:15px;height:15px;color:#fff;}
+.snav{display:flex;gap:2px;}
+.snav .l1-item{position:relative;}
+.snav-a{font-family:var(--font);font-size:13.5px;color:var(--t2);padding:6px 12px;border-radius:8px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.snav-a::after{content:'▾';font-size:10px;color:var(--t4);transition:transform .2s;}
+.snav-a:hover{color:var(--ink);background:var(--surface-2);}
+.snav-a.active{color:var(--ink);font-weight:600;}
+.snav-a.open{color:var(--teal-2);background:var(--teal-bg);}
+.snav-a.open::after{transform:rotate(180deg);color:var(--teal-2);}
+.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-lg);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
+.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--ink);padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
+.snav-pop a:hover{background:var(--teal-bg);color:var(--teal-2);}
+.snav-pop a .ext{font-size:11px;color:var(--t4);}
+.tb-r{display:flex;align-items:center;gap:16px;}
+.tb-online{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t2);}
+.tb-online .d{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#0e7490);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;border:1.5px solid rgba(255,255,255,.25);}
 
-/* ===== Topbar ===== */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(24px) saturate(1.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  height: 52px;
-  display: flex;
-  align-items: center;
-  padding: 0 32px;
-}
-.tb-inner {
-  max-width: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.tb-left {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-.logo {
-  font-family: var(--font-serif);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--teal);
-  letter-spacing: 0.02em;
-}
-.nav {
-  display: flex;
-  gap: 4px;
-}
-.nav a {
-  font-size: 13px;
-  color: var(--text3);
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.15s;
-}
-.nav a:hover { color: var(--text1); }
-.nav a.active {
-  color: var(--text1);
-  font-weight: 500;
-}
-.tb-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.online-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  display: inline-block;
-}
-.online-text { font-size: 12px; color: var(--text3); }
-.avatar-tb {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--text1);
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.hero{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:30px 34px 40px;text-align:center;}
+.hero-logo{display:inline-flex;align-items:center;gap:12px;}
+.hero-logo .mark{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--glow-cyan),var(--brand) 55%,var(--glow-indigo));display:grid;place-items:center;box-shadow:0 8px 26px rgba(56,189,248,.45);}
+.hero-logo .mark svg{width:26px;height:26px;color:#fff;}
+.hero-logo h1{font-family:var(--font-serif);font-size:40px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+.hero-tag{margin-top:9px;font-size:14.5px;color:var(--t2);letter-spacing:.18em;}
+.hero-tag b{color:var(--teal);font-weight:600;}
 
-/* ===== Layout ===== */
-.layout {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  height: calc(100vh - 52px);
-  transition: grid-template-columns 0.3s ease;
-}
-.layout.panel-open {
-  grid-template-columns: 180px 1fr 320px;
-}
+.search{margin:22px auto 0;max-width:640px;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:7px 7px 7px 18px;box-shadow:var(--sh-lg);border:1px solid var(--line);}
+.search svg{width:19px;height:19px;color:var(--t3);flex-shrink:0;}
+.search input{flex:1;border:none;outline:none;font-family:var(--font);font-size:15px;color:var(--t1);background:none;}
+.search input::placeholder{color:var(--t4);}
+.search .go{background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;padding:11px 26px;border-radius:10px;cursor:pointer;flex-shrink:0;}
+.search .go:hover{filter:brightness(1.07);}
 
-/* ===== Sidebar ===== */
-.sidebar {
-  background: var(--bg-warm);
-  padding: 28px 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border-soft);
-}
-.sb-section { margin-bottom: 24px; }
-.sb-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text4);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  padding: 0 24px 10px;
-}
-.sb-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 24px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text3);
-  transition: color 0.15s;
-  user-select: none;
-  line-height: 1.4;
-  position: relative;
-}
-.sb-item:hover { color: var(--text1); }
-.sb-item.active { color: var(--text1); font-weight: 500; }
-.sb-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: transparent;
-  flex-shrink: 0;
-  transition: background 0.15s;
-}
-.sb-item.active .sb-dot { background: var(--teal); }
-.sb-item-name { flex: 1; }
-.sb-unread {
-  font-size: 11px;
-  color: var(--text3);
-  font-variant-numeric: tabular-nums;
-}
+.hot{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;}
+.hot .lab{font-size:12.5px;color:var(--t2);}
+.hot a{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);border:1px solid transparent;padding:5px 12px;border-radius:20px;transition:.15s;}
+.hot a:hover{background:#daf0ed;color:#0a7a70;}
 
-/* Sidebar bottom */
-.sb-bottom {
-  margin-top: auto;
-  padding: 16px 24px;
-  border-top: 1px solid var(--border-soft);
-}
-.sb-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.sb-user-mono {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--monogram-bg);
-  color: var(--text1);
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  font-weight: 600;
-}
-.sb-user-name { font-size: 13px; font-weight: 500; color: var(--text1); }
-.sb-user-status { font-size: 11px; color: #22c55e; }
+.pulse{margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:12.5px;color:var(--t2);font-family:var(--mono);background:var(--surface);border:1px solid var(--line);padding:8px 16px;border-radius:24px;box-shadow:var(--sh-sm);}
+.pulse .live{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:beat 2s infinite;}
+.pulse b{color:var(--ink);font-weight:600;}
+.pulse .sep{color:var(--t4);}
+@keyframes beat{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}70%{box-shadow:0 0 0 9px rgba(52,211,153,0);}100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}}
+@media (prefers-reduced-motion:reduce){.pulse .live{animation:none;}}
 
-/* ===== Message Area ===== */
-.msg-area {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  background: var(--white);
-}
+/* ============ 应用主体三栏 ============ */
+.seam{display:none;}
+.wrap{max-width:1280px;margin:0 auto;padding:14px 34px 64px;display:grid;grid-template-columns:208px 1fr 296px;gap:24px;align-items:start;}
 
-/* Channel header */
-.ch-header {
-  padding: 20px 40px 16px;
-  background: var(--white);
-  border-bottom: 1px solid var(--border-soft);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.ch-header-left { min-width: 0; }
-.ch-title {
-  font-family: var(--font-serif);
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--text1);
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-}
-.ch-desc {
-  font-size: 13px;
-  color: var(--text3);
-  margin-top: 4px;
-  line-height: 1.5;
-}
-.ch-header-actions {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.ch-action-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text4);
-  transition: all 0.15s;
-}
-.ch-action-btn:hover { color: var(--text2); background: var(--bg-warm); }
+/* 左栏图标导航 */
+.left{position:sticky;top:18px;}
+.post-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--brand);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:11px;border:none;cursor:pointer;box-shadow:0 6px 16px -10px rgba(13,148,136,.30);transition:.15s;}
+.post-btn svg{width:16px;height:16px;}
+.post-btn:hover{filter:brightness(1.06);}
+.lnav{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:7px;box-shadow:var(--sh-sm);}
+.lnav a{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--t2);padding:10px 12px;border-radius:9px;transition:.12s;}
+.lnav a svg{width:18px;height:18px;color:var(--t3);}
+.lnav a:hover{background:var(--surface-2);color:var(--t1);}
+.lnav a.on{background:var(--brand-bg);color:var(--brand-2);font-weight:600;}
+.lnav a.on svg{color:var(--brand);}
+.lnav a .cnt{margin-left:auto;font-size:11px;color:var(--t4);font-family:var(--mono);}
+.l-user{margin-top:14px;display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--sh-sm);}
+.l-user .av{width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.l-user .nm{font-size:13.5px;font-weight:600;color:var(--t1);}
+.l-user .st{font-size:11.5px;color:var(--t3);margin-top:1px;}
+.l-user .lv{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;color:var(--teal-2);background:var(--teal-bg);padding:1px 6px;border-radius:5px;font-family:var(--mono);}
 
-/* Message feed */
-.msg-feed {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0 20px;
-  scroll-behavior: smooth;
-}
+/* 中栏 */
+.mid{min-width:0;display:flex;flex-direction:column;gap:14px;}
+.tabs{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:6px;box-shadow:var(--sh-sm);}
+.tab{position:relative;font-size:13.5px;color:var(--t2);background:none;border:none;padding:8px 12px;border-radius:9px;cursor:pointer;font-weight:500;transition:.13s;white-space:nowrap;}
+.tab:hover{color:var(--t1);background:var(--surface-2);}
+.tab.on{color:#fff;font-weight:600;background:var(--brand);box-shadow:0 3px 9px -6px rgba(13,148,136,.30);}
+.tab-fill{margin-left:auto;}
+.tab-ico{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--t3);cursor:pointer;}
+.tab-ico svg{width:16px;height:16px;}
 
-/* Date separator */
-.date-sep {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 28px 40px 12px;
-}
-.date-sep::before,
-.date-sep::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border-soft);
-}
-.date-sep span {
-  font-size: 11px;
-  color: var(--text4);
-  font-weight: 500;
-  white-space: nowrap;
-  letter-spacing: 0.4px;
-}
+/* 发布框 */
+.composer{background:linear-gradient(180deg,#eff9f6,#ffffff 62%);border:1px solid #c7e6df;border-radius:15px;padding:9px;box-shadow:var(--sh-sm);}
+.cp-row{display:flex;align-items:center;gap:12px;padding:7px;cursor:text;}
+.cp-row[hidden]{display:none;}
+.cp-go{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;background:var(--brand);color:#fff;border:none;font-family:var(--font);font-size:14px;font-weight:600;padding:11px 18px;border-radius:11px;cursor:pointer;box-shadow:0 6px 16px -6px rgba(13,148,136,.5);transition:filter .14s;}
+.cp-go:hover{filter:brightness(.96);}
+.cp-go svg{width:16px;height:16px;}
+.cp-row .av,.cp-edit .av{width:40px;height:40px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.cp-row .ph{flex:1;font-size:14.5px;color:var(--t3);background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 15px;}
+.cp-edit{padding:8px 10px 10px;}
+.cp-edit textarea{width:100%;min-height:74px;border:none;outline:none;resize:none;font-family:var(--font);font-size:15px;color:var(--t1);line-height:1.65;background:none;}
+.cp-thumbs,.cb-thumbs{display:flex;gap:8px;flex-wrap:wrap;}
+.cp-thumbs{margin:4px 0 2px;}
+.cp-thumb{width:72px;height:72px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--t4);position:relative;}
+.cp-thumb svg{width:22px;height:22px;}
+.cp-thumb.sm{width:52px;height:52px;}
+.cp-thumb .x{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;cursor:pointer;line-height:1;}
+.cp-bar{display:flex;align-items:center;justify-content:space-between;margin-top:8px;border-top:1px solid var(--line-soft);padding-top:10px;flex-wrap:wrap;gap:8px;}
+.cp-topics{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 2px 12px;}
+.cp-topics-lab{font-size:12.5px;color:var(--t3);margin-right:3px;}
+.cp-topic{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);border:1px solid transparent;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:var(--font);transition:.14s;}
+.cp-topic:hover{filter:brightness(.96);}
+.cp-topic.on{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 4px 12px -4px rgba(13,148,136,.5);}
+.cp-custom{font-size:12.5px;color:var(--t3);background:transparent;border:1px dashed #cdddd9;border-radius:8px;padding:5px 11px;cursor:pointer;font-family:var(--font);transition:.14s;}
+.cp-custom:hover{color:var(--teal-2);border-color:var(--teal-2);}
+.cp-custom-input{font-size:12.5px;color:#1e3a52;background:#fff;border:1px solid var(--teal-2);border-radius:8px;padding:5px 11px;width:128px;font-family:var(--font);outline:none;}
+.cp-hint{font-size:12.5px;color:var(--t3);}
+.cp-hint b{color:var(--brand-2);font-weight:600;}
+/* 发布栏话题快捷牌 */
+.cp-topicbar{flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.cpt-lab{font-size:11.5px;color:var(--t3);margin-right:1px;flex-shrink:0;}
+.cpt{font-size:12px;border-radius:7px;padding:4px 9px;cursor:pointer;border:1px solid transparent;font-family:var(--font);transition:.13s;display:inline-flex;align-items:center;gap:4px;line-height:1.2;}
+.cpt.pick{color:var(--teal-2);background:var(--teal-bg);}
+.cpt.pick:hover{color:#fff;background:var(--brand);}
+.cpt.suggest{color:var(--brand);background:#fff;border-color:var(--brand);font-weight:600;}
+.cpt.suggest:hover{color:#fff;background:var(--brand);}
+.cpt.selected{color:#fff;background:var(--brand);font-weight:600;}
+.cpt.selected .x{opacity:.85;font-size:11px;margin-left:1px;}
+.cpt.selected:hover{background:#0b7c71;}
+.cp-actions{display:flex;align-items:center;gap:9px;}
+.cp-img{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);background:none;border:1px solid var(--line);border-radius:9px;padding:8px 13px;cursor:pointer;}
+.cp-img svg{width:15px;height:15px;}
+.cp-img:hover{border-color:var(--brand);color:var(--brand);}
+.cp-send{background:var(--brand);color:#fff;border:none;font-size:13.5px;font-weight:600;padding:9px 20px;border-radius:9px;cursor:pointer;}
 
-/* Messages */
-.msg {
-  display: flex;
-  gap: 14px;
-  padding: 10px 40px;
-  transition: background 0.12s;
-  margin-bottom: 6px;
-  border-radius: 6px;
-}
-.msg:hover { background: #f7f7f5; }
-.msg:hover .msg-hover-actions { opacity: 1; }
+/* ============ 卡片（参考图：头像+等级+徽章+关注+全互动） ============ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:18px 20px;box-shadow:var(--sh);transition:transform .16s,box-shadow .16s,border-color .16s;}
+.card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);border-color:#dbe4ec;}
+.card.good{background:linear-gradient(180deg,#fffaf2 0%,#fff 22%);}
 
-.msg-monogram {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--monogram-bg);
-  color: var(--text2);
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  font-weight: 600;
-  flex-shrink: 0;
-  letter-spacing: -0.02em;
-}
+.ch-top{display:flex;align-items:flex-start;gap:12px;}
+.ch-av{width:44px;height:44px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 4px 10px -4px rgba(14,27,45,.4);}
+.ch-meta{flex:1;min-width:0;}
+.ch-l1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ch-name{font-size:15px;font-weight:700;color:var(--t1);}
+.lv{font-size:10.5px;font-weight:700;color:var(--teal-2);background:var(--teal-bg);padding:1.5px 7px;border-radius:6px;font-family:var(--mono);}
+.role-badge{font-size:10.5px;font-weight:700;color:var(--amber);background:var(--amber-bg);padding:1.5px 8px;border-radius:6px;}
+.ty{font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;}
+.ty.报喜{color:var(--orange);background:#fdeede;}
+.ty.求助{color:var(--brand-2);background:var(--brand-bg);}
+.ty.唠嗑{color:var(--t2);background:var(--surface-2);}
+.ch-l2{font-size:12px;color:var(--t3);margin-top:3px;}
+.ch-role{color:var(--t3);}
+.follow{flex-shrink:0;font-size:12.5px;font-weight:600;color:var(--brand);background:#fff;border:1.4px solid var(--brand);border-radius:9px;padding:6px 14px;cursor:pointer;transition:.14s;display:inline-flex;align-items:center;gap:4px;}
+.follow svg{width:13px;height:13px;}
+.follow:hover{background:var(--brand-bg);}
+.follow.on{color:var(--t3);border-color:var(--line);background:var(--surface-2);}
+.follow.on svg{display:none;}
 
-.msg-body {
-  flex: 1;
-  min-width: 0;
-  padding-top: 1px;
-}
-.msg-header {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.msg-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text1);
-}
-.msg-role {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--teal);
-  letter-spacing: 0.3px;
-}
-.msg-time {
-  font-size: 11px;
-  color: var(--text4);
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
-}
-.msg-text {
-  font-size: 15px;
-  color: #334155;
-  line-height: 1.75;
-  word-break: break-word;
-}
-.msg-text code {
-  font-family: var(--mono);
-  font-size: 13px;
-  background: var(--monogram-bg);
-  color: #334155;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.msg-text strong { color: var(--text1); font-weight: 600; }
+.ctext{font-size:15px;color:#2e3d4d;line-height:1.74;margin:13px 0 0;word-break:break-word;}
+.ctext code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);border:1px solid var(--line-soft);padding:1px 6px;border-radius:5px;color:#0b7c71;}
+.media{margin-top:13px;height:172px;border-radius:11px;background:linear-gradient(135deg,#eef3f8,#e6edf4);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--t4);}
+.media svg{width:32px;height:32px;}
+.media span{font-size:12px;}
+.post-img{margin-top:13px;width:100%;height:210px;object-fit:cover;border-radius:11px;border:1px solid var(--line);display:block;}
 
-/* Hover actions — inline with message header */
-.msg-hover-actions {
-  display: flex;
-  gap: 2px;
-  margin-left: 8px;
-  opacity: 0;
-  transition: opacity .12s;
-}
-.msg-hover-action {
-  padding: 3px 6px;
-  cursor: pointer;
-  font-size: 12px;
-  border-radius: 4px;
-  transition: background .1s;
-  line-height: 1;
-}
-.msg-hover-action:hover { background: var(--border-soft); }
+.chips{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;align-items:center;}
+.course-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--brand-2);background:var(--brand-bg);padding:4px 11px;border-radius:8px;font-weight:500;}
+.course-tag svg{width:12px;height:12px;}
+.topic-tag{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);padding:4px 11px;border-radius:8px;font-weight:500;}
 
-/* Reactions */
-.msg-reactions {
-  display: flex;
-  gap: 4px;
-  margin-top: 6px;
-}
-.reaction {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 8px;
-  border-radius: 12px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-warm);
-  font-size: 13px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.reaction:hover {
-  color: var(--text1);
-  background: var(--border-soft);
-  border-color: var(--border);
-}
-.reaction.active {
-  color: var(--teal);
-  background: rgba(13, 148, 136, 0.04);
-  border-color: rgba(13, 148, 136, 0.15);
-}
+.engage{display:flex;align-items:center;gap:6px;margin-top:15px;padding-top:13px;border-top:1px solid var(--line-soft);}
+.eng{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);background:none;border:none;cursor:pointer;font-family:var(--font);padding:6px 11px;border-radius:8px;transition:.12s;}
+.eng .bi{display:inline-flex;}
+.eng .bi svg{width:16px;height:16px;}
+.eng:hover{background:var(--surface-2);color:var(--brand);}
+.act-like.on{color:var(--rose);}
+.act-fav.on{color:var(--amber);}
+.eng.view{cursor:default;color:var(--t3);margin-left:auto;}
+.eng.view:hover{background:none;color:var(--t3);}
+.eng .bt{font-family:var(--mono);font-size:12.5px;}
+.eng.act-cmt .bt,.eng.act-fav .bt{font-family:var(--font);}
+.solved{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:7px;}
+.solved.ok{color:var(--teal-2);background:var(--teal-bg);}
+.solved.wait{color:var(--orange);background:#fdeede;}
+.engage .view+.solved,.engage .solved{margin-left:0;}
+.engage .solved{margin-left:8px;}
 
-/* Thread indicator */
-.thread-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--teal);
-  cursor: pointer;
-  transition: color 0.15s;
-  font-weight: 500;
-}
-.thread-link:hover { color: var(--teal-hover); }
-.thread-link .thread-arrow {
-  display: inline-block;
-  transition: transform .2s;
-  font-size: 10px;
-}
-.thread-link.expanded .thread-arrow { transform: rotate(90deg); }
+/* 评论区 */
+.comments{display:none;margin-top:15px;padding-top:14px;border-top:1px solid var(--line-soft);}
+.comments.open{display:block;}
+.cmt{display:flex;gap:11px;padding:8px 0;}
+.cmt .ca{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.cmt .cb{flex:1;min-width:0;}
+.cmt .cn{font-size:13px;font-weight:600;color:var(--t1);}
+.cmt .cn .role{font-size:10px;color:#fff;background:var(--teal);margin-left:6px;font-weight:700;padding:1px 6px;border-radius:5px;}
+.cmt .ct{font-size:13.5px;color:#3c4b5a;line-height:1.64;margin-top:2px;}
+.cmt-img{margin-top:7px;width:150px;height:92px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--t4);}
+.cmt-img svg{width:22px;height:22px;}
+.cmt .cm{font-size:11px;color:var(--t4);margin-top:4px;}
+.cmt-empty{font-size:12.5px;color:var(--t4);padding:4px 0 2px;}
+.cmt-box{display:flex;gap:10px;align-items:flex-start;margin-top:12px;}
+.cmt-box .ca{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.cb-in{flex:1;min-width:0;}
+.cb-in input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-family:var(--font);font-size:13.5px;color:var(--t1);outline:none;background:var(--surface-2);}
+.cb-in input:focus{border-color:var(--brand);background:#fff;}
+.cb-thumbs{margin-top:6px;}
+.cmt-box .cb-img{display:inline-flex;align-items:center;background:none;border:1px solid var(--line);border-radius:9px;padding:9px 11px;cursor:pointer;color:var(--t2);flex-shrink:0;}
+.cmt-box .cb-img svg{width:15px;height:15px;}
+.cmt-box .cb-img:hover{border-color:var(--brand);color:var(--brand);}
+.cmt-box .cb-send{background:var(--brand);color:#fff;border:none;font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:9px;cursor:pointer;flex-shrink:0;}
 
-/* Inline thread expansion */
-.thread-expand {
-  display: none;
-  margin-left: 50px;
-  padding: 4px 0 8px;
-  animation: fadeSlideIn .15s ease;
-}
-.thread-expand.open { display: block; }
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.thread-expand .msg.is-reply {
-  margin-left: 0;
-}
+/* ============ 右栏 ============ */
+.right{position:sticky;top:18px;display:flex;flex-direction:column;gap:16px;}
+.cta{position:relative;overflow:hidden;border-radius:16px;padding:20px;color:#fff;background:var(--brand);box-shadow:0 10px 30px -16px rgba(13,148,136,.40);}
+.cta::after{content:'';position:absolute;right:-30px;bottom:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);}
+.cta h3{font-size:16.5px;font-weight:700;position:relative;z-index:1;}
+.cta p{font-size:12.5px;color:rgba(255,255,255,.82);margin-top:6px;position:relative;z-index:1;line-height:1.6;}
+.cta .bar{margin-top:12px;height:7px;border-radius:5px;background:rgba(255,255,255,.22);position:relative;z-index:1;overflow:hidden;}
+.cta .bar i{display:block;height:100%;width:72%;border-radius:5px;background:#fff;}
+.cta .go{margin-top:14px;position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--brand-2);font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;}
+.cta .go svg{width:14px;height:14px;}
+.cta .bot{position:absolute;right:14px;top:16px;z-index:1;width:54px;height:54px;border-radius:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;}
+.cta .bot svg{width:30px;height:30px;color:#fff;}
 
-/* ===== Top-level message emphasis ===== */
-.msg.is-root {
-  margin-top: 16px;
-}
-.msg.is-root:first-child { margin-top: 0; }
-.msg.is-root .msg-monogram {
-  width: 36px;
-  height: 36px;
-  font-size: 13px;
-}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 17px 14px;box-shadow:var(--sh-sm);}
+.p-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.p-title{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:700;color:var(--ink);}
+.p-title .ic{width:18px;height:18px;color:var(--brand);}
+.p-title .ic svg{width:18px;height:18px;}
+.p-more{font-size:11.5px;color:var(--t3);cursor:pointer;}
+.p-more:hover{color:var(--brand);}
+.p-sub{font-size:11.5px;color:var(--t3);margin:2px 0 12px;}
+.p-sub b{color:var(--teal-2);}
 
-/* ===== Reply Indent (code-style nesting) ===== */
-.msg.is-reply {
-  margin-left: 50px;
-  padding: 6px 24px;
-  margin-top: 0;
-  margin-bottom: 2px;
-}
-.msg.is-reply .msg-monogram {
-  width: 26px;
-  height: 26px;
-  font-size: 10px;
-}
-.msg.is-reply .msg-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text1);
-}
-.msg.is-reply .msg-time {
-  color: var(--text4);
-}
-.msg.is-reply .msg-text {
-  font-size: 13.5px;
-  line-height: 1.75;
-  color: #475569;
-}
+.online-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.online-row .oa{position:relative;width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.online-row .oa::after{content:'';position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#34d399;border:2px solid #fff;}
+.online-row .oi{flex:1;min-width:0;}
+.online-row .on-nm{font-size:13px;font-weight:600;color:var(--t1);}
+.online-row .on-de{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-/* ===== Inline Reply ===== */
-.inline-reply {
-  margin: 4px 0 8px 50px;
-  padding: 12px 14px;
-  background: var(--bg-warm);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  animation: fadeSlideIn .15s ease;
-}
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.inline-reply-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: var(--text3);
-}
-.inline-reply-header .reply-to {
-  color: var(--teal);
-  font-weight: 500;
-}
-.inline-reply-close {
-  border: none; background: none; font-size: 14px; color: var(--text4);
-  cursor: pointer; padding: 2px 4px; border-radius: 4px; line-height: 1;
-}
-.inline-reply-close:hover { color: var(--text1); background: var(--border-soft); }
-.inline-reply textarea {
-  width: 100%;
-  min-height: 40px;
-  max-height: 100px;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-family: var(--font);
-  font-size: 13px;
-  color: var(--text1);
-  resize: none;
-  outline: none;
-  line-height: 1.5;
-  background: var(--white);
-  transition: border-color .15s;
-}
-.inline-reply textarea:focus { border-color: var(--teal); }
-.inline-reply textarea::placeholder { color: var(--text4); }
-.inline-reply-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-top: 6px;
-}
-.inline-reply-footer .cancel-btn {
-  padding: 4px 12px; border-radius: 4px; font-size: 12px;
-  border: 1px solid var(--border); background: var(--white);
-  color: var(--text2); cursor: pointer; font-family: var(--font);
-}
-.inline-reply-footer .cancel-btn:hover { background: var(--bg-warm); }
-.inline-reply-footer .reply-send-btn {
-  padding: 4px 14px; border-radius: 4px; font-size: 12px;
-  border: none; background: var(--teal); color: #fff;
-  cursor: pointer; font-family: var(--font); font-weight: 500;
-}
-.inline-reply-footer .reply-send-btn:hover { background: var(--teal-hover); }
+.topic-row{display:flex;align-items:center;gap:11px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--line-soft);}
+.topic-row:last-child{border-bottom:none;}
+.topic-row:hover .tr-nm{color:var(--brand);}
+.tr-rank{font-family:var(--mono);font-size:14px;font-weight:700;width:18px;text-align:center;color:var(--t4);font-style:italic;}
+.topic-row:nth-child(2) .tr-rank{color:var(--rose);}
+.topic-row:nth-child(3) .tr-rank{color:var(--orange);}
+.topic-row:nth-child(4) .tr-rank{color:var(--amber);}
+.tr-bd{flex:1;min-width:0;}
+.tr-nm{font-size:13px;font-weight:500;color:var(--t1);transition:.12s;}
+.tr-heat{font-size:10.5px;color:var(--t3);font-family:var(--mono);margin-top:3px;}
+.tr-bar{height:3px;border-radius:2px;background:var(--line-soft);margin-top:5px;overflow:hidden;}
+.tr-bar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--glow-cyan));}
 
-/* ===== Input area ===== */
-.msg-input {
-  padding: 16px 40px 24px;
-  background: var(--white);
-  border-top: 1px solid var(--border-soft);
-  flex-shrink: 0;
-}
-.input-wrapper {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg-warm);
-  transition: all 0.2s;
-  overflow: hidden;
-}
-.input-wrapper:focus-within {
-  border-color: var(--teal);
-  background: var(--white);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.05);
-}
-.msg-textarea {
-  width: 100%;
-  min-height: 44px;
-  max-height: 120px;
-  padding: 12px 16px;
-  border: none;
-  font-family: var(--font);
-  font-size: 14px;
-  color: var(--text1);
-  resize: none;
-  outline: none;
-  line-height: 1.6;
-  background: transparent;
-}
-.msg-textarea::placeholder { color: var(--text4); }
-.input-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 10px 6px;
-}
-.input-tools { display: flex; gap: 2px; }
-.input-tool {
-  padding: 4px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text4);
-  transition: all 0.1s;
-  border: none;
-  background: none;
-}
-.input-tool:hover { color: var(--text2); }
-.send-btn {
-  padding: 5px 16px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: all 0.15s;
-}
-.send-btn.ready { background: var(--teal); color: #fff; }
-.send-btn.ready:hover { background: var(--teal-hover); }
-.send-btn.disabled { background: transparent; color: var(--text4); cursor: default; }
+.user-row{display:flex;align-items:center;gap:10px;padding:7px 0;}
+.user-row .ua{width:32px;height:32px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;flex-shrink:0;}
+.user-row .ui{flex:1;min-width:0;}
+.user-row .un{font-size:13px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:6px;}
+.user-row .un .lv{font-size:9.5px;}
+.user-row .ud{font-size:11px;color:var(--t3);margin-top:1px;}
+.user-row .uf{flex-shrink:0;font-size:11.5px;font-weight:600;color:var(--brand);border:1.3px solid var(--brand);background:#fff;border-radius:8px;padding:4px 11px;cursor:pointer;transition:.13s;}
+.user-row .uf:hover{background:var(--brand-bg);}
+.user-row .uf.on{color:var(--t3);border-color:var(--line);background:var(--surface-2);}
 
-/* ===== Right Panel ===== */
-.panel {
-  background: var(--white);
-  border-left: 1px solid var(--border-soft);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.panel-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border-soft);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.panel-title {
-  font-family: var(--font-serif);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text1);
-}
-.panel-close {
-  border: none;
-  background: none;
-  font-size: 18px;
-  color: var(--text3);
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 4px;
-  line-height: 1;
-}
-.panel-close:hover { color: var(--text1); }
+.prog-row{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line-soft);}
+.prog-row:first-of-type{border-top:none;}
+.prog-row .pa{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.prog-row .pt{font-size:12.5px;color:var(--t1);line-height:1.5;}
+.prog-row .pt b{color:var(--brand-2);}
+.prog-row .pi{margin-left:auto;color:var(--teal);flex-shrink:0;}
+.prog-row .pi svg{width:15px;height:15px;}
 
-/* Thread panel */
-.thread-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-}
-.thread-parent {
-  padding: 16px;
-  background: var(--bg-warm);
-  border-radius: 6px;
-  margin-bottom: 16px;
-  border-left: 2px solid var(--teal);
-}
-.thread-parent .msg-name { color: var(--teal); }
-.thread-parent .msg-text {
-  font-size: 14px;
-  line-height: 1.7;
-  margin-top: 6px;
-}
+@media (max-width:1080px){.wrap{grid-template-columns:1fr 300px;}.left{display:none;}}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;}.right{order:3;position:static;}.hero-logo h1{font-size:27px;}.hero-net{display:none;}}
 
-.thread-replies-label {
-  font-size: 11px;
-  color: var(--text4);
-  padding: 0 4px 10px;
-  letter-spacing: 0.3px;
-}
-.thread-replies {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.thread-reply {
-  display: flex;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 4px;
-  transition: background 0.1s;
-}
-.thread-reply:hover { background: var(--bg-warm); }
-.thread-reply .msg-monogram {
-  width: 28px;
-  height: 28px;
-  font-size: 11px;
-}
-.thread-reply .msg-name { font-size: 12px; }
-.thread-reply .msg-text {
-  font-size: 13px;
-  line-height: 1.7;
-}
-.thread-input-area {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-soft);
-  flex-shrink: 0;
-}
-.thread-input-area textarea {
-  width: 100%;
-  min-height: 48px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 10px 12px;
-  font-family: var(--font);
-  font-size: 13px;
-  resize: none;
-  outline: none;
-  background: var(--bg-warm);
-  color: var(--text1);
-  line-height: 1.5;
-}
-.thread-input-area textarea:focus {
-  border-color: var(--teal);
-  background: var(--white);
-}
-.thread-input-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
+/* ===== 高级感升级 · ①卡片 ②动效 ③质感（全量应用）===== */
+/* ① 卡片/面板：去边框 + 分层调色阴影 + 更大圆角 */
+.card,.panel,.lnav,.l-user,.composer,.tabs{border-color:transparent;}
+.card{border-radius:18px;box-shadow:0 1px 2px rgba(16,74,74,.04),0 16px 44px -18px rgba(16,74,74,.22);}
+.panel{border-radius:18px;box-shadow:0 1px 2px rgba(16,74,74,.04),0 16px 44px -18px rgba(16,74,74,.17);}
+.composer,.lnav,.l-user,.tabs{box-shadow:0 1px 2px rgba(16,74,74,.04),0 12px 34px -18px rgba(16,74,74,.14);}
+.card.good{background:linear-gradient(180deg,#fbf6ec 0%,#fff 16%);}
+/* ② 微交互 / 动效 */
+.card{transition:transform .26s cubic-bezier(.22,1,.36,1),box-shadow .26s;animation:cmpIn .5s both;}
+#feed .card:nth-child(2){animation-delay:.04s}#feed .card:nth-child(3){animation-delay:.08s}#feed .card:nth-child(4){animation-delay:.12s}#feed .card:nth-child(5){animation-delay:.16s}#feed .card:nth-child(6){animation-delay:.2s}
+.card:hover{transform:translateY(-4px);border-color:transparent;box-shadow:0 2px 8px rgba(16,74,74,.06),0 26px 60px -20px rgba(16,74,74,.28);}
+.post-btn,.search .go,.cta-go,.follow,.cp-send,.cb-send,.tab{transition:transform .15s ease,filter .15s,box-shadow .15s,background .15s,color .15s;}
+.post-btn:hover,.search .go:hover,.cta-go:hover,.follow:hover{transform:translateY(-2px);}
+.post-btn:active,.search .go:active,.cta-go:active{transform:translateY(0) scale(.98);}
+.eng{transition:transform .12s,color .12s;}.eng:active{transform:scale(.9);}
+.online-row,.topic-row,.user-row{transition:transform .16s ease;}
+.online-row:hover,.topic-row:hover,.user-row:hover{transform:translateX(3px);}
+@keyframes cmpIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.card{animation:none!important;}}
+/* ③ 质感加重：更浓网格 + 更明显噪点 + 全局细噪 */
+.top{background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,0) 30%,rgba(245,250,250,.55) 86%,var(--bg) 100%),url("assets/hero.jpg") center/cover no-repeat;}
+.top::before{opacity:.1;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.3;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='gg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23gg)'/%3E%3C/svg%3E");}
 
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .layout { grid-template-columns: 1fr !important; }
-  .sidebar, .panel { display: none; }
-  .msg { padding: 10px 20px; }
-  .ch-header { padding: 16px 20px 12px; }
-  .msg-input { padding: 12px 20px 16px; }
-  .date-sep { padding: 24px 20px 10px; }
-}
+/* ===== 卡片内功 + 签名细节 ===== */
+.card{position:relative;}
+.ch-av{box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 6px 16px -6px rgba(16,74,74,.42);}
+.lv{letter-spacing:.02em;}
+.ty{box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);}
+.card[data-type="求助"]{background:linear-gradient(180deg,#f1faf8 0%,#fff 16%);}
+.engage{gap:4px;}
+.eng:hover{background:var(--teal-bg);color:var(--teal-2);}
+.eng.view:hover{background:none;color:var(--t3);}
+/* 签名①：卡片 hover · 光斑边框跟随鼠标 */
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s ease;padding:1.5px;background:radial-gradient(180px circle at var(--mx,50%) var(--my,50%),rgba(13,148,136,.6),rgba(13,148,136,0) 60%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;}
+.card:hover::after{opacity:1;}
+/* 签名②：首屏入场上浮 */
+.hero-logo{animation:heroUp .6s both .05s;}
+.search{animation:heroUp .55s both .14s;}
+.hot{animation:heroUp .55s both .22s;}
+.pulse{animation:heroUp .55s both .3s;}
+@keyframes heroUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.hero-logo,.search,.hot,.pulse{animation:none!important;}.card::after{display:none!important;}}
+/* ===== 话题可点 + 筛选横幅 ===== */
+.topic-tag{cursor:pointer;transition:background .15s,color .15s;}
+.topic-tag:hover{background:#d7efeb;color:var(--teal-2);}
+.hot a{cursor:pointer;}
+/* 顶栏左侧：动态范围 / 正在看 #xxx */
+.feed-scope{display:flex;align-items:center;gap:8px;font-size:14px;padding-left:6px;}
+.fs-all{color:var(--t2);font-weight:600;}
+.fs-topic{display:inline-flex;align-items:center;gap:8px;color:var(--teal-2);font-weight:600;}
+.fs-topic[hidden]{display:none;}
+.fs-topic .tb-topic{font-weight:700;}
+.fs-x{border:none;background:var(--teal-bg);color:var(--teal-2);font:inherit;font-size:12px;width:22px;height:22px;border-radius:50%;cursor:pointer;display:inline-grid;place-items:center;transition:filter .15s;}
+.fs-x:hover{filter:brightness(.95);}
+/* 发帖框 # 联想下拉 */
+.cp-text-wrap{position:relative;}
+.tag-suggest{position:absolute;left:0;top:calc(100% - 4px);min-width:184px;max-width:280px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 14px 34px -10px rgba(34,56,78,.22),0 2px 8px rgba(34,56,78,.06);padding:6px;z-index:60;display:flex;flex-direction:column;gap:1px;}
+.tag-suggest[hidden]{display:none;}
+.ts-item{display:block;width:100%;text-align:left;border:none;background:none;font:inherit;font-size:13.5px;color:#1d2b3a;padding:8px 11px;border-radius:8px;cursor:pointer;transition:background .12s;}
+.ts-item:hover,.ts-item.act{background:var(--teal-bg);color:var(--teal-2);}
+.ts-new{color:var(--teal-2);font-weight:600;}
+.sortby{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;}
+.sortbtn{font-family:var(--font);font-size:13px;color:var(--t2);background:none;border:none;padding:6px 12px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.sortbtn.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:var(--sh-sm);}
+.sortbtn:not(.on):hover{color:var(--ink);}
+
+/* ===== 视觉重心 v2：帖子正文当主角，其它退成背景音 ===== */
+.ctext{font-size:16.5px;color:#1d2733;line-height:1.78;margin-top:15px;}
+/* 关注键退到背景，hover 才点亮 */
+.follow{border:1px solid var(--line);background:#fff;color:var(--t3);font-weight:500;padding:5px 13px;}
+.follow svg{opacity:.75;}
+.follow:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-bg);}
+.follow.on{color:var(--t4);border-color:var(--line);background:var(--surface-2);}
+/* 课程/话题标签变轻文字，不再抢色 */
+.chips{gap:14px;margin-top:12px;}
+.course-tag{background:none;padding:0;color:var(--t3);font-weight:500;}
+.course-tag svg{width:12px;height:12px;opacity:.85;}
+.topic-tag{background:none;padding:0;color:var(--teal-2);font-weight:500;}
+.topic-tag:hover{background:none;color:var(--brand);text-decoration:underline;}
+/* 互动栏调淡，把注意力让给正文 */
+.engage{margin-top:14px;padding-top:12px;}
+.eng{color:var(--t3);}
+.eng .bi svg{width:15px;height:15px;}
+
+/* ===== 评论：收成一行，点开才展开 ===== */
+.social{margin-top:2px;}
+.cmt-sum{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t3);cursor:pointer;padding:7px 2px;transition:color .15s;user-select:none;}
+.cmt-sum:hover{color:var(--brand);}
+.cmt-sum b{font-family:var(--mono);font-weight:700;color:var(--t2);}
+.cmt-sum .cs-ar{display:inline-block;font-size:11px;opacity:.7;transition:transform .2s;}
+.card.cmt-open .cmt-sum .cs-ar{transform:rotate(180deg);}
+.cmt-sum.empty{color:var(--t4);}
+.comments{margin-top:2px;}
+
+/* 点赞爆开（保留）*/
+.act-like{position:relative;}
+.lk-burst{position:absolute;left:50%;top:2px;pointer-events:none;color:var(--rose);animation:lkPop .62s ease-out forwards;}
+.lk-burst svg{width:15px;height:15px;}
+@keyframes lkPop{0%{opacity:0;transform:translate(-50%,0) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-22px) scale(1.15)}}
+@media(prefers-reduced-motion:reduce){.lk-burst{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- Topbar -->
-<div class="topbar">
-  <div class="tb-inner">
-    <div class="tb-left">
-      <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="nav">
-        <a href="roadmap.html">路线图</a>
-        <a href="learn.html">学习</a>
-        <a href="discuss.html" class="active">讨论</a>
-        <a href="community.html">社区</a>
-        <a href="showcase.html">成果墙</a>
-        <a href="toolbox.html">工具箱</a>
-      </nav>
+<!-- ============ 深色顶部块 ============ -->
+<div class="top">
+  <div class="hero-glow"></div>
+  <svg class="hero-net" viewBox="0 0 560 380" fill="none">
+    <g stroke="rgba(94,234,212,.4)" stroke-width="1">
+      <line x1="90" y1="80" x2="210" y2="60"/><line x1="210" y1="60" x2="320" y2="120"/>
+      <line x1="320" y1="120" x2="430" y2="80"/><line x1="210" y1="60" x2="250" y2="180"/>
+      <line x1="320" y1="120" x2="250" y2="180"/><line x1="250" y1="180" x2="160" y2="240"/>
+      <line x1="320" y1="120" x2="420" y2="210"/><line x1="430" y1="80" x2="500" y2="160"/>
+      <line x1="420" y1="210" x2="500" y2="160"/><line x1="250" y1="180" x2="370" y2="270"/>
+      <line x1="420" y1="210" x2="370" y2="270"/><line x1="160" y1="240" x2="270" y2="310"/>
+      <line x1="370" y1="270" x2="270" y2="310"/><line x1="90" y1="80" x2="160" y2="240"/>
+    </g>
+    <g fill="#7fd9ff">
+      <circle cx="90" cy="80" r="3.5"/><circle cx="210" cy="60" r="5" fill="#bfe9ff"/><circle cx="320" cy="120" r="4.5" fill="#5eead4"/>
+      <circle cx="430" cy="80" r="3.5"/><circle cx="250" cy="180" r="6" fill="#7dd3fc"/><circle cx="160" cy="240" r="4"/>
+      <circle cx="420" cy="210" r="5" fill="#5eead4"/><circle cx="500" cy="160" r="3.5"/><circle cx="370" cy="270" r="4.5" fill="#bfe9ff"/>
+      <circle cx="270" cy="310" r="4"/>
+    </g>
+  </svg>
+
+  <header class="topbar">
+    <div class="tb-l">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>深海圈</span>
+      <nav class="snav" id="snav"></nav>
     </div>
-    <div class="tb-right">
-      <span class="online-dot"></span>
-      <span class="online-text">47 人在线</span>
-      <a href="profile.html" class="avatar-tb">瓜</a>
+    <div class="tb-r">
+      <span class="tb-online"><span class="d"></span> 47 人在线</span>
+      <div class="tb-avatar">瓜</div>
     </div>
-  </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-logo">
+      <h1>广场</h1>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="搜动态、找同学、搜话题…">
+      <button class="go">搜索</button>
+    </div>
+    <div class="hot">
+      <span class="lab">热门话题：</span>
+      <a href="#"># 今日上线</a><a href="#"># 踩坑求助</a><a href="#"># 产品变现</a><a href="#"># 产品出海</a><a href="#"># 开发者日常</a>
+    </div>
+  </section>
 </div>
 
-<!-- Main layout -->
-<div class="layout" id="layout">
+<div class="seam" aria-hidden="true"></div>
 
-  <!-- Left: Sidebar -->
-  <aside class="sidebar">
-    <div class="sb-section">
-      <div class="sb-label">官方</div>
-      <div class="sb-item" data-channel="announce" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name">📢 公告</span>
-      </div>
-      <div class="sb-item" data-channel="intro" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name">👋 新人报到</span>
-      </div>
-    </div>
+<!-- ============ 三栏 ============ -->
+<div class="wrap">
 
-    <div class="sb-section">
-      <div class="sb-label">交流</div>
-      <div class="sb-item active" data-channel="lobby" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name">☕ 大厅</span>
-        <span class="sb-unread">12</span>
-      </div>
-      <div class="sb-item" data-channel="goodNews" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name">🎉 今日好事</span>
-        <span class="sb-unread">3</span>
-      </div>
-      <div class="sb-item" data-channel="helpDesk" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name">🆘 求助问答</span>
-        <span class="sb-unread">&bull;</span>
-      </div>
-    </div>
-
-    <div class="sb-section">
-      <div class="sb-label">学习</div>
-      <div class="sb-item" data-channel="tools" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 工具测评</span>
-        <span class="sb-unread">&bull;</span>
-      </div>
-      <div class="sb-item" data-channel="pitfalls" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 踩坑经验</span>
-      </div>
-      <div class="sb-item" data-channel="prompt" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># Prompt 技巧</span>
-      </div>
-      <div class="sb-item" data-channel="payment" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 支付变现</span>
-        <span class="sb-unread">&bull;</span>
-      </div>
-      <div class="sb-item" data-channel="news" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 行业资讯</span>
-      </div>
-    </div>
-
-    <div class="sb-section">
-      <div class="sb-label">休闲</div>
-      <div class="sb-item" data-channel="resources" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 资源推荐</span>
-      </div>
-      <div class="sb-item" data-channel="chill" onclick="switchChannel(this)">
-        <span class="sb-dot"></span>
-        <span class="sb-item-name"># 摸鱼闲聊</span>
-        <span class="sb-unread">8</span>
-      </div>
-    </div>
-
-    <div class="sb-bottom">
-      <div class="sb-user">
-        <div class="sb-user-mono">瓜</div>
-        <div>
-          <div class="sb-user-name">瓜哥</div>
-          <div class="sb-user-status">在线</div>
-        </div>
-      </div>
+  <aside class="left">
+    <nav class="lnav">
+      <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg> 广场</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg> 我关注的 <span class="cnt">12</span></a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> 我发布的 <span class="cnt">8</span></a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg> 热门</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> 我的收藏</a>
+    </nav>
+    <div class="l-user">
+      <div class="av" data-nm="瓜哥">瓜</div>
+      <div><div class="nm">瓜哥<span class="lv">Lv.2</span></div><div class="st">零基础 · 在线</div></div>
     </div>
   </aside>
 
-  <!-- Center: Messages -->
-  <main class="msg-area" id="msgArea">
-    <div class="ch-header">
-      <div class="ch-header-left">
-        <div class="ch-title" id="chTitle">大厅</div>
-        <div class="ch-desc" id="chDesc">随便聊，什么都可以。这里就是深海圈的客厅。</div>
+  <main class="mid">
+
+    <div class="tabs" id="tabs">
+      <div class="feed-scope" id="feedScope">
+        <span class="fs-all">最近动态</span>
+        <span class="fs-topic" hidden>正在看 <b class="tb-topic"># </b><button class="fs-x" onclick="setTopic('')" title="清除筛选">✕</button></span>
       </div>
-      <div class="ch-header-actions">
-        <button class="ch-action-btn" onclick="toggleSearch()" title="搜索">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-      </div>
+      <span class="tab-fill"></span>
+      <div class="sortby"><button class="sortbtn on" data-sort="new" onclick="setSort(this)">最新</button><button class="sortbtn" data-sort="hot" onclick="setSort(this)">最热</button></div>
     </div>
 
-    <!-- Message feed -->
-    <div class="msg-feed" id="msgFeed"></div>
-
-    <!-- Input -->
-    <div class="msg-input">
-      <div class="input-wrapper">
-        <textarea class="msg-textarea" id="msgInput" placeholder="写点什么..." rows="1" oninput="autoResize(this); updateSendBtn();" onkeydown="handleKey(event)"></textarea>
-        <div class="input-toolbar">
-          <div class="input-tools">
-            <button class="input-tool" title="Markdown">Md</button>
-            <button class="input-tool" title="@提及">@</button>
+    <div class="composer" id="composer">
+      <div class="cp-row" id="cpCollapsed" onclick="expandComposer()">
+        <div class="av" data-nm="瓜哥">瓜</div>
+        <div class="ph">今天学得咋样？分享进展 / 求助 / 唠两句…</div>
+        <button class="cp-go" onclick="event.stopPropagation();expandComposer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 发条动态</button>
+      </div>
+      <div class="cp-edit" id="cpEdit" hidden>
+        <div class="cp-text-wrap">
+          <textarea id="cpText" placeholder="今天做出 / 跑通了啥？想归个类，就在文里打个 #，比如 #今日上线" oninput="cpTextInput()"></textarea>
+          <div class="tag-suggest" id="tagSuggest" hidden></div>
+        </div>
+        <div class="cp-thumbs" id="cpThumbs"></div>
+        <div class="cp-bar">
+          <div class="cp-topicbar" id="cpTopicBar"></div>
+          <div class="cp-actions">
+            <button class="cp-img" onclick="addComposerImg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> 图片</button>
+            <button class="cp-send" onclick="publishPost()">发布</button>
           </div>
-          <button class="send-btn disabled" id="sendBtn" onclick="sendMessage()">发送</button>
         </div>
       </div>
     </div>
+
+    <div id="feed" style="display:flex;flex-direction:column;gap:14px;">
+
+      <article class="card good" data-type="报喜" data-cid="n1">
+        <div class="ch-top"><div class="ch-av" data-nm="陈晨">陈</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">陈晨</span><span class="lv">Lv.5</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">产品经理</span> · 2 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">后端第一次跑通了！用 Cursor 写了个 Express 接口，前端 fetch 居然真拿到数据了，对零基础的我太震撼了 🤯</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 后端</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">47</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 9</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">312</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="n2">
+        <div class="ch-top"><div class="ch-av" data-nm="林浩">林</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">林浩</span><span class="lv">Lv.4</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">自由职业</span> · 12 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Vercel 部署完，访问 /api 报 502，本地 <code>npm run dev</code> 一切正常。是不是 serverless 函数没配对？求大佬指路 🙏</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 部署</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">12</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 4</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">156</span></span>
+          <span class="solved wait">待解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="n3">
+        <div class="ch-top"><div class="ch-av" data-nm="王悦">悦</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">王悦</span><span class="lv">Lv.4</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">运营</span> · 25 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Supabase 接通了！注册登录 + 数据存储全跑通，我的待办小程序总算有"后端"了，不再是假数据 🎉</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 数据库</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">63</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 14</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">421</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="n4">
+        <div class="ch-top"><div class="ch-av" data-nm="张帆">帆</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">张帆</span><span class="lv">Lv.3</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">学生</span> · 38 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">调 OpenAI 一直 401，key 我贴进 <code>.env</code> 了，本地还是不认。是不是要重启服务 / 变量名写错了？</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · API</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">28</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 6</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">203</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="n5">
+        <div class="ch-top"><div class="ch-av" data-nm="周宁">宁</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">周宁</span><span class="lv">Lv.6</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">设计师</span> · 1 小时前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Tailwind 真香，半天把落地页响应式做完了，手机端终于不塌房。设计师转码也能行！</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 前端</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">39</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 11</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">268</span></span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p1">
+        <div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 刚刚 · 分享了好事</div></div></div>
+        <p class="ctext">终于跑通第一个 Hello World 了！😭 看到浏览器里出现自己写的字，对零基础的我来说真的激动到想哭。谢谢大锤哥帮我解决了 Node 版本问题！</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A3 · 10 分钟做出第一个网站</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">86</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 12</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">534</span></span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p2">
+        <div class="ch-top"><div class="ch-av" data-nm="黄小美">美</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">黄小美</span><span class="lv">Lv.3</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">大三学生</span> · 3 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">用 AI 给室友做了个课程表查询小工具，虽然只是个静态页，但室友们都说好用！第一次感受到"做出东西给人用"的快乐 🥹</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A 阶段作业</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">31</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 5</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">187</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p3">
+        <div class="ch-top"><div class="ch-av" data-nm="郑涛">郑</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">郑涛</span><span class="lv">Lv.5</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">数据分析师</span> · 8 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">卡在 Supabase 的 RLS 了：数据库里明明有数据，前端 <code>select()</code> 查出来却是空数组。折腾一个多小时了，是不是权限问题？</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 数据库</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">22</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 6</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">174</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p4">
+        <div class="ch-top"><div class="ch-av" data-nm="赵薇薇">赵</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">赵薇薇</span><span class="lv">Lv.4</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 15 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">我的第一个 AI 产品上线了！！AI 英文邮件润色器，从零代码到上线才两周，已经有 5 个朋友在用了。不敢相信是自己做出来的 🥹</p>
+        <img class="post-img" src="assets/post-product.jpg" alt="产品截图" loading="lazy">
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> C 阶段作业 · 已提交</span><span class="topic-tag"># 产品出海</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">152</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 18</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">1243</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="唠嗑" data-cid="p5">
+        <div class="ch-top"><div class="ch-av" data-nm="马飞">马</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">马飞</span><span class="lv">Lv.3</span><span class="ty 唠嗑">唠嗑</span></div>
+          <div class="ch-l2"><span class="ch-role">小学老师</span> · 28 分钟前 · 唠了两句</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">凌晨一点还在写代码，明天上班要死了但停不下来…… 这就是传说中的心流吧？😂 零基础转行学编程，痛并快乐着。</p>
+        <div class="chips"><span class="topic-tag"># 开发者日常</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">44</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 4</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">233</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p6">
+        <div class="ch-top"><div class="ch-av" data-nm="何丽">何</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">何丽</span><span class="lv">Lv.4</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">平面设计师</span> · 40 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">用 Tailwind 做的卡片布局，大屏正常、手机上全乱了，卡片重叠在一起。响应式不会弄，有会的同学指点下吗？🙏</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 前端</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">19</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 8</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">198</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p7">
+        <div class="ch-top"><div class="ch-av" data-nm="孙大伟">孙</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">孙大伟</span><span class="lv">Lv.5</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 1 小时前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">好事！第一个付费用户来了！虽然只收了 $5，但这是我人生中第一次靠写代码赚到钱。付款的是个 10w 粉博主，她说确实好用。感动到想哭 💰</p>
+        <img class="post-img" src="assets/post-payment.jpg" alt="收款截图" loading="lazy">
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> C 阶段 · 变现</span><span class="topic-tag"># 产品变现</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">207</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 23</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">1876</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="唠嗑" data-cid="p8">
+        <div class="ch-top"><div class="ch-av" data-nm="周杰">周</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">周杰</span><span class="lv">Lv.7</span><span class="role-badge">高手</span><span class="ty 唠嗑">唠嗑</span></div>
+          <div class="ch-l2"><span class="ch-role">字节后端</span> · 1 小时前 · 唠了两句</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">午饭时间！顺便说一句，字节食堂今天有小龙虾，啊我是来凡尔赛的 🦞 大家午饭吃的啥？</p>
+        <div class="chips"><span class="topic-tag"># 开发者日常</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">33</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 8</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">219</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p9">
+        <div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 2 小时前 · 发起了求助</div></div></div>
+        <p class="ctext">npm install 一堆红色报错，<code>engine Unsupported</code>… 我装的 Node 是 16，课程要求 18 以上是吗？但我不知道咋升级 😭</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A 阶段 · 环境配置</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">8</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 3</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">142</span></span>
+          <span class="solved wait">待解决</span>
+        </div>
+      </article>
+
+    </div>
   </main>
 
-  <!-- Right: Panel (hidden by default) -->
-  <aside class="panel" id="panel">
-    <div id="panelContent"></div>
+  <aside class="right">
+    <div class="cta">
+      <h3>继续你的学习之旅</h3>
+      <p>已完成 18 节 · 离"做出第一个能上线的产品"还差 2 步</p>
+      <div class="bar"><i></i></div>
+      <button class="cta-go go">回到学习 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></span>此刻在线</div></div>
+      <div class="p-sub">47 人在线 · 其中 <b>6 位</b>零基础同学</div>
+      <div class="online-row"><div class="oa" data-nm="赵薇薇">赵</div><div class="oi"><div class="on-nm">赵薇薇</div><div class="on-de">零基础 · 做翻译工具</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="马飞">马</div><div class="oi"><div class="on-nm">马飞</div><div class="on-de">零基础 · 教育方向</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="何丽">何</div><div class="oi"><div class="on-nm">何丽</div><div class="on-de">零基础 · 设计提效</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="王大锤">王</div><div class="oi"><div class="on-nm">王大锤 <span class="lv" style="background:var(--teal-bg);color:var(--teal-2)">助教</span></div><div class="on-de">有问必答</div></div></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>热门话题</div><span class="p-more">换一换</span></div>
+      <div class="topic-row"><span class="tr-rank">1</span><div class="tr-bd"><div class="tr-nm"># 今日上线</div><div class="tr-bar"><i style="width:100%"></i></div></div><span class="tr-heat">124</span></div>
+      <div class="topic-row"><span class="tr-rank">2</span><div class="tr-bd"><div class="tr-nm"># 踩坑求助</div><div class="tr-bar"><i style="width:82%"></i></div></div><span class="tr-heat">98</span></div>
+      <div class="topic-row"><span class="tr-rank">3</span><div class="tr-bd"><div class="tr-nm"># 产品变现</div><div class="tr-bar"><i style="width:60%"></i></div></div><span class="tr-heat">76</span></div>
+      <div class="topic-row"><span class="tr-rank">4</span><div class="tr-bd"><div class="tr-nm"># 产品出海</div><div class="tr-bar"><i style="width:44%"></i></div></div><span class="tr-heat">54</span></div>
+      <div class="topic-row"><span class="tr-rank">5</span><div class="tr-bd"><div class="tr-nm"># 开发者日常</div><div class="tr-bar"><i style="width:26%"></i></div></div><span class="tr-heat">31</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>活跃同学</div><span class="p-more">更多 ›</span></div>
+      <div class="user-row"><div class="ua" data-nm="周杰">周</div><div class="ui"><div class="un">周杰 <span class="lv">Lv.7</span></div><div class="ud">字节后端 · 答疑王</div></div><button class="uf">+ 关注</button></div>
+      <div class="user-row"><div class="ua" data-nm="周宁">宁</div><div class="ui"><div class="un">周宁 <span class="lv">Lv.6</span></div><div class="ud">设计师 · 转码中</div></div><button class="uf">+ 关注</button></div>
+      <div class="user-row"><div class="ua" data-nm="郑涛">郑</div><div class="ui"><div class="un">郑涛 <span class="lv">Lv.5</span></div><div class="ud">数据分析师</div></div><button class="uf">+ 关注</button></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>同学进展</div></div>
+      <div class="p-sub">和你一起的同学，今天往前走了</div>
+      <div class="prog-row"><div class="pa" data-nm="赵薇薇">赵</div><div class="pt"><b>赵薇薇</b> 上线了第一个产品</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+      <div class="prog-row"><div class="pa" data-nm="孙大伟">孙</div><div class="pt"><b>孙大伟</b> 收到第一个 $5</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+      <div class="prog-row"><div class="pa" data-nm="黄小美">美</div><div class="pt"><b>黄小美</b> 跑通了第一个项目</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+    </div>
   </aside>
 
 </div>
 
 <script>
-// ===== Data =====
-const channelData = {
-  announce: {
-    name: '📢 公告',
-    desc: '课程安排、工具推荐、官方通知。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'a1', author:'刘小排', role:'讲师', time:'10:00', text:'**深海圈 3 期正式开营！**\n\n欢迎所有新同学。本期课程为期 8 周，核心目标：每人上线一个可收费的 AI 产品。\n\n课程节奏：\n- 周一/三/五 晚 8 点直播课\n- 周二/四 作业日\n- 周六 Office Hour 答疑\n- 周日 休息（但你要是想卷没人拦着）\n\n加油！', reactions:[{emoji:'🎉',count:42},{emoji:'🔥',count:28},{emoji:'💪',count:19}] },
-      { id:'a2', author:'王大锤', role:'助教', time:'11:30', text:'**群规提醒**：\n\n1. 提问前先搜一下频道，80% 的问题已经有人问过\n2. 踩坑经验请发 #踩坑经验 频道，方便后来人搜索\n3. 作品不管大小，都欢迎发到 #今日好事\n4. 技术讨论请带上代码截图或错误信息，别只说"报错了"\n5. 互相帮助，这里没有蠢问题', reactions:[{emoji:'👍',count:35},{emoji:'❤️',count:12}] },
-      { date: '4月14日 周一' },
-      { id:'a3', author:'刘小排', role:'讲师', time:'08:00', text:'今晚 8 点直播：**从零搭建你的第一个 AI 产品**。内容包括：技术选型（Next.js + Supabase + Claude API）、项目结构、部署上线全流程。\n\n直播链接已发飞书群，没收到的同学私信我。', reactions:[{emoji:'🔥',count:31},{emoji:'👍',count:15}] },
-      { id:'a4', author:'王大锤', role:'助教', time:'14:00', text:'提醒：还没完成开发环境配置的同学，请尽快按照《环境配置指南》完成。明天开始就要跟着写代码了。遇到问题可以在 #求助问答 发帖，我和几位热心同学都会帮忙。', reactions:[{emoji:'👍',count:8}] },
-      { date: '4月15日 周二' },
-      { id:'a5', author:'刘小排', role:'讲师', time:'09:00', text:'昨晚直播回放已上传，在"学习"页面可以看到。作业：按照直播内容，把你的项目跑起来（不需要写功能，能看到 Hello World 就行）。截止周四晚 12 点。', reactions:[{emoji:'👍',count:22},{emoji:'💪',count:9}] },
-      { id:'a6', author:'刘小排', role:'讲师', time:'15:00', text:'**工具推荐更新**：\n\n新增推荐 **Claude Code CLI** — 直接在终端里用 Claude 写代码、跑测试、debug。比 Cursor 更适合有一定基础的同学。\n\n零基础同学继续用 Cursor，体验更好。', reactions:[{emoji:'🔥',count:18},{emoji:'💡',count:7}] },
-      { date: '今天' },
-      { id:'a7', author:'王大锤', role:'助教', time:'08:30', text:'**本周六 Office Hour 主题征集**：大家想聊什么？在这条消息下面回复，点赞最多的话题优先安排。', reactions:[{emoji:'👍',count:11}], thread:{count:6, authors:['林','赵','陈','张']} },
-      { id:'a8', author:'刘小排', role:'讲师', time:'10:00', text:'看到群里好几位同学已经完成了第一个作业，速度真快。特别表扬 @赵薇薇 @孙大伟 @黄小美，Hello World 截图已收到。继续保持！', reactions:[{emoji:'🎉',count:16},{emoji:'💪',count:8}] },
-    ]
-  },
-  intro: {
-    name: '👋 新人报到',
-    desc: '新来的？先来打个招呼，说说你是谁、想做什么。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'i1', author:'林小鱼', time:'10:00', text:'大家好！我是林小鱼，8 年产品经理，完全不会写代码。一直想做一个面向设计师的灵感管理工具，终于下决心来学了。请多关照！', reactions:[{emoji:'👋',count:18},{emoji:'💪',count:7}] },
-      { id:'i2', author:'陈小飞', time:'10:15', text:'欢迎小鱼姐！产品经理转开发，你的优势是懂需求，技术反而是最容易补的。加油！', replyTo:{msgId:'i1',author:'林小鱼',preview:'大家好！我是林小鱼，8 年产品经理'} },
-      { id:'i3', author:'赵薇薇', time:'11:00', text:'Hi~ 我是薇薇，自由职业翻译。之前完全没碰过代码，看了小排老师的公众号来的。想做一个 AI 翻译润色工具，帮翻译同行提效。已经有很多想法了！', reactions:[{emoji:'👋',count:15},{emoji:'❤️',count:6}] },
-      { id:'i4', author:'周杰', time:'14:00', text:'周杰，字节后端开发，5 年经验。会写代码但从来没做过自己的产品。想利用周末搞一个独立项目，试试从 0 到 1 到变现的全过程。', reactions:[{emoji:'👋',count:12},{emoji:'🔥',count:4}] },
-      { id:'i5', author:'张明', time:'14:30', text:'张明，全栈工程师。技术不是问题，问题是不知道做什么产品。来学学怎么找需求和变现。', reactions:[{emoji:'👋',count:10}] },
-      { id:'i6', author:'李思思', time:'15:00', text:'我是思思，UI 设计师，会画图但不会写代码。听说现在 AI 能帮忙写了，过来试试。目标是做一个设计素材管理的小工具。', reactions:[{emoji:'👋',count:14},{emoji:'💪',count:5}] },
-      { id:'i7', author:'王大锤', role:'助教', time:'15:20', text:'欢迎大家！我是本期助教大锤。有问题随时 @ 我，争取做到有问必答（除了凌晨三点以后，让我睡会儿）😄', reactions:[{emoji:'😂',count:20},{emoji:'❤️',count:9}] },
-      { id:'i8', author:'孙大伟', time:'16:00', text:'孙大伟，自由职业者。之前帮客户做运营咨询，现在想做 SaaS 工具。目标：3 个月内做出一个月入 $500 的产品。', reactions:[{emoji:'👋',count:11},{emoji:'💪',count:6}] },
-      { id:'i9', author:'黄小美', time:'17:30', text:'大三学生，计算机专业。学了三年代码感觉自己什么都不会（学校教的太理论了）。想做点实际的东西，顺便赚点零花钱。', reactions:[{emoji:'👋',count:13},{emoji:'🎉',count:3}] },
-      { id:'i10', author:'马飞', time:'20:00', text:'马飞，小学数学老师，教龄 8 年。想用 AI 做教育类工具，比如自动出题、错题分析这些。完全零代码基础，有点紧张。', reactions:[{emoji:'👋',count:16},{emoji:'💪',count:8}] },
-      { id:'i11', author:'刘小排', role:'讲师', time:'20:15', text:'马飞老师来了！你这个方向太棒了，教育+AI 简直是金矿。零基础不怕，这期好几位零基础的同学都会做出东西来的。', reactions:[{emoji:'🔥',count:7}], replyTo:{msgId:'i10',author:'马飞',preview:'马飞，小学数学老师'} },
-      { date: '4月14日 周一' },
-      { id:'i12', author:'吴小强', time:'09:00', text:'吴小强，10 年产品经理老兵了。看到身边越来越多人用 AI 写代码做产品，再不学就要被淘汰了。来深海圈是给自己逼一把。', reactions:[{emoji:'👋',count:14},{emoji:'💪',count:9}] },
-      { id:'i13', author:'何丽', time:'10:30', text:'Hello！何丽，平面设计师。日常工作就是做海报、做 banner，想做一个 AI 设计工具帮自己和同行提效。Figma 用得很溜但代码一窍不通。', reactions:[{emoji:'👋',count:11},{emoji:'❤️',count:5}] },
-      { id:'i14', author:'郑涛', time:'14:00', text:'郑涛，数据分析师。SQL + Python 还行，但前端完全不会。想做一个数据可视化 dashboard 的 SaaS。来学学怎么做完整产品。', reactions:[{emoji:'👋',count:10},{emoji:'👍',count:4}] },
-      { date: '4月15日 周二' },
-      { id:'i15', author:'瓜哥', time:'09:00', text:'Hello！瓜哥来了！创业公司运营，零代码基础。之前连 Excel 公式都搞不太明白那种... 但是！我有一颗不服输的心！争取毕业时做出一个能卖钱的东西！', reactions:[{emoji:'👋',count:17},{emoji:'🎉',count:8},{emoji:'💪',count:6}] },
-      { id:'i16', author:'陈小飞', time:'09:10', text:'瓜哥加油！你这心态就对了。我当初也是零基础，现在已经上线了 3 个小产品。关键就是动手。', replyTo:{msgId:'i15',author:'瓜哥',preview:'Hello！瓜哥来了！创业公司运营'} },
-      { id:'i17', author:'林小鱼', time:'09:20', text:'哈哈瓜哥我们一起加油！零基础小分队 🤝', reactions:[{emoji:'😂',count:5},{emoji:'💪',count:3}], replyTo:{msgId:'i15',author:'瓜哥',preview:'Hello！瓜哥来了！创业公司运营'} },
-      { date: '今天' },
-      { id:'i18', author:'王大锤', role:'助教', time:'08:00', text:'截止目前已经有 47 位同学报到了！还没自我介绍的同学记得来冒个泡，让大家认识你。报到后记得去 #求助问答 看看有没有你能帮忙解答的问题，教是最好的学。', reactions:[{emoji:'👍',count:12},{emoji:'🔥',count:5}] },
-    ]
-  },
-  lobby: {
-    name: '☕ 大厅',
-    desc: '随便聊，什么都可以。这里就是深海圈的客厅。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'l1', author:'陈小飞', time:'09:12', text:'早啊各位！开营第一天大家都起这么早？', reactions:[{emoji:'🌅',count:8}] },
-      { id:'l2', author:'李思思', time:'09:18', text:'早！激动得昨晚都没睡好觉 😂', replyTo:{msgId:'l1',author:'陈小飞',preview:'早啊各位！开营第一天'} },
-      { id:'l3', author:'张明', time:'09:45', text:'有没有人看到 Claude 又更新了？Opus 4 出了，推理能力据说翻倍。', reactions:[{emoji:'👀',count:14}] },
-      { id:'l4', author:'周杰', time:'09:52', text:'看到了！我在字节内部已经用上了，代码生成质量确实比上一代强很多。特别是处理复杂逻辑的时候。', replyTo:{msgId:'l3',author:'张明',preview:'Claude 又更新了？Opus 4 出了'} },
-      { id:'l5', author:'赵薇薇', time:'10:03', text:'刚试了一下，让它帮我写一个邮件模板解析器，一次就过了。之前 3.5 怎么都写不对的那种。', reactions:[{emoji:'🔥',count:6}], replyTo:{msgId:'l3',author:'张明',preview:'Claude 又更新了？'} },
-      { id:'l6', author:'孙大伟', time:'10:30', text:'各位做独立开发的前辈，有没有什么选品建议？我想了好几个方向，纠结死了。', reactions:[{emoji:'🤔',count:4}] },
-      { id:'l7', author:'刘小排', role:'讲师', time:'10:45', text:'@孙大伟 选品核心三条：1. 你自己有没有这个痛点 2. 竞品做得好不好 3. 能不能在一周内做出 MVP。满足两条就可以动手了，别纠结。', reactions:[{emoji:'🔥',count:22},{emoji:'💡',count:11}], thread:{count:5, authors:['孙','陈','张']} },
-      { date: '4月14日 周一' },
-      { id:'l8', author:'黄小美', time:'08:15', text:'早安！昨晚跟着教程搭了第一个 Next.js 项目，看到浏览器里出现 Hello World 的时候差点哭了。这辈子第一次写代码！', reactions:[{emoji:'🎉',count:25},{emoji:'💪',count:13},{emoji:'❤️',count:8}] },
-      { id:'l9', author:'马飞', time:'08:30', text:'同感同感！我昨晚也跑通了。虽然只是个 Hello World 但感觉打开了新世界的大门。', reactions:[{emoji:'💪',count:6}], replyTo:{msgId:'l8',author:'黄小美',preview:'看到浏览器里出现 Hello World 的时候差点哭了'} },
-      { id:'l10', author:'瓜哥', time:'08:45', text:'你们都跑通了？！我卡在 npm install 那步了，一堆红色报错看得头大... 等会去求助问答发帖。', reactions:[{emoji:'😂',count:9}] },
-      { id:'l11', author:'王大锤', role:'助教', time:'08:55', text:'@瓜哥 别慌，大概率是 Node 版本问题。先跑 `node -v` 看一下版本，需要 18 以上。', replyTo:{msgId:'l10',author:'瓜哥',preview:'我卡在 npm install 那步了'} },
-      { id:'l12', author:'林小鱼', time:'10:20', text:'请问大家用什么做数据库啊？Supabase 还是 Firebase？新手不知道怎么选... 选择恐惧症犯了。', reactions:[{emoji:'🤔',count:5}] },
-      { id:'l13', author:'王大锤', role:'助教', time:'10:25', text:'@林小鱼 新手推荐 Supabase，PostgreSQL 底子，将来迁移方便。Firebase 生态锁定比较强。而且 Supabase 有可视化界面，不用写 SQL。', reactions:[{emoji:'👍',count:18},{emoji:'❤️',count:6}], thread:{count:4, authors:['林','陈']} },
-      { id:'l14', author:'林小鱼', time:'10:28', text:'谢谢大锤哥！那我先试 Supabase 了。', replyTo:{msgId:'l13',author:'王大锤',preview:'新手推荐 Supabase'} },
-      { id:'l15', author:'周杰', time:'12:30', text:'午饭时间！顺便说一句，字节食堂今天有小龙虾，啊我是来凡尔赛的 🦞', reactions:[{emoji:'😂',count:12},{emoji:'🤤',count:7}] },
-      { id:'l16', author:'何丽', time:'12:45', text:'周杰你别气我 😭 我外卖都点不起小龙虾', reactions:[{emoji:'😂',count:8}], replyTo:{msgId:'l15',author:'周杰',preview:'字节食堂今天有小龙虾'} },
-      { date: '4月15日 周二' },
-      { id:'l17', author:'郑涛', time:'09:10', text:'昨晚直播课的信息密度好大... 我做了笔记但感觉还是消化不了。有没有人整理了思维导图？', reactions:[{emoji:'🙋',count:3}] },
-      { id:'l18', author:'黄小美', time:'09:25', text:'我画了一个！用 Excalidraw 画的，等会发到资源推荐频道。', reactions:[{emoji:'🔥',count:9},{emoji:'❤️',count:5}], replyTo:{msgId:'l17',author:'郑涛',preview:'有没有人整理了思维导图？'} },
-      { id:'l19', author:'吴小强', time:'11:00', text:'做了 10 年 PM 今天第一次写代码（虽然大部分是 AI 写的），感触是：原来开发这么苦啊，以前提需求的时候真是不知天高地厚。', reactions:[{emoji:'😂',count:21},{emoji:'💯',count:8},{emoji:'👏',count:5}] },
-      { id:'l20', author:'张明', time:'11:15', text:'哈哈哈 PM 终于体验到了！欢迎来到现实世界 😈', reactions:[{emoji:'😂',count:15}], replyTo:{msgId:'l19',author:'吴小强',preview:'做了 10 年 PM 今天第一次写代码'} },
-      { id:'l21', author:'陈小飞', time:'14:30', text:'给大家分享一个今天的发现：用 Claude 写代码的时候，把你的文件结构也贴给它，效果会好很多。它能理解你的项目上下文，生成的代码更贴合。', reactions:[{emoji:'💡',count:16},{emoji:'👍',count:7}] },
-      { id:'l22', author:'孙大伟', time:'15:00', text:'试了！确实。我之前让它写组件老是用错样式框架，贴了目录结构之后就对了。', replyTo:{msgId:'l21',author:'陈小飞',preview:'把你的文件结构也贴给它'} },
-      { date: '今天' },
-      { id:'l23', author:'刘小排', role:'讲师', time:'08:30', text:'各位早！今天发了一篇新文章，讲的是怎么用 AI 做落地页设计。v0 + Cursor 的组合拳，10 分钟出一个漂亮的 landing page。链接放在工具测评频道了。', reactions:[{emoji:'🎉',count:20},{emoji:'👍',count:12}] },
-      { id:'l24', author:'张明', time:'09:10', text:'已经看了！那个工作流太丝滑了。确实能省很多时间。我以前手写 landing page 要一整天。', replyTo:{msgId:'l23',author:'刘小排',preview:'怎么用 AI 做落地页设计'} },
-      { id:'l25', author:'赵薇薇', time:'09:30', text:'报告一个好消息！我的 AI 邮件润色器昨晚上线了！虽然还很简陋，但已经有 5 个朋友在用了。第一次做出能用的东西，激动！', reactions:[{emoji:'🎉',count:28},{emoji:'🔥',count:12},{emoji:'👏',count:9}], thread:{count:7, authors:['陈','张','林','马']} },
-      { id:'l26', author:'周杰', time:'09:45', text:'薇薇 yyds！从零到上线才两周？速度太快了。', replyTo:{msgId:'l25',author:'赵薇薇',preview:'AI 邮件润色器昨晚上线了'} },
-      { id:'l27', author:'瓜哥', time:'10:00', text:'太励志了... 我 npm install 都还没跑通呢 😭 不过大锤哥帮我解决了 Node 版本问题，今天要把 Hello World 搞出来！', reactions:[{emoji:'💪',count:11},{emoji:'😂',count:6}] },
-      { id:'l28', author:'马飞', time:'10:30', text:'瓜哥加油！你昨天那个 Node 版本的问题我也遇到了，解决之后就顺利了。', replyTo:{msgId:'l27',author:'瓜哥',preview:'npm install 都还没跑通呢'} },
-      { id:'l29', author:'黄小美', time:'11:00', text:'有人用过 **Bolt.new** 吗？我室友推荐的，说从零到上线只要 2 小时。', reactions:[{emoji:'👀',count:6}] },
-      { id:'l30', author:'李思思', time:'11:15', text:'Bolt 我试了，确实快。但生成的代码质量一般，后续维护头疼。适合做 demo，不适合做正经产品。', reactions:[{emoji:'💯',count:7}], replyTo:{msgId:'l29',author:'黄小美',preview:'有人用过 Bolt.new 吗？'} },
-      { id:'l31', author:'王大锤', role:'助教', time:'11:25', text:'Bolt 适合验证想法，正经做产品还是建议 Cursor + Claude。代码质量差一个量级。', thread:{count:4, authors:['黄','李','周']}, replyTo:{msgId:'l29',author:'黄小美',preview:'有人用过 Bolt.new 吗？'} },
-      { id:'l32', author:'孙大伟', time:'20:30', text:'今天的收获：第一次成功把数据库连上了前端！虽然只是显示了一行文字，但这种"通了"的感觉太爽了。', reactions:[{emoji:'🎉',count:10},{emoji:'💪',count:5}] },
-      { id:'l33', author:'何丽', time:'21:00', text:'大伟恭喜！这种里程碑的感觉我懂，昨天我的 CSS 第一次对齐的时候也是这种感觉 😂', reactions:[{emoji:'😂',count:7}], replyTo:{msgId:'l32',author:'孙大伟',preview:'第一次成功把数据库连上了前端'} },
-      { id:'l34', author:'郑涛', time:'23:15', text:'夜深了但还在写代码... 明天要交作业了，数据表还没建完。SQL 我会，但 Supabase 的 RLS 机制把我搞蒙了。', reactions:[{emoji:'💪',count:4}] },
-      { id:'l35', author:'陈小飞', time:'23:30', text:'RLS 那个坑我踩过，去踩坑频道搜一下林小鱼之前发的帖子，讲得很清楚。', replyTo:{msgId:'l34',author:'郑涛',preview:'Supabase 的 RLS 机制把我搞蒙了'} },
-    ]
-  },
-  goodNews: {
-    name: '🎉 今日好事',
-    desc: '做出来了就大方秀出来！不管多简陋，做出来就是成功。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'g1', author:'陈小飞', time:'14:00', text:'**AI 周报生成器上线了！** 🚀\n\n从飞书日历 + Git 提交记录自动抓取内容，用 Claude 总结成周报。已经在公司内部试用一周了，反馈很好。老板夸我效率高（他不知道是 AI 帮我写的 😂）\n\n技术栈：Next.js + Supabase + Claude API', reactions:[{emoji:'🎉',count:30},{emoji:'🔥',count:15},{emoji:'👏',count:11}], thread:{count:5, authors:['张','林','赵']} },
-      { id:'g2', author:'张明', time:'14:30', text:'大飞厉害！这个需求太精准了，每个打工人都需要。有考虑商业化吗？', replyTo:{msgId:'g1',author:'陈小飞',preview:'AI 周报生成器上线了'} },
-      { id:'g3', author:'林小鱼', time:'15:00', text:'我今天的好事：**终于看懂了 React 组件是什么** 😂\n\n虽然很小的进步，但对零基础的我来说是巨大的突破。感谢大锤哥的耐心解释！', reactions:[{emoji:'🎉',count:19},{emoji:'💪',count:12},{emoji:'❤️',count:7}] },
-      { date: '4月14日 周一' },
-      { id:'g4', author:'赵薇薇', time:'11:45', text:'**我的第一个 AI 产品上线了！！！**\n\n🎊 AI 英文邮件润色器 — 输入中式英语，输出地道的商务邮件。\n\n技术栈：Next.js + Supabase + Stripe + Claude API\n开发周期：5 天（其中 2 天在搞 Stripe 支付）\n\n虽然还很简陋但已经有 3 个朋友在用了！从零代码到上线产品，不敢相信是自己做的。', reactions:[{emoji:'🎉',count:35},{emoji:'🔥',count:18},{emoji:'👏',count:12},{emoji:'❤️',count:8}] },
-      { id:'g5', author:'刘小排', role:'讲师', time:'12:00', text:'薇薇太棒了！这个速度超过 90% 的学员。而且方向选得很好，翻译+AI 是个好赛道。继续优化，下一步可以考虑加付费功能。', reactions:[{emoji:'🔥',count:9}], replyTo:{msgId:'g4',author:'赵薇薇',preview:'我的第一个 AI 产品上线了'} },
-      { id:'g6', author:'周杰', time:'16:00', text:'周末项目更新：**GitHub 100 star 了！** ⭐\n\n做的是一个开源的 AI Code Review Bot，自动给 PR 写评论。没想到这么多人需要。', reactions:[{emoji:'🎉',count:27},{emoji:'🔥',count:14},{emoji:'⭐',count:10}] },
-      { id:'g7', author:'黄小美', time:'20:00', text:'小小的好事：今天用 AI 帮室友做了一个课程表查询工具。虽然只是个静态页面，但室友们都说好用！第一次感受到"做出东西给人用"的快乐。', reactions:[{emoji:'🎉',count:16},{emoji:'❤️',count:9}] },
-      { date: '4月15日 周二' },
-      { id:'g8', author:'孙大伟', time:'10:00', text:'好事！好事！**第一个付费用户来了！** 💰\n\n虽然只收了 $5，但这是我人生中第一次通过写代码赚到钱。产品是帮小红书博主生成爆款标题的工具。付款的是一个 10w 粉的博主，她说确实好用。\n\n感动到想哭。', reactions:[{emoji:'🎉',count:42},{emoji:'🔥',count:20},{emoji:'💰',count:15},{emoji:'👏',count:11}], thread:{count:8, authors:['刘','王','陈','赵','林']} },
-      { id:'g9', author:'马飞', time:'14:00', text:'今天的好事：班里的学生用了我做的 **AI 出题工具**，做了 20 道题。有个学生说"马老师你什么时候变这么厉害了"。哈哈哈，他不知道这是 AI 帮我做的！', reactions:[{emoji:'😂',count:18},{emoji:'🎉',count:14},{emoji:'❤️',count:7}] },
-      { id:'g10', author:'何丽', time:'16:30', text:'分享一个小成就：用 AI 做了一个 **配色方案生成器**，输入关键词就能出一组专业配色。发到设计群里，好几个同行问我怎么做的。', reactions:[{emoji:'🎉',count:13},{emoji:'🔥',count:6}] },
-      { date: '今天' },
-      { id:'g11', author:'陈小飞', time:'09:00', text:'AI 周报生成器更新：**月收入破 $1000 了！** 🎉🎉🎉\n\n从上线到现在 3 周，20 个付费团队用户。全部是口碑传播，我一分钱推广没花。\n\n感谢深海圈，没有这个社区我可能还在纠结技术选型。', reactions:[{emoji:'🎉',count:45},{emoji:'🔥',count:22},{emoji:'💰',count:18},{emoji:'👏',count:13}] },
-      { id:'g12', author:'瓜哥', time:'10:30', text:'我也有好事报告！虽然很小...\n\n**Hello World 终于跑通了！** 🎊\n\n我知道这对大佬们来说不算什么，但对零基础的我来说，看到浏览器里出现自己写的文字那一刻，真的超级开心！', reactions:[{emoji:'🎉',count:28},{emoji:'💪',count:16},{emoji:'❤️',count:10}] },
-      { id:'g13', author:'王大锤', role:'助教', time:'10:35', text:'瓜哥这个好事一点都不小！Hello World 是每个程序员的第一步，你已经迈出来了。接下来只会越来越顺。', reactions:[{emoji:'❤️',count:8}], replyTo:{msgId:'g12',author:'瓜哥',preview:'Hello World 终于跑通了'} },
-      { id:'g14', author:'郑涛', time:'15:00', text:'好事：用 Supabase + Next.js 做的 **数据分析 Dashboard** 初版完成了！能连接数据源自动生成图表。虽然 UI 还很丑，但功能跑通了。', reactions:[{emoji:'🎉',count:14},{emoji:'🔥',count:7}] },
-    ]
-  },
-  helpDesk: {
-    name: '🆘 求助问答',
-    desc: '遇到问题就问。带上截图和报错信息，解决得更快。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'h1', author:'瓜哥', time:'14:30', text:'**求助！npm install 报错了**\n\n错误信息：`npm ERR! engine Unsupported engine`\n\n我装的 Node 是 16.x，课程要求 18 以上是吗？但我不知道怎么升级...', reactions:[{emoji:'🤔',count:2}] },
-      { id:'h2', author:'王大锤', role:'助教', time:'14:35', text:'@瓜哥 对的，需要 Node 18+。最简单的方法：\n\n1. 去 nodejs.org 下载 LTS 版本（目前是 20.x）\n2. 安装后重启终端\n3. 跑 `node -v` 确认版本\n\n如果你用 Mac，也可以用 `brew install node` 一键安装。', reactions:[{emoji:'👍',count:14}], replyTo:{msgId:'h1',author:'瓜哥',preview:'npm install 报错了'} },
-      { id:'h3', author:'瓜哥', time:'14:50', text:'搞定了！装了 Node 20，npm install 通过了。谢谢大锤哥！🙏', reactions:[{emoji:'🎉',count:6}], replyTo:{msgId:'h2',author:'王大锤',preview:'去 nodejs.org 下载 LTS 版本'} },
-      { id:'h4', author:'马飞', time:'16:00', text:'**问题：VS Code 里 Terminal 打不出命令**\n\n我在 VS Code 底部的终端输入 `npm run dev`，但一直显示 "command not found"。是不是哪里没配置？我是 Mac 电脑。', reactions:[{emoji:'🤔',count:3}] },
-      { id:'h5', author:'张明', time:'16:10', text:'@马飞 看起来是 PATH 没配好。你试试在终端输入 `which node`，如果没输出说明 Node 没在系统路径里。\n\n解决方法：关闭 VS Code 重新打开，或者在终端输入 `source ~/.zshrc`', replyTo:{msgId:'h4',author:'马飞',preview:'VS Code 里 Terminal 打不出命令'} },
-      { id:'h6', author:'马飞', time:'16:25', text:'重启 VS Code 之后好了！原来安装完 Node 需要重启编辑器。谢谢张明！', reactions:[{emoji:'👍',count:4}], replyTo:{msgId:'h5',author:'张明',preview:'关闭 VS Code 重新打开'} },
-      { date: '4月14日 周一' },
-      { id:'h7', author:'林小鱼', time:'11:20', text:'**Supabase RLS 导致前端查不到数据**\n\n症状：数据库里明明有数据，但 `supabase.from("table").select()` 返回空数组。\n\n折腾了一个小时了，是不是权限问题？', reactions:[{emoji:'🤔',count:5}], thread:{count:6, authors:['王','张','赵']} },
-      { id:'h8', author:'王大锤', role:'助教', time:'11:25', text:'@林小鱼 经典坑！创建表后默认启用 RLS，但没有添加策略 = 所有人都没有读取权限。\n\n解决：Supabase Dashboard → Authentication → Policies → 给表添加 SELECT policy\n\n我发到踩坑频道了，这个问题太常见了。', reactions:[{emoji:'💡',count:20},{emoji:'👍',count:12}], replyTo:{msgId:'h7',author:'林小鱼',preview:'Supabase RLS 导致前端查不到数据'} },
-      { id:'h9', author:'林小鱼', time:'11:40', text:'解决了！大锤哥 yyds！加了 policy 之后数据就出来了。建议把这个写进 FAQ，肯定还会有人踩。', reactions:[{emoji:'🎉',count:4}], replyTo:{msgId:'h8',author:'王大锤',preview:'创建表后默认启用 RLS'} },
-      { id:'h10', author:'赵薇薇', time:'15:00', text:'**Stripe Webhook 本地调试问题**\n\n按照文档配了 webhook，但 Stripe 发的事件本地一直收不到。用的是 `localhost:3000/api/webhook`，但 Stripe 怎么访问 localhost？', reactions:[{emoji:'🤔',count:4}] },
-      { id:'h11', author:'陈小飞', time:'15:10', text:'@赵薇薇 Stripe 访问不了你的 localhost，需要用 ngrok 或者 Stripe CLI 做转发。\n\n最简单的方式：`stripe listen --forward-to localhost:3000/api/webhook`\n\n安装 Stripe CLI：`brew install stripe/stripe-cli/stripe`', reactions:[{emoji:'💡',count:11},{emoji:'👍',count:7}], replyTo:{msgId:'h10',author:'赵薇薇',preview:'Stripe Webhook 本地调试问题'} },
-      { id:'h12', author:'赵薇薇', time:'15:30', text:'用 Stripe CLI 搞定了！谢谢大飞哥，这种实战经验课程里不一定会讲到。', reactions:[{emoji:'🎉',count:3}], replyTo:{msgId:'h11',author:'陈小飞',preview:'需要用 ngrok 或者 Stripe CLI'} },
-      { date: '4月15日 周二' },
-      { id:'h13', author:'何丽', time:'09:30', text:'**CSS 问题求助**\n\n我用 Tailwind 做了一个卡片布局，但在手机上看完全乱了。用了 `flex` 但不会响应式... 截图如下：\n\n大屏正常，小屏卡片重叠在一起了。', reactions:[{emoji:'🤔',count:2}] },
-      { id:'h14', author:'李思思', time:'09:40', text:'@何丽 你用的是 `flex` 还是 `grid`？推荐用 grid：\n\n`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`\n\n这样手机一列、平板两列、桌面三列，自动响应。', reactions:[{emoji:'💡',count:8},{emoji:'👍',count:5}], replyTo:{msgId:'h13',author:'何丽',preview:'CSS 问题求助'} },
-      { id:'h15', author:'何丽', time:'09:55', text:'啊啊啊 太神奇了一行代码就解决了！Tailwind 真是设计师的福音。谢谢思思！', reactions:[{emoji:'🎉',count:4}], replyTo:{msgId:'h14',author:'李思思',preview:'推荐用 grid'} },
-      { id:'h16', author:'郑涛', time:'14:00', text:'**Vercel 部署报 500 错误**\n\n本地跑得好好的，deploy 到 Vercel 就报 500。Build 日志没有明显错误。有人遇到过吗？\n\n用的是 Next.js 14 + Server Actions。', reactions:[{emoji:'🤔',count:3}], thread:{count:5, authors:['张','周','陈']} },
-      { id:'h17', author:'张明', time:'14:15', text:'@郑涛 大概率是 `next.config.js` 里没加 `serverExternalPackages`。某些 node 模块在 Vercel 的 edge runtime 跑不了。\n\n在 config 里加上：\n`serverExternalPackages: ["你用的包名"]`\n\n我之前也踩了这个坑，浪费了一整个下午。', reactions:[{emoji:'💡',count:10},{emoji:'👍',count:6}], replyTo:{msgId:'h16',author:'郑涛',preview:'Vercel 部署报 500 错误'} },
-      { date: '今天' },
-      { id:'h18', author:'吴小强', time:'08:30', text:'**Claude API 返回 429 错误**\n\n调用 Claude API 的时候经常报 429 Too Many Requests。我用的是免费 tier，是不是有限制？有什么解决办法？' },
-      { id:'h19', author:'王大锤', role:'助教', time:'08:40', text:'@吴小强 429 是限流。免费 tier 确实有限制。解决方案：\n\n1. 加重试逻辑，指数退避\n2. 做缓存，相同请求不重复调用\n3. 升级到付费 tier（推荐，$5/月够用很久）\n\n代码示例我发到踩坑频道了。', reactions:[{emoji:'👍',count:8}], replyTo:{msgId:'h18',author:'吴小强',preview:'Claude API 返回 429 错误'} },
-      { id:'h20', author:'黄小美', time:'10:00', text:'**GitHub 推送被拒绝了**\n\n`git push` 报错 `rejected - non-fast-forward`。我就改了一个文件啊，怎么推不上去？', reactions:[{emoji:'🤔',count:2}] },
-      { id:'h21', author:'周杰', time:'10:10', text:'@黄小美 这是因为远程有你本地没有的提交。先 `git pull --rebase` 再 push 就行了。\n\n以后养成习惯：push 之前先 pull。', reactions:[{emoji:'👍',count:6}], replyTo:{msgId:'h20',author:'黄小美',preview:'GitHub 推送被拒绝了'} },
-    ]
-  },
-  tools: {
-    name: '# 工具测评',
-    desc: '分享你用过的 AI 工具、开发工具，聊聊优缺点和使用心得。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'t1', author:'刘小排', role:'讲师', time:'10:00', text:'给大家整理了一份 **2025 年 AI 编程工具推荐清单**，从代码编辑器到部署平台到数据库。收藏起来，遇到选择困难的时候翻一翻。\n\n编辑器：Cursor > VS Code + Copilot > Windsurf\n部署：Vercel > Netlify > Railway\n数据库：Supabase > PlanetScale > Firebase\nAI：Claude > GPT > Gemini', reactions:[{emoji:'🔥',count:36},{emoji:'❤️',count:18},{emoji:'📝',count:10}], thread:{count:8, authors:['陈','王','李','周']} },
-      { id:'t2', author:'陈小飞', time:'14:23', text:'刚试了 **Cursor** 的新版本，Tab 补全的准确率提升很明显，尤其是写 React 组件的时候。但内存占用也上去了，8G 的机器有点吃力。', reactions:[{emoji:'👍',count:15}], thread:{count:8, authors:['周','赵','陈','林']} },
-      { id:'t3', author:'王大锤', role:'助教', time:'15:01', text:'有没有人用过 **v0.dev**？上周用它生成了一个 landing page，效果超预期。配合 shadcn/ui 可以直接导入组件，这个工作流太丝滑了。', reactions:[{emoji:'👍',count:8},{emoji:'💡',count:5}] },
-      { date: '4月14日 周一' },
-      { id:'t4', author:'李思思', time:'09:38', text:'v0 我也在用，配合 Shadcn 确实丝滑。不过我发现直接用 **Claude** 写组件反而更可控。v0 生成的代码有时候嵌套太深，改起来很痛苦。', reactions:[{emoji:'💯',count:6}] },
-      { id:'t5', author:'张明', time:'11:30', text:'分享一个发现：**Bolt.new** 现在支持直接部署到 Netlify。我昨天 2 小时从零到上线了一个小工具。\n\n不过代码质量确实不如 Cursor + Claude 的组合。适合 MVP 验证，不适合长期维护。', reactions:[{emoji:'👍',count:10},{emoji:'🔥',count:5}], thread:{count:4, authors:['周','李','黄']} },
-      { id:'t6', author:'周杰', time:'14:00', text:'字节内部现在很多团队在用 **Claude Code CLI**。直接在终端里让 AI 改代码、跑测试、写 PR 描述。效率比 IDE 插件还高。\n\n缺点是学习曲线比较陡，不适合纯新手。', reactions:[{emoji:'🔥',count:13},{emoji:'👍',count:7}] },
-      { id:'t7', author:'何丽', time:'15:30', text:'设计师视角推荐一波工具：\n\n1. **v0.dev** — 文字转 UI，出图比我画的还好看（扎心）\n2. **Figma AI** — 自动布局、自动填色\n3. **Midjourney** — 做 hero image 和 banner\n4. **Remove.bg** — 抠图效率提升 10 倍', reactions:[{emoji:'❤️',count:12},{emoji:'💡',count:6}] },
-      { date: '4月15日 周二' },
-      { id:'t8', author:'赵薇薇', time:'10:15', text:'推荐一个宝藏工具：**Supabase 的 AI SQL 编辑器**。用自然语言描述你想要什么数据，它帮你写 SQL。对不熟悉 SQL 的同学简直是救星。', reactions:[{emoji:'💡',count:14},{emoji:'👍',count:9}], thread:{count:3, authors:['林','瓜']} },
-      { id:'t9', author:'孙大伟', time:'11:00', text:'试了一下 **Lovable**（原 GPT Engineer），跟 Bolt 类似但代码质量稍好。适合快速做落地页和简单 CRUD。\n\n但说实话，用惯了 Cursor 之后很难回去用这些"一键生成"的工具。控制力差太多。', reactions:[{emoji:'👍',count:7}] },
-      { id:'t10', author:'马飞', time:'14:00', text:'做教育工具的同学看过来！**Excalidraw** 这个白板工具真的好用，可以嵌入到自己的产品里。而且开源的，随便改。我拿来做了一个数学题画图工具。', reactions:[{emoji:'💡',count:8},{emoji:'❤️',count:4}] },
-      { id:'t11', author:'郑涛', time:'16:00', text:'数据分析相关工具推荐：\n\n1. **Recharts** — React 图表库，API 简单\n2. **Tremor** — 现成的 dashboard 组件\n3. **Observable** — 数据可视化探索\n\n前两个配合 Tailwind 用起来很舒服。', reactions:[{emoji:'📝',count:6},{emoji:'👍',count:4}] },
-      { date: '今天' },
-      { id:'t12', author:'周杰', time:'09:00', text:'昨天发现 **Claude Code** 可以直接连 GitHub，一句话帮你 review PR、写测试、生成文档。这个效率提升是指数级的。\n\n我周末用它重构了一个 2000 行的文件，本来以为要花一天，结果 2 小时搞定。', reactions:[{emoji:'🔥',count:16},{emoji:'👀',count:8}] },
-      { id:'t13', author:'黄小美', time:'09:30', text:'求推荐适合学生用的免费工具！Cursor 的免费额度我已经用完了 😭', reactions:[{emoji:'🤔',count:3}] },
-      { id:'t14', author:'王大锤', role:'助教', time:'09:45', text:'@黄小美 免费方案：\n1. VS Code + Copilot（学生免费）\n2. Claude.ai 免费 tier 够用\n3. Supabase 免费 tier 很够\n4. Vercel hobby 计划免费\n\n基本上 $0 就能搞定全套。', reactions:[{emoji:'❤️',count:12},{emoji:'👍',count:8}], replyTo:{msgId:'t13',author:'黄小美',preview:'求推荐适合学生用的免费工具'} },
-      { id:'t15', author:'吴小强', time:'10:30', text:'PM 转码实测报告：作为 10 年 PM 第一次写代码，**Cursor + Claude** 这个组合拳真的是降维打击。我描述需求，AI 写代码，我验收。跟以前带团队写 PRD 差不多。', reactions:[{emoji:'😂',count:14},{emoji:'🔥',count:7}] },
-      { id:'t16', author:'刘小排', role:'讲师', time:'11:00', text:'补充一个被低估的工具：**Vercel AI SDK**。如果你要做 AI 产品，强烈建议直接用这个。Streaming、Tool Calling、Provider 切换都封装好了。比自己手搓强 10 倍。', reactions:[{emoji:'💡',count:11},{emoji:'👍',count:7}] },
-      { id:'t17', author:'陈小飞', time:'14:00', text:'**Cursor 配置经验分享**：\n\n1. 排除 node_modules 和 .git（省 2G 内存）\n2. 启用 .cursorrules 文件\n3. 设置项目技术栈说明\n4. 关掉不必要的插件\n\n做完这些之后体验提升很大。', reactions:[{emoji:'📝',count:10},{emoji:'👍',count:8}] },
-      { id:'t18', author:'林小鱼', time:'15:00', text:'有人用过 **Framer** 吗？我觉得做 landing page 比 Next.js 简单多了... 还是说正经产品就不该用这种工具？', reactions:[{emoji:'🤔',count:4}] },
-      { id:'t19', author:'孙大伟', time:'15:20', text:'Framer 做营销页面很好，但做应用不行。建议：landing page 用 Framer，产品用 Next.js，两不耽误。', replyTo:{msgId:'t18',author:'林小鱼',preview:'有人用过 Framer 吗'} },
-      { id:'t20', author:'张明', time:'16:00', text:'最新一期 State of JS 2025 调查出来了，Cursor 用户满意度排名第一，超过了 VS Code。时代真的变了。', reactions:[{emoji:'👀',count:9},{emoji:'🔥',count:5}] },
-    ]
-  },
-  pitfalls: {
-    name: '# 踩坑经验',
-    desc: 'Bug、配置、部署、支付... 把你踩过的坑记录下来，帮后来人少走弯路。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'p1', author:'王大锤', role:'助教', time:'14:00', text:'整理了一份 **Stripe 中国开发者常见问题汇总**：\n\n1. 注册地区选香港或新加坡\n2. 测试模式用 `pk_test_` 开头的 key\n3. Webhook 本地调试用 Stripe CLI\n4. 人民币结算需要额外配置\n5. 个人开发者可以用，但提现有门槛\n\n都是群里反复出现的问题。', reactions:[{emoji:'❤️',count:28},{emoji:'🔥',count:14},{emoji:'📝',count:10}], thread:{count:8, authors:['张','林','赵','陈']} },
-      { id:'p2', author:'张明', time:'16:00', text:'**坑：环境变量在 Vercel 和本地不同步**\n\n本地 `.env.local` 里的变量不会自动同步到 Vercel。需要在 Vercel Dashboard 里手动添加。\n\n血泪教训：我在 .env.local 里改了 API key，本地正常，线上崩了。排查了两小时才发现。', reactions:[{emoji:'👍',count:11},{emoji:'🙏',count:5}] },
-      { date: '4月14日 周一' },
-      { id:'p3', author:'赵薇薇', time:'09:00', text:'**坑：Stripe Checkout 的 success_url 必须是绝对路径**\n\n我写了 `/success`，结果支付完一直跳转失败。改成 `https://你的域名/success` 才行。\n\n文档里其实写了，但我没仔细看...', reactions:[{emoji:'👍',count:8},{emoji:'😂',count:3}] },
-      { id:'p4', author:'林小鱼', time:'11:20', text:'**坑：Supabase RLS 导致前端查不到数据**\n\n症状：数据库里有数据，`supabase.from("table").select()` 返回空数组。\n\n原因：创建表后默认启用 RLS 但没添加策略 = 所有人都没权限。\n\n解决：Dashboard → Authentication → Policies → 添加 SELECT policy。', reactions:[{emoji:'💡',count:22},{emoji:'👍',count:14},{emoji:'🙏',count:7}], thread:{count:6, authors:['赵','王','张','瓜']} },
-      { id:'p5', author:'张明', time:'16:30', text:'**坑：Vercel 部署 Next.js 14 的 Server Actions 报 500**\n\n原因：`next.config.js` 里没加 `serverExternalPackages`，某些 node 模块在 edge runtime 跑不了。\n\n解决：`serverExternalPackages: ["你的包名"]`\n\n浪费了整整一个下午...', reactions:[{emoji:'👍',count:16},{emoji:'🙏',count:8}], thread:{count:5, authors:['李','周','陈']} },
-      { date: '4月15日 周二' },
-      { id:'p6', author:'周杰', time:'10:00', text:'**坑：Next.js App Router 里用 `use client` 的时机**\n\n不是所有组件都需要加 `"use client"`。只有用了 useState、useEffect、onClick 这些浏览器 API 的组件才需要。\n\n加多了会让你的页面变慢（失去 SSR 优势），加少了会报错。', reactions:[{emoji:'💡',count:13},{emoji:'👍',count:8}] },
-      { id:'p7', author:'赵薇薇', time:'14:00', text:'**坑：Tailwind CSS v4 和 v3 的配置完全不同**\n\nv4 不再用 `tailwind.config.js`，改成在 CSS 文件里用 `@import` 和 `@theme`。\n\n如果你按 v3 的教程配置会发现样式全部失效。\n\n检查方法：看 `package.json` 里 tailwindcss 的版本号。', reactions:[{emoji:'👍',count:9},{emoji:'💡',count:5}] },
-      { id:'p8', author:'孙大伟', time:'16:00', text:'**坑：Claude API 的 system prompt 有 token 限制**\n\n我把整个项目文档都塞进 system prompt 里，结果报 400 错误。\n\n解决：system prompt 控制在 4000 tokens 以内，长文档用 RAG 或者放到 user message 里。', reactions:[{emoji:'💡',count:7},{emoji:'👍',count:4}] },
-      { id:'p9', author:'马飞', time:'20:00', text:'**坑：Git 提交了 `.env` 文件**\n\n第一次用 Git，忘了加 `.gitignore`，把 API key 推到了 GitHub... 吓出一身冷汗。\n\n紧急处理：1. 立刻删除文件并 push 2. 去各平台重置 API key 3. 加上 `.gitignore`\n\n新手千万注意这个！', reactions:[{emoji:'😱',count:12},{emoji:'👍',count:8},{emoji:'🙏',count:5}] },
-      { id:'p10', author:'陈小飞', time:'20:30', text:'补充一个：就算你从 Git 历史里删了 .env，别人还是可以从历史记录里看到。所以 key 泄露了就必须重置，别心存侥幸。', replyTo:{msgId:'p9',author:'马飞',preview:'Git 提交了 .env 文件'} },
-      { date: '今天' },
-      { id:'p11', author:'黄小美', time:'08:30', text:'**坑：npm 全局安装的包找不到**\n\n装了 `npm install -g create-next-app`，但跑 `create-next-app` 报 command not found。\n\n原因：npm 的全局 bin 目录不在 PATH 里。\n\n解决：`npm config get prefix` 找到目录，加到 `~/.zshrc` 的 PATH 里。', reactions:[{emoji:'👍',count:6}] },
-      { id:'p12', author:'何丽', time:'09:00', text:'**坑：CSS `position: fixed` 在移动端的坑**\n\n做了一个固定底部导航栏，桌面正常，手机上被键盘顶上去了。\n\n解决：用 `position: sticky` 代替，或者加 `height: 100dvh` 配合 `overflow: auto`。', reactions:[{emoji:'💡',count:5},{emoji:'👍',count:3}] },
-      { id:'p13', author:'张明', time:'09:33', text:'**坑：ngrok 免费版域名每次重启会变**\n\n在 Stripe 配了 webhook URL，重启 ngrok 之后 webhook 就收不到了。\n\n建议：用 `ngrok http --url=你的固定域名` 或直接升级。开发阶段推荐 Stripe CLI 替代 ngrok。', reactions:[{emoji:'👍',count:5},{emoji:'😂',count:7}] },
-      { id:'p14', author:'郑涛', time:'10:00', text:'**坑：Supabase 的 timestamp 默认是 UTC**\n\n存进去北京时间 14:00，取出来变成 06:00。因为 Supabase 默认用 UTC 存储。\n\n解决：前端显示时做时区转换，或者存的时候统一用 UTC + 前端转换。', reactions:[{emoji:'💡',count:6},{emoji:'👍',count:4}] },
-      { id:'p15', author:'吴小强', time:'14:00', text:'**坑：用 AI 写代码后不检查就直接提交**\n\n AI 写的代码看着对，但经常有隐藏 bug。比如 API key 写死在前端代码里、SQL 注入漏洞、无限循环等。\n\n经验：AI 写完后一定要自己 review 一遍。特别是涉及安全的部分。', reactions:[{emoji:'👍',count:15},{emoji:'💯',count:8}] },
-      { id:'p16', author:'王大锤', role:'助教', time:'14:30', text:'吴哥这条非常重要！置顶级的经验。AI 是很好的助手，但它不会为你的 bug 负责。', reactions:[{emoji:'❤️',count:6}], replyTo:{msgId:'p15',author:'吴小强',preview:'用 AI 写代码后不检查就直接提交'} },
-      { id:'p17', author:'瓜哥', time:'15:00', text:'**坑：终端里复制粘贴的命令前面有空格**\n\n从教程复制命令到终端，一直报错。最后发现是命令前面多了一个不可见的空格字符。\n\n太离谱了但确实是我遇到的问题 😭', reactions:[{emoji:'😂',count:14},{emoji:'🤝',count:5}] },
-    ]
-  },
-  prompt: {
-    name: '# Prompt 技巧',
-    desc: 'Prompt Engineering 的经验、技巧、最佳实践。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'pr1', author:'刘小排', role:'讲师', time:'09:00', text:'分享一个核心 prompt 技巧：**让 AI 先分析再执行**。\n\n不要说"帮我写一个登录页"。\n而是说"先分析项目的技术栈、现有组件和样式，然后写一个风格一致的登录页"。\n\n差别巨大。前者可能给你写一个和项目完全不搭的东西，后者会先理解上下文再动手。', reactions:[{emoji:'🔥',count:28},{emoji:'💡',count:16},{emoji:'📝',count:9}] },
-      { id:'pr2', author:'王大锤', role:'助教', time:'14:00', text:'**Claude System Prompt 四要素模板**：\n\n1. 角色定义 — 你是什么\n2. 上下文 — 项目背景\n3. 约束条件 — 不能做什么\n4. 输出格式 — 要怎么回答\n\n按这四步写，prompt 效果提升 50% 以上。', reactions:[{emoji:'📝',count:14},{emoji:'👍',count:10}] },
-      { date: '4月14日 周一' },
-      { id:'pr3', author:'李思思', time:'08:45', text:'实测有效的技巧：在 prompt 里加"**写测试**"。\n\n让 AI 同时写代码和测试，会迫使它思考边界情况。我之前让它只写功能代码，经常有 bug；加上测试要求后，质量明显提升。', reactions:[{emoji:'💡',count:15},{emoji:'👍',count:8}] },
-      { id:'pr4', author:'陈小飞', time:'10:00', text:'分享我的 **.cursorrules 模板**：\n\n```\n你是一个资深全栈工程师\n技术栈：Next.js 14, TypeScript, Tailwind, Supabase\n代码风格：简洁、可读、有注释\n组件规范：每个文件一个组件，props 用 TypeScript 接口\n错误处理：所有 API 调用都要 try-catch\n```\n\n用了之后 Cursor 生成的代码质量好了很多。', reactions:[{emoji:'🔥',count:19},{emoji:'📝',count:11}] },
-      { id:'pr5', author:'张明', time:'14:30', text:'进阶技巧：**Chain of Thought（思维链）**\n\n遇到复杂需求，不要一步到位。把任务拆成小步骤让 AI 逐步执行：\n\n"第一步：分析现有数据库结构\n第二步：设计新的表结构\n第三步：写 migration\n第四步：写 API\n第五步：写前端页面"\n\n比"帮我做一个用户管理系统"有效得多。', reactions:[{emoji:'💡',count:13},{emoji:'👍',count:7}] },
-      { date: '4月15日 周二' },
-      { id:'pr6', author:'周杰', time:'09:30', text:'字节内部的 prompt 最佳实践：**Few-shot 示例**\n\n给 AI 一两个你期望的输入输出示例，它就能举一反三。比纯文字描述准确率高 3 倍。\n\n特别适合格式化输出、数据转换这类任务。', reactions:[{emoji:'🔥',count:10},{emoji:'💡',count:6}] },
-      { id:'pr7', author:'赵薇薇', time:'11:00', text:'翻译领域的 prompt 心得：\n\n"请用**商务英语**重写以下邮件，保持**专业但友好**的语气，注意以下要点：1) 避免中式英语 2) 用短句 3) 主动语态"\n\n关键词加粗 + 具体要求列表，效果远好于"帮我翻译这封邮件"。', reactions:[{emoji:'💡',count:9},{emoji:'📝',count:5}] },
-      { id:'pr8', author:'孙大伟', time:'15:00', text:'**负面 prompt 很有用**：告诉 AI 不要做什么。\n\n"不要用 class 组件，只用函数组件"\n"不要用 any 类型"\n"不要生成注释过多的代码"\n\n有时候说"不要"比说"要"更精准。', reactions:[{emoji:'👍',count:8},{emoji:'💡',count:4}] },
-      { date: '今天' },
-      { id:'pr9', author:'马飞', time:'08:00', text:'教育领域的 prompt 分享：让 AI 出题的时候加上 **"请按布鲁姆认知层次出题"**，它就会自动出记忆、理解、应用、分析等不同层次的题目。专业的教学设计 prompt 加持效果很惊人。', reactions:[{emoji:'🔥',count:11},{emoji:'💡',count:7}] },
-      { id:'pr10', author:'何丽', time:'09:30', text:'设计师的 prompt 秘诀：让 AI 生成 UI 的时候，给它一个 **设计系统描述**：\n\n"使用 8px 间距系统，圆角 8px，主色 teal-600，灰度用 slate 系列，字体 14/16/20/24 四档"\n\n比说"做一个好看的页面"有用 100 倍。', reactions:[{emoji:'💡',count:10},{emoji:'❤️',count:5}] },
-      { id:'pr11', author:'刘小排', role:'讲师', time:'10:00', text:'今天分享一个高级技巧：**让 AI 扮演你的用户**。\n\n"假设你是一个不懂技术的小白用户，尝试使用这个产品。指出所有你觉得困惑、不直觉、需要额外解释的地方。"\n\n这个 prompt 帮我发现了很多 UX 问题。', reactions:[{emoji:'🔥',count:14},{emoji:'💡',count:8}] },
-      { id:'pr12', author:'林小鱼', time:'14:00', text:'PM 视角的 prompt：让 AI 写 PRD 的时候加上 **"请包含用户故事、验收标准和边界情况"**。AI 会自动帮你想到很多你没考虑到的场景。', reactions:[{emoji:'👍',count:6},{emoji:'📝',count:4}] },
-      { id:'pr13', author:'郑涛', time:'16:00', text:'数据分析的 prompt：\n\n"分析这组数据时，请先说明你的分析思路，然后给出 3 个关键发现，每个发现附上支持数据。最后给出 1-2 个可操作的建议。"\n\n结构化输出 = 高质量结果。', reactions:[{emoji:'💡',count:7},{emoji:'👍',count:4}] },
-    ]
-  },
-  payment: {
-    name: '# 支付变现',
-    desc: 'Stripe、微信支付、定价策略、收款经验，和钱相关的都在这里。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'pay1', author:'刘小排', role:'讲师', time:'10:00', text:'**支付变现入门指南**：\n\n个人开发者最推荐的支付方案：\n- 海外用户 → Stripe（首选）或 LemonSqueezy\n- 国内用户 → 虎皮椒 / 面包多 / 爱发电\n- 两边都有 → LemonSqueezy（支持多币种）\n\n不要在支付上花太多时间，选一个先用起来。', reactions:[{emoji:'🔥',count:24},{emoji:'📝',count:12},{emoji:'👍',count:9}] },
-      { id:'pay2', author:'王大锤', role:'助教', time:'14:00', text:'Stripe 注册指南（避坑版）：\n\n1. 地区选香港或新加坡（大陆用不了）\n2. 需要对应地区的银行账户或 Wise 账户\n3. 先用测试模式，不要急着上线真实支付\n4. Webhook 一定要配，不然订单状态会不同步', reactions:[{emoji:'👍',count:18},{emoji:'💡',count:7}] },
-      { date: '4月14日 周一' },
-      { id:'pay3', author:'赵薇薇', time:'15:00', text:'请问大家的 SaaS 产品一般怎么定价？我做了个小工具，不知道收 $5/月还是 $10/月。怕定高了没人用，定低了不赚钱...', reactions:[{emoji:'🤔',count:8}], thread:{count:6, authors:['刘','王','陈','孙']} },
-      { id:'pay4', author:'陈小飞', time:'16:00', text:'**我的定价策略**：\n\n免费版（有限次数）→ $9/月（个人）→ $29/月（团队）\n\n关键心得：\n1. 一定要有免费版，降低使用门槛\n2. 个人版价格不超过一杯星巴克\n3. 团队版才是利润大头\n4. 年付打 8 折，提高 LTV', reactions:[{emoji:'🔥',count:14},{emoji:'📝',count:8}] },
-      { id:'pay5', author:'孙大伟', time:'20:00', text:'分享我的第一笔收入经历：\n\n上线第一天：0 用户\n第三天：发了一条小红书，来了 50 个注册\n第五天：第一个付费用户！$5\n第七天：3 个付费用户\n\n虽然不多，但从 0 到 1 的突破太重要了。关键是敢定价、敢收费。', reactions:[{emoji:'🎉',count:20},{emoji:'💪',count:11},{emoji:'💰',count:7}] },
-      { date: '4月15日 周二' },
-      { id:'pay6', author:'林小鱼', time:'10:30', text:'有人用过 **LemonSqueezy** 吗？看起来比 Stripe 对个人开发者更友好，不需要海外银行账户？', reactions:[{emoji:'👀',count:6}] },
-      { id:'pay7', author:'周杰', time:'10:45', text:'LemonSqueezy 我在用，确实更友好。支持 Paypal、信用卡，提现可以到 Paypal。\n\n但手续费比 Stripe 高一点（5% vs 2.9%）。量大了还是 Stripe 划算。', reactions:[{emoji:'💡',count:8},{emoji:'👍',count:4}], replyTo:{msgId:'pay6',author:'林小鱼',preview:'有人用过 LemonSqueezy 吗'} },
-      { id:'pay8', author:'何丽', time:'14:00', text:'做设计工具的朋友们，你们收费模式是按次还是按月？\n\n我的配色工具不知道该按生成次数收费还是包月。', reactions:[{emoji:'🤔',count:3}] },
-      { id:'pay9', author:'刘小排', role:'讲师', time:'14:30', text:'@何丽 建议包月 + 用量限制。比如 $5/月 50 次，超出额外收费。\n\n纯按次收费用户心理压力大（每次都在想值不值），包月给人安全感。', reactions:[{emoji:'💡',count:10},{emoji:'👍',count:6}], replyTo:{msgId:'pay8',author:'何丽',preview:'收费模式是按次还是按月'} },
-      { date: '今天' },
-      { id:'pay10', author:'陈小飞', time:'09:00', text:'里程碑！**AI 周报生成器月收入破 $1000 了** 💰\n\n20 个付费团队用户，全部口碑传播。核心心得：B2B 比 B2C 好赚钱，企业付费意愿强得多。', reactions:[{emoji:'🎉',count:32},{emoji:'🔥',count:16},{emoji:'💰',count:12}] },
-      { id:'pay11', author:'马飞', time:'10:00', text:'教育类工具怎么变现？家长愿意为孩子花钱，但学校采购流程太长了...', reactions:[{emoji:'🤔',count:4}] },
-      { id:'pay12', author:'孙大伟', time:'10:30', text:'@马飞 建议先 C 端验证。做一个家长直接买的版本，客单价 ¥9.9-29.9。有了用户数据再去谈 B 端。\n\n教育类产品的黄金公式：免费试用 3 天 → 解锁价 ¥19.9/月', reactions:[{emoji:'💡',count:7},{emoji:'👍',count:4}], replyTo:{msgId:'pay11',author:'马飞',preview:'教育类工具怎么变现'} },
-      { id:'pay13', author:'郑涛', time:'15:00', text:'数据分析 SaaS 的定价参考：\n\n个人版 $19/月 | 团队版 $49/月/人 | 企业版联系销售\n\n关键指标：CAC < 月费的 3 倍，churn rate < 5%', reactions:[{emoji:'📝',count:5},{emoji:'💡',count:3}] },
-    ]
-  },
-  news: {
-    name: '# 行业资讯',
-    desc: 'AI、编程、创业相关的新闻和讨论。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'n1', author:'张明', time:'08:30', text:'**Anthropic 发布 Claude Opus 4** — 推理能力据说翻倍，编程任务表现超越所有对手。各位可以升级试试。', reactions:[{emoji:'🔥',count:18},{emoji:'👀',count:12}], thread:{count:5, authors:['周','赵','陈']} },
-      { id:'n2', author:'周杰', time:'09:00', text:'字节内部已经全面切换到 Opus 4 了。代码生成质量确实又上了一个台阶，特别是理解复杂业务逻辑的能力。', replyTo:{msgId:'n1',author:'张明',preview:'Anthropic 发布 Claude Opus 4'} },
-      { id:'n3', author:'刘小排', role:'讲师', time:'10:00', text:'**Vercel 发布 AI SDK 4.0**\n\n原生支持 streaming UI、tool calling、provider 切换。做 AI 产品的同学必须关注这个。\n\n核心升级：多 provider 切换只需改一行代码，从 Claude 切到 GPT 无缝。', reactions:[{emoji:'🔥',count:14},{emoji:'👍',count:8}] },
-      { date: '4月14日 周一' },
-      { id:'n4', author:'陈小飞', time:'09:00', text:'Y Combinator 最新一期有 30% 的项目是 AI 原生产品。这个比例比去年翻了一倍。AI 创业的窗口期越来越短了。', reactions:[{emoji:'👀',count:10},{emoji:'🔥',count:5}] },
-      { id:'n5', author:'李思思', time:'11:00', text:'Figma 宣布收购一家 AI 设计初创公司，准备把 AI 设计能力深度集成。作为设计师，有点兴奋又有点慌。', reactions:[{emoji:'👀',count:7},{emoji:'🤔',count:4}] },
-      { id:'n6', author:'孙大伟', time:'14:00', text:'Product Hunt 上线了 AI 产品分类标签，每天上榜的产品有 60% 是 AI 相关的。竞争越来越激烈了。', reactions:[{emoji:'📝',count:3}] },
-      { date: '4月15日 周二' },
-      { id:'n7', author:'张明', time:'09:00', text:'**GitHub Copilot 免费版来了**！VS Code 用户直接就能用。不过功能有限制：每月 2000 次补全 + 50 次聊天。\n\n对学生来说够用了，Pro 版本 $10/月。', reactions:[{emoji:'🔥',count:12},{emoji:'👍',count:7}] },
-      { id:'n8', author:'赵薇薇', time:'11:00', text:'看到一个数据：2025 年全球 AI SaaS 市场规模预计 $680B，比去年增长 40%。做 AI 产品真的是站在风口上。', reactions:[{emoji:'🔥',count:6},{emoji:'👀',count:4}] },
-      { id:'n9', author:'周杰', time:'15:00', text:'Cursor 据说在准备 B 轮融资，估值 $10B。一个编辑器值 100 亿美金，AI 时代的疯狂。', reactions:[{emoji:'👀',count:11},{emoji:'🔥',count:5}] },
-      { date: '今天' },
-      { id:'n10', author:'刘小排', role:'讲师', time:'08:00', text:'**Supabase 推出 AI Assistant**\n\n可以用自然语言创建表、写查询、配置 RLS。对新手超级友好，基本不用学 SQL 了。\n\n这正是我们一直在等的工具。', reactions:[{emoji:'🔥',count:15},{emoji:'💡',count:9}] },
-      { id:'n11', author:'马飞', time:'09:00', text:'教育部刚发文：鼓励中小学开展 AI 教育实验。做教育 AI 工具的同学们，政策东风来了！', reactions:[{emoji:'🔥',count:8},{emoji:'👀',count:5}] },
-      { id:'n12', author:'吴小强', time:'10:30', text:'McKinsey 报告：到 2027 年，50% 的代码将由 AI 生成。作为 PM，突然觉得学写代码这个决定太对了。', reactions:[{emoji:'👀',count:9},{emoji:'💯',count:4}] },
-      { id:'n13', author:'郑涛', time:'14:00', text:'Stripe 推出了 AI 防欺诈系统 Radar AI，基于 GPT 的实时交易风控。集成很简单，一行代码开启。做支付的同学可以关注。', reactions:[{emoji:'💡',count:5},{emoji:'👍',count:3}] },
-    ]
-  },
-  resources: {
-    name: '# 资源推荐',
-    desc: '好文章、好教程、好工具，看到好东西就丢进来。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'r1', author:'刘小排', role:'讲师', time:'09:00', text:'推荐：**《How to Build a SaaS in 2025》** — 从选品到变现的完整指南。\n\n核心观点：2025 年做 SaaS 门槛已降到"会用 AI + 有痛点"。不需要是技术专家，需要的是对问题的深度理解。\n\n必读。', reactions:[{emoji:'🔥',count:24},{emoji:'📝',count:12},{emoji:'❤️',count:8}] },
-      { id:'r2', author:'王大锤', role:'助教', time:'14:00', text:'**新手必看资源清单**：\n\n1. Next.js 官方教程 — learn.nextjs.org\n2. Supabase YouTube 频道\n3. Tailwind CSS 速查表 — tailwindcomponents.com\n4. Stripe 官方文档（写得真好）\n5. Claude 官方 cookbook\n\n先别看别的，把这 5 个过一遍就够了。', reactions:[{emoji:'❤️',count:20},{emoji:'👍',count:16},{emoji:'📝',count:9}] },
-      { date: '4月14日 周一' },
-      { id:'r3', author:'陈小飞', time:'10:00', text:'推荐 YouTube 频道：**Fireship** — 讲技术概念特别简洁，每个视频 100 秒搞定一个知识点。适合碎片时间学习。', reactions:[{emoji:'🔥',count:13},{emoji:'❤️',count:6}] },
-      { id:'r4', author:'张明', time:'11:00', text:'**GitHub 模板推荐**：Next.js + Supabase + Stripe Starter\n\n包含认证、支付、dashboard，fork 就能用。省至少 2 天搭建时间。\n\n适合做 SaaS 产品的同学。', reactions:[{emoji:'🔥',count:16},{emoji:'👍',count:10}] },
-      { id:'r5', author:'黄小美', time:'15:00', text:'分享一个对新手友好的 React 教程：**react.dev** 的新版文档。比旧版好太多了，有交互式练习。', reactions:[{emoji:'👍',count:8},{emoji:'❤️',count:4}] },
-      { date: '4月15日 周二' },
-      { id:'r6', author:'周杰', time:'09:00', text:'开源项目推荐：**cal.com** — 开源的日历预约工具。代码质量很高，适合学习 Next.js + Prisma 的最佳实践。', reactions:[{emoji:'📝',count:6},{emoji:'👍',count:4}] },
-      { id:'r7', author:'何丽', time:'11:00', text:'设计资源分享：\n\n1. **Dribbble** — 找 UI 灵感\n2. **Mobbin** — 真实 App 截图库\n3. **Untitled UI** — 免费 Figma 设计系统\n4. **Heroicons** — 和 Tailwind 配套的图标库', reactions:[{emoji:'❤️',count:10},{emoji:'📝',count:5}] },
-      { id:'r8', author:'李思思', time:'14:00', text:'推荐播客：**Indie Hackers Podcast**。每期采访一个独立开发者，聊产品、聊增长、聊变现。听了之后特别有动力做东西。', reactions:[{emoji:'🔥',count:7},{emoji:'❤️',count:4}] },
-      { date: '今天' },
-      { id:'r9', author:'孙大伟', time:'09:00', text:'**免费图片资源**推荐：\n\n1. Unsplash — 高质量照片\n2. Pexels — 照片+视频\n3. Illustrations.co — 插画\n4. Phosphor Icons — 图标库\n\n做产品不用再为找素材发愁了。', reactions:[{emoji:'📝',count:8},{emoji:'👍',count:5}] },
-      { id:'r10', author:'刘小排', role:'讲师', time:'10:00', text:'重磅推荐：Anthropic 官方的 **Claude Code Tutorial**。手把手教你用 Claude Code CLI 做一个完整的 Web 应用。\n\n这是我见过的最好的 AI 编程入门教程，没有之一。', reactions:[{emoji:'🔥',count:18},{emoji:'❤️',count:10}] },
-      { id:'r11', author:'黄小美', time:'14:00', text:'今天整理了直播课的思维导图，发出来给大家参考。用 Excalidraw 画的，涵盖了课程的核心知识结构。', reactions:[{emoji:'❤️',count:12},{emoji:'👍',count:8}] },
-    ]
-  },
-  chill: {
-    name: '# 摸鱼闲聊',
-    desc: '不聊代码，聊生活。工作累了来这里透口气。',
-    messages: [
-      { date: '4月13日 周日' },
-      { id:'c1', author:'周杰', time:'10:00', text:'周末了大家在干嘛？我在阳台上晒太阳撸猫，人生巅峰。', reactions:[{emoji:'😂',count:8},{emoji:'🐱',count:6}] },
-      { id:'c2', author:'何丽', time:'10:20', text:'在咖啡厅写代码！发现一个宝藏咖啡厅，安静 + WiFi 快 + 美式只要 15 块。坐标北京朝阳。', reactions:[{emoji:'☕',count:9},{emoji:'📝',count:3}] },
-      { id:'c3', author:'林小鱼', time:'10:45', text:'我在追一部日剧《重启人生》，好好看。讲一个人反复重启人生的故事。边追剧边想：如果我能重启，第一件事就是大学学计算机 😂', reactions:[{emoji:'😂',count:12},{emoji:'❤️',count:5}] },
-      { id:'c4', author:'瓜哥', time:'11:00', text:'有没有人推荐好喝的咖啡豆？我刚买了手冲壶想自己做，但不知道买什么豆子。', reactions:[{emoji:'☕',count:7}] },
-      { id:'c5', author:'张明', time:'11:15', text:'新手推荐云南的豆子，果味明显，容错率高。淘宝搜"云南精品咖啡"就有。', replyTo:{msgId:'c4',author:'瓜哥',preview:'推荐好喝的咖啡豆'} },
-      { id:'c6', author:'陈小飞', time:'11:30', text:'推荐三顿半，小白友好。或者隅田川挂耳，懒人首选。', replyTo:{msgId:'c4',author:'瓜哥',preview:'推荐好喝的咖啡豆'} },
-      { date: '4月14日 周一' },
-      { id:'c7', author:'赵薇薇', time:'12:30', text:'午休时间来分享今天的午饭：自己做的三文鱼牛油果沙拉。自从开始写代码，越来越懒得出门吃饭了 🥗', reactions:[{emoji:'🤤',count:8},{emoji:'😂',count:4}] },
-      { id:'c8', author:'马飞', time:'12:45', text:'你们都自己做饭？我自从写代码之后基本外卖 + 泡面。生活质量严重下降 😅', reactions:[{emoji:'😂',count:14}] },
-      { id:'c9', author:'黄小美', time:'13:00', text:'大学生表示：食堂 yyds。6 块钱吃饱，省下来的钱买 Cursor 会员 😂', reactions:[{emoji:'😂',count:18},{emoji:'💯',count:5}] },
-      { id:'c10', author:'孙大伟', time:'20:00', text:'写了一天代码，出门遛弯放松。发现小区的流浪猫生了四只小猫！超级可爱。想领养一只但怕自己太忙照顾不来...', reactions:[{emoji:'🐱',count:12},{emoji:'❤️',count:8}] },
-      { id:'c11', author:'何丽', time:'20:30', text:'领！养！它！猫是程序员最好的伴侣。我家那只每天趴在键盘上陪我写代码（虽然经常踩到回车键...）', reactions:[{emoji:'😂',count:11},{emoji:'🐱',count:7}], replyTo:{msgId:'c10',author:'孙大伟',preview:'想领养一只'} },
-      { date: '4月15日 周二' },
-      { id:'c12', author:'吴小强', time:'09:00', text:'早上做了一件以前从没做过的事：6 点起床跑步。写代码之后发现自己越来越宅了，必须强迫自己运动。', reactions:[{emoji:'💪',count:9},{emoji:'👍',count:5}] },
-      { id:'c13', author:'李思思', time:'09:30', text:'工作 vs 学习 vs 生活，怎么平衡？我白天上班做设计，晚上学代码，周末还要社交... 感觉时间完全不够用。', reactions:[{emoji:'🤔',count:6},{emoji:'❤️',count:4}] },
-      { id:'c14', author:'刘小排', role:'讲师', time:'09:45', text:'@李思思 别太卷。学编程不是冲刺，是马拉松。每天 1 小时比偶尔猛学 8 小时有效得多。\n\n而且休息好了，学习效率反而高。', reactions:[{emoji:'❤️',count:16},{emoji:'👍',count:9}], replyTo:{msgId:'c13',author:'李思思',preview:'怎么平衡'} },
-      { date: '今天' },
-      { id:'c15', author:'瓜哥', time:'00:30', text:'凌晨了还在写代码... 明天上班要死了但停不下来。这就是心流吧？', reactions:[{emoji:'😂',count:10},{emoji:'💪',count:4}] },
-      { id:'c16', author:'周杰', time:'01:20', text:'瓜哥你居然还醒着！我也是... 在调一个 bug，越调越清醒。', reactions:[{emoji:'😂',count:7}], replyTo:{msgId:'c15',author:'瓜哥',preview:'凌晨了还在写代码'} },
-      { id:'c17', author:'林小鱼', time:'09:00', text:'周末准备去杭州玩！有杭州的同学推荐景点吗？不要西湖，太游客了 😂', reactions:[{emoji:'🤔',count:3}] },
-      { id:'c18', author:'赵薇薇', time:'09:15', text:'推荐良渚古城遗址！人少景美，适合发呆。还有西溪湿地也不错。', replyTo:{msgId:'c17',author:'林小鱼',preview:'杭州推荐景点'} },
-      { id:'c19', author:'马飞', time:'10:00', text:'分享一个搞笑的事：我班上的学生问我"马老师你怎么突然这么厉害"，我说"老师也在学习新东西"。他说"老师你学的是什么"，我说"编程"。全班沉默了两秒然后爆笑 😂😂😂', reactions:[{emoji:'😂',count:22},{emoji:'❤️',count:8}] },
-      { id:'c20', author:'黄小美', time:'14:00', text:'刚发现一个神奇的网站 neal.fun，上面全是有趣的小实验。写代码写累了来这里玩一下，比刷短视频有意义。', reactions:[{emoji:'🔥',count:6},{emoji:'👍',count:3}] },
-    ]
-  }
+function escc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const IC={
+  like:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+  likeOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+  cmt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>',
+  fav:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+  favOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+  view:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  heartSm:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
 };
 
-// Thread data
-const threadData = {
-  l7: {
-    parent: null,
-    replies: [
-      { author:'陈小飞', time:'10:50', text:'选品确实是最难的一步。我的建议是从自己工作中的痛点出发。' },
-      { author:'孙大伟', time:'11:00', text:'我列了 10 个痛点，然后一个一个去搜竞品。发现有 3 个几乎没有好的竞品。' },
-      { author:'刘小排', role:'讲师', time:'11:15', text:'对，竞品分析很重要。不是说有竞品就不做了，而是看竞品做得好不好。做得差的反而是机会。' },
-      { author:'张明', time:'11:30', text:'技术选型反而简单，Next.js + Supabase + Claude 一把梭就完了。' },
-      { author:'孙大伟', time:'11:45', text:'谢谢大家！我决定先做那个小红书标题生成器了，竞品做得都不行。' },
-    ]
-  },
-  l13: {
-    parent: null,
-    replies: [
-      { author:'林小鱼', time:'10:30', text:'Supabase 上手难吗？我只用过 MySQL。' },
-      { author:'王大锤', role:'助教', time:'10:35', text:'@林小鱼 不难，它自带可视化界面，基本不用写 SQL。而且文档写得很好。' },
-      { author:'陈小飞', time:'10:42', text:'Supabase 的 JS SDK 封装得很好，几行代码就能搞定 CRUD。' },
-      { author:'林小鱼', time:'10:50', text:'太好了，今晚回去试试！' },
-    ]
-  },
-  l25: {
-    parent: null,
-    replies: [
-      { author:'陈小飞', time:'09:35', text:'厉害！发到今日好事频道吧，大家都可以看看学习一下。' },
-      { author:'张明', time:'09:40', text:'多长时间做出来的？用的什么技术栈？' },
-      { author:'赵薇薇', time:'09:45', text:'两周吧。Next.js + Supabase + Claude API。大部分代码是 Claude 帮我写的哈哈。' },
-      { author:'林小鱼', time:'09:50', text:'两周就上线了？太励志了。我还在学 React...' },
-      { author:'马飞', time:'10:00', text:'这个速度太快了。你之前有编程基础吗？' },
-      { author:'赵薇薇', time:'10:05', text:'完全零基础！大学学的英语专业。关键就是先动手，遇到问题就问 AI + 问群里。' },
-      { author:'张明', time:'10:10', text:'别焦虑大家！先动手最重要，完美主义是产出的敌人。' },
-    ]
-  },
-  l31: {
-    parent: null,
-    replies: [
-      { author:'黄小美', time:'11:30', text:'那 Cursor + Claude 入手的话，建议买年费还是月费？' },
-      { author:'李思思', time:'11:35', text:'先月费试试水，确认用得上再年费。' },
-      { author:'王大锤', role:'助教', time:'11:40', text:'同意，而且 Claude 的免费额度够用来学习了。Cursor 有 2 周免费试用。' },
-      { author:'周杰', time:'11:50', text:'补充一下：GitHub Student Pack 里有 Copilot 免费用，学生党可以先用这个。' },
-    ]
-  },
-  t1: {
-    parent: null,
-    replies: [
-      { author:'陈小飞', time:'10:15', text:'Cursor 排第一无悬念。Tab 补全太好用了。' },
-      { author:'王大锤', role:'助教', time:'10:25', text:'数据库推荐 Supabase 是因为新手友好。但量大了之后 PlanetScale 可能更好。' },
-      { author:'李思思', time:'10:40', text:'部署为什么 Vercel 排第一？Netlify 不行吗？' },
-      { author:'刘小排', role:'讲师', time:'10:50', text:'@李思思 Netlify 也很好，但 Vercel 和 Next.js 天生配合，部署体验更丝滑。' },
-      { author:'周杰', time:'11:00', text:'补充：如果做后端比较重的项目，Railway 或 Fly.io 更合适。Vercel 主要是前端 + API Routes。' },
-      { author:'张明', time:'11:15', text:'AI 排名 Claude > GPT 这个有争议吧？GPT-5 出来之后差距缩小了很多。' },
-      { author:'刘小排', role:'讲师', time:'11:30', text:'@张明 纯编程能力的话 Claude 还是领先。但 GPT 的生态（插件、GPTs）确实更成熟。看需求选择。' },
-      { author:'林小鱼', time:'12:00', text:'作为新手表示这个清单太有用了！收藏了！' },
-    ]
-  },
-  t2: {
-    parent: null,
-    replies: [
-      { author:'周杰', time:'14:35', text:'同感，补全确实好了。写 Python 的时候提升最大。' },
-      { author:'赵薇薇', time:'14:52', text:'内存占用 +1，我 16G 的 MacBook Air 也变慢了。有没有人试过限制索引范围？' },
-      { author:'陈小飞', time:'15:10', text:'@赵薇薇 在设置里排除 node_modules 和 .git，大概省 2G 内存。' },
-      { author:'林小鱼', time:'15:28', text:'赞！Cursor 的 .cursorrules 文件大家有在用吗？' },
-      { author:'王大锤', role:'助教', time:'15:35', text:'@林小鱼 .cursorrules 推荐用！加上技术栈说明和代码风格要求，效果比不加好很多。' },
-      { author:'周杰', time:'15:50', text:'学到了，之前不知道有 .cursorrules。' },
-      { author:'赵薇薇', time:'16:00', text:'这些 Cursor 配置经验可以整理一下发到社区，肯定很多人需要。' },
-      { author:'林小鱼', time:'16:05', text:'好主意！我来整理一篇。' },
-    ]
-  },
-  p1: {
-    parent: null,
-    replies: [
-      { author:'张明', time:'14:15', text:'注册地区选哪里最方便？我用的是香港地址。' },
-      { author:'王大锤', role:'助教', time:'14:20', text:'@张明 香港和新加坡都可以。香港用起来可能更顺因为时区近。' },
-      { author:'林小鱼', time:'14:30', text:'请问个人开发者可以用 Stripe 吗？需要公司资质吗？' },
-      { author:'王大锤', role:'助教', time:'14:35', text:'@林小鱼 可以用，选 Individual 就行。但提现需要对应地区的银行账户，可以用 Wise。' },
-      { author:'赵薇薇', time:'14:45', text:'Webhook 调试那部分太有用了！我之前死活收不到回调事件，原来是本地用了 localhost...' },
-      { author:'陈小飞', time:'15:00', text:'补充一个：Stripe 测试模式的 API key 和生产模式是不同的，千万别搞混了。' },
-      { author:'张明', time:'15:10', text:'还有一个坑：Stripe Dashboard 测试模式和生产模式是两套独立的数据，记得切换。' },
-      { author:'王大锤', role:'助教', time:'15:20', text:'感谢大家补充！我把这些都更新到汇总里了。' },
-    ]
-  },
-  h7: {
-    parent: null,
-    replies: [
-      { author:'王大锤', role:'助教', time:'11:25', text:'经典坑！RLS 默认启用但没有策略 = 所有人都没权限。' },
-      { author:'张明', time:'11:30', text:'补充：也可以临时关掉 RLS 来确认是不是这个问题：Dashboard → Table → 关闭 RLS。但上线前一定要开回来！' },
-      { author:'赵薇薇', time:'11:35', text:'我也踩过这个坑！+1 建议写进 FAQ。' },
-      { author:'林小鱼', time:'11:40', text:'解决了！加了 policy 数据就出来了。大锤哥 yyds！' },
-      { author:'瓜哥', time:'12:00', text:'记下来了，等我到这一步的时候不会再踩了。' },
-      { author:'王大锤', role:'助教', time:'12:10', text:'已经发到踩坑频道了，标记了 [高频坑]。' },
-    ]
-  },
-  h16: {
-    parent: null,
-    replies: [
-      { author:'张明', time:'14:15', text:'大概率是 serverExternalPackages 的问题。某些 node 模块在 edge runtime 跑不了。' },
-      { author:'周杰', time:'14:25', text:'也可能是环境变量没同步到 Vercel。去 Vercel Dashboard 检查一下。' },
-      { author:'郑涛', time:'14:40', text:'张明说对了！加了 serverExternalPackages 之后好了。谢谢！' },
-      { author:'陈小飞', time:'14:50', text:'这个坑踩坑频道有详细记录，建议去看看张明之前发的帖子。' },
-      { author:'郑涛', time:'15:00', text:'看到了，确实一模一样的问题。以后先搜频道再问了。' },
-    ]
-  },
-  g1: {
-    parent: null,
-    replies: [
-      { author:'张明', time:'14:15', text:'太实用了！技术栈和我想做的差不多，有开源计划吗？' },
-      { author:'陈小飞', time:'14:20', text:'暂时没有，但核心架构可以分享。其实就是一个 cron job + Claude API + 飞书 webhook。' },
-      { author:'林小鱼', time:'14:30', text:'飞书 API 难接吗？我也想做飞书相关的工具。' },
-      { author:'赵薇薇', time:'14:45', text:'恭喜大飞哥！看到你的产品我也更有信心了。' },
-      { author:'陈小飞', time:'15:00', text:'飞书 API 文档写得还行，主要是权限配置有点绕。我回头整理个教程。' },
-    ]
-  },
-  g8: {
-    parent: null,
-    replies: [
-      { author:'刘小排', role:'讲师', time:'10:15', text:'恭喜！第一笔收入是最重要的里程碑。从 0 到 1 比从 1 到 100 难得多。' },
-      { author:'王大锤', role:'助教', time:'10:20', text:'$5 就是开始！你现在要做的是想办法从 1 个用户到 10 个用户。' },
-      { author:'陈小飞', time:'10:30', text:'大伟牛啊！你是怎么推广的？直接在小红书上发帖？' },
-      { author:'孙大伟', time:'10:35', text:'对，就是在小红书写了一篇"我用 AI 做了个工具"的帖子，来了 50 个注册。转化率 2%。' },
-      { author:'赵薇薇', time:'10:45', text:'小红书推广效果这么好？我也去试试！' },
-      { author:'林小鱼', time:'11:00', text:'太励志了！我也要加速了！' },
-      { author:'马飞', time:'11:15', text:'从老师的角度说：这种"做出来就有人买单"的正反馈太重要了。' },
-      { author:'孙大伟', time:'11:30', text:'谢谢大家！说实话收到那 $5 的时候手都在抖。比我之前接过的任何咨询单都激动。' },
-    ]
-  },
-  a7: {
-    parent: null,
-    replies: [
-      { author:'林小鱼', time:'08:35', text:'想聊 Supabase 的进阶用法！RLS、Edge Functions 这些。' },
-      { author:'赵薇薇', time:'08:40', text:'Stripe 支付集成！从配置到上线的完整流程。' },
-      { author:'陈小飞', time:'08:50', text:'产品推广和获取第一批用户的方法。' },
-      { author:'张明', time:'09:00', text:'Next.js 14 的 Server Components 最佳实践。' },
-      { author:'黄小美', time:'09:15', text:'Git 工作流！每次提交代码都很慌，怕搞坏了。' },
-      { author:'王大锤', role:'助教', time:'09:30', text:'收到！初步看下来 Stripe 支付和 Git 工作流呼声最高，这两个优先安排。' },
-    ]
-  },
-  pay3: {
-    parent: null,
-    replies: [
-      { author:'刘小排', role:'讲师', time:'15:10', text:'先定 $5 试水。用户愿意付 $5 说明产品有价值，后续再涨价。别一开始就定 $29。' },
-      { author:'王大锤', role:'助教', time:'15:15', text:'同意。另外建议做 freemium 模式，免费版 + 付费版。免费版引流，付费版赚钱。' },
-      { author:'陈小飞', time:'15:25', text:'我的经验：第一版别超过 $10/月。等有了 100 个用户之后再考虑涨价。' },
-      { author:'赵薇薇', time:'15:30', text:'好的！那我先定 $5/月 + 免费版 20 次/月。' },
-      { author:'孙大伟', time:'16:00', text:'建议加一个年付选项，打 8 折。能锁住用户。' },
-      { author:'赵薇薇', time:'16:10', text:'学到了！年付打折这个好，我加上。' },
-    ]
-  },
-  n1: {
-    parent: null,
-    replies: [
-      { author:'周杰', time:'08:45', text:'字节内部已经在用了，代码生成质量确实又上了一个台阶。' },
-      { author:'赵薇薇', time:'09:10', text:'我之前用 3.5 写不对的邮件模板解析器，Opus 4 一次就通过了。' },
-      { author:'陈小飞', time:'09:30', text:'关键是理解复杂业务逻辑的能力提升了。给它一段 500 行的代码让它改 bug，能准确定位。' },
-      { author:'张明', time:'09:45', text:'不过价格也涨了... API 调用费用翻了一倍。' },
-      { author:'周杰', time:'10:00', text:'值得。质量提升远超价格涨幅。省下来的开发时间远比多花的 API 费用值钱。' },
-    ]
-  }
-};
+/* ===== 确定性彩色头像 ===== */
+const AV_PALETTE=['#0d9488','#0e7490','#0891b2','#2f8f6e','#157f7a','#3a7d8c','#d97a0c','#52708a'];
+function avColor(seed){let h=0;const s=String(seed||'');for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return AV_PALETTE[h%AV_PALETTE.length];}
+const AV_MAP={'陈晨':1,'林浩':2,'王悦':3,'张帆':4,'周宁':5,'瓜哥':6,'瓜':6,'黄小美':7,'郑涛':8,'赵薇薇':9,'马飞':10,'何丽':11,'孙大伟':12,'周杰':13,'王大锤':14,'刘小排':15};
+function avFile(seed){let i=AV_MAP[seed];if(!i){let h=0;const s=String(seed||'');for(let k=0;k<s.length;k++)h=(h*31+s.charCodeAt(k))>>>0;i=(h%15)+1;}return 'assets/avatars/a'+i+'.jpg';}
+function paintAvatars(scope){
+  (scope||document).querySelectorAll('.ch-av,.cp-row .av,.cp-edit .av,.l-user .av,.online-row .oa,.user-row .ua,.prog-row .pa,.cmt .ca,.cmt-box .ca,.tb-avatar').forEach(el=>{
+    if(el.dataset.painted) return;
+    const seed=el.dataset.nm||el.textContent.trim();
+    el.style.background=avColor(seed);
+    el.style.backgroundImage='url("'+avFile(seed)+'")';
+    el.style.backgroundSize='cover';
+    el.style.backgroundPosition='center';
+    el.style.color='transparent';
+    el.dataset.painted='1';
+  });
+}
 
-// Resolve parent references
-Object.keys(threadData).forEach(key => {
-  for (const chKey of Object.keys(channelData)) {
-    const msg = channelData[chKey].messages.find(m => m.id === key);
-    if (msg) { threadData[key].parent = msg; break; }
+/* ===== 帖子筛选：tab × 阶段 ===== */
+let _typeFilter='all', _stageFilter=0, _topicFilter='', _sortBy='new';
+function cardStage(card){
+  const ct=card.querySelector('.course-tag');
+  if(!ct) return 0;
+  const m=ct.textContent.trim().match(/[A-D]/);
+  return m?({A:1,B:2,C:3,D:4})[m[0]]:0;
+}
+function topicKey(t){return String(t||'').replace(/^[#\s]+/,'').trim();}
+function applyFeed(){
+  document.querySelectorAll('#feed .card').forEach(c=>{
+    let show;
+    if(_topicFilter){
+      show=[...c.querySelectorAll('.topic-tag')].some(t=>topicKey(t.textContent)===_topicFilter);
+    }else{
+      const st=cardStage(c);
+      if(_typeFilter==='course')   show=st>0 && (!_stageFilter || st===_stageFilter);
+      else if(_typeFilter==='all') show=true;
+      else                         show=c.dataset.type===_typeFilter;
+    }
+    c.style.display=show?'':'none';
+  });
+}
+/* 只剩「话题」一套筛选：tab = 话题，点帖子/热榜上的 # 也走这里 */
+function setTopic(topic){
+  _topicFilter = topic ? topicKey(topic) : '';
+  _typeFilter='all'; _stageFilter=0;
+  const scope=document.getElementById('feedScope');
+  if(scope){
+    const all=scope.querySelector('.fs-all'), tp=scope.querySelector('.fs-topic');
+    if(_topicFilter){ tp.querySelector('.tb-topic').textContent='# '+_topicFilter; tp.hidden=false; all.hidden=true; }
+    else { tp.hidden=true; all.hidden=false; }
   }
+  applyFeed();
+}
+function tabTopic(el){ setTopic(el.dataset.topic||''); }
+function switchTab(el){ setTopic(el.dataset.topic||''); }   /* 兼容旧调用 */
+function filterTopic(name){
+  setTopic(name);
+  var mid=document.querySelector('.mid'); if(mid)mid.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function clearTopic(skipApply){
+  _topicFilter='';
+  var bar=document.getElementById('topicBar'); if(bar) bar.hidden=true;
+  if(!skipApply) setTopic('');
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('.topic-tag,.hot a,.topic-row');
+  if(!t) return;
+  e.preventDefault();
+  /* 点话题 → 过滤（顶栏出现「正在看 #xxx ✕」，✕ 退出，不会被锁死） */
+  var name=t.classList.contains('topic-row')?((t.querySelector('.tr-nm')||{}).textContent||''):t.textContent;
+  if(name) filterTopic(name);
+});
+(function initStageFilter(){
+  const st=parseInt(new URLSearchParams(location.search).get('stage')||'0',10);
+  if(st<1||st>4) return;
+  _typeFilter='course'; _stageFilter=st; _topicFilter='';
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('on'));
+  applyFeed();
+})();
+
+/* ===== 评论 ===== */
+const COMMENTS={
+  p2:[{a:'赵薇薇',t:'“做出东西给人用”这句太戳了，第一次被真实用户夸的感觉无敌 🥹',m:'2 分钟前'},
+      {a:'马飞',t:'课程表小工具好实用！方便发我看看吗，我也想给班里做一个',m:'1 分钟前'}],
+  p1:[{a:'王大锤',r:'助教',t:'恭喜！Hello World 是每个程序员的第一步，你已经迈出来了',m:'10 分钟前'},
+      {a:'赵薇薇',t:'我当初看到这行字也激动了好久，加油！',m:'8 分钟前'}],
+  p3:[{a:'王大锤',r:'助教',t:'经典坑！RLS 默认开但没加策略 = 所有人都没权限。去 Dashboard → Policies 给表加个 SELECT policy 就行。',m:'5 分钟前'},
+      {a:'郑涛',t:'解决了！加上 policy 数据就出来了，谢谢大锤哥',m:'2 分钟前'}],
+  p7:[{a:'刘小排',r:'讲师',t:'从 0 到 1 最难，恭喜大伟！第一笔收入的意义远超 $5。',m:'40 分钟前'},
+      {a:'孙大伟',t:'附上 Stripe 后台的截图，激动得截下来留念了',img:true,m:'35 分钟前'}],
+  n1:[{a:'王大锤',r:'助教',t:'第一次跑通后端是大里程碑！下一步可以挂个数据库，数据就能存下来了。',m:'1 分钟前'},
+      {a:'周杰',r:'高手',t:'Express 用 Cursor 写效率是高，后面记得补下错误处理和参数校验。',m:'刚刚'},
+      {a:'陈晨',t:'收到！正打算接 Supabase，谢谢两位 🙏',m:'刚刚'}],
+  n3:[{a:'赵薇薇',t:'同款喜悦！Supabase 注册登录都不用自己写，太省事了。',m:'20 分钟前'},
+      {a:'王大锤',r:'助教',t:'记得把 RLS 策略配好，不然上线后数据可能查不出来～',m:'18 分钟前'}],
+  p4:[{a:'刘小排',r:'讲师',t:'两周从 0 到上线，节奏非常好。下一步可以挂个简单收费，验证大家愿不愿意付费。',m:'12 分钟前'},
+      {a:'何丽',t:'界面好清爽！设计是自己搞的还是用了模板？',m:'9 分钟前'},
+      {a:'赵薇薇',t:'Tailwind + 一点 AI 配色，回头发个教程～',m:'7 分钟前'}],
+  n2:[{a:'王大锤',r:'助教',t:'502 多半是 serverless 函数路径没对上。先看 Vercel 的 Functions 日志，能直接看到报错堆栈，比盲猜快。',m:'8 分钟前'},
+      {a:'周杰',r:'高手',t:'检查下 api 目录结构和 vercel.json 的 rewrites，本地 dev 和线上路由规则不一样。',m:'5 分钟前'}],
+  n4:[{a:'郑涛',t:'401 一般是 key 没加载进去。.env 改了要重启 dev 服务，热更新不会重读环境变量。',m:'30 分钟前'},
+      {a:'张帆',t:'重启就好了！果然是这个，谢谢 🙏',m:'25 分钟前'}],
+  n5:[{a:'何丽',t:'同设计师转码，Tailwind 真的好上手！求落地页链接参考下～',m:'40 分钟前'},
+      {a:'周宁',t:'回头整理个模板发出来 👌',m:'38 分钟前'}],
+  p5:[{a:'赵薇薇',t:'哈哈这就是心流没错，注意身体别熬太狠～',m:'20 分钟前'},
+      {a:'孙大伟',t:'懂！停不下来的感觉太上头了',m:'18 分钟前'}],
+  p6:[{a:'周杰',r:'高手',t:'手机端重叠多半是用了固定宽度。容器换成 grid + grid-cols-1 md:grid-cols-3，间距用 gap，基本就好。',m:'35 分钟前'},
+      {a:'何丽',t:'改成 grid 立马就对齐了，谢谢大佬！',m:'30 分钟前'}],
+  p8:[{a:'马飞',t:'凡尔赛实锤 🦞 我食堂只有青椒土豆丝……',m:'50 分钟前'},
+      {a:'黄小美',t:'哈哈哈被你馋到了',m:'48 分钟前'}],
+  p9:[{a:'王大锤',r:'助教',t:'对，课程要 18+。最简单用 nvm：nvm install 18 && nvm use 18，再 npm install 就不报了。',m:'1 小时前'}]
+};
+function cmtHtml(c){
+  return '<div class="cmt"><div class="ca" data-nm="'+escc(c.a)+'">'+escc(c.a[0])+'</div><div class="cb">'
+    +'<div class="cn">'+escc(c.a)+(c.r?'<span class="role">'+escc(c.r)+'</span>':'')+'</div>'
+    +'<div class="ct">'+escc(c.t)+'</div>'+(c.img?'<div class="cmt-img">'+IC.img+'</div>':'')
+    +'<div class="cm">'+escc(c.m||'刚刚')+'</div></div></div>';
+}
+
+/* ---- 评论：收成一行，点开才展开 ---- */
+function summaryHtml(card){
+  const list=COMMENTS[card.dataset.cid]||[];
+  const bt=card.querySelector('.act-cmt .bt'),btxt=bt?bt.textContent:'';
+  const cnt=(btxt.match(/\d+/)||['0'])[0];
+  const word=/回答/.test(btxt)?'回答':'评论';
+  if(+cnt===0 && !list.length) return '<div class="cmt-sum empty">还没人聊，来抢个沙发 ›</div>';
+  const who=list.length?escc(list[0].a)+' 等在聊':'点开聊两句';
+  return '<div class="cmt-sum"><span class="cs-ar">⌄</span><b>'+cnt+'</b> 条'+word+' · '+who+'</div>';
+}
+function buildSocial(card){
+  if(!card.dataset.cid||card.querySelector('.social')) return;
+  const div=document.createElement('div');div.className='social';
+  div.innerHTML=summaryHtml(card);
+  card.appendChild(div);
+}
+function updateSummary(card){
+  const s=card.querySelector('.social');if(s) s.innerHTML=summaryHtml(card);
+}
+function renderComments(box,cid){
+  const list=COMMENTS[cid]||[];
+  let h=list.map(cmtHtml).join('');
+  if(!list.length) h='<div class="cmt-empty">还没有人评论，来抢个沙发~</div>';
+  h+='<div class="cmt-box"><div class="ca" data-nm="瓜哥">瓜</div>'
+    +'<div class="cb-in"><input placeholder="说点啥…"><div class="cb-thumbs"></div></div>'
+    +'<button class="cb-img" onclick="addCmtImg(this)">'+IC.img+'</button>'
+    +'<button class="cb-send" onclick="sendCmt(this)">发送</button></div>';
+  box.innerHTML=h;
+  paintAvatars(box);
+}
+function openComments(card){
+  let box=card.querySelector('.comments');
+  if(!box){box=document.createElement('div');box.className='comments';card.appendChild(box);}
+  renderComments(box,card.dataset.cid);
+  box.classList.add('open');card.classList.add('cmt-open');
+}
+function closeComments(card){
+  const box=card.querySelector('.comments');if(box)box.classList.remove('open');
+  card.classList.remove('cmt-open');
+}
+function toggleComments(card){
+  const box=card.querySelector('.comments');
+  if(box&&box.classList.contains('open')) closeComments(card);
+  else openComments(card);
+}
+function addCmtImg(btn){
+  const box=btn.closest('.cmt-box').querySelector('.cb-thumbs');
+  if(box.children.length>=1) return;
+  const d=document.createElement('div');d.className='cp-thumb sm';
+  d.innerHTML=IC.img+'<span class="x" onclick="this.parentElement.remove()">×</span>';
+  box.appendChild(d);
+}
+function sendCmt(btn){
+  const cbox=btn.closest('.cmt-box');
+  const input=cbox.querySelector('input');
+  const thumbs=cbox.querySelector('.cb-thumbs');
+  const hasImg=thumbs.children.length>0;
+  const text=input.value.trim();
+  if(!text && !hasImg) return;
+  const card=cbox.closest('.card'),cid=card.dataset.cid;
+  (COMMENTS[cid]=COMMENTS[cid]||[]).push({a:'瓜哥',t:text,img:hasImg,m:'刚刚'});
+  const tmp=document.createElement('div');
+  tmp.innerHTML=cmtHtml({a:'瓜哥',t:text,img:hasImg,m:'刚刚'});
+  cbox.parentElement.insertBefore(tmp.firstElementChild,cbox);
+  paintAvatars(cbox.parentElement);
+  const empty=cbox.parentElement.querySelector('.cmt-empty');
+  if(empty) empty.remove();
+  const bt=card.querySelector('.act-cmt .bt');
+  if(bt) bt.textContent=bt.textContent.replace(/\d+/,n=>String(+n+1));
+  updateSummary(card);
+  input.value=''; thumbs.innerHTML=''; input.focus();
+}
+function burst(b){
+  const s=document.createElement('span');s.className='lk-burst';s.innerHTML=IC.heartSm;
+  b.appendChild(s);setTimeout(()=>s.remove(),640);
+}
+function toggleFav(b){
+  const on=b.classList.toggle('on');
+  b.querySelector('.bi').innerHTML=on?IC.favOn:IC.fav;
+  b.querySelector('.bt').textContent=on?'已收藏':'收藏';
+}
+function toggleLike(b){
+  const on=b.classList.toggle('on');
+  b.querySelector('.bi').innerHTML=on?IC.likeOn:IC.like;
+  const bt=b.querySelector('.bt');
+  bt.textContent=String((parseInt(bt.textContent,10)||0)+(on?1:-1));
+  if(on) burst(b);
+}
+function toggleFollow(b){
+  const on=b.classList.toggle('on');
+  if(b.classList.contains('uf')) b.textContent=on?'已关注':'+ 关注';
+  else b.innerHTML=on?'已关注':IC.plus+'关注';
+}
+
+document.getElementById('feed').addEventListener('click',e=>{
+  const l=e.target.closest('.act-like'); if(l){toggleLike(l);return;}
+  const c=e.target.closest('.act-cmt'); if(c){toggleComments(c.closest('.card'));return;}
+  const cs=e.target.closest('.cmt-sum'); if(cs){toggleComments(cs.closest('.card'));return;}
+  const f=e.target.closest('.act-fav'); if(f){toggleFav(f);return;}
+  const fo=e.target.closest('.follow'); if(fo){toggleFollow(fo);return;}
+});
+document.querySelector('.right').addEventListener('click',e=>{
+  const uf=e.target.closest('.uf'); if(uf){toggleFollow(uf);}
 });
 
-// ===== State =====
-let currentChannel = 'lobby';
-let panelOpen = false;
-let currentThread = null;
+function injectIcons(scope){
+  scope.querySelectorAll('.act-like .bi:empty').forEach(s=>s.innerHTML=IC.like);
+  scope.querySelectorAll('.act-cmt .bi:empty').forEach(s=>s.innerHTML=IC.cmt);
+  scope.querySelectorAll('.act-fav .bi:empty').forEach(s=>s.innerHTML=IC.fav);
+  scope.querySelectorAll('.view .bi:empty').forEach(s=>s.innerHTML=IC.view);
+}
+injectIcons(document);
+paintAvatars(document);
+document.querySelectorAll('#feed .card').forEach(buildSocial);
+/* 排序：最新（按时间）/ 最热（按 赞 + 评论 + 浏览）*/
+function cardTime(c){var t=(c.querySelector('.ch-l2')||{}).textContent||'';if(/刚刚/.test(t))return 0;var m=t.match(/(\d+)\s*分钟前/);if(m)return +m[1];m=t.match(/(\d+)\s*小时前/);if(m)return +m[1]*60;m=t.match(/(\d+)\s*天前/);if(m)return +m[1]*1440;return 99999;}
+function cardHot(c){function n(s){var e=c.querySelector(s),m=e&&(e.textContent||'').match(/\d+/);return m?+m[0]:0;}return n('.act-like .bt')+n('.act-cmt .bt')*3+n('.eng.view .bt')*0.1;}
+function sortFeed(){var feed=document.getElementById('feed');if(!feed)return;var cards=[].slice.call(feed.querySelectorAll('.card'));if(_sortBy==='hot')cards.sort(function(a,b){return cardHot(b)-cardHot(a);});else cards.sort(function(a,b){return cardTime(a)-cardTime(b);});cards.forEach(function(c){feed.appendChild(c);});}
+function setSort(el){_sortBy=el.dataset.sort;document.querySelectorAll('.sortbtn').forEach(function(b){b.classList.toggle('on',b===el);});sortFeed();}
+sortFeed();
 
-// ===== Render =====
-function renderMessages(channelId) {
-  const ch = channelData[channelId];
-  const feed = document.getElementById('msgFeed');
-  let html = '';
-
-  ch.messages.forEach(msg => {
-    if (msg.date) {
-      html += `<div class="date-sep"><span>${msg.date}</span></div>`;
-      return;
-    }
-
-    const roleHtml = msg.role ? `<span class="msg-role">${msg.role}</span>` : '';
-    const reactionsHtml = msg.reactions ? msg.reactions.map(r =>
-      `<span class="reaction" onclick="toggleReaction(this)">${r.emoji} ${r.count}</span>`
-    ).join('') : '';
-    let threadHtml = '';
-    if (msg.thread) {
-      threadHtml = `<span class="thread-link" id="tl-${msg.id}" onclick="toggleInlineThread('${msg.id}')"><span class="thread-arrow">▶</span> ${msg.thread.count} 条回复</span>`;
-    }
-    const textHtml = msg.text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
-      .replace(/\n/g, '<br>');
-
-    const isReply = !!msg.replyTo;
-    const isRoot = !isReply;
-    const msgClass = isReply ? 'is-reply' : 'is-root';
-
-    // Prepend @mention for replies if not already in text
-    let displayText = textHtml;
-    if (isReply && msg.replyTo.author && !msg.text.startsWith('@')) {
-      displayText = `<strong style="color:var(--teal);font-size:12px;">@${msg.replyTo.author}</strong> ${textHtml}`;
-    }
-
-    html += `<div class="msg ${msgClass}" data-id="${msg.id}">
-      <div class="msg-monogram">${msg.author[0]}</div>
-      <div class="msg-body">
-        <div class="msg-header">
-          <span class="msg-name">${msg.author}</span>
-          ${roleHtml}
-          <span class="msg-time">${msg.time}</span>
-          <span class="msg-hover-actions">
-            <span class="msg-hover-action" title="回复" onclick="startInlineReply('${msg.id}','${msg.author}')">💬</span>
-            <span class="msg-hover-action" title="表情">😊</span>
-            ${msg.thread ? `<span class="msg-hover-action" title="展开回复" onclick="toggleInlineThread('${msg.id}')">🧵</span>` : ''}
-          </span>
-        </div>
-        <div class="msg-text">${displayText}</div>
-        ${reactionsHtml ? `<div class="msg-reactions">${reactionsHtml}</div>` : ''}
-        ${threadHtml}
-      </div>
-    </div>
-    ${msg.thread && threadData[msg.id] ? `<div class="thread-expand" id="te-${msg.id}">${renderThreadReplies(msg.id)}</div>` : ''}
-    <div id="inline-reply-${msg.id}"></div>`;
+/* ===== 发布框 ===== */
+const TOPIC_META={
+  '今日上线':  {type:'报喜', ph:'今天做出 / 跑通了啥？晒一下，哪怕只是第一个 Hello World 👏'},
+  '踩坑求助':  {type:'求助', ph:'卡在哪了？把报错信息 + 你已经试过的贴上来，大家好帮你看 🙏'},
+  '产品变现':  {type:'报喜', ph:'收到第一笔钱 / 有付费用户了？说说你是怎么做到的 💰'},
+  '产品出海':  {type:'报喜', ph:'做了个面向海外的产品？聊聊进展、用户、踩过的坑 🌏'},
+  '开发者日常':{type:'唠嗑', ph:'今天想唠点啥？摸鱼、吐槽、随便聊都行 ☕'}
+};
+let cpTopic='今日上线', cpType='报喜', uid=0;
+function selectTopic(name){
+  const m=TOPIC_META[name]; if(!m) return;
+  cpTopic=name; cpType=m.type;
+  document.querySelectorAll('.cp-topic').forEach(t=>t.classList.toggle('on',t.dataset.t===name));
+  const ta=document.getElementById('cpText'); if(ta) ta.placeholder=m.ph;
+  const hint=document.getElementById('cpHint'); if(hint) hint.innerHTML='发到 <b># '+name+'</b>';
+}
+/* 自定义话题：点「+ 自定义」→ 内联输入 → 回车生成并选中一个自己的 # */
+/* ===== 发帖加话题：在输入框里打 # 直接联想 / 新建 ===== */
+const KNOWN_TOPICS = Object.keys(TOPIC_META);
+const PRESET_TOPICS = KNOWN_TOPICS.slice(0,5);
+const SUGGEST_RULES = [
+  {t:'今日上线', kw:['上线','跑通','做出','做好','搞定','完成','发布','部署','第一个','hello world','helloworld','demo','跑起来','成功','上架']},
+  {t:'踩坑求助', kw:['报错','卡住','求助','不会','怎么办','怎么','为什么','求教','帮我','解决不了','error','bug','踩坑','坑','请教','救命']},
+  {t:'产品变现', kw:['收钱','付费','变现','赚','收入','第一笔','客户','下单','订单','营收','付款']},
+  {t:'产品出海', kw:['出海','海外','国外','英文','美元','stripe','谷歌','google','老外','跨境']},
+  {t:'开发者日常', kw:['摸鱼','吐槽','日常','聊聊','感想','唠','水一','咖啡','随便']},
+];
+let cpSelected = [];
+function jsq(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function suggestTopic(text){ const s=String(text||'').toLowerCase(); for(const r of SUGGEST_RULES){ if(r.kw.some(k=>s.indexOf(k.toLowerCase())>=0)) return r.t; } return ''; }
+function renderTopicBar(){
+  const bar=document.getElementById('cpTopicBar'); if(!bar) return;
+  const ta=document.getElementById('cpText');
+  const suggested = ta ? suggestTopic(ta.value) : '';
+  let html='<span class="cpt-lab">话题</span>';
+  cpSelected.forEach(function(t){ html+='<button type="button" class="cpt selected" onclick="removeTopic(\''+jsq(t)+'\')"># '+escc(t)+'<span class="x">✕</span></button>'; });
+  PRESET_TOPICS.filter(function(t){return cpSelected.indexOf(t)<0;}).forEach(function(t){
+    const sug=(t===suggested && cpSelected.indexOf(t)<0)?' suggest':'';
+    html+='<button type="button" class="cpt pick'+sug+'" onclick="addTopic(\''+jsq(t)+'\')">'+(sug?'💡 ':'')+'# '+escc(t)+'</button>';
   });
-
-  feed.innerHTML = html;
-  feed.scrollTop = feed.scrollHeight;
+  bar.innerHTML=html;
 }
-
-function renderPanel() {
-  const panel = document.getElementById('panelContent');
-  if (!currentThread || !threadData[currentThread]) {
-    closePanel();
-    return;
-  }
-
-  const td = threadData[currentThread];
-  const parentMsg = td.parent;
-  if (!parentMsg) { closePanel(); return; }
-
-  const parentText = parentMsg.text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\n/g, '<br>');
-
-  let repliesHtml = td.replies.map(r => {
-    const roleTag = r.role ? `<span class="msg-role">${r.role}</span>` : '';
-    const rText = r.text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/@(\S+)/g, '<strong style="color:var(--teal)">@$1</strong>')
-      .replace(/\n/g, '<br>');
-    return `<div class="thread-reply">
-      <div class="msg-monogram">${r.author[0]}</div>
-      <div class="msg-body">
-        <div class="msg-header">
-          <span class="msg-name">${r.author}</span>
-          ${roleTag}
-          <span class="msg-time">${r.time}</span>
-        </div>
-        <div class="msg-text">${rText}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  panel.innerHTML = `
-    <div class="panel-header">
-      <div class="panel-title">线程</div>
-      <button class="panel-close" onclick="closePanel()">&times;</button>
-    </div>
-    <div class="thread-content">
-      <div class="thread-parent">
-        <div class="msg-header">
-          <span class="msg-name">${parentMsg.author}</span>
-          <span class="msg-time">${parentMsg.time}</span>
-        </div>
-        <div class="msg-text">${parentText}</div>
-      </div>
-      <div class="thread-replies-label">${td.replies.length} 条回复</div>
-      <div class="thread-replies">${repliesHtml}</div>
-    </div>
-    <div class="thread-input-area">
-      <textarea placeholder="回复..." rows="2"></textarea>
-      <div class="thread-input-footer">
-        <button class="send-btn ready" style="font-size:12px;">回复</button>
-      </div>
-    </div>`;
+function addTopic(t){ t=String(t||'').trim().replace(/^#\s*/,''); if(t && cpSelected.indexOf(t)<0) cpSelected.push(t); renderTopicBar(); }
+function removeTopic(t){ cpSelected=cpSelected.filter(function(x){return x!==t;}); renderTopicBar(); }
+function cpTextInput(){
+  renderTopicBar();
+  const ta=document.getElementById('cpText'), sug=document.getElementById('tagSuggest');
+  const m=ta.value.slice(0, ta.selectionStart).match(/#([^\s#，。！？、]*)$/);
+  if(!m){ sug.hidden=true; return; }
+  const q=m[1];
+  let items=KNOWN_TOPICS.filter(t=>!q || t.indexOf(q)>=0).slice(0,6);
+  let html=items.map(t=>'<button type="button" class="ts-item" onmousedown="pickTag(event,\''+jsq(t)+'\')"># '+escc(t)+'</button>').join('');
+  if(q && KNOWN_TOPICS.indexOf(q)<0) html+='<button type="button" class="ts-item ts-new" onmousedown="pickTag(event,\''+jsq(q)+'\')">新建 # '+escc(q)+'</button>';
+  if(!html){ sug.hidden=true; return; }
+  sug.innerHTML=html; sug.hidden=false;
 }
-
-// ===== Actions =====
-function switchChannel(el) {
-  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  currentChannel = el.dataset.channel;
-  currentThread = null;
-
-  const ch = channelData[currentChannel];
-  document.getElementById('chTitle').textContent = ch.name;
-  document.getElementById('chDesc').textContent = ch.desc;
-
-  // Remove unread count
-  const unread = el.querySelector('.sb-unread');
-  if (unread) unread.remove();
-
-  closePanel();
-  renderMessages(currentChannel);
+function pickTag(e, name){
+  if(e) e.preventDefault();
+  const ta=document.getElementById('cpText');
+  // 选中后把光标处那个未完成的 #词 从正文删掉，转成上方话题牌（正文不留 #）
+  const before=ta.value.slice(0, ta.selectionStart).replace(/#([^\s#，。！？、]*)$/, '');
+  const after=ta.value.slice(ta.selectionStart);
+  ta.value=before+after;
+  if(KNOWN_TOPICS.indexOf(name)<0) KNOWN_TOPICS.push(name);
+  ta.focus(); try{ ta.setSelectionRange(before.length, before.length); }catch(_){}
+  document.getElementById('tagSuggest').hidden=true;
+  addTopic(name);
 }
-
-function renderThreadReplies(msgId) {
-  const td = threadData[msgId];
-  if (!td || !td.replies) return '';
-  return td.replies.map(r => {
-    const roleTag = r.role ? `<span class="msg-role">${r.role}</span>` : '';
-    const rText = r.text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/@(\S+)/g, '<strong style="color:var(--teal);font-size:12px;">@$1</strong>')
-      .replace(/\n/g, '<br>');
-    return `<div class="msg is-reply">
-      <div class="msg-monogram">${r.author[0]}</div>
-      <div class="msg-body">
-        <div class="msg-header">
-          <span class="msg-name">${r.author}</span>
-          ${roleTag}
-          <span class="msg-time">${r.time}</span>
-        </div>
-        <div class="msg-text">${rText}</div>
-      </div>
-    </div>`;
-  }).join('');
+document.addEventListener('click', function(e){ if(!e.target.closest('#tagSuggest, #cpText')){ const s=document.getElementById('tagSuggest'); if(s) s.hidden=true; } });
+function expandComposer(){
+  document.getElementById('cpCollapsed').hidden=true;
+  document.getElementById('cpEdit').hidden=false;
+  renderTopicBar();
+  document.getElementById('cpText').focus();
+  document.getElementById('cpText').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
-function toggleInlineThread(msgId) {
-  const el = document.getElementById('te-' + msgId);
-  const link = document.getElementById('tl-' + msgId);
-  if (!el) return;
-  if (el.classList.contains('open')) {
-    el.classList.remove('open');
-    if (link) link.classList.remove('expanded');
-  } else {
-    el.classList.add('open');
-    if (link) link.classList.add('expanded');
-    setTimeout(() => { el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 50);
-  }
+function addComposerImg(){
+  const wrap=document.getElementById('cpThumbs');
+  if(wrap.children.length>=3) return;
+  const d=document.createElement('div');d.className='cp-thumb';
+  d.innerHTML=IC.img+'<span class="x" onclick="this.parentElement.remove()">×</span>';
+  wrap.appendChild(d);
 }
-
-function closePanel() {
-  document.getElementById('layout').classList.remove('panel-open');
+function publishPost(){
+  const ta=document.getElementById('cpText');
+  const text=ta.value.trim();
+  const imgs=document.getElementById('cpThumbs').children.length;
+  if(!text && !imgs) return;
+  /* 话题 = 话题牌选中的 + 正文里直接打的 #；正文展示时把 # 摘成下方话题标签 */
+  const inline=(text.match(/#([^\s#，。！？、]+)/g)||[]).map(function(s){return s.slice(1);});
+  const tps=[...new Set(cpSelected.concat(inline))];
+  const ptype=(tps.length && TOPIC_META[tps[0]]) ? TOPIC_META[tps[0]].type : '唠嗑';
+  const body=text.replace(/#[^\s#，。！？、]+/g,'').replace(/[ \t]{2,}/g,' ').trim();
+  const chipHtml=tps.map(function(tp){return '<span class="topic-tag"># '+escc(tp)+'</span>';}).join('');
+  const cid='u'+(++uid);
+  COMMENTS[cid]=[];
+  const cmtLabel=ptype==='求助'?'回答 0':'评论 0';
+  const imgHtml=imgs?'<div class="media">'+IC.img+'<span>我上传的图片'+(imgs>1?'（'+imgs+' 张）':'')+'</span></div>':'';
+  const card=document.createElement('article');
+  card.className='card'+(ptype==='报喜'?' good':''); card.dataset.type=ptype; card.dataset.cid=cid;
+  card.innerHTML='<div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">'
+    +'<div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty '+ptype+'">'+ptype+'</span></div>'
+    +'<div class="ch-l2"><span class="ch-role">零基础</span> · 刚刚</div></div></div>'
+    +'<p class="ctext">'+escc(body||text)+'</p>'+imgHtml
+    +(chipHtml?'<div class="chips">'+chipHtml+'</div>':'')
+    +'<div class="engage">'
+    +'<button class="eng act-like"><span class="bi"></span><span class="bt">0</span></button>'
+    +'<button class="eng act-cmt"><span class="bi"></span><span class="bt">'+cmtLabel+'</span></button>'
+    +'<button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>'
+    +'<span class="eng view"><span class="bi"></span><span class="bt">0</span></span></div>';
+  const feed=document.getElementById('feed');
+  feed.insertBefore(card,feed.firstChild);
+  injectIcons(card); paintAvatars(card); buildSocial(card);
+  ta.value=''; document.getElementById('cpThumbs').innerHTML='';
+  cpSelected=[]; const _ts=document.getElementById('tagSuggest'); if(_ts) _ts.hidden=true; renderTopicBar();
+  document.getElementById('cpEdit').hidden=true;
+  document.getElementById('cpCollapsed').hidden=false;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
 }
-
-function toggleReaction(el) {
-  el.classList.toggle('active');
-  const parts = el.textContent.trim().split(' ');
-  let count = parseInt(parts[1]);
-  if (el.classList.contains('active')) count++; else count--;
-  el.textContent = parts[0] + ' ' + count;
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function updateSendBtn() {
-  const btn = document.getElementById('sendBtn');
-  const input = document.getElementById('msgInput');
-  if (input.value.trim()) {
-    btn.classList.remove('disabled');
-    btn.classList.add('ready');
-  } else {
-    btn.classList.add('disabled');
-    btn.classList.remove('ready');
-  }
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function sendMessage() {
-  const input = document.getElementById('msgInput');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const ch = channelData[currentChannel];
-  ch.messages.push({
-    id: 'u' + Date.now(),
-    author: '瓜哥',
-    time: new Date().toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'}),
-    text: text,
-    reactions: []
-  });
-
-  input.value = '';
-  input.style.height = 'auto';
-  updateSendBtn();
-  renderMessages(currentChannel);
-}
-
-function toggleSearch() {
-  // Minimal search toggle - could expand
-  const input = document.getElementById('msgInput');
-  input.focus();
-  input.placeholder = '搜索...';
-  input.addEventListener('blur', function restore() {
-    input.placeholder = '写点什么...';
-    input.removeEventListener('blur', restore);
-  });
-}
-
-// ===== Scroll to message =====
-function scrollToMsg(msgId) {
-  const el = document.querySelector('[data-id="' + msgId + '"]');
-  if (el) {
-    el.scrollIntoView({ behavior:'smooth', block:'center' });
-    el.style.background = '#f0eeea';
-    setTimeout(() => { el.style.background = ''; }, 1500);
-  }
-}
-
-// ===== Inline Reply =====
-let activeReplyId = null;
-
-function startInlineReply(msgId, author) {
-  // 关闭之前打开的
-  if (activeReplyId) closeInlineReply(activeReplyId);
-  activeReplyId = msgId;
-
-  const container = document.getElementById('inline-reply-' + msgId);
-  if (!container) return;
-
-  container.innerHTML = `<div class="inline-reply">
-    <div class="inline-reply-header">
-      <span>回复 <span class="reply-to">${author}</span></span>
-      <button class="inline-reply-close" onclick="closeInlineReply('${msgId}')">&times;</button>
-    </div>
-    <textarea id="reply-input-${msgId}" placeholder="回复 ${author}..." rows="2" onkeydown="handleInlineReplyKey(event,'${msgId}','${author}')"></textarea>
-    <div class="inline-reply-footer">
-      <button class="cancel-btn" onclick="closeInlineReply('${msgId}')">取消</button>
-      <button class="reply-send-btn" onclick="sendInlineReply('${msgId}','${author}')">回复</button>
-    </div>
-  </div>`;
-
-  // Focus and scroll into view
-  const textarea = document.getElementById('reply-input-' + msgId);
-  setTimeout(() => {
-    textarea.focus();
-    container.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }, 50);
-}
-
-function closeInlineReply(msgId) {
-  const container = document.getElementById('inline-reply-' + msgId);
-  if (container) container.innerHTML = '';
-  if (activeReplyId === msgId) activeReplyId = null;
-}
-
-function handleInlineReplyKey(e, msgId, author) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendInlineReply(msgId, author);
-  }
-  if (e.key === 'Escape') {
-    closeInlineReply(msgId);
-  }
-}
-
-function sendInlineReply(msgId, author) {
-  const textarea = document.getElementById('reply-input-' + msgId);
-  if (!textarea) return;
-  const text = textarea.value.trim();
-  if (!text) return;
-
-  const ch = channelData[currentChannel];
-  const parentMsg = ch.messages.find(m => m.id === msgId);
-  const parentPreview = parentMsg ? parentMsg.text.replace(/\*\*/g,'').replace(/\n/g,' ').slice(0,40) : '';
-
-  // Insert reply right after the original message
-  const msgIndex = ch.messages.findIndex(m => m.id === msgId);
-  const newMsg = {
-    id:'u'+Date.now(), author:'瓜哥',
-    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
-    text: text, reactions: [],
-    replyTo: { msgId: msgId, author: author, preview: parentPreview }
-  };
-
-  if (msgIndex >= 0) {
-    ch.messages.splice(msgIndex + 1, 0, newMsg);
-  } else {
-    ch.messages.push(newMsg);
-  }
-
-  activeReplyId = null;
-  renderMessages(currentChannel);
-
-  // Scroll to the new message
-  setTimeout(() => {
-    const el = document.querySelector('[data-id="' + newMsg.id + '"]');
-    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }, 50);
-}
-
-// ===== Init =====
-renderMessages('lobby');
 </script>
-<script src="assistant.js"></script>
+<script src="assistant.js?v=3"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='交流区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
+<script>
+/* 签名：卡片 hover 光斑跟随鼠标 */
+(function(){var f=document.getElementById('feed');if(!f)return;f.addEventListener('mousemove',function(e){var c=e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');},{passive:true});})();
+</script>
 </body>
 </html>

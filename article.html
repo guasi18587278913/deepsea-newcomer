@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 干货 · 阅读</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-serif:'Fraunces','Noto Serif SC','Songti SC',serif;
+  --font:'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+  --glow-cyan:#22d3ee; --glow-indigo:#0891b2;
+  --bg:#f5fafa; --bg-gradient:linear-gradient(180deg,#eef8f8 0%,#f7fbfb 30%,#ffffff 100%); --surface:#ffffff; --surface-2:#f0f8f8;
+  --brand:#0d9488; --brand-2:#0a7a70; --brand-bg:#e8f6f5;
+  --teal:#0d9488; --teal-2:#0a7a70; --teal-bg:#e8f6f5; --gold:#c89854;
+  --amber:#c89854; --amber-bg:#f6ecd9; --orange:#c2742a; --rose:#cf5b49;
+  --ink:#1a2942; --t1:#26384f; --t2:#5c7a8a; --t3:#94a3b8; --t4:#b8c5d0;
+  --line:#dde7ea; --line-soft:#e6eef0;
+  --sh-sm:0 1px 2px rgba(30,58,82,.04);
+  --sh:0 1px 2px rgba(30,58,82,.04),0 8px 28px -12px rgba(30,58,82,.10);
+  --sh-lg:0 18px 50px -16px rgba(30,58,82,.22);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg-gradient);background-attachment:fixed;color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+svg{display:block;}
+img{display:block;}
+button{font-family:inherit;}
+
+/* 顶栏 */
+.top{position:relative;background:linear-gradient(180deg,#e6f3f4 0%,#eef8f8 60%,transparent 100%);border-bottom:1px solid var(--line);}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 34px;max-width:1180px;margin:0 auto;}
+.tb-l{display:flex;align-items:center;gap:30px;}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-serif);font-weight:700;font-size:18px;color:var(--ink);}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--glow-cyan),var(--brand) 60%,var(--glow-indigo));display:grid;place-items:center;box-shadow:0 4px 14px rgba(56,189,248,.45);}
+.brand .mark svg{width:15px;height:15px;color:#fff;}
+.snav{display:flex;gap:2px;}
+.snav-a{font-family:var(--font);font-size:13.5px;color:var(--t2);padding:6px 12px;border-radius:8px;background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.snav-a.active{color:var(--ink);font-weight:600;}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#0e7490);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;}
+
+/* 阅读区 */
+.reader{max-width:752px;margin:0 auto;padding:22px 24px 90px;}
+.back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--t2);padding:8px 14px 8px 10px;border-radius:20px;border:1px solid var(--line);background:var(--surface);transition:.14s;margin-bottom:22px;}
+.back:hover{color:var(--teal-2);border-color:var(--teal);transform:translateX(-2px);}
+.back svg{width:16px;height:16px;}
+
+.art-cat{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--teal-2);background:var(--teal-bg);padding:5px 13px;border-radius:20px;margin-bottom:18px;}
+.art-cat .gem{color:var(--gold);}
+h1.art-title{font-family:var(--font-serif);font-size:36px;line-height:1.3;font-weight:700;color:var(--ink);letter-spacing:.005em;}
+.art-author{display:flex;align-items:center;gap:12px;margin:22px 0;padding-bottom:22px;border-bottom:1px solid var(--line);}
+.art-author .av{width:46px;height:46px;border-radius:50%;object-fit:cover;background:var(--surface-2);border:1px solid var(--line-soft);}
+.art-author .av-i{display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px;background:linear-gradient(135deg,#0d9488,#0e7490);}
+.art-author .nm{font-size:15px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.art-author .role{font-size:10.5px;font-weight:700;color:#85650F;background:#F8F1D8;border:1px solid #F0E4BC;padding:1px 7px;border-radius:5px;}
+.art-author .sub{font-size:12.5px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:10px;}
+.art-author .stat{display:inline-flex;align-items:center;gap:5px;}
+.art-author .stat svg{width:14px;height:14px;}
+
+.art-cover{margin:4px 0 30px;border-radius:18px;overflow:hidden;background:var(--surface-2);box-shadow:var(--sh);max-height:420px;}
+.art-cover img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block;}
+
+.art-body{font-size:17.5px;line-height:1.95;color:#2c3e52;}
+.art-body p{margin:0 0 1.4em;}
+.art-body .lead{font-size:19px;color:var(--ink);font-weight:500;}
+
+.art-tags{display:flex;gap:8px;flex-wrap:wrap;margin:30px 0 0;}
+.art-tags .t{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);padding:4px 13px;border-radius:16px;}
+
+.cta{margin:34px 0 0;padding:24px 26px;border-radius:18px;background:linear-gradient(135deg,#f0f8f7,#eaf5f4);border:1px solid #d6ebe8;}
+.cta .h{font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.cta .d{font-size:13.5px;color:var(--t2);line-height:1.6;}
+.cta a{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:var(--brand);color:#fff;font-size:14.5px;font-weight:600;padding:12px 22px;border-radius:11px;box-shadow:0 8px 18px -10px rgba(13,148,136,.5);transition:.15s;}
+.cta a:hover{filter:brightness(1.07);transform:translateY(-1px);}
+.cta a svg{width:16px;height:16px;}
+
+.comments{margin-top:40px;padding-top:26px;border-top:1px solid var(--line);}
+.comments h3{font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:18px;}
+.cmt{display:flex;gap:12px;margin-bottom:18px;}
+.cmt .av{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;background:linear-gradient(135deg,#5c7a8a,#94a3b8);}
+.cmt .cb{flex:1;}
+.cmt .cn{font-size:13px;font-weight:600;color:var(--ink);}
+.cmt .ct{font-size:13.5px;color:var(--t2);line-height:1.6;margin-top:3px;}
+.cmt-empty{font-size:13.5px;color:var(--t3);background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;}
+
+.notfound{text-align:center;padding:80px 20px;color:var(--t3);}
+.notfound a{color:var(--teal-2);font-weight:600;}
+
+@media(max-width:680px){
+  .topbar,.reader{padding-left:18px;padding-right:18px;}
+  h1.art-title{font-size:27px;}
+  .art-body{font-size:16.5px;}
+  .snav{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <header class="topbar">
+    <div class="tb-l">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>深海圈</span>
+      <nav class="snav">
+        <button class="snav-a">交流区</button><button class="snav-a">课程专区</button><button class="snav-a">作品墙</button><button class="snav-a">成员</button>
+      </nav>
+    </div>
+    <div class="tb-avatar">瓜</div>
+  </header>
+</div>
+
+<main class="reader">
+  <a class="back" href="feed.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> 返回干货</a>
+  <article id="art"></article>
+</main>
+
+<script src="feed-data.js"></script>
+<script>
+(function(){
+  var POSTS=window.FEED_POSTS||[];
+  // 大封面只用真人写真（与 feed.html 同一池、同散列 → 卡片和文章封面一致）；不用帖子截图
+  var COVERS=['assets/feed/cover-9.jpg','assets/feed/cover-6.jpg','assets/feed/cover-8.jpg','assets/feed/cover-2.jpg','assets/feed/cover-5.jpg','assets/feed/cover-3.jpg','assets/feed/cover-1.jpg','assets/feed/cover-7.jpg','assets/feed/cover-4.jpg'];
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function qid(){var m=location.search.match(/[?&]id=([^&]+)/);return m?decodeURIComponent(m[1]):'';}
+  function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+
+  var id=qid();
+  var p=POSTS.filter(function(x){return x.id===id;})[0];
+  var art=document.getElementById('art');
+  if(!p){ art.innerHTML='<div class="notfound">没找到这篇帖子。<br><a href="feed.html">← 回到干货</a></div>'; return; }
+
+  document.title='深海圈 | '+p.title;
+  var cover=COVERS[hash(p.id)%COVERS.length];
+  var isGem=(p.badges||[]).indexOf('精华')>=0;
+  var cat=(p.cats&&p.cats[0])||'干货';
+
+  // 头像
+  var avHtml=p.avatar?'<img class="av" src="'+esc(p.avatar)+'" alt="'+esc(p.author)+'">':'<span class="av av-i">'+esc((p.author||'·').slice(0,1))+'</span>';
+  // 正文：把预览按句号拆成段落，读起来像文章
+  var txt=(p.excerpt||'').replace(/\s+/g,'');
+  var parts=txt.split(/(?<=[。！？；])/).filter(Boolean);
+  if(parts.length<=1) parts=txt.split(/(?<=[，、])/).filter(Boolean);   // 没断句就按逗号兜底
+  var paras=[], buf='';
+  parts.forEach(function(s){ buf+=s; if(buf.length>=78){paras.push(buf);buf='';} });
+  if(buf)paras.push(buf);
+  if(!paras.length)paras=[txt||'（暂无预览）'];
+  var bodyHtml=paras.map(function(t,i){return '<p'+(i===0?' class="lead"':'')+'>'+esc(t)+'</p>';}).join('');
+
+  var tagsHtml=(p.tags&&p.tags.length)?'<div class="art-tags">'+p.tags.map(function(t){return '<span class="t">'+esc(t)+'</span>';}).join('')+'</div>':'';
+
+  var goUrl='https://scys.com/deepsea/2001'+(cat&&cat!=='综合'?'?tab='+encodeURIComponent(cat):'');
+
+  art.innerHTML=
+    '<div class="art-cat">'+(isGem?'<span class="gem">◆ 精华 · </span>':'')+esc(cat)+'</div>'+
+    '<h1 class="art-title">'+esc(p.title)+'</h1>'+
+    '<div class="art-author">'+avHtml+
+      '<div><div class="nm">'+esc(p.author)+(p.role?'<span class="role">'+esc(p.role)+'</span>':'')+'</div>'+
+      '<div class="sub"><span>'+esc(p.time)+'</span>'+
+        '<span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>'+(p.likes||0)+'</span>'+
+        '<span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-1.2 4.3A8.5 8.5 0 0 1 12.5 20a8.4 8.4 0 0 1-4.3-1.2L3 20l1.3-5.2A8.4 8.4 0 0 1 3 11.5a8.5 8.5 0 0 1 4.2-7.3A8.4 8.4 0 0 1 11.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>'+(p.comments||0)+'</span>'+
+      '</div></div>'+
+    '</div>'+
+    '<div class="art-cover"><img src="'+esc(cover)+'" alt=""></div>'+
+    '<div class="art-body">'+bodyHtml+'</div>'+
+    tagsHtml+
+    '<div class="cta"><div class="h">这是来自交流区的真实分享 · 预览</div>'+
+      '<div class="d">原型里只载入了帖子预览。完整正文、图片和评论都在深海圈交流区原帖里。</div>'+
+      '<a href="'+goUrl+'" target="_blank" rel="noopener">阅读全文 · 去深海圈原帖 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><polyline points="7 7 17 7 17 17"/></svg></a>'+
+    '</div>'+
+    '<div class="comments"><h3>评论 '+(p.comments||0)+'</h3>'+
+      (p.comments>0
+        ? '<div class="cmt-empty">登录深海圈查看 '+p.comments+' 条评论 →</div>'
+        : '<div class="cmt-empty">还没有评论，去原帖抢沙发 →</div>')+
+    '</div>';
+})();
+</script>
+<script src="assistant.js?v=3"></script>
+</body>
+</html>
