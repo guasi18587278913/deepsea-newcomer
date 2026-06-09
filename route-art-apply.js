@@ -118,7 +118,7 @@
     var art = ROUTE_ART[key];
     /* 1) 海：按路线换「淡底生态海」(gen_seas_designed.py 重做, 2026-06-09)。
        早前因旧 gpt 海质感差曾暂统一用 sea-i；本版海已调淡 + 对岛配色、逐条配岛验证 → 重新启用按路线换海。
-       回退单海: 把下面一行换成  seaLayer.style.backgroundImage="url('assets/sea-i.png')"; seaLayer.style.filter=''; */
+       回退单海: 把下面一行换成  seaLayer.style.backgroundImage="url('assets/sea-i.webp')"; seaLayer.style.filter=''; */
     document.body.classList.add('route-sea');
     if (seaLayer && art.sea) { seaLayer.style.backgroundImage = "url('" + art.sea + "')"; seaLayer.style.filter = 'saturate(1.04)'; }
     var isles = wrap ? Array.prototype.slice.call(wrap.querySelectorAll('.route-isle')) : [];

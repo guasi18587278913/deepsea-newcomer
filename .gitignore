@@ -18,3 +18,9 @@ minutes/
 
 # 备份文件
 *.bak
+
+# 资产备份/未引用（不部署）
+*.orig.png
+_orig-warm/
+_isles-orig/
+scroll-*.png
