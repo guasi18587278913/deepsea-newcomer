@@ -3,12 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=welcome.html">
-<title>深海圈 · AI 编程</title>
-<link rel="canonical" href="welcome.html">
-<script>location.replace('welcome.html' + location.search + location.hash);</script>
+<title>深海圈 · 片头</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c1a2b; --deep:#12283f; --teal:#19b0a2; --teal-deep:#0d9488;
+    --gold:#c89854; --gold-soft:#e7c890; --paper:#f4efe4;
+    --serif:'Noto Serif SC','Songti SC',serif; --sans:'Sora','PingFang SC',-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans); color:#eaf3f4; min-height:100vh; overflow-x:hidden;
+    background:
+      radial-gradient(120% 90% at 50% -10%, #1c3e5a 0%, #122a41 38%, #0a1726 72%, #07111d 100%);
+    display:flex; flex-direction:column; -webkit-font-smoothing:antialiased;
+  }
+  /* faint light rays / depth */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(60% 50% at 50% 8%, rgba(120,200,210,.16), transparent 70%);}
+  .topbar{display:flex;align-items:center;gap:9px;padding:22px 28px;position:relative;z-index:2}
+  .brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:700;font-size:19px;color:#dff3f1;letter-spacing:.01em}
+  .brand .sq{width:14px;height:14px;background:linear-gradient(135deg,var(--teal),var(--teal-deep));border-radius:4px;box-shadow:0 0 14px rgba(25,176,162,.5)}
+
+  .stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:26px;padding:8px 24px 56px;position:relative;z-index:1;text-align:center}
+  .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.22em;color:var(--gold-soft);
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:10px}
+  .eyebrow::before,.eyebrow::after{content:"";width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.7}
+  .eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent)}
+  h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5.2vw,54px);line-height:1.18;
+    color:#fff;letter-spacing:.005em;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+  h1 .hl{color:var(--gold-soft)}
+  .lede{max-width:560px;font-size:15.5px;line-height:1.8;color:#b8cdd4}
+
+  /* ---- 片头视频卡 ---- */
+  .reel{position:relative;width:min(760px,92vw);aspect-ratio:16/9;border-radius:16px;overflow:hidden;cursor:pointer;
+    background:linear-gradient(150deg,#163450,#0d2236 60%,#0a1b2c);
+    border:1px solid rgba(160,210,215,.18);
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
+    transition:transform .35s cubic-bezier(.2,1,.3,1), box-shadow .35s}
+  .reel:hover{transform:translateY(-4px);box-shadow:0 52px 96px -30px rgba(0,0,0,.78), inset 0 1px 0 rgba(255,255,255,.1)}
+  .reel::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 70% at 50% 38%,transparent,rgba(7,17,29,.55));pointer-events:none}
+  .reel-head{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+    padding:15px 18px;font-size:11px;letter-spacing:.14em;color:#cfe6e6;z-index:3}
+  .reel-head .ch .num{color:var(--gold-soft);font-weight:700}
+  .watch{display:inline-flex;align-items:center;gap:7px;font-weight:600;color:#eee}
+  .watch .dot{width:7px;height:7px;border-radius:50%;background:#ff5a5a;box-shadow:0 0 0 4px rgba(255,90,90,.18);animation:pulse 1.8s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(255,90,90,0)}}
+  .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;z-index:3;
+    background:rgba(255,255,255,.1);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    border:1.5px solid rgba(255,255,255,.55);display:grid;place-items:center;transition:transform .25s, background .25s}
+  .reel:hover .play{transform:translate(-50%,-50%) scale(1.08);background:rgba(255,255,255,.2)}
+  .play::before{content:"";width:0;height:0;margin-left:6px;border-left:24px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+  .reel-foot{position:absolute;left:0;right:0;bottom:0;padding:18px 22px;text-align:left;z-index:3;
+    background:linear-gradient(0deg,rgba(7,16,27,.82),transparent)}
+  .reel-foot .t{font-family:var(--serif);font-weight:700;font-size:clamp(16px,2.4vw,21px);color:#fff;line-height:1.35}
+  .reel-foot .m{margin-top:7px;font-size:12px;letter-spacing:.04em;color:#a9c3c8;display:flex;align-items:center;gap:9px}
+  .reel-foot .m .by{color:var(--gold-soft);font-weight:600}
+  .reel-foot .m .sep{width:3px;height:3px;border-radius:50%;background:#6f8b92}
+
+  /* ---- 进入按钮 ---- */
+  .enter{display:inline-flex;align-items:center;gap:12px;margin-top:4px;padding:15px 30px;border:none;cursor:pointer;
+    font-family:var(--sans);font-size:16px;font-weight:600;color:#06231f;border-radius:13px;
+    background:linear-gradient(180deg,#37d3c2,#10a194);
+    box-shadow:0 16px 34px -14px rgba(25,176,162,.7), inset 0 1px 0 rgba(255,255,255,.4);
+    transition:transform .18s, box-shadow .18s, background .18s}
+  .enter:hover{transform:translateY(-2px);background:linear-gradient(180deg,#46e0cf,#13ab9d);box-shadow:0 22px 42px -14px rgba(25,176,162,.78), inset 0 1px 0 rgba(255,255,255,.45)}
+  .enter .arr{transition:transform .25s}
+  .enter:hover .arr{transform:translateX(5px)}
+  .skip{margin-top:-8px;background:none;border:none;color:#84a0a8;font-family:var(--sans);font-size:13px;cursor:pointer;letter-spacing:.02em}
+  .skip:hover{color:#cfe6e6;text-decoration:underline}
+
+  /* ---- 视频弹层 ---- */
+  .overlay{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:24px;
+    background:rgba(5,11,19,.86);backdrop-filter:blur(8px)}
+  .overlay.show{display:grid}
+  .overlay .frame{position:relative;width:min(1000px,94vw);aspect-ratio:16/9;border-radius:14px;overflow:hidden;
+    background:#000;box-shadow:0 40px 90px -20px rgba(0,0,0,.8)}
+  .overlay .frame video,.overlay .frame iframe{width:100%;height:100%;border:0;display:block}
+  .overlay .x{position:absolute;top:-46px;right:0;background:none;border:none;color:#cfe6e6;font-size:30px;cursor:pointer;line-height:1}
+  .hint{position:fixed;left:50%;bottom:42px;transform:translateX(-50%) translateY(20px);z-index:60;opacity:0;
+    background:rgba(244,239,228,.96);color:#2a2418;font-size:13.5px;font-weight:500;padding:11px 18px;border-radius:11px;
+    box-shadow:0 16px 40px -12px rgba(0,0,0,.5);transition:opacity .3s, transform .3s;pointer-events:none;white-space:nowrap}
+  .hint.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:560px){
+    .stage{gap:20px;padding-bottom:40px}
+    .play{width:66px;height:66px}.play::before{border-left-width:19px;border-top-width:12px;border-bottom-width:12px}
+  }
+</style>
 </head>
-<body style="margin:0;background:#0d1b2a">
-<noscript><a href="welcome.html" style="color:#9fd;font-family:sans-serif">进入深海圈 →</a></noscript>
+<body>
+  <div class="topbar"><span class="brand"><span class="sq"></span>深海圈</span></div>
+
+  <main class="stage">
+    <span class="eyebrow">序章 · PROLOGUE</span>
+    <h1>用&nbsp;AI&nbsp;编程，做<span class="hl">可持续</span>的生意</h1>
+    <p class="lede">先花三分钟，听一段开场致辞——为什么是现在，为什么是你。然后，开始这段旅程。</p>
+
+    <div class="reel" onclick="playIntro()" role="button" aria-label="播放片头致辞">
+      <div class="reel-head">
+        <span class="ch">CH&nbsp;<span class="num">01</span>&nbsp;/&nbsp;PROLOGUE</span>
+        <span class="watch"><span class="dot"></span>WATCH</span>
+      </div>
+      <div class="play"></div>
+      <div class="reel-foot">
+        <div class="t">致辞：为什么是现在，为什么是你</div>
+        <div class="m"><span class="by">刘小排</span><span class="sep"></span><span>FOUNDER</span><span class="sep"></span><span>03:24</span></div>
+      </div>
+    </div>
+
+    <button class="enter" onclick="enterProduct()">进入深海圈<span class="arr">→</span></button>
+    <button class="skip" onclick="enterProduct()">先跳过，直接进产品</button>
+  </main>
+
+  <div class="overlay" id="ov" onclick="if(event.target===this)closeIntro()">
+    <div class="frame" id="ovFrame"><button class="x" onclick="closeIntro()" aria-label="关闭">×</button></div>
+  </div>
+  <div class="hint" id="hint"></div>
+
+<script>
+  /* ① 片头视频：把致辞视频地址填进 VIDEO_URL 就能播。
+        - mp4/webm 直链 → 用 <video> 播
+        - YouTube / Bilibili / 腾讯 等 → 填它们的「嵌入(embed/iframe)」地址 */
+  var VIDEO_URL = "";
+
+  function playIntro(){
+    if(!VIDEO_URL){ showHint('片头视频还没接入 · 把视频文件或链接发我就能播放'); return; }
+    var ov = document.getElementById('ov'), frame = document.getElementById('ovFrame');
+    frame.querySelectorAll('video,iframe').forEach(function(e){e.remove();});
+    var el;
+    if(/\.(mp4|webm|mov)(\?|$)/i.test(VIDEO_URL)){
+      el = document.createElement('video'); el.src = VIDEO_URL; el.controls = true; el.autoplay = true; el.playsInline = true;
+    } else {
+      el = document.createElement('iframe'); el.src = VIDEO_URL;
+      el.allow = "autoplay; fullscreen; encrypted-media"; el.setAttribute('allowfullscreen','');
+    }
+    frame.appendChild(el); ov.classList.add('show');
+  }
+  function closeIntro(){
+    var frame = document.getElementById('ovFrame');
+    frame.querySelectorAll('video,iframe').forEach(function(e){e.remove();});
+    document.getElementById('ov').classList.remove('show');
+  }
+
+  /* ② 进入产品：老用户(已填过问卷)直达学习地图/路线；新用户先走 welcome 引导 */
+  function enterProduct(){
+    var dest = 'welcome.html';
+    try{
+      var onboarded = localStorage.getItem('ds_onboarded') === 'true' || !!localStorage.getItem('ds_enrolled_at');
+      if(onboarded){
+        dest = (localStorage.getItem('ds_has_idea') === 'has') ? 'roadmap.html' : 'calendar.html';
+      }
+    }catch(e){}
+    location.href = dest;
+  }
+
+  var hintTimer;
+  function showHint(msg){
+    var h = document.getElementById('hint'); h.textContent = msg; h.classList.add('show');
+    clearTimeout(hintTimer); hintTimer = setTimeout(function(){ h.classList.remove('show'); }, 2600);
+  }
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeIntro(); });
+</script>
 </body>
 </html>
