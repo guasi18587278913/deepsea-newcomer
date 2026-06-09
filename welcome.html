@@ -12,7 +12,7 @@ window.dsHomeUrl = function () {
 };
 (function () {
   var p = new URLSearchParams(location.search);
-  if (p.get('fresh') === '1' || p.has('step')) return;            // 重置 / 诊断回跳 → 放行，照常走问卷
+  if (p.get('fresh') === '1' || p.has('step') || p.get('from') === 'home') return;   // 重置 / 诊断回跳 / 从首页片头进入 → 放行，照常显示（含开场致辞视频）
   var onboarded = localStorage.getItem('ds_onboarded') === 'true'
                || !!localStorage.getItem('ds_enrolled_at');        // 填过问卷的老用户（含已有 demo 数据）
   if (onboarded) location.replace(dsHomeUrl());                    // 直接进主页，replace 不留历史（后退键不会弹回问卷）
