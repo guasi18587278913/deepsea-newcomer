@@ -1615,14 +1615,13 @@ function selectIdeaOption(card, type) {
 function continueFromIdea() {
   const has = localStorage.getItem('ds_has_idea');
   if (has === 'has') {
-    /* 跳到独立的诊断页；诊断完成后会跳回 welcome.html?step=5 */
-    location.href = 'diagnosis.html?from=welcome';
+    /* 诊断页已下线：直接进学习地图 */
+    location.href = 'calendar.html';
   } else {
     goToStep(5);
   }
 }
 
 </script>
-  <script src="demo-switcher.js"></script>
 </body>
 </html>

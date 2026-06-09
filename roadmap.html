@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="topbar.css">
 <style>
 /* =====================================================
    DESIGN TOKENS · per DESIGN.md
@@ -1238,19 +1239,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .km-map-summary:hover, .km-map-wrap[open] .km-map-summary { color:#0d9488; }
 .km-map-summary svg { width:15px; height:15px; }
 
-.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
-.snav .l1-item{position:relative;}
-.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
-.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
-.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
-.snav-a.active{color:#22384e;font-weight:600;}
-.snav-a.open{color:#0b7c71;background:#e8f3f2;}
-.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
-.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
-.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
-.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
-.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
-.snav-pop a .ext{font-size:11px;color:#aab6c1;}
+/* 顶栏菜单（.snav 系）样式 → 见共享 nav-menu.css */
 </style>
 </head>
 <body>
@@ -1258,37 +1247,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 <div class="km-app">
 
   <!-- ============ TOPBAR ============ -->
-  <header class="km-topbar">
-    <div class="tb-group">
-      <a href="roadmap.html" class="tb-logo">深海圈</a>
-      <nav class="snav" id="snav"></nav>
-    </div>
-    <div class="tb-group">
-      <a href="toolbox.html" class="tb-tool-link" title="AI 工具箱">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M4 5h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/>
-          <path d="M6 5V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/>
-          <path d="M8 9v2"/>
-        </svg>
-        <span>工具箱</span>
-      </a>
-      <a href="calendar.html" class="tb-tool-link" title="学习日历">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-          <rect x="2.5" y="3.5" width="11" height="10" rx="1.5"/>
-          <path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/>
-        </svg>
-        <span>日历</span>
-      </a>
-      <button class="tb-pace" onclick="openPaceModal()">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-          <circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1"/>
-        </svg>
-        <span>节奏</span>
-        <strong id="tbPaceText">1 小时/天</strong>
-      </button>
-      <div class="tb-avatar" title="我">李</div>
-    </div>
-  </header>
+  <header id="ds-topbar"></header>
 
   <!-- ============ PROJECT BANNER ============ -->
   <section class="km-banner" id="kmBanner">
@@ -2084,8 +2043,9 @@ function renderKnowledgeMap() {
    TOPBAR / ACTIONBAR
    ===================================================== */
 function renderTopBar() {
-  // 顶栏已精简为统一导航；天数/进度移除（项目阶段与底部进度已体现），此处只更新节奏
-  document.getElementById('tbPaceText').textContent = paceText(STATE.dailyMinutes);
+  // 顶栏已切换为全站统一组件（topbar.js）；旧节奏元素已移除，做空值保护避免报错
+  var paceEl = document.getElementById('tbPaceText');
+  if (paceEl) paceEl.textContent = paceText(STATE.dailyMinutes);
 }
 
 function renderActionBar() {
@@ -2249,7 +2209,6 @@ function _fillCalloutContent(stageNum, clickedComp) {
       <li class="kd-course ${state}" data-code="${c.code}"
           onclick="gotoCourse('${c.code}', '${state}')">
         <span class="kd-course-mark">${mark}</span>
-        <span class="kd-course-code">${c.code}</span>
         <span class="kd-course-title">${title}</span>
         <span class="kd-course-dur">${c.d}min</span>
         <svg class="kd-course-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
@@ -2558,7 +2517,8 @@ function closeCallout() {
 /* 课程卡片点击跳转 */
 function gotoCourse(code, state) {
   if (state === 'locked') {
-    showToast(`${code} 尚未解锁 · 先完成前面的课程`);
+    const lc = COURSES.find(c => c.code === code);
+    showToast((lc ? `《${lc.t.replace(/^[一二三四五六七八九十百]+、/, '')}》` : '这一节') + ' 尚未解锁 · 先完成前面的课程');
     return;
   }
   location.href = `learn.html?code=${encodeURIComponent(code)}`;
@@ -2660,10 +2620,10 @@ function renderProjectEngine() {
     const status = i < curIdx ? 'done' : (i === curIdx ? 'current' : 'locked');
     const mark = status === 'done' ? '✓' : (i + 1);
     const course = COURSES.find(c => c.code === step.code);
-    const title = course ? course.t.replace(/^[一二三四五六七八九十百]+、/, '') : step.code;
+    const title = course ? course.t.replace(/^[一二三四五六七八九十百]+、/, '') : '该课程';
     const link = status === 'locked'
-      ? `<span class="pe-stage-course" style="opacity:.55;cursor:default"><span class="pe-stage-code">${step.code}</span>${escapeHtml(title)} 🔒</span>`
-      : `<a class="pe-stage-course" href="learn.html?code=${encodeURIComponent(step.code)}"><span class="pe-stage-code">${step.code}</span>${escapeHtml(title)} →</a>`;
+      ? `<span class="pe-stage-course" style="opacity:.55;cursor:default">${escapeHtml(title)} 🔒</span>`
+      : `<a class="pe-stage-course" href="learn.html?code=${encodeURIComponent(step.code)}">${escapeHtml(title)} →</a>`;
     return `
       <div class="pe-stage ${status}">
         <div class="pe-stage-mark">${mark}</div>
@@ -2702,8 +2662,8 @@ function renderProjectBanner() {
   const hasReal = p && p.form;
   banner.className = 'km-banner pb-empty';
   banner.innerHTML = hasReal
-    ? '已按你的项目定制路线 · <a href="diagnosis.html?from=roadmap">换个想法，重新诊断 →</a>'
-    : '当前跟教学项目走 · <a href="diagnosis.html?from=roadmap">有自己的想法了？做个诊断，定制专属路线 →</a>';
+    ? '已按你的项目定制路线 · <a href="calendar.html">换个方向，重新生成航线 →</a>'
+    : '当前跟教学项目走 · <a href="calendar.html">有自己的想法了？生成专属航线 →</a>';
 }
 
 /* 二次确认状态 + 自动恢复 timer */
@@ -2782,11 +2742,10 @@ renderAll();
 </script>
 
 <script src="assistant.js?v=3"></script>
-  <script src="demo-switcher.js"></script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
-  var ACTIVE='课程专区';
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
     var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
@@ -2797,5 +2756,6 @@ renderAll();
   document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
 })();
 </script>
+<script src="topbar.js"></script>
 </body>
 </html>

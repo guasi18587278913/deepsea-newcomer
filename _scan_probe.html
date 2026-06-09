@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
+<pre id="result">PENDING</pre>
+<iframe id="f" src="preflight.html?track=aiwebsite" style="width:1200px;height:800px"></iframe>
+<script>
+const f = document.getElementById('f');
+f.onload = function () {
+  const w = f.contentWindow, d = f.contentDocument;
+  function snap() {
+    return {
+      stat: d.getElementById('pfNum').textContent,
+      items: [...d.querySelectorAll('#pfList .pf-item')].map(li => li.querySelector('.pf-nm').textContent + '=' + ((li.className.match(/is-(\w+)/) || [])[1] || '?')),
+      fixes: [...d.querySelectorAll('#pfFixes .pf-fix-h')].map(e => e.textContent.trim()),
+      hint: d.getElementById('pfHint').textContent,
+      aboard: d.getElementById('pfAboard').className.replace('pf-aboard', '').trim() + ' | ' + d.getElementById('pfAboard').textContent.trim()
+    };
+  }
+  let out = {};
+  try { w.startScan(); } catch (e) { document.getElementById('result').textContent = 'ERR startScan: ' + e; return; }
+  setTimeout(function () {
+    out.afterScan = snap();
+    try { w.fixOne('aiaccess'); } catch (e) { out.fixErr = '' + e; }
+    setTimeout(function () {
+      out.afterFix = snap();
+      document.getElementById('result').textContent = JSON.stringify(out, null, 1);
+    }, 500);
+  }, 4200);
+};
+</script>
+</body></html>

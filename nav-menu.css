@@ -1,0 +1,80 @@
+/* ============================================================
+   深海圈 · 顶栏「菜单」共享样式（.snav 系）
+   ------------------------------------------------------------
+   作用：统一全站顶栏一级菜单 + 下拉的「字体 / 字号 / 颜色」，
+        消除各页手写复制导致的字体漂移。基准 = Inter 14px。
+   用法：在各页 <style> 之前
+        <link rel="stylesheet" href="nav-menu.css">
+        并删掉各页内联的 .snav / .snav-a / .snav-pop / .l1-item 段。
+   边界：只管「菜单」本身；顶栏容器(.km-topbar/.topbar/.tb-inner)、
+        品牌 logo、右侧件(.tb-*) 仍由各页自理（结构归一留给 PRD）。
+   自包含：颜色全部固定值、字体不依赖各页 --font 变量，
+        确保任何页渲染都一致。
+   字体加载：各页 <head> 需引入 Inter（Google Fonts）。
+   页面专属微调（如 calendar 的描金激活下划线）用更高特异性
+   选择器（如 .km-topbar .snav-a.active）在各页 <style> 里覆盖即可。
+   ============================================================ */
+.snav { display: flex; gap: 2px; }
+.snav .l1-item { position: relative; }
+
+.snav-a {
+  font-family: 'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size: 14px;
+  color: #5e7280;
+  padding: 6px 12px;
+  border-radius: 7px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.snav-a::after { content: '▾'; font-size: 10px; color: #aab6c1; transition: transform .2s; }
+.snav-a:hover { color: #1d2b3a; background: #f4f7f8; }
+.snav-a.active { color: #22384e; font-weight: 600; }
+.snav-a.open { color: #0b7c71; background: #e8f3f2; }
+.snav-a.open::after { transform: rotate(180deg); color: #0b7c71; }
+
+.snav-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  min-width: 184px;
+  background: #fff;
+  border: 1px solid #eef3f4;
+  border-radius: 12px;
+  box-shadow: 0 12px 34px -8px rgba(34,56,78,.18), 0 2px 8px rgba(34,56,78,.06);
+  padding: 7px;
+  z-index: 90;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s cubic-bezier(.22,1,.36,1);
+}
+.snav-pop.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.snav-pop a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: 'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size: 13.5px;
+  color: #1d2b3a;
+  padding: 9px 12px;
+  border-radius: 8px;
+  transition: background .12s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.snav-pop a:hover { background: #e8f3f2; color: #0b7c71; }
+.snav-pop a .ext { font-size: 11px; color: #aab6c1; }
+
+/* 键盘焦点可访问性（顶栏菜单） */
+.snav-a:focus-visible,
+.snav-pop a:focus-visible {
+  outline: 2.5px solid #0d9488;
+  outline-offset: 3px;
+  border-radius: 8px;
+}

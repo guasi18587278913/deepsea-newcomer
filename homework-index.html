@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>作业与助教工作台 · 联动总览</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .hero { background:linear-gradient(160deg,#053e44,#022a30); color:#fff; padding:38px 0 30px; }
+  .hero__inner { max-width:1000px; margin:0 auto; padding:0 24px; }
+  .hero .brand__name { color:#fff; }
+  .hero h1 { font-size:26px; font-weight:700; margin-top:16px; letter-spacing:.5px; }
+  .hero p { margin-top:8px; color:rgba(255,255,255,.72); font-size:14px; max-width:640px; line-height:1.7; }
+  .wrap { max-width:1000px; margin:0 auto; padding:0 24px; }
+  .loop { display:flex; align-items:stretch; gap:10px; margin:22px 0 4px; flex-wrap:wrap; }
+  .loop__step { flex:1; min-width:150px; background:#fff; border:1px solid var(--border); border-radius:var(--r-lg); padding:14px 15px; box-shadow:var(--shadow-sm); }
+  .loop__step .k { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--brand-deep); }
+  .loop__step .t { font-size:14px; font-weight:600; color:var(--slate-900); margin-top:5px; }
+  .loop__step .d { font-size:12px; color:var(--text-3); margin-top:4px; line-height:1.6; }
+  .loop__arrow { align-self:center; color:var(--slate-300); font-size:18px; }
+  @media (max-width:680px){ .loop__arrow{ display:none; } }
+  .sec-t { font-size:13px; font-weight:700; color:var(--slate-500); letter-spacing:2px; margin:30px 0 14px; display:flex; align-items:center; gap:10px; }
+  .sec-t::after { content:""; flex:1; height:1px; background:var(--border); }
+  .grid { display:grid; grid-template-columns:1fr; gap:14px; }
+  @media (min-width:640px){ .grid{ grid-template-columns:1fr 1fr; } }
+  .pcard { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid var(--border); border-radius:var(--r-xl); padding:18px; box-shadow:var(--shadow-sm); transition:transform .14s, box-shadow .14s; }
+  .pcard:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .pcard__ic { width:44px; height:44px; border-radius:var(--r-md); display:grid; place-items:center; color:#fff; flex:none; }
+  .pcard__t { font-size:16px; font-weight:700; color:var(--slate-900); }
+  .pcard__d { font-size:13px; color:var(--text-3); margin-top:4px; line-height:1.6; }
+  .pcard__tag { display:inline-block; margin-top:8px; font-size:11px; color:var(--slate-500); background:var(--slate-100); border-radius:var(--r-sm); padding:2px 7px; }
+  .bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:18px; padding:14px 16px; background:var(--amber-tint); border:1px solid #F6E0B8; border-radius:var(--r-lg); }
+  .bar .t { font-size:13px; color:var(--orange-deep); flex:1; min-width:200px; }
+  footer { margin:34px 0 24px; text-align:center; font-size:12px; color:var(--text-4); }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero__inner">
+      <div class="brand"><span class="brand__logo" style="box-shadow:none"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2"/><path d="M12 3v6"/><circle cx="12" cy="11" r="1.4" fill="currentColor" stroke="none"/></svg></span><span class="brand__name">深海圈</span></div>
+      <h1>作业与助教工作台 · 联动原型</h1>
+      <p>学员交作业 → 进教练工作台 → 教练认领批改 → 学员个人中心实时看到状态回流。同一套湖蓝青设计语言，数据用本地存储打通，可点可走。</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="loop">
+      <div class="loop__step"><div class="k">STEP 1 · 学员</div><div class="t">提交作业</div><div class="d">标题 + 文案/图片/链接 + 可见性，写入待批改队列</div></div>
+      <span class="loop__arrow">→</span>
+      <div class="loop__step"><div class="k">STEP 2 · 助教</div><div class="t">认领 → 批改</div><div class="d">在共享工作台挑一条认领（防撞单），写评语 + 截图</div></div>
+      <span class="loop__arrow">→</span>
+      <div class="loop__step"><div class="k">STEP 3 · 学员</div><div class="t">看到状态回流</div><div class="d">个人中心：待批改 → <b style="color:var(--blue)">评阅中</b> → 已完成（带评语）</div></div>
+    </div>
+
+    <div class="sec-t">学员侧</div>
+    <div class="grid">
+      <a class="pcard" href="homework-mine.html">
+        <span class="pcard__ic" style="background:linear-gradient(140deg,var(--brand-bright),var(--brand-deep))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+        <div><div class="pcard__t">个人中心 · 我的作业</div><div class="pcard__d">真实列表，每条按数据出状态徽标（含「评阅中」）。从这里进各份作业详情。</div><span class="pcard__tag">活列表 · 四态</span></div>
+      </a>
+      <a class="pcard" href="homework-submit.html?stage=2">
+        <span class="pcard__ic" style="background:linear-gradient(140deg,#34d399,var(--brand-deep))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span>
+        <div><div class="pcard__t">作业提交页</div><div class="pcard__d">填完真写进存储，立刻出现在「我的作业」和教练工作台。</div><span class="pcard__tag">活表单</span></div>
+      </a>
+    </div>
+
+    <div class="sec-t">助教侧</div>
+    <div class="grid">
+      <a class="pcard" href="workbench.html">
+        <span class="pcard__ic" style="background:linear-gradient(140deg,#60a5fa,#2563eb)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+        <div><div class="pcard__t">助教工作台</div><div class="pcard__d">问答 + 作业一张表，问答优先；认领防撞单；认领一条真作业，学员那边即变「评阅中」。</div><span class="pcard__tag">总揽 · 认领 · 批改</span></div>
+      </a>
+      <a class="pcard" href="homework-detail.html?id=hw-seed-1">
+        <span class="pcard__ic" style="background:linear-gradient(140deg,#fbbf24,var(--orange-deep))"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+        <div><div class="pcard__t">作业详情（示例）</div><div class="pcard__d">学员视角看自己某份作业 + 助教评语。这条是已完成示例。</div><span class="pcard__tag">三态展示</span></div>
+      </a>
+    </div>
+
+    <div class="bar">
+      <span class="t">演示数据是模拟的。换了几版后本地可能有旧数据 —— 点右边按钮一键重置到全新种子。</span>
+      <a class="btn btn--primary btn--sm" href="homework-mine.html?reset=1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>重置演示数据</a>
+    </div>
+
+    <footer>深海圈 · 作业与助教工作台 · 学员端 + 教练端联动原型 · 以线上社区为视觉对齐基准</footer>
+  </div>
+</body>
+</html>

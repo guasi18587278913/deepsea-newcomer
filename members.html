@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>深海圈 | 成员</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="topbar.css">
 <style>
 :root {
   --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -62,34 +66,18 @@ a { color:inherit; text-decoration:none; }
 .m-follow:hover { background:var(--teal); color:#fff; }
 
 .note { margin-top:28px; font-size:12.5px; color:var(--text3); text-align:center; }
+.m-empty { text-align:center; padding:64px 24px; }
+.m-empty-ic { font-size:40px; line-height:1; margin-bottom:14px; }
+.m-empty-t { font-size:16px; font-weight:600; color:var(--text1); margin-bottom:8px; }
+.m-empty-d { font-size:13.5px; color:var(--text3); max-width:380px; margin:0 auto; line-height:1.75; }
 
 @media (max-width:768px) { .members { grid-template-columns:1fr; } .page { padding:20px; } .topbar { padding:0 16px; } }
-.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
-.snav .l1-item{position:relative;}
-.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
-.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
-.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
-.snav-a.active{color:#22384e;font-weight:600;}
-.snav-a.open{color:#0b7c71;background:#e8f3f2;}
-.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
-.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
-.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
-.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
-.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
-.snav-pop a .ext{font-size:11px;color:#aab6c1;}
+/* 顶栏菜单（.snav 系）样式 → 见共享 nav-menu.css */
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="tb-inner">
-    <div class="tb-left">
-      <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="snav" id="snav"></nav>
-    </div>
-    <a href="profile.html" class="avatar">瓜</a>
-  </div>
-</div>
+<header id="ds-topbar"></header>
 
 <section class="hero">
   <div class="hero-inner">
@@ -100,9 +88,9 @@ a { color:inherit; text-decoration:none; }
 
 <div class="page">
   <div class="tags">
-    <span class="tag active">全部成员</span>
-    <span class="tag">认证高手</span>
-    <span class="tag">同城学员</span>
+    <span class="tag active" data-tab="all">全部成员</span>
+    <span class="tag" data-tab="experts">认证高手</span>
+    <span class="tag" data-tab="local">同城伙伴</span>
   </div>
 
   <div class="members">
@@ -179,14 +167,47 @@ a { color:inherit; text-decoration:none; }
     </div>
   </div>
 
-  <div class="note">建设中 · 这是成员页的占位骨架（认证高手 / 同城学员等筛选待接入真实数据）</div>
+  <div id="m-empty" class="m-empty" style="display:none">
+    <div class="m-empty-ic">📍</div>
+    <div class="m-empty-t">同城伙伴 · 敬请期待</div>
+    <div class="m-empty-d">接入真实定位后，这里会显示和你同城的同学，方便线下面基、组队。</div>
+  </div>
+
+  <div class="note">原型演示 · 成员为示意数据，同城筛选待接入真实定位</div>
 </div>
 
-<script src="assistant.js"></script>
-  <script src="demo-switcher.js"></script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  // 成员筛选：全部 / 认证高手（按 .b-expert 徽章） / 同城（待接入定位，先占位）
+  var tabs = document.querySelectorAll('.tag');
+  var members = document.querySelectorAll('.member');
+  var grid = document.querySelector('.members');
+  var empty = document.getElementById('m-empty');
+
+  function apply(tab){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === tab); });
+    var showCity = (tab === 'local');
+    grid.style.display = showCity ? 'none' : '';
+    if (empty) empty.style.display = showCity ? '' : 'none';
+    if (!showCity){
+      members.forEach(function(m){
+        var ok = (tab === 'all') || (tab === 'experts' && m.querySelector('.b-expert'));
+        m.style.display = ok ? '' : 'none';
+      });
+    }
+  }
+
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ apply(t.dataset.tab); }); });
+
+  // 顶栏菜单「认证高手 / 同城伙伴」带 ?tab= 直达
+  var q = (location.search.match(/[?&]tab=([^&]+)/) || [])[1];
+  apply(q === 'experts' || q === 'local' ? q : 'all');
+})();
+</script>
+<script src="assistant.js"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='成员';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
@@ -198,5 +219,6 @@ a { color:inherit; text-decoration:none; }
   document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
 })();
 </script>
+<script src="topbar.js"></script>
 </body>
 </html>

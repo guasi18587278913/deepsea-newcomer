@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>羊皮纸底图 · 挑一张</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --teal:#0d9488; --teal-deep:#1f6f6a; --ink:#1e3a52; --gold:#a07c3c; }
+  *{ box-sizing:border-box; margin:0; }
+  body{ font-family:"PingFang SC",-apple-system,sans-serif; background:#5b6b6e; color:#fff; padding:30px 24px 60px; }
+  h1{ font-size:20px; font-weight:700; }
+  .tip{ font-size:13px; opacity:.8; margin-top:6px; }
+  .grid{ display:grid; grid-template-columns:repeat(2,minmax(380px,1fr)); gap:26px; margin-top:24px; max-width:1080px; }
+  @media(max-width:880px){ .grid{ grid-template-columns:1fr; } }
+  .pick .badge{ font-size:13px; font-weight:600; margin-bottom:9px; display:flex; align-items:center; gap:8px; }
+  .pick .badge .k{ width:24px;height:24px;border-radius:6px;background:#fff;color:#3a4a4d;display:grid;place-items:center;font-weight:800; }
+  /* 弹窗预览 */
+  .m{ border-radius:14px; padding:22px 22px 18px; border:1px solid #c2a05f; overflow:hidden; position:relative; box-shadow:0 18px 40px -16px rgba(0,0,0,.5); background-size:cover; background-position:center; }
+  .m::after{ content:""; position:absolute; inset:9px; border:1px solid rgba(150,112,52,.4); border-radius:8px; box-shadow:inset 0 0 0 3px rgba(253,248,236,.3); pointer-events:none; }
+  .eb{ font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); font-weight:700; }
+  .q{ font-family:"Noto Serif SC",serif; font-size:22px; font-weight:700; color:var(--ink); margin:9px 0 4px; }
+  .sub{ font-size:12.5px; color:#5c6b64; }
+  .rule{ height:0; border-top:1px dashed rgba(160,122,58,.6); margin:13px 0; }
+  .opt{ display:flex; align-items:center; gap:12px; padding:11px 13px; border:1px solid rgba(150,112,52,.34); border-radius:11px; background:linear-gradient(180deg,rgba(255,252,245,.86),rgba(249,243,228,.76)); box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 5px rgba(110,80,36,.08); margin-bottom:9px; }
+  .ic{ width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;color:#8a6a2f;background:radial-gradient(circle at 50% 34%,#fbf2da,#e2cb98);box-shadow:inset 0 1px 1px rgba(255,255,255,.75),inset 0 0 0 1.5px rgba(150,112,52,.6); }
+  .ic svg{ width:19px;height:19px; }
+  .tx{ flex:1;min-width:0; }
+  .tx b{ font-size:14px; color:var(--ink); font-weight:600; display:block; }
+  .tx b i{ color:var(--teal-deep); font-style:normal; }
+  .tx span{ font-size:11.5px; color:#857553; }
+  .rad{ width:19px;height:19px;border-radius:50%;border:1.5px solid #cbb588;flex:none;background:rgba(255,255,255,.5); }
+  .foot{ display:flex; justify-content:space-between; align-items:center; margin-top:13px; }
+  .foot .g{ font-size:12px; color:#8a7c58; }
+  .foot .cta{ font-size:12.5px; font-weight:700; color:#94835c; background:rgba(255,250,238,.62); border:1px solid rgba(150,112,52,.45); padding:8px 16px; border-radius:11px; }
+</style>
+</head>
+<body>
+  <h1>羊皮纸底图 · 挑一张（已去掉罗盘等花哨元素，满铺干净）</h1>
+  <p class="tip">每张都套了真实弹窗内容，重点看：纸的调性 + 文字压上去读不读得清。看好告诉我字母（如「用 E」），我就把弹窗换成那张。</p>
+  <div class="grid" id="grid"></div>
+
+<script>
+  var PICKS = [
+    { k:'B', img:'assets/parch-b.png', note:'冷调旧纸 · 博物馆羊皮感 (nano-banana)' },
+    { k:'C', img:'assets/parch-c.png', note:'暖奶油 · 最干净（当前默认）(nano-banana)' },
+    { k:'D', img:'assets/parch-d.png', note:'暖牛皮 · 均匀颗粒 (gpt-image)' },
+    { k:'E', img:'assets/parch-e.png', note:'暖金 · 老地图感最足 (nano-banana)' },
+  ];
+  var IC_PHONE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="3" width="12" height="18" rx="3"/><path d="M10.5 18h3"/></svg>';
+  var IC_GLOBE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>';
+  document.getElementById('grid').innerHTML = PICKS.map(function(p){
+    return '<div class="pick"><div class="badge"><span class="k">'+p.k+'</span>'+p.note+'</div>'
+      + '<div class="m" style="background-image:url('+p.img+')">'
+      + '<div class="eb">✦ 为你生成专属航线</div>'
+      + '<div class="q">你最想先做出个啥？</div>'
+      + '<div class="sub">选一个方向，我们为你绘一条专属航线。</div>'
+      + '<div class="rule"></div>'
+      + '<div class="opt"><span class="ic">'+IC_PHONE+'</span><div class="tx"><b>一个能发给朋友玩的<i>小程序</i></b><span>微信里的轻应用</span></div><span class="rad"></span></div>'
+      + '<div class="opt"><span class="ic">'+IC_GLOBE+'</span><div class="tx"><b>一个有网址、打开就能用的 <i>AI 工具 / 网站</i></b><span>网页应用、在线工具</span></div><span class="rad"></span></div>'
+      + '<div class="foot"><span class="g">先看全量地图</span><span class="cta">选一个方向 →</span></div>'
+      + '</div></div>';
+  }).join('');
+</script>
+</body>
+</html>

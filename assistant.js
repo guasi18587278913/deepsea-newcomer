@@ -8,11 +8,11 @@
 (function () {
   if (document.getElementById('assistant-root')) return; // 防重复
 
-  /* 「课程专区」按有无 idea 智能跳转：有 idea → 路线图，没 idea → 日历 */
+  /* 「学习中心」按有无 idea 智能跳转：有 idea → 路线图，没 idea → 日历 */
   try {
     var _courseTarget = localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
     document.querySelectorAll('.nav a').forEach(function (a) {
-      if (a.textContent.trim() === '课程专区') a.setAttribute('href', _courseTarget);
+      if (a.textContent.trim() === '学习中心') a.setAttribute('href', _courseTarget);
     });
   } catch (e) {}
 

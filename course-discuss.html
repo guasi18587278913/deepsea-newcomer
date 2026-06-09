@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="topbar.css">
 <style>
 :root{
   --font-serif:'Fraunces','Noto Serif SC','Songti SC',serif;
@@ -36,19 +37,7 @@ button{font-family:inherit;}
 .brand{display:flex;align-items:center;gap:9px;font-family:var(--font-serif);font-weight:700;font-size:18px;color:var(--ink);}
 .brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#22d3ee,var(--brand) 60%,#0891b2);display:grid;place-items:center;box-shadow:0 4px 14px rgba(56,189,248,.45);}
 .brand .mark svg{width:15px;height:15px;color:#fff;}
-.snav{display:flex;gap:2px;}
-.snav .l1-item{position:relative;}
-.snav-a{font-family:var(--font);font-size:13.5px;color:var(--t2);padding:6px 12px;border-radius:8px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
-.snav-a::after{content:'▾';font-size:10px;color:var(--t4);transition:transform .2s;}
-.snav-a:hover{color:var(--ink);background:var(--surface-2);}
-.snav-a.active{color:var(--ink);font-weight:600;}
-.snav-a.open{color:var(--teal-2);background:var(--teal-bg);}
-.snav-a.open::after{transform:rotate(180deg);color:var(--teal-2);}
-.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-lg);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
-.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
-.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--ink);padding:9px 12px;border-radius:8px;transition:background .12s;white-space:nowrap;}
-.snav-pop a:hover{background:var(--teal-bg);color:var(--teal-2);}
-.snav-pop a .ext{font-size:11px;color:var(--t4);}
+/* 顶栏菜单（.snav 系）样式 → 见共享 nav-menu.css */
 .tb-r{display:flex;align-items:center;gap:16px;}
 .tb-online{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t2);}
 .tb-online .d{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22);}
@@ -207,22 +196,11 @@ button{font-family:inherit;}
 </head>
 <body>
 
-<div class="top">
-  <header class="topbar">
-    <div class="tb-l">
-      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>深海圈</span>
-      <nav class="snav" id="snav"></nav>
-    </div>
-    <div class="tb-r">
-      <span class="tb-online"><span class="d"></span> 47 人在线</span>
-      <div class="tb-avatar" data-nm="瓜哥">瓜</div>
-    </div>
-  </header>
-</div>
+<header id="ds-topbar"></header>
 
 <div class="page">
   <div class="crumb">
-    <a href="#">课程专区</a><span class="sep">›</span>
+    <a href="#">学习中心</a><span class="sep">›</span>
     <a href="#">A · 快速入门</a><span class="sep">›</span>
     <span class="cur">A3 · 10 分钟做出第一个网站</span>
   </div>
@@ -380,8 +358,8 @@ button{font-family:inherit;}
 <script>
 /* ===== 顶栏导航 ===== */
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['同城伙伴','members.html']]};
-  var ACTIVE='课程专区';
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['同城伙伴','members.html']]};
+  var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
     var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
@@ -483,5 +461,6 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 /* 深链：?zone=flow 直达本章动态 */
 (function(){var z=new URLSearchParams(location.search).get('zone');if(z==='flow'){var b=document.querySelector('.p-tab[data-zone="flow"]');if(b)b.click();}})();
 </script>
+<script src="topbar.js"></script>
 </body>
 </html>

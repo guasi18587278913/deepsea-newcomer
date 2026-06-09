@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>深海圈 | 社区</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="topbar.css">
 <style>
 :root {
   --font: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -81,32 +85,12 @@ a { color:inherit; text-decoration:none; }
 .fab:hover { background:var(--teal-dark); transform:scale(1.05); }
 
 @media (max-width:768px) { .page { grid-template-columns:1fr; padding:20px; } }
-.snav{display:flex;gap:2px;font-family:'Sora','PingFang SC',-apple-system,sans-serif;}
-.snav .l1-item{position:relative;}
-.snav-a{font-family:'Sora','PingFang SC',-apple-system,sans-serif;font-size:14px;color:#5e7280;padding:6px 12px;border-radius:7px;background:none;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
-.snav-a::after{content:'▾';font-size:10px;color:#aab6c1;transition:transform .2s;}
-.snav-a:hover{color:#1d2b3a;background:#f4f7f8;}
-.snav-a.active{color:#22384e;font-weight:600;}
-.snav-a.open{color:#0b7c71;background:#e8f3f2;}
-.snav-a.open::after{transform:rotate(180deg);color:#0b7c71;}
-.snav-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:184px;background:#fff;border:1px solid #eef3f4;border-radius:12px;box-shadow:0 12px 34px -8px rgba(34,56,78,.18),0 2px 8px rgba(34,56,78,.06);padding:7px;z-index:90;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .18s cubic-bezier(.22,1,.36,1);}
-.snav-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
-.snav-pop a{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13.5px;color:#1d2b3a;padding:9px 12px;border-radius:8px;transition:background .12s;text-decoration:none;white-space:nowrap;}
-.snav-pop a:hover{background:#e8f3f2;color:#0b7c71;}
-.snav-pop a .ext{font-size:11px;color:#aab6c1;}
+/* 顶栏菜单（.snav 系）样式 → 见共享 nav-menu.css */
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="tb-inner">
-    <div class="tb-left">
-      <a href="roadmap.html" class="logo">深海圈</a>
-      <nav class="snav" id="snav"></nav>
-    </div>
-    <a href="profile.html" class="avatar">瓜</a>
-  </div>
-</div>
+<header id="ds-topbar"></header>
 
 <section class="hero">
   <div class="hero-inner">
@@ -222,10 +206,9 @@ a { color:inherit; text-decoration:none; }
 <button class="fab" title="发帖">+</button>
 
 <script src="assistant.js?v=3"></script>
-  <script src="demo-switcher.js"></script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'课程专区':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='交流区';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
@@ -237,5 +220,6 @@ a { color:inherit; text-decoration:none; }
   document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
 })();
 </script>
+<script src="topbar.js"></script>
 </body>
 </html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 出航前检查</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Sora:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav-menu.css">
+<style>
+:root{
+  --font-display:'Noto Serif SC','Songti SC',serif;
+  --font-sans:'Sora','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+  --bg:#f5fafa; --surface:#ffffff;
+  --deep-blue:#1e3a52;
+  --teal:#0d9488; --teal-hover:#0b7c71; --teal-deep:#1f6f6a; --teal-bg:#e8f6f5;
+  --gold:#c89854; --gold-bright:#d8a85f;
+  --text-1:#1a2942; --text-2:#5c7a8a; --text-3:#94a3b8;
+  --border:#dde7ea; --border-soft:#e8eef0;
+  --ok:#0d9488; --warn:#c89854; --fail:#d4744e;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg)}
+body{font-family:var(--font-sans);color:var(--text-1);-webkit-font-smoothing:antialiased;line-height:1.5;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ---- 顶栏：复刻 calendar.html 的 km-topbar，全站一套皮 ---- */
+.km-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;height:56px;flex:none;padding:0 26px;background:rgba(248,251,250,.82);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid rgba(200,152,84,.32);box-shadow:0 3px 16px -10px rgba(31,111,106,.4);z-index:40}
+.tb-group{display:flex;align-items:center;gap:18px}
+.tb-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.tb-logo .wheel{width:26px;height:26px;color:var(--teal-deep);flex:none}
+.tb-logo .nm{font-family:var(--font-display);font-weight:700;font-size:17.5px;color:var(--teal-deep);letter-spacing:-.01em;line-height:1}
+.km-topbar .snav-a.active{color:var(--teal-deep);position:relative}
+.km-topbar .snav-a.active::before{content:"";position:absolute;left:12px;right:24px;bottom:-1px;height:2px;background:var(--gold);border-radius:2px}
+.tb-tool-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--text-2);text-decoration:none;transition:.18s}
+.tb-tool-link:hover{border-color:var(--teal-deep);color:var(--teal-deep);background:#eaf4f2}
+.tb-tool-link svg{width:13px;height:13px;flex:none}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:var(--deep-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600}
+
+/* ---- 主区：整片海（复用 calendar 的 sea 底图）---- */
+.wrap{flex:1;min-width:0;position:relative;overflow-y:auto;overflow-x:hidden}
+.sea-layer{position:absolute;inset:0;z-index:0;pointer-events:none;background:#cfe9ef url('assets/sea-i.png') center/cover no-repeat;filter:saturate(.86) brightness(1.09) contrast(.84)}
+.sea-veil{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(135% 115% at 50% 30%,rgba(249,245,235,0) 64%,rgba(241,234,216,.5) 100%)}
+.pf-stage{position:relative;z-index:3;max-width:880px;margin:0 auto;padding:30px 24px 64px}
+
+/* ---- 头部 ---- */
+.pf-back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--teal-deep);text-decoration:none;background:rgba(249,252,251,.78);padding:5px 12px;border-radius:999px;border:1px solid rgba(120,150,150,.2);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.pf-back:hover{background:#fff;border-color:var(--teal)}
+.pf-eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin:22px 0 6px}
+.pf-title{font-family:var(--font-display);font-size:38px;font-weight:700;color:var(--deep-blue);letter-spacing:-.01em;text-shadow:0 1px 6px rgba(248,251,250,.92);display:flex;align-items:center;gap:12px}
+.pf-anchor{width:30px;height:30px;color:var(--gold);flex:none}
+.pf-lead{font-size:14px;color:#2f4e5a;margin-top:12px;max-width:560px;line-height:1.65;background:rgba(249,252,251,.82);padding:10px 15px;border-radius:12px;border:1px solid rgba(120,150,150,.16);box-shadow:0 2px 10px -5px rgba(30,80,90,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+
+/* ---- 路线切换 ---- */
+.pf-tracks{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 18px}
+.pf-track{display:flex;flex-direction:column;gap:1px;padding:9px 16px;border-radius:12px;border:1px solid rgba(120,150,150,.28);background:rgba(255,255,255,.7);cursor:pointer;transition:.15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);min-width:104px}
+.pf-track .tk-day{font-family:var(--font-mono);font-size:9.5px;color:var(--text-3);letter-spacing:.04em}
+.pf-track .tk-name{font-size:14px;font-weight:600;color:var(--text-2)}
+.pf-track:hover{border-color:var(--teal);background:#fff}
+.pf-track.on{border-color:var(--teal-deep);background:#fff;box-shadow:0 6px 18px -10px rgba(31,111,106,.5)}
+.pf-track.on .tk-name{color:var(--teal-deep)}
+.pf-track.on .tk-day{color:var(--gold)}
+
+/* ---- 主卡 ---- */
+.pf-card{background:linear-gradient(165deg,rgba(255,255,255,.96),rgba(252,254,253,.93));border:1px solid rgba(200,152,84,.28);border-radius:18px;padding:22px 24px;box-shadow:0 22px 54px -28px rgba(30,80,90,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.pf-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--border-soft)}
+.pf-promise{font-size:13.5px;color:var(--text-2);max-width:430px;line-height:1.6}
+.pf-promise b{color:var(--teal-deep);font-weight:600}
+.pf-stat{text-align:right;flex:none}
+.pf-stat .num{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--deep-blue);line-height:1}
+.pf-stat .num b{color:var(--teal-deep)}
+.pf-stat .lab{font-size:11px;color:var(--text-3);margin-top:3px}
+.pf-bar{height:5px;border-radius:99px;background:#e8eef0;margin-top:9px;overflow:hidden;width:120px;margin-left:auto}
+.pf-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--teal-deep));border-radius:99px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+
+/* ---- 检查项清单 ---- */
+.pf-list{list-style:none;margin:6px 0 0}
+.pf-item{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid var(--border-soft)}
+.pf-item:last-child{border-bottom:none}
+.pf-ico{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;border:1.5px solid #d3dde0;background:#f6fafa;color:var(--text-3);transition:.25s}
+.pf-ico svg{width:15px;height:15px}
+.pf-item.is-scan .pf-ico{border-color:var(--teal);color:var(--teal);animation:spin .7s linear infinite}
+.pf-item.is-ok .pf-ico{border-color:var(--ok);background:var(--teal-bg);color:var(--ok)}
+.pf-item.is-warn .pf-ico{border-color:var(--warn);background:#fbf4e6;color:var(--warn)}
+.pf-item.is-fail .pf-ico{border-color:var(--fail);background:#fbeee7;color:var(--fail)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pf-meta{flex:1;min-width:0}
+.pf-nm{font-size:14px;font-weight:600;color:var(--text-1)}
+.pf-ds{font-size:12px;color:var(--text-3);margin-top:1px}
+.pf-tag{font-family:var(--font-mono);font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:99px;flex:none;letter-spacing:.02em}
+.pf-item.is-pending .pf-tag{color:var(--text-3);background:#eef3f4}
+.pf-item.is-scan .pf-tag{color:var(--teal-deep);background:var(--teal-bg)}
+.pf-item.is-ok .pf-tag{color:var(--ok);background:var(--teal-bg)}
+.pf-item.is-warn .pf-tag{color:#a9762e;background:#fbf4e6}
+.pf-item.is-fail .pf-tag{color:#bc5a36;background:#fbeee7}
+
+/* ---- 修复卡 ---- */
+.pf-fixes{margin-top:16px;display:flex;flex-direction:column;gap:12px}
+.pf-fix{background:linear-gradient(160deg,#fdf8ee,#fdfcf8);border:1px solid #ecdcc0;border-radius:14px;padding:15px 17px;box-shadow:0 12px 30px -20px rgba(120,90,30,.5)}
+.pf-fix-h{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:#8a5a1e}
+.pf-fix-h .fx-dot{width:7px;height:7px;border-radius:50%;background:var(--fail);flex:none}
+.pf-fix-tip{font-size:13px;color:#5c4a2c;margin:8px 0 0;line-height:1.6}
+.pf-fix-cmd{display:flex;align-items:center;gap:10px;margin-top:10px;background:#1e2a36;border-radius:9px;padding:9px 12px}
+.pf-fix-cmd code{font-family:var(--font-mono);font-size:12px;color:#cfe9e4;flex:1;overflow-x:auto;white-space:nowrap}
+.pf-copy{font-family:var(--font-sans);font-size:11px;font-weight:600;color:#1e2a36;background:#cfe9e4;border-radius:6px;padding:4px 10px;cursor:pointer;flex:none;transition:.15s}
+.pf-copy:hover{background:#fff}
+.pf-fix-row{display:flex;align-items:center;gap:12px;margin-top:11px;flex-wrap:wrap}
+.pf-fix-link{font-size:12.5px;color:var(--teal-deep);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.pf-fix-link:hover{text-decoration:underline}
+.pf-recheck{margin-left:auto;font-family:var(--font-sans);font-size:12.5px;font-weight:600;color:var(--teal-deep);background:#fff;border:1px solid var(--teal);border-radius:99px;padding:6px 14px;cursor:pointer;transition:.15s}
+.pf-recheck:hover{background:var(--teal);color:#fff}
+
+/* ---- 底部动作 ---- */
+.pf-foot{display:flex;align-items:center;gap:14px;margin-top:20px;flex-wrap:wrap}
+.pf-scan-btn{font-family:var(--font-sans);font-size:15px;font-weight:600;color:#fff;background:var(--teal-deep);border:none;border-radius:11px;padding:13px 26px;cursor:pointer;transition:.16s;box-shadow:0 12px 26px -14px rgba(31,111,106,.7)}
+.pf-scan-btn:hover{background:#1a5f5a;transform:translateY(-1px)}
+.pf-scan-btn:disabled{opacity:.5;cursor:default;transform:none}
+.pf-aboard{font-family:var(--font-sans);font-size:15px;font-weight:600;border-radius:11px;padding:13px 28px;cursor:pointer;transition:.16s;border:none;display:none;align-items:center;gap:8px}
+.pf-aboard.ready{display:inline-flex;color:#fff;background:linear-gradient(120deg,var(--gold),#b5803f);box-shadow:0 12px 26px -14px rgba(180,128,63,.8)}
+.pf-aboard.ready:hover{transform:translateY(-1px)}
+.pf-aboard.blocked{display:inline-flex;color:var(--text-3);background:#eef3f4;cursor:default}
+.pf-hint{font-size:12.5px;color:var(--text-2)}
+
+/* ---- toast ---- */
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--deep-blue);color:#fff;font-size:13.5px;font-weight:500;padding:11px 20px;border-radius:11px;box-shadow:0 16px 40px -12px rgba(30,58,82,.5);opacity:0;pointer-events:none;transition:.3s;z-index:90}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:600px){
+  .pf-title{font-size:30px}
+  .pf-stage{padding:22px 16px 56px}
+  .km-topbar .tb-tool-link span{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="km-topbar">
+    <div class="tb-group">
+      <a href="calendar.html" class="tb-logo" title="深海圈 · 学习地图">
+        <svg class="wheel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        <span class="nm">深海圈</span>
+      </a>
+      <nav class="snav" id="snav"></nav>
+    </div>
+    <div class="tb-group">
+      <a href="toolbox.html" class="tb-tool-link" title="AI 工具箱">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M6 5V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/><path d="M8 9v2"/></svg>
+        <span>工具箱</span>
+      </a>
+      <div class="tb-avatar" title="欢迎回来，航海者">我</div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="sea-layer"></div><div class="sea-veil"></div>
+    <div class="pf-stage">
+      <a class="pf-back" href="calendar.html">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        返回学习地图
+      </a>
+
+      <div class="pf-eyebrow" id="pfEyebrow">启航准备 · Day 0</div>
+      <h1 class="pf-title">
+        出航前检查
+        <svg class="pf-anchor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21M5 12H3.2a8.8 8.8 0 0 0 17.6 0H19M8.5 11H15.5"/></svg>
+      </h1>
+      <div class="pf-lead">环境是出海前最容易翻船的一关。点一下「开始自检」，<b>10 秒看清你的装备齐不齐</b> —— 缺什么、怎么补，一目了然。补齐就能扬帆。</div>
+
+      <div class="pf-track-hint" id="pfTrackHint" style="display:none;font-size:12.5px;color:#8a6d3b;background:rgba(252,247,235,.85);border:1px solid rgba(200,152,84,.4);border-radius:10px;padding:9px 14px;margin:18px 0 0;max-width:560px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)">你还没选方向 —— 下面是 4 条路线<b>分别</b>要准备什么；去学习地图「生成专属航线」选定后，这里会直接显示<b>你那条</b>的清单。</div>
+      <div class="pf-tracks" id="pfTracks"></div>
+
+      <div class="pf-card">
+        <div class="pf-card-head">
+          <div class="pf-promise" id="pfPromise"></div>
+          <div class="pf-stat">
+            <div class="num" id="pfNum">—</div>
+            <div class="lab">项装备就绪</div>
+            <div class="pf-bar"><i id="pfBar"></i></div>
+          </div>
+        </div>
+        <ul class="pf-list" id="pfList"></ul>
+        <div class="pf-fixes" id="pfFixes"></div>
+        <div class="pf-foot">
+          <button class="pf-scan-btn" id="pfScanBtn">开始自检</button>
+          <button class="pf-aboard" id="pfAboard"></button>
+          <span class="pf-hint" id="pfHint"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   出航前检查 · 体验 demo（preflight.html）
+   - 路线 key 对齐 routes.js：idea / miniprogram / aiwebsite / aiemployee
+   - 检查项为 demo 推断数据（按各路线真实工具栈），待瓜斯校正；
+     校正定稿后可并入 routes.js 每条路线、作为第一岛 flow 的首项。
+   - 全程 mock：自检结果写死、"重新检查"直接置 ok，真脚本由工具侧接。
+   ============================================================ */
+const TRACKS = {
+  idea: {
+    short:'找方向', day:'Stage 0',
+    promise:'这条几乎不碰开发环境 —— 一台能上网的电脑 + 一个 AI 助手就能出发。<b>开箱即走。</b>',
+    passNote:'这条路几乎不用准备。备好浏览器和 AI 助手，现在就能出发。',
+    items:[
+      {id:'ai',     name:'AI 对话助手',   desc:'调研、拆解对标的副驾', result:'ok'},
+      {id:'browser',name:'Chrome 浏览器', desc:'翻产品、看对标', result:'ok'},
+      {id:'vpn',    name:'访问海外对标站', desc:'看国内对标可跳过；研究海外产品时才需要', result:'warn',
+        fix:{tip:'非必须。等你要研究海外产品时，再备一个稳定的网络通道即可，现在可以先出发。'}},
+    ],
+  },
+  miniprogram: {
+    short:'小程序', day:'5 天',
+    promise:'要装的东西最多 —— 先把<b>工位配齐</b>，后面 5 天才跑得顺。',
+    items:[
+      {id:'wechat',name:'微信账号',            desc:'注册小程序、开通云开发', result:'ok'},
+      {id:'coze',  name:'扣子编程账号',        desc:'Day1 五分钟出第一个 demo', result:'ok'},
+      {id:'trae',  name:'TRAE CN（AI 编辑器）',desc:'Day2 起写核心功能', result:'ok'},
+      {id:'node',  name:'Node.js ≥ 18',       desc:'Taro 项目的运行底座', result:'fail',
+        fix:{tip:'去官网下载 LTS 版（18 及以上），装完重开一次终端再检查。',
+             cmd:'node -v   # 看到 v18 以上就对了', link:'https://nodejs.org', linkText:'nodejs.org 下载'}},
+      {id:'wxtool',name:'微信开发者工具',      desc:'Day4 手机扫码真机预览', result:'ok'},
+    ],
+  },
+  aiwebsite: {
+    short:'AI 网站', day:'5 天',
+    promise:'轻装上阵 —— 一个账号、一条能<b>连上模型</b>的网络，就能开工。',
+    items:[
+      {id:'browser', name:'Chrome 浏览器',           desc:'开发、预览、分享', result:'ok'},
+      {id:'coze',    name:'扣子编程账号',            desc:'Day2 十分钟出第一个网站', result:'ok'},
+      {id:'editor',  name:'AI 编辑器（Cursor / TRAE CN）',desc:'打磨、写 SPEC', result:'ok'},
+      {id:'aiaccess',name:'AI 能力可用',             desc:'让"超级实习生"真的能跑起来', result:'fail',
+        fix:{tip:'两条路二选一：① 填好模型的 API key；② 开启稳定的网络通道，确认能连上模型。',
+             link:'#', linkText:'查看配置指引'}},
+      {id:'deploy',  name:'部署 / 域名',             desc:'Day5 上线、配域名', result:'ok'},
+    ],
+  },
+  aiemployee: {
+    short:'AI 员工', day:'5 天',
+    promise:'给 AI 员工<b>配工位</b> —— 装好一个能自动干活的环境。',
+    items:[
+      {id:'terminal',   name:'终端 / 命令行',              desc:'AI 员工的工位', result:'ok'},
+      {id:'agent',      name:'Codex Desktop / Claude Cowork',desc:'不看代码让 AI 干活（装其一）', result:'fail',
+        fix:{tip:'挑一个装上并登录：Codex Desktop 或 Claude Cowork（也可用国产替代）。',
+             link:'#', linkText:'工具站清单'}},
+      {id:'runtime',    name:'Node 或 Python',            desc:'跑自动化脚本 / SKILL', result:'ok'},
+      {id:'browserauto',name:'浏览器自动化工具',          desc:'Day3 自动跑浏览器任务', result:'ok'},
+      {id:'apikey',     name:'模型 API key',              desc:'让员工能调用模型', result:'ok'},
+    ],
+  },
+};
+const ORDER = ['idea','miniprogram','aiwebsite','aiemployee'];
+
+const ICON = {
+  pending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>',
+  scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>',
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".4" fill="currentColor" stroke="none"/><path d="M12 16.5h.01"/></svg>',
+  fail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+};
+const TAGTXT = {pending:'待检', scan:'扫描中', ok:'就绪', warn:'可选', fail:'缺失'};
+
+let state = { track:'aiwebsite', scanned:false, locked:false };
+
+function $(id){ return document.getElementById(id); }
+function curItems(){ return TRACKS[state.track].items; }
+
+/* 路线 tab */
+function renderTracks(){
+  var box = $('pfTracks');
+  if(state.locked){ box.style.display='none'; return; }   /* 已锁定路线：收起切换 tab */
+  box.style.display='';
+  box.innerHTML = ORDER.map(function(k){
+    var t = TRACKS[k];
+    return '<div class="pf-track'+(k===state.track?' on':'')+'" data-k="'+k+'">'
+         + '<span class="tk-day">'+t.day+'</span><span class="tk-name">'+t.short+'</span></div>';
+  }).join('');
+  box.querySelectorAll('.pf-track').forEach(function(el){
+    el.addEventListener('click', function(){ selectTrack(el.dataset.k); });
+  });
+}
+function selectTrack(k){
+  if(k===state.track) return;
+  state.track = k; state.scanned = false;
+  renderTracks(); resetView();
+}
+
+/* 检查项清单（status: pending|scan|ok|warn|fail） */
+function renderList(statusMap){
+  $('pfList').innerHTML = curItems().map(function(it){
+    var st = statusMap[it.id] || 'pending';
+    return '<li class="pf-item is-'+st+'" data-id="'+it.id+'">'
+      + '<span class="pf-ico">'+ICON[st]+'</span>'
+      + '<span class="pf-meta"><span class="pf-nm">'+it.name+'</span><span class="pf-ds">'+it.desc+'</span></span>'
+      + '<span class="pf-tag">'+TAGTXT[st]+'</span></li>';
+  }).join('');
+}
+function allPending(){ var m={}; curItems().forEach(function(it){ m[it.id]='pending'; }); return m; }
+
+/* 重置到「未检」初始态 */
+function resetView(){
+  var t = TRACKS[state.track];
+  $('pfPromise').innerHTML = t.promise;
+  renderList(allPending());
+  $('pfFixes').innerHTML = '';
+  $('pfNum').innerHTML = '—';
+  $('pfBar').style.width = '0';
+  $('pfScanBtn').disabled = false;
+  $('pfScanBtn').textContent = '开始自检';
+  $('pfScanBtn').style.display = '';
+  var ab = $('pfAboard'); ab.className = 'pf-aboard'; ab.textContent='';
+  $('pfHint').textContent = '';
+}
+
+/* 逐项扫描动画 */
+function startScan(){
+  var items = curItems();
+  $('pfScanBtn').disabled = true;
+  $('pfScanBtn').textContent = '检查中…';
+  $('pfFixes').innerHTML = '';
+  var status = allPending();
+  var i = 0;
+  function step(){
+    if(i >= items.length){ finishScan(status); return; }
+    var it = items[i];
+    status[it.id] = 'scan'; renderList(status);
+    setTimeout(function(){
+      status[it.id] = it.result; renderList(status);
+      updateStat(status);
+      i++; setTimeout(step, 180);
+    }, 440);
+  }
+  step();
+}
+function updateStat(status){
+  var items = curItems();
+  var ready = items.filter(function(it){ return status[it.id]==='ok' || status[it.id]==='warn'; }).length;
+  $('pfNum').innerHTML = '<b>'+ready+'</b> / '+items.length;
+  $('pfBar').style.width = Math.round(ready/items.length*100)+'%';
+}
+
+/* 扫完：汇总 + 修复卡 + 出航态 */
+function finishScan(status){
+  state.scanned = true;
+  $('pfScanBtn').style.display = 'none';
+  var items = curItems();
+  var fails = items.filter(function(it){ return it.result==='fail'; });
+  renderFixes(fails);
+  var ab = $('pfAboard');
+  if(fails.length === 0){
+    ab.className = 'pf-aboard ready';
+    ab.innerHTML = '出航 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
+    ab.onclick = goAboard;
+    $('pfHint').textContent = TRACKS[state.track].passNote || '一切就绪，可以扬帆起航！';
+  } else {
+    ab.className = 'pf-aboard blocked';
+    ab.textContent = '出航（待补齐）';
+    ab.onclick = null;
+    $('pfHint').textContent = '还差 ' + fails.length + ' 项，补齐后即可出航。';
+  }
+}
+
+/* 修复卡 */
+function renderFixes(fails){
+  if(!fails.length){ $('pfFixes').innerHTML=''; return; }
+  $('pfFixes').innerHTML = fails.map(function(it){
+    var f = it.fix || {};
+    var html = '<div class="pf-fix" data-id="'+it.id+'">'
+      + '<div class="pf-fix-h"><span class="fx-dot"></span>缺：'+it.name+'</div>'
+      + '<div class="pf-fix-tip">'+(f.tip||'')+'</div>';
+    if(f.cmd){
+      html += '<div class="pf-fix-cmd"><code>'+f.cmd+'</code>'
+            + '<button class="pf-copy" data-cmd="'+encodeURIComponent(f.cmd)+'">复制</button></div>';
+    }
+    html += '<div class="pf-fix-row">';
+    if(f.link){ html += '<a class="pf-fix-link" href="'+f.link+'"'+(f.link!=='#'?' target="_blank" rel="noopener"':'')+'>'+(f.linkText||'查看指引')+' ↗</a>'; }
+    html += '<button class="pf-recheck" data-id="'+it.id+'">我搞定了，重新检查</button>'
+          + '</div></div>';
+    return html;
+  }).join('');
+  $('pfFixes').querySelectorAll('.pf-copy').forEach(function(b){
+    b.addEventListener('click', function(){
+      var txt = decodeURIComponent(b.dataset.cmd);
+      navigator.clipboard && navigator.clipboard.writeText(txt);
+      b.textContent = '已复制'; setTimeout(function(){ b.textContent='复制'; }, 1400);
+    });
+  });
+  $('pfFixes').querySelectorAll('.pf-recheck').forEach(function(b){
+    b.addEventListener('click', function(){ fixOne(b.dataset.id); });
+  });
+}
+
+/* 「我搞定了」→ mock 置为 ok，重新汇总 */
+function fixOne(id){
+  var it = curItems().find(function(x){ return x.id===id; });
+  if(it){ it.result = 'ok'; }
+  // 重画清单为当前真值
+  var status = {};
+  curItems().forEach(function(x){ status[x.id] = x.result; });
+  renderList(status); updateStat(status);
+  var fails = curItems().filter(function(x){ return x.result==='fail'; });
+  renderFixes(fails);
+  finishScan(status);
+  toast('✓ ' + it.name + ' 已就绪');
+}
+
+function goAboard(){
+  toast('⚓ 装备齐整，扬帆起航！');
+  setTimeout(function(){ location.href = 'learn.html'; }, 900);
+}
+
+function toast(msg){
+  var t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2000);
+}
+
+/* 顶栏导航：复刻 calendar.html 的 NAV2 渲染 */
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='学习中心';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+
+/* init：?track= 决定默认路线 */
+(function(){
+  /* 路线来源优先级：?track= > 当前已选路线 ds_route > 未选（显示总表 + 引导） */
+  var q = new URLSearchParams(location.search).get('track');
+  var ds = null; try{ ds = localStorage.getItem('ds_route'); }catch(e){}
+  var locked = (q && TRACKS[q]) ? q : ((ds && TRACKS[ds]) ? ds : null);
+  state.track = locked || 'idea';
+  state.locked = !!locked;
+  $('pfEyebrow').textContent = locked ? ('启航准备 · 你的路线：' + TRACKS[locked].short) : '启航准备 · Day 0';
+  $('pfTrackHint').style.display = locked ? 'none' : '';
+  renderTracks();
+  resetView();
+  $('pfScanBtn').addEventListener('click', startScan);
+})();
+</script>
+<script src="assistant.js"></script>
+</body>
+</html>

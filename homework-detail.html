@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>作业详情 · 深海圈</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .sub-title { font-size:19px; font-weight:700; color:var(--slate-900); line-height:1.4; }
+  .sub-meta { display:flex; align-items:center; gap:10px; margin-top:9px; font-size:13px; color:var(--slate-500); flex-wrap:wrap; }
+  .vtag { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:var(--r-pill); background:var(--slate-100); color:var(--slate-500); font-weight:600; font-size:12px; }
+  .sub-body { margin-top:16px; font-size:15px; line-height:1.8; color:var(--slate-700); white-space:pre-wrap; }
+  .sub-body .imgs { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+  .sub-body .imgs img { width:160px; height:118px; object-fit:cover; border-radius:var(--r-md); border:1px solid var(--border); cursor:zoom-in; }
+  @media (max-width:520px){ .sub-body .imgs img{ width:calc(50% - 5px); height:104px; } }
+  .queue { display:inline-flex; align-items:center; gap:6px; }
+  .queue .pip { width:7px; height:7px; border-radius:50%; background:var(--amber); animation:pip 1s infinite alternate; }
+  .queue .pip:nth-child(2){ animation-delay:.2s } .queue .pip:nth-child(3){ animation-delay:.4s }
+  @keyframes pip { to { opacity:.25; transform:translateY(-2px) } }
+  .lightbox{ position:fixed; inset:0; background:rgba(15,23,42,.82); display:none; align-items:center; justify-content:center; z-index:200; padding:40px; }
+  .lightbox.show{ display:flex; } .lightbox img{ max-width:90vw; max-height:88vh; border-radius:12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topnav">
+    <div class="topnav__inner">
+      <a class="brand" href="homework-mine.html"><span class="brand__logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2"/><path d="M12 3v6"/><circle cx="12" cy="11" r="1.4" fill="currentColor" stroke="none"/></svg></span><span class="brand__name">深海圈</span></a>
+      <span class="brand__divider"></span>
+      <a class="circle-switch"><img class="av" src="https://i.pravatar.cc/40?img=15" alt="">AI 编程<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></a>
+      <nav class="nav-tabs">
+        <a class="nav-tab" href="discuss.html">交流区</a><a class="nav-tab is-active" href="roadmap.html">课程专区</a><a class="nav-tab" href="showcase.html">作品墙</a><a class="nav-tab" href="members.html">成员</a>
+      </nav>
+      <div class="nav-right">
+        <a class="ai-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4l2.5 6.5L22 13l-6.5 2.5L13 22l-2.5-6.5L4 13l6.5-2.5z"/></svg>AI 问答</a>
+        <button class="icon-btn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></button>
+        <a class="icon-btn" href="homework-mine.html" title="个人中心"><img class="av av--sm" src="https://i.pravatar.cc/64?img=15" alt=""></a>
+      </div>
+    </div>
+  </header>
+  <header class="mnav">
+    <a class="mnav__back" href="homework-mine.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <span class="mnav__title">作业详情</span>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumb" style="padding-top:16px"><span>个人中心</span><span class="sep">›</span><a href="homework-mine.html">作业</a><span class="sep">›</span><span class="cur">详情</span></div>
+    <div id="root"></div>
+  </main>
+</div>
+<div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>
+
+<script src="homework-data.js"></script>
+<script>
+HW.maybeReset();
+HW.seedOnce();
+var E = HW.esc;
+
+var id = new URLSearchParams(location.search).get('id') || '';
+var sub = HW.getSub(id);
+var root = document.getElementById('root');
+
+if (!sub) {
+  root.innerHTML = '<div class="card" style="margin-top:14px"><div class="empty">'
+    + '<div class="empty__art" style="color:var(--slate-400);background:radial-gradient(circle at 50% 38%,var(--slate-100),#fff 72%);box-shadow:inset 0 0 0 1px var(--slate-200)"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></div>'
+    + '<div class="empty__title">找不到这份作业</div><div class="empty__desc">它可能还没提交，或链接失效了</div>'
+    + '<div class="empty__cta"><a class="btn btn--outline btn--pill" href="homework-mine.html">返回我的作业</a></div></div></div>';
+} else {
+  render(sub);
+}
+
+function visTag(pub) {
+  return pub
+    ? '<span class="vtag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7"/><circle cx="12" cy="12" r="3"/></svg>公开</span>'
+    : '<span class="vtag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>仅自己可见</span>';
+}
+
+function render(s) {
+  var stKey = HW.statusKey(s);
+  var st = HW.STATUS[stKey];
+  var handled = HW.handledOf(s);
+  var claim = HW.claimOf(s);
+
+  var imgs = (s.images || []).length
+    ? '<div class="imgs">' + s.images.map(function (src, i) { return '<img src="' + E(src) + '" data-img="' + i + '" alt="">'; }).join('') + '</div>' : '';
+  var rawLink = s.link || s.url || '';
+  var link = rawLink ? '<span class="linkchip"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span><a class="u" href="' + E(/^https?:/.test(rawLink) ? rawLink : 'https://' + rawLink) + '" target="_blank" rel="noopener">' + E(rawLink) + '</a></span>' : '';
+
+  /* 顶部状态提示 */
+  var topNotice = '';
+  if (stKey === 'review') {
+    topNotice = '<div class="notice notice--warn rise" style="margin-bottom:14px"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>'
+      + '<span><b>等待助教批改中</b>　<span class="queue"><span class="pip"></span><span class="pip"></span><span class="pip"></span></span><br>已进入批改队列，助教会用文字 + 截图给你一次评语，请耐心等待。</span></div>';
+  } else if (stKey === 'doing') {
+    topNotice = '<div class="notice notice--info rise" style="margin-bottom:14px"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></span>'
+      + '<span><b>' + E((claim && claim.by) || '助教') + ' 正在评阅你的作业</b><br>教练已认领这份作业，正在批改中，很快就会给你反馈。</span></div>';
+  }
+
+  var article = '<article class="card card--pad rise">'
+    + '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'
+    + '<h1 class="sub-title">' + E(s.title) + '</h1>'
+    + '<span class="st ' + st.cls + '">' + st.label + '</span></div>'
+    + '<div class="sub-meta">' + visTag(s.public) + '<span>' + E(HW.STAGES[s.stage] || '') + '</span><span class="dot"></span><span>提交于 ' + E(s.submittedAt || '') + '</span></div>'
+    + '<div class="sub-body">' + E(s.desc || '') + imgs + link + '</div></article>';
+
+  var feedback = '';
+  if (handled) {
+    var shots = (handled.shots || []).map(function (src) { return '<img class="feedback__shot" src="' + E(src) + '" alt="批改截图" style="cursor:zoom-in" data-fb="' + E(src) + '">'; }).join('');
+    feedback = '<div class="section-gap"></div><div class="feedback rise">'
+      + '<div class="feedback__head"><img class="av av--sm" src="https://i.pravatar.cc/64?img=32" alt="">'
+      + '<div style="flex:1"><div style="display:flex;align-items:center;gap:7px"><b style="font-size:14px;color:var(--slate-900)">' + E(handled.resolver || '助教') + '</b><span class="feedback__role">助教</span></div>'
+      + '<div class="tiny muted">批改于 ' + E(handled.resolvedAt || '') + '</div></div>'
+      + '<span class="st st--done">已批改</span></div>'
+      + '<div class="feedback__text">' + E(handled.reply || '') + '</div>' + shots + '</div>'
+      + '<div class="notice notice--plain rise" style="margin-top:14px"><span class="ic" style="color:var(--text-4)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span>作业仅批改一次，已完成后不支持重新提交 / 重批。</span></div>';
+  }
+
+  root.innerHTML = topNotice + article + feedback;
+
+  /* 图片放大 */
+  root.querySelectorAll('[data-img]').forEach(function (img) { img.addEventListener('click', function () { lightbox(s.images[+img.dataset.img]); }); });
+  root.querySelectorAll('[data-fb]').forEach(function (img) { img.addEventListener('click', function () { lightbox(img.dataset.fb); }); });
+}
+
+function lightbox(src) { document.getElementById('lightboxImg').src = src; document.getElementById('lightbox').classList.add('show'); }
+document.getElementById('lightbox').addEventListener('click', function () { this.classList.remove('show'); });
+</script>
+</body>
+</html>

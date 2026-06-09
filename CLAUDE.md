@@ -44,7 +44,7 @@ open diagnosis.html?from=welcome  # 诊断完返回 welcome step 5
 - 自动挂载，不需要初始化调用；只用 `<script src="assistant.js"></script>` 引入。
 - 读 `localStorage.ds_project` 给上下文化欢迎语。
 - `mockReply()` 是占位关键词匹配，**接入真实 AI API 时只替换这一个函数**。
-- 已引入的页面：community / learn / roadmap / profile / discuss / toolbox / showcase。welcome 和 diagnosis 没引（流程内）。
+- 已引入的页面：community / learn / roadmap / profile / toolbox / showcase。welcome 和 diagnosis 没引（流程内）；discuss(广场) 也已移除——聊天页有真人 + 助教答疑，不再挂 AI 浮窗。
 
 ## localStorage 数据契约
 
@@ -59,8 +59,12 @@ open diagnosis.html?from=welcome  # 诊断完返回 welcome step 5
 | `ds_has_idea` | welcome, diagnosis | — | `has` / `no` |
 | `ds_project` | diagnosis | roadmap, assistant.js | 完整项目对象（含 `name`、`stage`、`diagnosis` 等） |
 | `ds_completed_demo` | learn, roadmap | learn, roadmap | 完成课程 code 数组，如 `["A1","A2",...]` |
+| `ds_ship_level` | calendar (setShipLevel) | calendar | 航海图小船已庆祝过的最高船级 1-4，仅防升级仪式重复弹窗（只增不减） |
 | `ds_submissions` | roadmap (submit modal) | roadmap, profile, showcase | 阶段作业数组 `[{stage, title, url, repo, desc, public, submittedAt}]` |
 | `ds_started` | learn | — | `'true'` |
+| `ds_dm_open` | discuss (openDM/发消息) | discuss | 已开私聊的人名数组，最近聊的在前，如 `["赵薇薇","王大锤"]` |
+| `ds_dm_unread` | discuss | discuss | 私聊未读数 `{name: count}`，打开该私聊后清零 |
+| `ds_chat_dm:<名字>` | discuss (send + 对方自动回) | discuss | 单个私聊的消息数组，复用 `ds_chat_` 机制（id 为 `dm:名字`） |
 
 ## 课程数据
 

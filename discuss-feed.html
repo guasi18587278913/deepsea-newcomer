@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 广场</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav-menu.css">
+<style>
+:root{
+  --font-serif:'Fraunces','Noto Serif SC','Songti SC',serif;
+  --font:'Inter','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Menlo',monospace;
+
+  /* 深色 hero（深海科技） */
+  --hero-1:#05161a; --hero-2:#0a2e35; --hero-3:#072027;
+  --glow-cyan:#22d3ee; --glow-blue:#2dd4bf; --glow-indigo:#0891b2;
+
+  /* 浅色应用区 */
+  --bg:#f5fafa; --bg-gradient:linear-gradient(180deg,#e8f4f5 0%,#f5fafa 40%,#ffffff 100%); --surface:#ffffff; --surface-2:#f0f8f8;
+  --brand:#0d9488; --brand-2:#0a7a70; --brand-bg:#e8f6f5;
+  --teal:#0d9488; --teal-2:#0a7a70; --teal-bg:#e8f6f5; --gold:#c89854;
+  --amber:#c89854; --amber-bg:#f6ecd9;
+  --orange:#c2742a; --rose:#cf5b49;
+
+  --ink:#1a2942; --t1:#1a2942; --t2:#5c7a8a; --t3:#94a3b8; --t4:#b8c5d0;
+  --line:#dde7ea; --line-soft:#e6eef0;
+
+  --sh-sm:0 1px 2px rgba(16,74,74,.05);
+  --sh:0 1px 2px rgba(16,74,74,.05),0 10px 30px -14px rgba(16,74,74,.13);
+  --sh-lg:0 2px 6px rgba(16,74,74,.05),0 20px 50px -18px rgba(16,74,74,.20);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg-gradient);background-attachment:fixed;color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.5;}
+a{color:inherit;text-decoration:none;}
+svg{display:block;}
+button{font-family:inherit;}
+
+/* ============ 深色顶部块（顶栏 + hero 合一） ============ */
+.top{position:relative;background:radial-gradient(110% 80% at 16% 6%,#d2efe8 0%,rgba(210,239,232,0) 55%),radial-gradient(110% 80% at 86% 14%,#dcf1ee 0%,rgba(220,241,238,0) 52%),radial-gradient(120% 100% at 72% 96%,#c9e9e4 0%,rgba(201,233,228,0) 55%),radial-gradient(120% 110% at 6% 100%,#e4f4f2 0%,rgba(228,244,242,0) 52%),linear-gradient(180deg,#e9f5f3 0%,#eef8f7 50%,var(--bg) 100%);overflow:hidden;border-bottom:1px solid var(--line);}
+.top::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
+.hero-net{display:none;}
+.hero-glow{display:none;}
+
+.topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 34px;max-width:1280px;margin:0 auto;}
+.tb-l{display:flex;align-items:center;gap:30px;}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-serif);font-weight:700;font-size:18px;color:var(--ink);}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--glow-cyan),var(--brand) 60%,var(--glow-indigo));display:grid;place-items:center;box-shadow:0 4px 14px rgba(56,189,248,.45);}
+.brand .mark svg{width:15px;height:15px;color:#fff;}
+/* 顶栏菜单（.snav 系）样式 → 见共享 nav-menu.css */
+.tb-r{display:flex;align-items:center;gap:16px;}
+.tb-online{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t2);}
+.tb-online .d{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.22);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#0e7490);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;border:1.5px solid rgba(255,255,255,.25);}
+
+.hero{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:30px 34px 40px;text-align:center;}
+.hero-logo{display:inline-flex;align-items:center;gap:12px;}
+.hero-logo .mark{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--glow-cyan),var(--brand) 55%,var(--glow-indigo));display:grid;place-items:center;box-shadow:0 8px 26px rgba(56,189,248,.45);}
+.hero-logo .mark svg{width:26px;height:26px;color:#fff;}
+.hero-logo h1{font-family:var(--font-serif);font-size:40px;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+.hero-tag{margin-top:9px;font-size:14.5px;color:var(--t2);letter-spacing:.18em;}
+.hero-tag b{color:var(--teal);font-weight:600;}
+
+.search{margin:22px auto 0;max-width:640px;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:7px 7px 7px 18px;box-shadow:var(--sh-lg);border:1px solid var(--line);}
+.search svg{width:19px;height:19px;color:var(--t3);flex-shrink:0;}
+.search input{flex:1;border:none;outline:none;font-family:var(--font);font-size:15px;color:var(--t1);background:none;}
+.search input::placeholder{color:var(--t4);}
+.search .go{background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;padding:11px 26px;border-radius:10px;cursor:pointer;flex-shrink:0;}
+.search .go:hover{filter:brightness(1.07);}
+
+.hot{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;}
+.hot .lab{font-size:12.5px;color:var(--t2);}
+.hot a{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);border:1px solid transparent;padding:5px 12px;border-radius:20px;transition:.15s;}
+.hot a:hover{background:#daf0ed;color:#0a7a70;}
+
+.pulse{margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:12.5px;color:var(--t2);font-family:var(--mono);background:var(--surface);border:1px solid var(--line);padding:8px 16px;border-radius:24px;box-shadow:var(--sh-sm);}
+.pulse .live{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:beat 2s infinite;}
+.pulse b{color:var(--ink);font-weight:600;}
+.pulse .sep{color:var(--t4);}
+@keyframes beat{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}70%{box-shadow:0 0 0 9px rgba(52,211,153,0);}100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}}
+@media (prefers-reduced-motion:reduce){.pulse .live{animation:none;}}
+
+/* ============ 应用主体三栏 ============ */
+.seam{display:none;}
+.wrap{max-width:1280px;margin:0 auto;padding:14px 34px 64px;display:grid;grid-template-columns:208px 1fr 296px;gap:24px;align-items:start;}
+
+/* 左栏图标导航 */
+.left{position:sticky;top:18px;}
+.post-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--brand);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:11px;border:none;cursor:pointer;box-shadow:0 6px 16px -10px rgba(13,148,136,.30);transition:.15s;}
+.post-btn svg{width:16px;height:16px;}
+.post-btn:hover{filter:brightness(1.06);}
+.lnav{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:7px;box-shadow:var(--sh-sm);}
+.lnav a{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--t2);padding:10px 12px;border-radius:9px;transition:.12s;}
+.lnav a svg{width:18px;height:18px;color:var(--t3);}
+.lnav a:hover{background:var(--surface-2);color:var(--t1);}
+.lnav a.on{background:var(--brand-bg);color:var(--brand-2);font-weight:600;}
+.lnav a.on svg{color:var(--brand);}
+.lnav a .cnt{margin-left:auto;font-size:11px;color:var(--t4);font-family:var(--mono);}
+.l-user{margin-top:14px;display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--sh-sm);}
+.l-user .av{width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.l-user .nm{font-size:13.5px;font-weight:600;color:var(--t1);}
+.l-user .st{font-size:11.5px;color:var(--t3);margin-top:1px;}
+.l-user .lv{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;color:var(--teal-2);background:var(--teal-bg);padding:1px 6px;border-radius:5px;font-family:var(--mono);}
+
+/* 中栏 */
+.mid{min-width:0;display:flex;flex-direction:column;gap:14px;}
+.tabs{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:6px;box-shadow:var(--sh-sm);}
+.tab{position:relative;font-size:13.5px;color:var(--t2);background:none;border:none;padding:8px 12px;border-radius:9px;cursor:pointer;font-weight:500;transition:.13s;white-space:nowrap;}
+.tab:hover{color:var(--t1);background:var(--surface-2);}
+.tab.on{color:#fff;font-weight:600;background:var(--brand);box-shadow:0 3px 9px -6px rgba(13,148,136,.30);}
+.tab-fill{margin-left:auto;}
+.tab-ico{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--t3);cursor:pointer;}
+.tab-ico svg{width:16px;height:16px;}
+
+/* 发布框 */
+.composer{background:linear-gradient(180deg,#eff9f6,#ffffff 62%);border:1px solid #c7e6df;border-radius:15px;padding:9px;box-shadow:var(--sh-sm);}
+.cp-row{display:flex;align-items:center;gap:12px;padding:7px;cursor:text;}
+.cp-row[hidden]{display:none;}
+.cp-go{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;background:var(--brand);color:#fff;border:none;font-family:var(--font);font-size:14px;font-weight:600;padding:11px 18px;border-radius:11px;cursor:pointer;box-shadow:0 6px 16px -6px rgba(13,148,136,.5);transition:filter .14s;}
+.cp-go:hover{filter:brightness(.96);}
+.cp-go svg{width:16px;height:16px;}
+.cp-row .av,.cp-edit .av{width:40px;height:40px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.cp-row .ph{flex:1;font-size:14.5px;color:var(--t3);background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 15px;}
+.cp-edit{padding:8px 10px 10px;}
+.cp-edit textarea{width:100%;min-height:74px;border:none;outline:none;resize:none;font-family:var(--font);font-size:15px;color:var(--t1);line-height:1.65;background:none;}
+.cp-thumbs,.cb-thumbs{display:flex;gap:8px;flex-wrap:wrap;}
+.cp-thumbs{margin:4px 0 2px;}
+.cp-thumb{width:72px;height:72px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--t4);position:relative;}
+.cp-thumb svg{width:22px;height:22px;}
+.cp-thumb.sm{width:52px;height:52px;}
+.cp-thumb .x{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;display:grid;place-items:center;cursor:pointer;line-height:1;}
+.cp-bar{display:flex;align-items:center;justify-content:space-between;margin-top:8px;border-top:1px solid var(--line-soft);padding-top:10px;flex-wrap:wrap;gap:8px;}
+.cp-topics{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 2px 12px;}
+.cp-topics-lab{font-size:12.5px;color:var(--t3);margin-right:3px;}
+.cp-topic{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);border:1px solid transparent;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:var(--font);transition:.14s;}
+.cp-topic:hover{filter:brightness(.96);}
+.cp-topic.on{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 4px 12px -4px rgba(13,148,136,.5);}
+.cp-custom{font-size:12.5px;color:var(--t3);background:transparent;border:1px dashed #cdddd9;border-radius:8px;padding:5px 11px;cursor:pointer;font-family:var(--font);transition:.14s;}
+.cp-custom:hover{color:var(--teal-2);border-color:var(--teal-2);}
+.cp-custom-input{font-size:12.5px;color:#1e3a52;background:#fff;border:1px solid var(--teal-2);border-radius:8px;padding:5px 11px;width:128px;font-family:var(--font);outline:none;}
+.cp-hint{font-size:12.5px;color:var(--t3);}
+.cp-hint b{color:var(--brand-2);font-weight:600;}
+/* 发布栏话题快捷牌 */
+.cp-topicbar{flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.cpt-lab{font-size:11.5px;color:var(--t3);margin-right:1px;flex-shrink:0;}
+.cpt{font-size:12px;border-radius:7px;padding:4px 9px;cursor:pointer;border:1px solid transparent;font-family:var(--font);transition:.13s;display:inline-flex;align-items:center;gap:4px;line-height:1.2;}
+.cpt.pick{color:var(--teal-2);background:var(--teal-bg);}
+.cpt.pick:hover{color:#fff;background:var(--brand);}
+.cpt.suggest{color:var(--brand);background:#fff;border-color:var(--brand);font-weight:600;}
+.cpt.suggest:hover{color:#fff;background:var(--brand);}
+.cpt.selected{color:#fff;background:var(--brand);font-weight:600;}
+.cpt.selected .x{opacity:.85;font-size:11px;margin-left:1px;}
+.cpt.selected:hover{background:#0b7c71;}
+.cp-actions{display:flex;align-items:center;gap:9px;}
+.cp-img{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);background:none;border:1px solid var(--line);border-radius:9px;padding:8px 13px;cursor:pointer;}
+.cp-img svg{width:15px;height:15px;}
+.cp-img:hover{border-color:var(--brand);color:var(--brand);}
+.cp-send{background:var(--brand);color:#fff;border:none;font-size:13.5px;font-weight:600;padding:9px 20px;border-radius:9px;cursor:pointer;}
+
+/* ============ 卡片（参考图：头像+等级+徽章+关注+全互动） ============ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:18px 20px;box-shadow:var(--sh);transition:transform .16s,box-shadow .16s,border-color .16s;}
+.card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);border-color:#dbe4ec;}
+.card.good{background:linear-gradient(180deg,#fffaf2 0%,#fff 22%);}
+
+.ch-top{display:flex;align-items:flex-start;gap:12px;}
+.ch-av{width:44px;height:44px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 4px 10px -4px rgba(14,27,45,.4);}
+.ch-meta{flex:1;min-width:0;}
+.ch-l1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ch-name{font-size:15px;font-weight:700;color:var(--t1);}
+.lv{font-size:10.5px;font-weight:700;color:var(--teal-2);background:var(--teal-bg);padding:1.5px 7px;border-radius:6px;font-family:var(--mono);}
+.role-badge{font-size:10.5px;font-weight:700;color:var(--amber);background:var(--amber-bg);padding:1.5px 8px;border-radius:6px;}
+.ty{font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;}
+.ty.报喜{color:var(--orange);background:#fdeede;}
+.ty.求助{color:var(--brand-2);background:var(--brand-bg);}
+.ty.唠嗑{color:var(--t2);background:var(--surface-2);}
+.ch-l2{font-size:12px;color:var(--t3);margin-top:3px;}
+.ch-role{color:var(--t3);}
+.follow{flex-shrink:0;font-size:12.5px;font-weight:600;color:var(--brand);background:#fff;border:1.4px solid var(--brand);border-radius:9px;padding:6px 14px;cursor:pointer;transition:.14s;display:inline-flex;align-items:center;gap:4px;}
+.follow svg{width:13px;height:13px;}
+.follow:hover{background:var(--brand-bg);}
+.follow.on{color:var(--t3);border-color:var(--line);background:var(--surface-2);}
+.follow.on svg{display:none;}
+
+.ctext{font-size:15px;color:#2e3d4d;line-height:1.74;margin:13px 0 0;word-break:break-word;}
+.ctext code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);border:1px solid var(--line-soft);padding:1px 6px;border-radius:5px;color:#0b7c71;}
+.media{margin-top:13px;height:172px;border-radius:11px;background:linear-gradient(135deg,#eef3f8,#e6edf4);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--t4);}
+.media svg{width:32px;height:32px;}
+.media span{font-size:12px;}
+.post-img{margin-top:13px;width:100%;height:210px;object-fit:cover;border-radius:11px;border:1px solid var(--line);display:block;}
+
+.chips{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;align-items:center;}
+.course-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--brand-2);background:var(--brand-bg);padding:4px 11px;border-radius:8px;font-weight:500;}
+.course-tag svg{width:12px;height:12px;}
+.topic-tag{font-size:12.5px;color:var(--teal-2);background:var(--teal-bg);padding:4px 11px;border-radius:8px;font-weight:500;}
+
+.engage{display:flex;align-items:center;gap:6px;margin-top:15px;padding-top:13px;border-top:1px solid var(--line-soft);}
+.eng{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);background:none;border:none;cursor:pointer;font-family:var(--font);padding:6px 11px;border-radius:8px;transition:.12s;}
+.eng .bi{display:inline-flex;}
+.eng .bi svg{width:16px;height:16px;}
+.eng:hover{background:var(--surface-2);color:var(--brand);}
+.act-like.on{color:var(--rose);}
+.act-fav.on{color:var(--amber);}
+.eng.view{cursor:default;color:var(--t3);margin-left:auto;}
+.eng.view:hover{background:none;color:var(--t3);}
+.eng .bt{font-family:var(--mono);font-size:12.5px;}
+.eng.act-cmt .bt,.eng.act-fav .bt{font-family:var(--font);}
+.solved{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:7px;}
+.solved.ok{color:var(--teal-2);background:var(--teal-bg);}
+.solved.wait{color:var(--orange);background:#fdeede;}
+.engage .view+.solved,.engage .solved{margin-left:0;}
+.engage .solved{margin-left:8px;}
+
+/* 评论区 */
+.comments{display:none;margin-top:15px;padding-top:14px;border-top:1px solid var(--line-soft);}
+.comments.open{display:block;}
+.cmt{display:flex;gap:11px;padding:8px 0;}
+.cmt .ca{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.cmt .cb{flex:1;min-width:0;}
+.cmt .cn{font-size:13px;font-weight:600;color:var(--t1);}
+.cmt .cn .role{font-size:10px;color:#fff;background:var(--teal);margin-left:6px;font-weight:700;padding:1px 6px;border-radius:5px;}
+.cmt .ct{font-size:13.5px;color:#3c4b5a;line-height:1.64;margin-top:2px;}
+.cmt-img{margin-top:7px;width:150px;height:92px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--t4);}
+.cmt-img svg{width:22px;height:22px;}
+.cmt .cm{font-size:11px;color:var(--t4);margin-top:4px;}
+.cmt-empty{font-size:12.5px;color:var(--t4);padding:4px 0 2px;}
+.cmt-box{display:flex;gap:10px;align-items:flex-start;margin-top:12px;}
+.cmt-box .ca{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.cb-in{flex:1;min-width:0;}
+.cb-in input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-family:var(--font);font-size:13.5px;color:var(--t1);outline:none;background:var(--surface-2);}
+.cb-in input:focus{border-color:var(--brand);background:#fff;}
+.cb-thumbs{margin-top:6px;}
+.cmt-box .cb-img{display:inline-flex;align-items:center;background:none;border:1px solid var(--line);border-radius:9px;padding:9px 11px;cursor:pointer;color:var(--t2);flex-shrink:0;}
+.cmt-box .cb-img svg{width:15px;height:15px;}
+.cmt-box .cb-img:hover{border-color:var(--brand);color:var(--brand);}
+.cmt-box .cb-send{background:var(--brand);color:#fff;border:none;font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:9px;cursor:pointer;flex-shrink:0;}
+
+/* ============ 右栏 ============ */
+.right{position:sticky;top:18px;display:flex;flex-direction:column;gap:16px;}
+.cta{position:relative;overflow:hidden;border-radius:16px;padding:20px;color:#fff;background:var(--brand);box-shadow:0 10px 30px -16px rgba(13,148,136,.40);}
+.cta::after{content:'';position:absolute;right:-30px;bottom:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);}
+.cta h3{font-size:16.5px;font-weight:700;position:relative;z-index:1;}
+.cta p{font-size:12.5px;color:rgba(255,255,255,.82);margin-top:6px;position:relative;z-index:1;line-height:1.6;}
+.cta .bar{margin-top:12px;height:7px;border-radius:5px;background:rgba(255,255,255,.22);position:relative;z-index:1;overflow:hidden;}
+.cta .bar i{display:block;height:100%;width:72%;border-radius:5px;background:#fff;}
+.cta .go{margin-top:14px;position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--brand-2);font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;}
+.cta .go svg{width:14px;height:14px;}
+.cta .bot{position:absolute;right:14px;top:16px;z-index:1;width:54px;height:54px;border-radius:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;}
+.cta .bot svg{width:30px;height:30px;color:#fff;}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 17px 14px;box-shadow:var(--sh-sm);}
+.p-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.p-title{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:700;color:var(--ink);}
+.p-title .ic{width:18px;height:18px;color:var(--brand);}
+.p-title .ic svg{width:18px;height:18px;}
+.p-more{font-size:11.5px;color:var(--t3);cursor:pointer;}
+.p-more:hover{color:var(--brand);}
+.p-sub{font-size:11.5px;color:var(--t3);margin:2px 0 12px;}
+.p-sub b{color:var(--teal-2);}
+
+.online-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.online-row .oa{position:relative;width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.online-row .oa::after{content:'';position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#34d399;border:2px solid #fff;}
+.online-row .oi{flex:1;min-width:0;}
+.online-row .on-nm{font-size:13px;font-weight:600;color:var(--t1);}
+.online-row .on-de{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topic-row{display:flex;align-items:center;gap:11px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--line-soft);}
+.topic-row:last-child{border-bottom:none;}
+.topic-row:hover .tr-nm{color:var(--brand);}
+.tr-rank{font-family:var(--mono);font-size:14px;font-weight:700;width:18px;text-align:center;color:var(--t4);font-style:italic;}
+.topic-row:nth-child(2) .tr-rank{color:var(--rose);}
+.topic-row:nth-child(3) .tr-rank{color:var(--orange);}
+.topic-row:nth-child(4) .tr-rank{color:var(--amber);}
+.tr-bd{flex:1;min-width:0;}
+.tr-nm{font-size:13px;font-weight:500;color:var(--t1);transition:.12s;}
+.tr-heat{font-size:10.5px;color:var(--t3);font-family:var(--mono);margin-top:3px;}
+.tr-bar{height:3px;border-radius:2px;background:var(--line-soft);margin-top:5px;overflow:hidden;}
+.tr-bar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--glow-cyan));}
+
+.user-row{display:flex;align-items:center;gap:10px;padding:7px 0;}
+.user-row .ua{width:32px;height:32px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700;flex-shrink:0;}
+.user-row .ui{flex:1;min-width:0;}
+.user-row .un{font-size:13px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:6px;}
+.user-row .un .lv{font-size:9.5px;}
+.user-row .ud{font-size:11px;color:var(--t3);margin-top:1px;}
+.user-row .uf{flex-shrink:0;font-size:11.5px;font-weight:600;color:var(--brand);border:1.3px solid var(--brand);background:#fff;border-radius:8px;padding:4px 11px;cursor:pointer;transition:.13s;}
+.user-row .uf:hover{background:var(--brand-bg);}
+.user-row .uf.on{color:var(--t3);border-color:var(--line);background:var(--surface-2);}
+
+.prog-row{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line-soft);}
+.prog-row:first-of-type{border-top:none;}
+.prog-row .pa{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.prog-row .pt{font-size:12.5px;color:var(--t1);line-height:1.5;}
+.prog-row .pt b{color:var(--brand-2);}
+.prog-row .pi{margin-left:auto;color:var(--teal);flex-shrink:0;}
+.prog-row .pi svg{width:15px;height:15px;}
+
+@media (max-width:1080px){.wrap{grid-template-columns:1fr 300px;}.left{display:none;}}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;}.right{order:3;position:static;}.hero-logo h1{font-size:27px;}.hero-net{display:none;}}
+
+/* ===== 高级感升级 · ①卡片 ②动效 ③质感（全量应用）===== */
+/* ① 卡片/面板：去边框 + 分层调色阴影 + 更大圆角 */
+.card,.panel,.lnav,.l-user,.composer,.tabs{border-color:transparent;}
+.card{border-radius:18px;box-shadow:0 1px 2px rgba(16,74,74,.04),0 16px 44px -18px rgba(16,74,74,.22);}
+.panel{border-radius:18px;box-shadow:0 1px 2px rgba(16,74,74,.04),0 16px 44px -18px rgba(16,74,74,.17);}
+.composer,.lnav,.l-user,.tabs{box-shadow:0 1px 2px rgba(16,74,74,.04),0 12px 34px -18px rgba(16,74,74,.14);}
+.card.good{background:linear-gradient(180deg,#fbf6ec 0%,#fff 16%);}
+/* ② 微交互 / 动效 */
+.card{transition:transform .26s cubic-bezier(.22,1,.36,1),box-shadow .26s;animation:cmpIn .5s both;}
+#feed .card:nth-child(2){animation-delay:.04s}#feed .card:nth-child(3){animation-delay:.08s}#feed .card:nth-child(4){animation-delay:.12s}#feed .card:nth-child(5){animation-delay:.16s}#feed .card:nth-child(6){animation-delay:.2s}
+.card:hover{transform:translateY(-4px);border-color:transparent;box-shadow:0 2px 8px rgba(16,74,74,.06),0 26px 60px -20px rgba(16,74,74,.28);}
+.post-btn,.search .go,.cta-go,.follow,.cp-send,.cb-send,.tab{transition:transform .15s ease,filter .15s,box-shadow .15s,background .15s,color .15s;}
+.post-btn:hover,.search .go:hover,.cta-go:hover,.follow:hover{transform:translateY(-2px);}
+.post-btn:active,.search .go:active,.cta-go:active{transform:translateY(0) scale(.98);}
+.eng{transition:transform .12s,color .12s;}.eng:active{transform:scale(.9);}
+.online-row,.topic-row,.user-row{transition:transform .16s ease;}
+.online-row:hover,.topic-row:hover,.user-row:hover{transform:translateX(3px);}
+@keyframes cmpIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.card{animation:none!important;}}
+/* ③ 质感加重：更浓网格 + 更明显噪点 + 全局细噪 */
+.top{background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,0) 30%,rgba(245,250,250,.55) 86%,var(--bg) 100%),url("assets/hero.jpg") center/cover no-repeat;}
+.top::before{opacity:.1;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.3;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='gg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23gg)'/%3E%3C/svg%3E");}
+
+/* ===== 卡片内功 + 签名细节 ===== */
+.card{position:relative;}
+.ch-av{box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 6px 16px -6px rgba(16,74,74,.42);}
+.lv{letter-spacing:.02em;}
+.ty{box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);}
+.card[data-type="求助"]{background:linear-gradient(180deg,#f1faf8 0%,#fff 16%);}
+.engage{gap:4px;}
+.eng:hover{background:var(--teal-bg);color:var(--teal-2);}
+.eng.view:hover{background:none;color:var(--t3);}
+/* 签名①：卡片 hover · 光斑边框跟随鼠标 */
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s ease;padding:1.5px;background:radial-gradient(180px circle at var(--mx,50%) var(--my,50%),rgba(13,148,136,.6),rgba(13,148,136,0) 60%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;}
+.card:hover::after{opacity:1;}
+/* 签名②：首屏入场上浮 */
+.hero-logo{animation:heroUp .6s both .05s;}
+.search{animation:heroUp .55s both .14s;}
+.hot{animation:heroUp .55s both .22s;}
+.pulse{animation:heroUp .55s both .3s;}
+@keyframes heroUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.hero-logo,.search,.hot,.pulse{animation:none!important;}.card::after{display:none!important;}}
+/* ===== 话题可点 + 筛选横幅 ===== */
+.topic-tag{cursor:pointer;transition:background .15s,color .15s;}
+.topic-tag:hover{background:#d7efeb;color:var(--teal-2);}
+.hot a{cursor:pointer;}
+/* 顶栏左侧：动态范围 / 正在看 #xxx */
+.feed-scope{display:flex;align-items:center;gap:8px;font-size:14px;padding-left:6px;}
+.fs-all{color:var(--t2);font-weight:600;}
+.fs-topic{display:inline-flex;align-items:center;gap:8px;color:var(--teal-2);font-weight:600;}
+.fs-topic[hidden]{display:none;}
+.fs-topic .tb-topic{font-weight:700;}
+.fs-x{border:none;background:var(--teal-bg);color:var(--teal-2);font:inherit;font-size:12px;width:22px;height:22px;border-radius:50%;cursor:pointer;display:inline-grid;place-items:center;transition:filter .15s;}
+.fs-x:hover{filter:brightness(.95);}
+/* 发帖框 # 联想下拉 */
+.cp-text-wrap{position:relative;}
+.tag-suggest{position:absolute;left:0;top:calc(100% - 4px);min-width:184px;max-width:280px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 14px 34px -10px rgba(34,56,78,.22),0 2px 8px rgba(34,56,78,.06);padding:6px;z-index:60;display:flex;flex-direction:column;gap:1px;}
+.tag-suggest[hidden]{display:none;}
+.ts-item{display:block;width:100%;text-align:left;border:none;background:none;font:inherit;font-size:13.5px;color:#1d2b3a;padding:8px 11px;border-radius:8px;cursor:pointer;transition:background .12s;}
+.ts-item:hover,.ts-item.act{background:var(--teal-bg);color:var(--teal-2);}
+.ts-new{color:var(--teal-2);font-weight:600;}
+.sortby{display:flex;gap:2px;background:var(--surface-2);border-radius:9px;padding:3px;}
+.sortbtn{font-family:var(--font);font-size:13px;color:var(--t2);background:none;border:none;padding:6px 12px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.sortbtn.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:var(--sh-sm);}
+.sortbtn:not(.on):hover{color:var(--ink);}
+
+/* ===== 视觉重心 v2：帖子正文当主角，其它退成背景音 ===== */
+.ctext{font-size:16.5px;color:#1d2733;line-height:1.78;margin-top:15px;}
+/* 关注键退到背景，hover 才点亮 */
+.follow{border:1px solid var(--line);background:#fff;color:var(--t3);font-weight:500;padding:5px 13px;}
+.follow svg{opacity:.75;}
+.follow:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-bg);}
+.follow.on{color:var(--t4);border-color:var(--line);background:var(--surface-2);}
+/* 课程/话题标签变轻文字，不再抢色 */
+.chips{gap:14px;margin-top:12px;}
+.course-tag{background:none;padding:0;color:var(--t3);font-weight:500;}
+.course-tag svg{width:12px;height:12px;opacity:.85;}
+.topic-tag{background:none;padding:0;color:var(--teal-2);font-weight:500;}
+.topic-tag:hover{background:none;color:var(--brand);text-decoration:underline;}
+/* 互动栏调淡，把注意力让给正文 */
+.engage{margin-top:14px;padding-top:12px;}
+.eng{color:var(--t3);}
+.eng .bi svg{width:15px;height:15px;}
+
+/* ===== 评论：收成一行，点开才展开 ===== */
+.social{margin-top:2px;}
+.cmt-sum{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--t3);cursor:pointer;padding:7px 2px;transition:color .15s;user-select:none;}
+.cmt-sum:hover{color:var(--brand);}
+.cmt-sum b{font-family:var(--mono);font-weight:700;color:var(--t2);}
+.cmt-sum .cs-ar{display:inline-block;font-size:11px;opacity:.7;transition:transform .2s;}
+.card.cmt-open .cmt-sum .cs-ar{transform:rotate(180deg);}
+.cmt-sum.empty{color:var(--t4);}
+.comments{margin-top:2px;}
+
+/* 点赞爆开（保留）*/
+.act-like{position:relative;}
+.lk-burst{position:absolute;left:50%;top:2px;pointer-events:none;color:var(--rose);animation:lkPop .62s ease-out forwards;}
+.lk-burst svg{width:15px;height:15px;}
+@keyframes lkPop{0%{opacity:0;transform:translate(-50%,0) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-22px) scale(1.15)}}
+@media(prefers-reduced-motion:reduce){.lk-burst{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- ============ 深色顶部块 ============ -->
+<div class="top">
+  <div class="hero-glow"></div>
+  <svg class="hero-net" viewBox="0 0 560 380" fill="none">
+    <g stroke="rgba(94,234,212,.4)" stroke-width="1">
+      <line x1="90" y1="80" x2="210" y2="60"/><line x1="210" y1="60" x2="320" y2="120"/>
+      <line x1="320" y1="120" x2="430" y2="80"/><line x1="210" y1="60" x2="250" y2="180"/>
+      <line x1="320" y1="120" x2="250" y2="180"/><line x1="250" y1="180" x2="160" y2="240"/>
+      <line x1="320" y1="120" x2="420" y2="210"/><line x1="430" y1="80" x2="500" y2="160"/>
+      <line x1="420" y1="210" x2="500" y2="160"/><line x1="250" y1="180" x2="370" y2="270"/>
+      <line x1="420" y1="210" x2="370" y2="270"/><line x1="160" y1="240" x2="270" y2="310"/>
+      <line x1="370" y1="270" x2="270" y2="310"/><line x1="90" y1="80" x2="160" y2="240"/>
+    </g>
+    <g fill="#7fd9ff">
+      <circle cx="90" cy="80" r="3.5"/><circle cx="210" cy="60" r="5" fill="#bfe9ff"/><circle cx="320" cy="120" r="4.5" fill="#5eead4"/>
+      <circle cx="430" cy="80" r="3.5"/><circle cx="250" cy="180" r="6" fill="#7dd3fc"/><circle cx="160" cy="240" r="4"/>
+      <circle cx="420" cy="210" r="5" fill="#5eead4"/><circle cx="500" cy="160" r="3.5"/><circle cx="370" cy="270" r="4.5" fill="#bfe9ff"/>
+      <circle cx="270" cy="310" r="4"/>
+    </g>
+  </svg>
+
+  <header class="topbar">
+    <div class="tb-l">
+      <span class="brand"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>深海圈</span>
+      <nav class="snav" id="snav"></nav>
+    </div>
+    <div class="tb-r">
+      <span class="tb-online"><span class="d"></span> 47 人在线</span>
+      <div class="tb-avatar">瓜</div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-logo">
+      <h1>广场</h1>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="搜动态、找同学、搜话题…">
+      <button class="go">搜索</button>
+    </div>
+    <div class="hot">
+      <span class="lab">热门话题：</span>
+      <a href="#"># 今日上线</a><a href="#"># 踩坑求助</a><a href="#"># 产品变现</a><a href="#"># 产品出海</a><a href="#"># 开发者日常</a>
+    </div>
+  </section>
+</div>
+
+<div class="seam" aria-hidden="true"></div>
+
+<!-- ============ 三栏 ============ -->
+<div class="wrap">
+
+  <aside class="left">
+    <nav class="lnav">
+      <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg> 广场</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg> 我关注的 <span class="cnt">12</span></a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> 我发布的 <span class="cnt">8</span></a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg> 热门</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> 我的收藏</a>
+    </nav>
+    <div class="l-user">
+      <div class="av" data-nm="瓜哥">瓜</div>
+      <div><div class="nm">瓜哥<span class="lv">Lv.2</span></div><div class="st">零基础 · 在线</div></div>
+    </div>
+  </aside>
+
+  <main class="mid">
+
+    <div class="tabs" id="tabs">
+      <div class="feed-scope" id="feedScope">
+        <span class="fs-all">最近动态</span>
+        <span class="fs-topic" hidden>正在看 <b class="tb-topic"># </b><button class="fs-x" onclick="setTopic('')" title="清除筛选">✕</button></span>
+      </div>
+      <span class="tab-fill"></span>
+      <div class="sortby"><button class="sortbtn on" data-sort="new" onclick="setSort(this)">最新</button><button class="sortbtn" data-sort="hot" onclick="setSort(this)">最热</button></div>
+    </div>
+
+    <div class="composer" id="composer">
+      <div class="cp-row" id="cpCollapsed" onclick="expandComposer()">
+        <div class="av" data-nm="瓜哥">瓜</div>
+        <div class="ph">今天学得咋样？分享进展 / 求助 / 唠两句…</div>
+        <button class="cp-go" onclick="event.stopPropagation();expandComposer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 发条动态</button>
+      </div>
+      <div class="cp-edit" id="cpEdit" hidden>
+        <div class="cp-text-wrap">
+          <textarea id="cpText" placeholder="今天做出 / 跑通了啥？想归个类，就在文里打个 #，比如 #今日上线" oninput="cpTextInput()"></textarea>
+          <div class="tag-suggest" id="tagSuggest" hidden></div>
+        </div>
+        <div class="cp-thumbs" id="cpThumbs"></div>
+        <div class="cp-bar">
+          <div class="cp-topicbar" id="cpTopicBar"></div>
+          <div class="cp-actions">
+            <button class="cp-img" onclick="addComposerImg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> 图片</button>
+            <button class="cp-send" onclick="publishPost()">发布</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="feed" style="display:flex;flex-direction:column;gap:14px;">
+
+      <article class="card good" data-type="报喜" data-cid="n1">
+        <div class="ch-top"><div class="ch-av" data-nm="陈晨">陈</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">陈晨</span><span class="lv">Lv.5</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">产品经理</span> · 2 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">后端第一次跑通了！用 Cursor 写了个 Express 接口，前端 fetch 居然真拿到数据了，对零基础的我太震撼了 🤯</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 后端</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">47</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 9</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">312</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="n2">
+        <div class="ch-top"><div class="ch-av" data-nm="林浩">林</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">林浩</span><span class="lv">Lv.4</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">自由职业</span> · 12 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Vercel 部署完，访问 /api 报 502，本地 <code>npm run dev</code> 一切正常。是不是 serverless 函数没配对？求大佬指路 🙏</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 部署</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">12</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 4</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">156</span></span>
+          <span class="solved wait">待解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="n3">
+        <div class="ch-top"><div class="ch-av" data-nm="王悦">悦</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">王悦</span><span class="lv">Lv.4</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">运营</span> · 25 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Supabase 接通了！注册登录 + 数据存储全跑通，我的待办小程序总算有"后端"了，不再是假数据 🎉</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 数据库</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">63</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 14</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">421</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="n4">
+        <div class="ch-top"><div class="ch-av" data-nm="张帆">帆</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">张帆</span><span class="lv">Lv.3</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">学生</span> · 38 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">调 OpenAI 一直 401，key 我贴进 <code>.env</code> 了，本地还是不认。是不是要重启服务 / 变量名写错了？</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · API</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">28</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 6</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">203</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="n5">
+        <div class="ch-top"><div class="ch-av" data-nm="周宁">宁</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">周宁</span><span class="lv">Lv.6</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">设计师</span> · 1 小时前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">Tailwind 真香，半天把落地页响应式做完了，手机端终于不塌房。设计师转码也能行！</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 前端</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">39</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 11</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">268</span></span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p1">
+        <div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 刚刚 · 分享了好事</div></div></div>
+        <p class="ctext">终于跑通第一个 Hello World 了！😭 看到浏览器里出现自己写的字，对零基础的我来说真的激动到想哭。谢谢大锤哥帮我解决了 Node 版本问题！</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A3 · 10 分钟做出第一个网站</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">86</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 12</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">534</span></span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p2">
+        <div class="ch-top"><div class="ch-av" data-nm="黄小美">美</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">黄小美</span><span class="lv">Lv.3</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">大三学生</span> · 3 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">用 AI 给室友做了个课程表查询小工具，虽然只是个静态页，但室友们都说好用！第一次感受到"做出东西给人用"的快乐 🥹</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A 阶段作业</span><span class="topic-tag"># 今日上线</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">31</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 5</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">187</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p3">
+        <div class="ch-top"><div class="ch-av" data-nm="郑涛">郑</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">郑涛</span><span class="lv">Lv.5</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">数据分析师</span> · 8 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">卡在 Supabase 的 RLS 了：数据库里明明有数据，前端 <code>select()</code> 查出来却是空数组。折腾一个多小时了，是不是权限问题？</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 数据库</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">22</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 6</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">174</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p4">
+        <div class="ch-top"><div class="ch-av" data-nm="赵薇薇">赵</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">赵薇薇</span><span class="lv">Lv.4</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 15 分钟前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">我的第一个 AI 产品上线了！！AI 英文邮件润色器，从零代码到上线才两周，已经有 5 个朋友在用了。不敢相信是自己做出来的 🥹</p>
+        <img class="post-img" src="assets/post-product.jpg" alt="产品截图" loading="lazy">
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> C 阶段作业 · 已提交</span><span class="topic-tag"># 产品出海</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">152</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 18</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">1243</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="唠嗑" data-cid="p5">
+        <div class="ch-top"><div class="ch-av" data-nm="马飞">马</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">马飞</span><span class="lv">Lv.3</span><span class="ty 唠嗑">唠嗑</span></div>
+          <div class="ch-l2"><span class="ch-role">小学老师</span> · 28 分钟前 · 唠了两句</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">凌晨一点还在写代码，明天上班要死了但停不下来…… 这就是传说中的心流吧？😂 零基础转行学编程，痛并快乐着。</p>
+        <div class="chips"><span class="topic-tag"># 开发者日常</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">44</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 4</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">233</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p6">
+        <div class="ch-top"><div class="ch-av" data-nm="何丽">何</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">何丽</span><span class="lv">Lv.4</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">平面设计师</span> · 40 分钟前 · 发起了求助</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">用 Tailwind 做的卡片布局，大屏正常、手机上全乱了，卡片重叠在一起。响应式不会弄，有会的同学指点下吗？🙏</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> B 阶段 · 前端</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">19</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 8</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">198</span></span>
+          <span class="solved ok">已解决</span>
+        </div>
+      </article>
+
+      <article class="card good" data-type="报喜" data-cid="p7">
+        <div class="ch-top"><div class="ch-av" data-nm="孙大伟">孙</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">孙大伟</span><span class="lv">Lv.5</span><span class="ty 报喜">报喜</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 1 小时前 · 分享了好事</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">好事！第一个付费用户来了！虽然只收了 $5，但这是我人生中第一次靠写代码赚到钱。付款的是个 10w 粉博主，她说确实好用。感动到想哭 💰</p>
+        <img class="post-img" src="assets/post-payment.jpg" alt="收款截图" loading="lazy">
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> C 阶段 · 变现</span><span class="topic-tag"># 产品变现</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">207</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 23</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">1876</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="唠嗑" data-cid="p8">
+        <div class="ch-top"><div class="ch-av" data-nm="周杰">周</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">周杰</span><span class="lv">Lv.7</span><span class="role-badge">高手</span><span class="ty 唠嗑">唠嗑</span></div>
+          <div class="ch-l2"><span class="ch-role">字节后端</span> · 1 小时前 · 唠了两句</div></div>
+          <button class="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>关注</button></div>
+        <p class="ctext">午饭时间！顺便说一句，字节食堂今天有小龙虾，啊我是来凡尔赛的 🦞 大家午饭吃的啥？</p>
+        <div class="chips"><span class="topic-tag"># 开发者日常</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">33</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">评论 8</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">219</span></span>
+        </div>
+      </article>
+
+      <article class="card" data-type="求助" data-cid="p9">
+        <div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">
+          <div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty 求助">求助</span></div>
+          <div class="ch-l2"><span class="ch-role">零基础</span> · 2 小时前 · 发起了求助</div></div></div>
+        <p class="ctext">npm install 一堆红色报错，<code>engine Unsupported</code>… 我装的 Node 是 16，课程要求 18 以上是吗？但我不知道咋升级 😭</p>
+        <div class="chips"><span class="course-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> A 阶段 · 环境配置</span><span class="topic-tag"># 踩坑求助</span></div>
+        <div class="engage">
+          <button class="eng act-like"><span class="bi"></span><span class="bt">8</span></button>
+          <button class="eng act-cmt"><span class="bi"></span><span class="bt">回答 3</span></button>
+          <button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>
+          <span class="eng view"><span class="bi"></span><span class="bt">142</span></span>
+          <span class="solved wait">待解决</span>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="cta">
+      <h3>继续你的学习之旅</h3>
+      <p>已完成 18 节 · 离"做出第一个能上线的产品"还差 2 步</p>
+      <div class="bar"><i></i></div>
+      <button class="cta-go go">回到学习 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></span>此刻在线</div></div>
+      <div class="p-sub">47 人在线 · 其中 <b>6 位</b>零基础同学</div>
+      <div class="online-row"><div class="oa" data-nm="赵薇薇">赵</div><div class="oi"><div class="on-nm">赵薇薇</div><div class="on-de">零基础 · 做翻译工具</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="马飞">马</div><div class="oi"><div class="on-nm">马飞</div><div class="on-de">零基础 · 教育方向</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="何丽">何</div><div class="oi"><div class="on-nm">何丽</div><div class="on-de">零基础 · 设计提效</div></div></div>
+      <div class="online-row"><div class="oa" data-nm="王大锤">王</div><div class="oi"><div class="on-nm">王大锤 <span class="lv" style="background:var(--teal-bg);color:var(--teal-2)">助教</span></div><div class="on-de">有问必答</div></div></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>热门话题</div><span class="p-more">换一换</span></div>
+      <div class="topic-row"><span class="tr-rank">1</span><div class="tr-bd"><div class="tr-nm"># 今日上线</div><div class="tr-bar"><i style="width:100%"></i></div></div><span class="tr-heat">124</span></div>
+      <div class="topic-row"><span class="tr-rank">2</span><div class="tr-bd"><div class="tr-nm"># 踩坑求助</div><div class="tr-bar"><i style="width:82%"></i></div></div><span class="tr-heat">98</span></div>
+      <div class="topic-row"><span class="tr-rank">3</span><div class="tr-bd"><div class="tr-nm"># 产品变现</div><div class="tr-bar"><i style="width:60%"></i></div></div><span class="tr-heat">76</span></div>
+      <div class="topic-row"><span class="tr-rank">4</span><div class="tr-bd"><div class="tr-nm"># 产品出海</div><div class="tr-bar"><i style="width:44%"></i></div></div><span class="tr-heat">54</span></div>
+      <div class="topic-row"><span class="tr-rank">5</span><div class="tr-bd"><div class="tr-nm"># 开发者日常</div><div class="tr-bar"><i style="width:26%"></i></div></div><span class="tr-heat">31</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>活跃同学</div><span class="p-more">更多 ›</span></div>
+      <div class="user-row"><div class="ua" data-nm="周杰">周</div><div class="ui"><div class="un">周杰 <span class="lv">Lv.7</span></div><div class="ud">字节后端 · 答疑王</div></div><button class="uf">+ 关注</button></div>
+      <div class="user-row"><div class="ua" data-nm="周宁">宁</div><div class="ui"><div class="un">周宁 <span class="lv">Lv.6</span></div><div class="ud">设计师 · 转码中</div></div><button class="uf">+ 关注</button></div>
+      <div class="user-row"><div class="ua" data-nm="郑涛">郑</div><div class="ui"><div class="un">郑涛 <span class="lv">Lv.5</span></div><div class="ud">数据分析师</div></div><button class="uf">+ 关注</button></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><div class="p-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>同学进展</div></div>
+      <div class="p-sub">和你一起的同学，今天往前走了</div>
+      <div class="prog-row"><div class="pa" data-nm="赵薇薇">赵</div><div class="pt"><b>赵薇薇</b> 上线了第一个产品</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+      <div class="prog-row"><div class="pa" data-nm="孙大伟">孙</div><div class="pt"><b>孙大伟</b> 收到第一个 $5</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+      <div class="prog-row"><div class="pa" data-nm="黄小美">美</div><div class="pt"><b>黄小美</b> 跑通了第一个项目</div><span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+function escc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const IC={
+  like:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+  likeOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+  cmt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>',
+  fav:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+  favOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+  view:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  heartSm:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
+};
+
+/* ===== 确定性彩色头像 ===== */
+const AV_PALETTE=['#0d9488','#0e7490','#0891b2','#2f8f6e','#157f7a','#3a7d8c','#d97a0c','#52708a'];
+function avColor(seed){let h=0;const s=String(seed||'');for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return AV_PALETTE[h%AV_PALETTE.length];}
+const AV_MAP={'陈晨':1,'林浩':2,'王悦':3,'张帆':4,'周宁':5,'瓜哥':6,'瓜':6,'黄小美':7,'郑涛':8,'赵薇薇':9,'马飞':10,'何丽':11,'孙大伟':12,'周杰':13,'王大锤':14,'刘小排':15};
+function avFile(seed){let i=AV_MAP[seed];if(!i){let h=0;const s=String(seed||'');for(let k=0;k<s.length;k++)h=(h*31+s.charCodeAt(k))>>>0;i=(h%15)+1;}return 'assets/avatars/a'+i+'.jpg';}
+function paintAvatars(scope){
+  (scope||document).querySelectorAll('.ch-av,.cp-row .av,.cp-edit .av,.l-user .av,.online-row .oa,.user-row .ua,.prog-row .pa,.cmt .ca,.cmt-box .ca,.tb-avatar').forEach(el=>{
+    if(el.dataset.painted) return;
+    const seed=el.dataset.nm||el.textContent.trim();
+    el.style.background=avColor(seed);
+    el.style.backgroundImage='url("'+avFile(seed)+'")';
+    el.style.backgroundSize='cover';
+    el.style.backgroundPosition='center';
+    el.style.color='transparent';
+    el.dataset.painted='1';
+  });
+}
+
+/* ===== 帖子筛选：tab × 阶段 ===== */
+let _typeFilter='all', _stageFilter=0, _topicFilter='', _sortBy='new';
+function cardStage(card){
+  const ct=card.querySelector('.course-tag');
+  if(!ct) return 0;
+  const m=ct.textContent.trim().match(/[A-D]/);
+  return m?({A:1,B:2,C:3,D:4})[m[0]]:0;
+}
+function topicKey(t){return String(t||'').replace(/^[#\s]+/,'').trim();}
+function applyFeed(){
+  document.querySelectorAll('#feed .card').forEach(c=>{
+    let show;
+    if(_topicFilter){
+      show=[...c.querySelectorAll('.topic-tag')].some(t=>topicKey(t.textContent)===_topicFilter);
+    }else{
+      const st=cardStage(c);
+      if(_typeFilter==='course')   show=st>0 && (!_stageFilter || st===_stageFilter);
+      else if(_typeFilter==='all') show=true;
+      else                         show=c.dataset.type===_typeFilter;
+    }
+    c.style.display=show?'':'none';
+  });
+}
+/* 只剩「话题」一套筛选：tab = 话题，点帖子/热榜上的 # 也走这里 */
+function setTopic(topic){
+  _topicFilter = topic ? topicKey(topic) : '';
+  _typeFilter='all'; _stageFilter=0;
+  const scope=document.getElementById('feedScope');
+  if(scope){
+    const all=scope.querySelector('.fs-all'), tp=scope.querySelector('.fs-topic');
+    if(_topicFilter){ tp.querySelector('.tb-topic').textContent='# '+_topicFilter; tp.hidden=false; all.hidden=true; }
+    else { tp.hidden=true; all.hidden=false; }
+  }
+  applyFeed();
+}
+function tabTopic(el){ setTopic(el.dataset.topic||''); }
+function switchTab(el){ setTopic(el.dataset.topic||''); }   /* 兼容旧调用 */
+function filterTopic(name){
+  setTopic(name);
+  var mid=document.querySelector('.mid'); if(mid)mid.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function clearTopic(skipApply){
+  _topicFilter='';
+  var bar=document.getElementById('topicBar'); if(bar) bar.hidden=true;
+  if(!skipApply) setTopic('');
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('.topic-tag,.hot a,.topic-row');
+  if(!t) return;
+  e.preventDefault();
+  /* 点话题 → 过滤（顶栏出现「正在看 #xxx ✕」，✕ 退出，不会被锁死） */
+  var name=t.classList.contains('topic-row')?((t.querySelector('.tr-nm')||{}).textContent||''):t.textContent;
+  if(name) filterTopic(name);
+});
+(function initStageFilter(){
+  const st=parseInt(new URLSearchParams(location.search).get('stage')||'0',10);
+  if(st<1||st>4) return;
+  _typeFilter='course'; _stageFilter=st; _topicFilter='';
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('on'));
+  applyFeed();
+})();
+
+/* ===== 评论 ===== */
+const COMMENTS={
+  p2:[{a:'赵薇薇',t:'“做出东西给人用”这句太戳了，第一次被真实用户夸的感觉无敌 🥹',m:'2 分钟前'},
+      {a:'马飞',t:'课程表小工具好实用！方便发我看看吗，我也想给班里做一个',m:'1 分钟前'}],
+  p1:[{a:'王大锤',r:'助教',t:'恭喜！Hello World 是每个程序员的第一步，你已经迈出来了',m:'10 分钟前'},
+      {a:'赵薇薇',t:'我当初看到这行字也激动了好久，加油！',m:'8 分钟前'}],
+  p3:[{a:'王大锤',r:'助教',t:'经典坑！RLS 默认开但没加策略 = 所有人都没权限。去 Dashboard → Policies 给表加个 SELECT policy 就行。',m:'5 分钟前'},
+      {a:'郑涛',t:'解决了！加上 policy 数据就出来了，谢谢大锤哥',m:'2 分钟前'}],
+  p7:[{a:'刘小排',r:'讲师',t:'从 0 到 1 最难，恭喜大伟！第一笔收入的意义远超 $5。',m:'40 分钟前'},
+      {a:'孙大伟',t:'附上 Stripe 后台的截图，激动得截下来留念了',img:true,m:'35 分钟前'}],
+  n1:[{a:'王大锤',r:'助教',t:'第一次跑通后端是大里程碑！下一步可以挂个数据库，数据就能存下来了。',m:'1 分钟前'},
+      {a:'周杰',r:'高手',t:'Express 用 Cursor 写效率是高，后面记得补下错误处理和参数校验。',m:'刚刚'},
+      {a:'陈晨',t:'收到！正打算接 Supabase，谢谢两位 🙏',m:'刚刚'}],
+  n3:[{a:'赵薇薇',t:'同款喜悦！Supabase 注册登录都不用自己写，太省事了。',m:'20 分钟前'},
+      {a:'王大锤',r:'助教',t:'记得把 RLS 策略配好，不然上线后数据可能查不出来～',m:'18 分钟前'}],
+  p4:[{a:'刘小排',r:'讲师',t:'两周从 0 到上线，节奏非常好。下一步可以挂个简单收费，验证大家愿不愿意付费。',m:'12 分钟前'},
+      {a:'何丽',t:'界面好清爽！设计是自己搞的还是用了模板？',m:'9 分钟前'},
+      {a:'赵薇薇',t:'Tailwind + 一点 AI 配色，回头发个教程～',m:'7 分钟前'}],
+  n2:[{a:'王大锤',r:'助教',t:'502 多半是 serverless 函数路径没对上。先看 Vercel 的 Functions 日志，能直接看到报错堆栈，比盲猜快。',m:'8 分钟前'},
+      {a:'周杰',r:'高手',t:'检查下 api 目录结构和 vercel.json 的 rewrites，本地 dev 和线上路由规则不一样。',m:'5 分钟前'}],
+  n4:[{a:'郑涛',t:'401 一般是 key 没加载进去。.env 改了要重启 dev 服务，热更新不会重读环境变量。',m:'30 分钟前'},
+      {a:'张帆',t:'重启就好了！果然是这个，谢谢 🙏',m:'25 分钟前'}],
+  n5:[{a:'何丽',t:'同设计师转码，Tailwind 真的好上手！求落地页链接参考下～',m:'40 分钟前'},
+      {a:'周宁',t:'回头整理个模板发出来 👌',m:'38 分钟前'}],
+  p5:[{a:'赵薇薇',t:'哈哈这就是心流没错，注意身体别熬太狠～',m:'20 分钟前'},
+      {a:'孙大伟',t:'懂！停不下来的感觉太上头了',m:'18 分钟前'}],
+  p6:[{a:'周杰',r:'高手',t:'手机端重叠多半是用了固定宽度。容器换成 grid + grid-cols-1 md:grid-cols-3，间距用 gap，基本就好。',m:'35 分钟前'},
+      {a:'何丽',t:'改成 grid 立马就对齐了，谢谢大佬！',m:'30 分钟前'}],
+  p8:[{a:'马飞',t:'凡尔赛实锤 🦞 我食堂只有青椒土豆丝……',m:'50 分钟前'},
+      {a:'黄小美',t:'哈哈哈被你馋到了',m:'48 分钟前'}],
+  p9:[{a:'王大锤',r:'助教',t:'对，课程要 18+。最简单用 nvm：nvm install 18 && nvm use 18，再 npm install 就不报了。',m:'1 小时前'}]
+};
+function cmtHtml(c){
+  return '<div class="cmt"><div class="ca" data-nm="'+escc(c.a)+'">'+escc(c.a[0])+'</div><div class="cb">'
+    +'<div class="cn">'+escc(c.a)+(c.r?'<span class="role">'+escc(c.r)+'</span>':'')+'</div>'
+    +'<div class="ct">'+escc(c.t)+'</div>'+(c.img?'<div class="cmt-img">'+IC.img+'</div>':'')
+    +'<div class="cm">'+escc(c.m||'刚刚')+'</div></div></div>';
+}
+
+/* ---- 评论：收成一行，点开才展开 ---- */
+function summaryHtml(card){
+  const list=COMMENTS[card.dataset.cid]||[];
+  const bt=card.querySelector('.act-cmt .bt'),btxt=bt?bt.textContent:'';
+  const cnt=(btxt.match(/\d+/)||['0'])[0];
+  const word=/回答/.test(btxt)?'回答':'评论';
+  if(+cnt===0 && !list.length) return '<div class="cmt-sum empty">还没人聊，来抢个沙发 ›</div>';
+  const who=list.length?escc(list[0].a)+' 等在聊':'点开聊两句';
+  return '<div class="cmt-sum"><span class="cs-ar">⌄</span><b>'+cnt+'</b> 条'+word+' · '+who+'</div>';
+}
+function buildSocial(card){
+  if(!card.dataset.cid||card.querySelector('.social')) return;
+  const div=document.createElement('div');div.className='social';
+  div.innerHTML=summaryHtml(card);
+  card.appendChild(div);
+}
+function updateSummary(card){
+  const s=card.querySelector('.social');if(s) s.innerHTML=summaryHtml(card);
+}
+function renderComments(box,cid){
+  const list=COMMENTS[cid]||[];
+  let h=list.map(cmtHtml).join('');
+  if(!list.length) h='<div class="cmt-empty">还没有人评论，来抢个沙发~</div>';
+  h+='<div class="cmt-box"><div class="ca" data-nm="瓜哥">瓜</div>'
+    +'<div class="cb-in"><input placeholder="说点啥…"><div class="cb-thumbs"></div></div>'
+    +'<button class="cb-img" onclick="addCmtImg(this)">'+IC.img+'</button>'
+    +'<button class="cb-send" onclick="sendCmt(this)">发送</button></div>';
+  box.innerHTML=h;
+  paintAvatars(box);
+}
+function openComments(card){
+  let box=card.querySelector('.comments');
+  if(!box){box=document.createElement('div');box.className='comments';card.appendChild(box);}
+  renderComments(box,card.dataset.cid);
+  box.classList.add('open');card.classList.add('cmt-open');
+}
+function closeComments(card){
+  const box=card.querySelector('.comments');if(box)box.classList.remove('open');
+  card.classList.remove('cmt-open');
+}
+function toggleComments(card){
+  const box=card.querySelector('.comments');
+  if(box&&box.classList.contains('open')) closeComments(card);
+  else openComments(card);
+}
+function addCmtImg(btn){
+  const box=btn.closest('.cmt-box').querySelector('.cb-thumbs');
+  if(box.children.length>=1) return;
+  const d=document.createElement('div');d.className='cp-thumb sm';
+  d.innerHTML=IC.img+'<span class="x" onclick="this.parentElement.remove()">×</span>';
+  box.appendChild(d);
+}
+function sendCmt(btn){
+  const cbox=btn.closest('.cmt-box');
+  const input=cbox.querySelector('input');
+  const thumbs=cbox.querySelector('.cb-thumbs');
+  const hasImg=thumbs.children.length>0;
+  const text=input.value.trim();
+  if(!text && !hasImg) return;
+  const card=cbox.closest('.card'),cid=card.dataset.cid;
+  (COMMENTS[cid]=COMMENTS[cid]||[]).push({a:'瓜哥',t:text,img:hasImg,m:'刚刚'});
+  const tmp=document.createElement('div');
+  tmp.innerHTML=cmtHtml({a:'瓜哥',t:text,img:hasImg,m:'刚刚'});
+  cbox.parentElement.insertBefore(tmp.firstElementChild,cbox);
+  paintAvatars(cbox.parentElement);
+  const empty=cbox.parentElement.querySelector('.cmt-empty');
+  if(empty) empty.remove();
+  const bt=card.querySelector('.act-cmt .bt');
+  if(bt) bt.textContent=bt.textContent.replace(/\d+/,n=>String(+n+1));
+  updateSummary(card);
+  input.value=''; thumbs.innerHTML=''; input.focus();
+}
+function burst(b){
+  const s=document.createElement('span');s.className='lk-burst';s.innerHTML=IC.heartSm;
+  b.appendChild(s);setTimeout(()=>s.remove(),640);
+}
+function toggleFav(b){
+  const on=b.classList.toggle('on');
+  b.querySelector('.bi').innerHTML=on?IC.favOn:IC.fav;
+  b.querySelector('.bt').textContent=on?'已收藏':'收藏';
+}
+function toggleLike(b){
+  const on=b.classList.toggle('on');
+  b.querySelector('.bi').innerHTML=on?IC.likeOn:IC.like;
+  const bt=b.querySelector('.bt');
+  bt.textContent=String((parseInt(bt.textContent,10)||0)+(on?1:-1));
+  if(on) burst(b);
+}
+function toggleFollow(b){
+  const on=b.classList.toggle('on');
+  if(b.classList.contains('uf')) b.textContent=on?'已关注':'+ 关注';
+  else b.innerHTML=on?'已关注':IC.plus+'关注';
+}
+
+document.getElementById('feed').addEventListener('click',e=>{
+  const l=e.target.closest('.act-like'); if(l){toggleLike(l);return;}
+  const c=e.target.closest('.act-cmt'); if(c){toggleComments(c.closest('.card'));return;}
+  const cs=e.target.closest('.cmt-sum'); if(cs){toggleComments(cs.closest('.card'));return;}
+  const f=e.target.closest('.act-fav'); if(f){toggleFav(f);return;}
+  const fo=e.target.closest('.follow'); if(fo){toggleFollow(fo);return;}
+});
+document.querySelector('.right').addEventListener('click',e=>{
+  const uf=e.target.closest('.uf'); if(uf){toggleFollow(uf);}
+});
+
+function injectIcons(scope){
+  scope.querySelectorAll('.act-like .bi:empty').forEach(s=>s.innerHTML=IC.like);
+  scope.querySelectorAll('.act-cmt .bi:empty').forEach(s=>s.innerHTML=IC.cmt);
+  scope.querySelectorAll('.act-fav .bi:empty').forEach(s=>s.innerHTML=IC.fav);
+  scope.querySelectorAll('.view .bi:empty').forEach(s=>s.innerHTML=IC.view);
+}
+injectIcons(document);
+paintAvatars(document);
+document.querySelectorAll('#feed .card').forEach(buildSocial);
+/* 排序：最新（按时间）/ 最热（按 赞 + 评论 + 浏览）*/
+function cardTime(c){var t=(c.querySelector('.ch-l2')||{}).textContent||'';if(/刚刚/.test(t))return 0;var m=t.match(/(\d+)\s*分钟前/);if(m)return +m[1];m=t.match(/(\d+)\s*小时前/);if(m)return +m[1]*60;m=t.match(/(\d+)\s*天前/);if(m)return +m[1]*1440;return 99999;}
+function cardHot(c){function n(s){var e=c.querySelector(s),m=e&&(e.textContent||'').match(/\d+/);return m?+m[0]:0;}return n('.act-like .bt')+n('.act-cmt .bt')*3+n('.eng.view .bt')*0.1;}
+function sortFeed(){var feed=document.getElementById('feed');if(!feed)return;var cards=[].slice.call(feed.querySelectorAll('.card'));if(_sortBy==='hot')cards.sort(function(a,b){return cardHot(b)-cardHot(a);});else cards.sort(function(a,b){return cardTime(a)-cardTime(b);});cards.forEach(function(c){feed.appendChild(c);});}
+function setSort(el){_sortBy=el.dataset.sort;document.querySelectorAll('.sortbtn').forEach(function(b){b.classList.toggle('on',b===el);});sortFeed();}
+sortFeed();
+
+/* ===== 发布框 ===== */
+const TOPIC_META={
+  '今日上线':  {type:'报喜', ph:'今天做出 / 跑通了啥？晒一下，哪怕只是第一个 Hello World 👏'},
+  '踩坑求助':  {type:'求助', ph:'卡在哪了？把报错信息 + 你已经试过的贴上来，大家好帮你看 🙏'},
+  '产品变现':  {type:'报喜', ph:'收到第一笔钱 / 有付费用户了？说说你是怎么做到的 💰'},
+  '产品出海':  {type:'报喜', ph:'做了个面向海外的产品？聊聊进展、用户、踩过的坑 🌏'},
+  '开发者日常':{type:'唠嗑', ph:'今天想唠点啥？摸鱼、吐槽、随便聊都行 ☕'}
+};
+let cpTopic='今日上线', cpType='报喜', uid=0;
+function selectTopic(name){
+  const m=TOPIC_META[name]; if(!m) return;
+  cpTopic=name; cpType=m.type;
+  document.querySelectorAll('.cp-topic').forEach(t=>t.classList.toggle('on',t.dataset.t===name));
+  const ta=document.getElementById('cpText'); if(ta) ta.placeholder=m.ph;
+  const hint=document.getElementById('cpHint'); if(hint) hint.innerHTML='发到 <b># '+name+'</b>';
+}
+/* 自定义话题：点「+ 自定义」→ 内联输入 → 回车生成并选中一个自己的 # */
+/* ===== 发帖加话题：在输入框里打 # 直接联想 / 新建 ===== */
+const KNOWN_TOPICS = Object.keys(TOPIC_META);
+const PRESET_TOPICS = KNOWN_TOPICS.slice(0,5);
+const SUGGEST_RULES = [
+  {t:'今日上线', kw:['上线','跑通','做出','做好','搞定','完成','发布','部署','第一个','hello world','helloworld','demo','跑起来','成功','上架']},
+  {t:'踩坑求助', kw:['报错','卡住','求助','不会','怎么办','怎么','为什么','求教','帮我','解决不了','error','bug','踩坑','坑','请教','救命']},
+  {t:'产品变现', kw:['收钱','付费','变现','赚','收入','第一笔','客户','下单','订单','营收','付款']},
+  {t:'产品出海', kw:['出海','海外','国外','英文','美元','stripe','谷歌','google','老外','跨境']},
+  {t:'开发者日常', kw:['摸鱼','吐槽','日常','聊聊','感想','唠','水一','咖啡','随便']},
+];
+let cpSelected = [];
+function jsq(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function suggestTopic(text){ const s=String(text||'').toLowerCase(); for(const r of SUGGEST_RULES){ if(r.kw.some(k=>s.indexOf(k.toLowerCase())>=0)) return r.t; } return ''; }
+function renderTopicBar(){
+  const bar=document.getElementById('cpTopicBar'); if(!bar) return;
+  const ta=document.getElementById('cpText');
+  const suggested = ta ? suggestTopic(ta.value) : '';
+  let html='<span class="cpt-lab">话题</span>';
+  cpSelected.forEach(function(t){ html+='<button type="button" class="cpt selected" onclick="removeTopic(\''+jsq(t)+'\')"># '+escc(t)+'<span class="x">✕</span></button>'; });
+  PRESET_TOPICS.filter(function(t){return cpSelected.indexOf(t)<0;}).forEach(function(t){
+    const sug=(t===suggested && cpSelected.indexOf(t)<0)?' suggest':'';
+    html+='<button type="button" class="cpt pick'+sug+'" onclick="addTopic(\''+jsq(t)+'\')">'+(sug?'💡 ':'')+'# '+escc(t)+'</button>';
+  });
+  bar.innerHTML=html;
+}
+function addTopic(t){ t=String(t||'').trim().replace(/^#\s*/,''); if(t && cpSelected.indexOf(t)<0) cpSelected.push(t); renderTopicBar(); }
+function removeTopic(t){ cpSelected=cpSelected.filter(function(x){return x!==t;}); renderTopicBar(); }
+function cpTextInput(){
+  renderTopicBar();
+  const ta=document.getElementById('cpText'), sug=document.getElementById('tagSuggest');
+  const m=ta.value.slice(0, ta.selectionStart).match(/#([^\s#，。！？、]*)$/);
+  if(!m){ sug.hidden=true; return; }
+  const q=m[1];
+  let items=KNOWN_TOPICS.filter(t=>!q || t.indexOf(q)>=0).slice(0,6);
+  let html=items.map(t=>'<button type="button" class="ts-item" onmousedown="pickTag(event,\''+jsq(t)+'\')"># '+escc(t)+'</button>').join('');
+  if(q && KNOWN_TOPICS.indexOf(q)<0) html+='<button type="button" class="ts-item ts-new" onmousedown="pickTag(event,\''+jsq(q)+'\')">新建 # '+escc(q)+'</button>';
+  if(!html){ sug.hidden=true; return; }
+  sug.innerHTML=html; sug.hidden=false;
+}
+function pickTag(e, name){
+  if(e) e.preventDefault();
+  const ta=document.getElementById('cpText');
+  // 选中后把光标处那个未完成的 #词 从正文删掉，转成上方话题牌（正文不留 #）
+  const before=ta.value.slice(0, ta.selectionStart).replace(/#([^\s#，。！？、]*)$/, '');
+  const after=ta.value.slice(ta.selectionStart);
+  ta.value=before+after;
+  if(KNOWN_TOPICS.indexOf(name)<0) KNOWN_TOPICS.push(name);
+  ta.focus(); try{ ta.setSelectionRange(before.length, before.length); }catch(_){}
+  document.getElementById('tagSuggest').hidden=true;
+  addTopic(name);
+}
+document.addEventListener('click', function(e){ if(!e.target.closest('#tagSuggest, #cpText')){ const s=document.getElementById('tagSuggest'); if(s) s.hidden=true; } });
+function expandComposer(){
+  document.getElementById('cpCollapsed').hidden=true;
+  document.getElementById('cpEdit').hidden=false;
+  renderTopicBar();
+  document.getElementById('cpText').focus();
+  document.getElementById('cpText').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function addComposerImg(){
+  const wrap=document.getElementById('cpThumbs');
+  if(wrap.children.length>=3) return;
+  const d=document.createElement('div');d.className='cp-thumb';
+  d.innerHTML=IC.img+'<span class="x" onclick="this.parentElement.remove()">×</span>';
+  wrap.appendChild(d);
+}
+function publishPost(){
+  const ta=document.getElementById('cpText');
+  const text=ta.value.trim();
+  const imgs=document.getElementById('cpThumbs').children.length;
+  if(!text && !imgs) return;
+  /* 话题 = 话题牌选中的 + 正文里直接打的 #；正文展示时把 # 摘成下方话题标签 */
+  const inline=(text.match(/#([^\s#，。！？、]+)/g)||[]).map(function(s){return s.slice(1);});
+  const tps=[...new Set(cpSelected.concat(inline))];
+  const ptype=(tps.length && TOPIC_META[tps[0]]) ? TOPIC_META[tps[0]].type : '唠嗑';
+  const body=text.replace(/#[^\s#，。！？、]+/g,'').replace(/[ \t]{2,}/g,' ').trim();
+  const chipHtml=tps.map(function(tp){return '<span class="topic-tag"># '+escc(tp)+'</span>';}).join('');
+  const cid='u'+(++uid);
+  COMMENTS[cid]=[];
+  const cmtLabel=ptype==='求助'?'回答 0':'评论 0';
+  const imgHtml=imgs?'<div class="media">'+IC.img+'<span>我上传的图片'+(imgs>1?'（'+imgs+' 张）':'')+'</span></div>':'';
+  const card=document.createElement('article');
+  card.className='card'+(ptype==='报喜'?' good':''); card.dataset.type=ptype; card.dataset.cid=cid;
+  card.innerHTML='<div class="ch-top"><div class="ch-av" data-nm="瓜哥">瓜</div><div class="ch-meta">'
+    +'<div class="ch-l1"><span class="ch-name">瓜哥</span><span class="lv">Lv.2</span><span class="ty '+ptype+'">'+ptype+'</span></div>'
+    +'<div class="ch-l2"><span class="ch-role">零基础</span> · 刚刚</div></div></div>'
+    +'<p class="ctext">'+escc(body||text)+'</p>'+imgHtml
+    +(chipHtml?'<div class="chips">'+chipHtml+'</div>':'')
+    +'<div class="engage">'
+    +'<button class="eng act-like"><span class="bi"></span><span class="bt">0</span></button>'
+    +'<button class="eng act-cmt"><span class="bi"></span><span class="bt">'+cmtLabel+'</span></button>'
+    +'<button class="eng act-fav"><span class="bi"></span><span class="bt">收藏</span></button>'
+    +'<span class="eng view"><span class="bi"></span><span class="bt">0</span></span></div>';
+  const feed=document.getElementById('feed');
+  feed.insertBefore(card,feed.firstChild);
+  injectIcons(card); paintAvatars(card); buildSocial(card);
+  ta.value=''; document.getElementById('cpThumbs').innerHTML='';
+  cpSelected=[]; const _ts=document.getElementById('tagSuggest'); if(_ts) _ts.hidden=true; renderTopicBar();
+  document.getElementById('cpEdit').hidden=true;
+  document.getElementById('cpCollapsed').hidden=false;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+<script src="assistant.js?v=3"></script>
+<script>
+(function(){
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var ACTIVE='交流区';
+  var nav=document.getElementById('snav'); if(!nav)return;
+  nav.innerHTML=Object.keys(NAV2).map(function(k){
+    var pop=NAV2[k].map(function(it){return '<a href="'+it[1]+'"'+(it[2]?' target="_blank" rel="noopener"':'')+'>'+it[0]+(it[2]?'<span class="ext">↗</span>':'')+'</a>';}).join('');
+    return '<div class="l1-item"><button class="snav-a'+(k===ACTIVE?' active':'')+'" data-k="'+k+'">'+k+'</button><div class="snav-pop">'+pop+'</div></div>';
+  }).join('');
+  var open=null;
+  nav.querySelectorAll('.snav-a').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var pop=btn.parentElement.querySelector('.snav-pop'),k=btn.dataset.k;nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});if(open===k){open=null;return;}pop.classList.add('open');btn.classList.add('open');open=k;});});
+  document.addEventListener('click',function(){nav.querySelectorAll('.snav-pop').forEach(function(p){p.classList.remove('open');});nav.querySelectorAll('.snav-a').forEach(function(b){b.classList.remove('open');});open=null;});
+})();
+</script>
+<script>
+/* 签名：卡片 hover 光斑跟随鼠标 */
+(function(){var f=document.getElementById('feed');if(!f)return;f.addEventListener('mousemove',function(e){var c=e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');},{passive:true});})();
+</script>
+</body>
+</html>
