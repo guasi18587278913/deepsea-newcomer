@@ -14,6 +14,7 @@ raw-jingyan.json
 .playwright-mcp/
 .course-cards/
 prototype/
+minutes/
 
 # 备份文件
 *.bak
