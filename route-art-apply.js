@@ -54,7 +54,7 @@
   }
   /* 由 img src 取该岛画幅；fw=内容宽占图比，用于把「目标内容宽」反算成 img 的图宽% */
   function isleFit(src) {
-    try { var m = src.match(/([a-z]+-\d+)\.png/); return (m && window.ISLE_FIT && window.ISLE_FIT[m[1]]) ? window.ISLE_FIT[m[1]] : null; } catch (e) { return null; }
+    try { var m = src.match(/([a-z]+-\d+)\.(?:png|webp)/); return (m && window.ISLE_FIT && window.ISLE_FIT[m[1]]) ? window.ISLE_FIT[m[1]] : null; } catch (e) { return null; }
   }
 
   /* 注入样式：点亮滤镜 + 继续学习卡(右下角缩小) + 圆点(对标 km-dot) + 深度刻度(对标 km-depth) + 海统一柔化 */
@@ -112,7 +112,8 @@
     clearArt();
     if (!key) {
       document.body.classList.remove('route-sea');
-      if (seaLayer) { seaLayer.style.backgroundImage = ''; seaLayer.style.filter = ''; }
+      /* 默认全量图的主海 sea-i 改由此处设（CSS 已移除写死的 url，避免选了专属航线时白下载这 208KB）；filter 清空 → 回落 CSS 的默认调色 */
+      if (seaLayer) { seaLayer.style.backgroundImage = "url('assets/sea-i.webp')"; seaLayer.style.filter = ''; }
       return;
     }
     var art = ROUTE_ART[key];

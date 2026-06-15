@@ -197,7 +197,7 @@
           <div class="zone">岛 · <b>${day < 10 ? '0' + day : day}</b></div>
           <div class="nm"><span class="lk">🔒 </span>${escapeHtml(is.zone || is.title)}</div>
           <div class="dt">共 ${cc} 节</div></div>
-        <img src="assets/isle-${(i % 4) + 1}.png" alt="${escapeHtml(is.zone || '')}岛">
+        <img alt="${escapeHtml(is.zone || '')}岛">
       </div>`;
     }).join('');
     const ship = document.getElementById('kmShip');

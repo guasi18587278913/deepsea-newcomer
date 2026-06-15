@@ -6,7 +6,8 @@
 <title>深海圈 | 你的学习地图</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="assets/sea-i.webp" fetchpriority="high">
+<script>/* 仅默认全量航海图才预载主海 sea-i；选了专属航线（?route= 或 ds_route）时它用不上，避免白下载 ~208KB */
+(function(){try{var p=new URLSearchParams(location.search).get('route');var k=p||localStorage.getItem('ds_route');if(!(k&&k!=='full')){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='assets/sea-i.webp';l.setAttribute('fetchpriority','high');document.head.appendChild(l);}}catch(e){}})();</script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="topbar.css">
@@ -280,7 +281,7 @@ body{overflow:hidden}
 /* ---- 主区（整片是海）：复用真实 .wrap 作为容器，不能 overflow:hidden（弹窗要溢出） ---- */
 .app>.wrap{flex:1;min-width:0;max-width:none;margin:0;padding:16px 26px 18px;position:relative;display:flex;flex-direction:column;overflow:visible}
 .sea-layer{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:0;
-  background:#cfe9ef url('assets/sea-i.webp') center/cover no-repeat;filter:saturate(.86) brightness(1.09) contrast(.84)}
+  background:#cfe9ef center/cover no-repeat;filter:saturate(.86) brightness(1.09) contrast(.84)}
 .sea-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(135% 115% at 50% 36%, rgba(249,245,235,0) 70%, rgba(241,234,216,.42) 100%)}
 /* head：标题左 + 今日卡右，都浮在海上 */
@@ -445,25 +446,25 @@ body{overflow:hidden}
     <div class="island" data-stage="1" style="left:16%;bottom:10%;width:18.5%">
       <div class="lbl"><span class="pin">你在这里 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg></span>
         <div class="nm"><span class="lk">🔒 </span>跑通第一个 AI 产品</div><div class="dt">共 12 节</div></div>
-      <img src="assets/isle-1.webp" alt="">
+      <img data-src="assets/isle-1.webp" alt="">
     </div>
     <div class="island" data-stage="2" style="left:37%;bottom:13%;width:21%">
       <div class="lbl"><span class="pin">你在这里 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg></span>
         <div class="nm"><span class="lk">🔒 </span>做出能上线的产品</div><div class="dt">共 27 节</div></div>
-      <img src="assets/isle-2.webp" alt="">
+      <img data-src="assets/isle-2.webp" alt="">
     </div>
     <div class="island" data-stage="3" style="left:59%;bottom:18%;width:23%">
       <div class="lbl"><span class="pin">你在这里 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg></span>
         <div class="nm"><span class="lk">🔒 </span>做一个能收钱的产品</div><div class="dt">共 21 节</div></div>
-      <img src="assets/isle-3.webp" alt="">
+      <img data-src="assets/isle-3.webp" alt="">
     </div>
     <div class="island" data-stage="4" style="left:86%;bottom:22%;width:22%">
       <div class="lbl"><span class="pin">你在这里 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg></span>
         <div class="nm"><span class="lk">🔒 </span>让 AI 干活、把产品做大</div><div class="dt">共 17 节</div></div>
-      <img src="assets/isle-4.webp?v=2" alt="">
+      <img data-src="assets/isle-4.webp?v=2" alt="">
     </div>
 
-    <img class="km-ship" id="kmShip" src="assets/ship-1.png" alt="" style="left:7%;top:87%;width:9.5%;display:none">
+    <img class="km-ship" id="kmShip" data-src="assets/ship-1.png" alt="" style="left:7%;top:87%;width:9.5%;display:none">
     <span class="km-depth" style="left:24%">10m</span><span class="km-depth" style="left:46%">20m</span><span class="km-depth" style="left:67%">50m</span><span class="km-depth" style="left:90%">100m</span>
     <!-- 海中央装饰（名言卡 / 漂流瓶 / 章鱼剪影）均已移除：地图减重，只留岛屿与航线 -->
 
@@ -1003,6 +1004,8 @@ const LIT_ALL_ISLANDS = true;
 /* 学习航海图：4 座岛 = 4 阶段。状态随真实进度切换（CSS 据 cur/done/locked 显示「你在这里」/🔒/灰），点岛复用 openCallout 弹窗。*/
 function renderIslandMap(completed, nextCourse) {
   const cur = LIT_ALL_ISLANDS ? 4 : getCurrentStage(completed);   // 全亮：当作已抵达第 4 岛（1-3 点亮、4 当前），整张图无灰岛
+  /* 默认全量图才真正加载默认岛图：HTML 里用 data-src 占位，避免选了专属航线时白下载这 4 张（路线模式不会进到本函数）*/
+  document.querySelectorAll('#kmWrap .island img[data-src]').forEach(im => { if (!im.getAttribute('src')) im.src = im.dataset.src; });
   document.querySelectorAll('.km-wrap .island, .km-wrap .km-dot').forEach(el => {
     const n = parseInt(el.dataset.stage, 10);
     el.classList.toggle('done', n < cur);
