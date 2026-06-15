@@ -336,6 +336,8 @@
   /* ---------- 暴露给注入按钮 + 应用当前状态 ---------- */
   window.openRouteModal = openRouteModal;
   window.closeRouteModal = closeRouteModal;
+  /* 深链 ?route=key：首屏 render 前先把 ds_route 落地，避免首屏先按默认全量图渲染（白下载默认岛/船）再被 route-art-apply 切回路线 */
+  try { var _rq = location.search.match(/[?&]route=([a-z]+)/); if (_rq && ROUTES[_rq[1]]) localStorage.setItem('ds_route', _rq[1]); } catch (e) {}
   try { render(); } catch (e) { console.warn('[routes-ui] 初次渲染失败', e); }
   /* 深链：calendar.html#route 直接打开问卷（便于演示 / 分享）*/
   if (location.hash === '#route') { try { openRouteModal(); } catch (e) {} }
