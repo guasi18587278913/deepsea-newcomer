@@ -62,23 +62,6 @@
   .cc-btn svg{width:16px; height:16px;}
   .cc-done{position:absolute; right:14px; bottom:14px; z-index:1; font-size:11px; font-weight:600; color:#fff; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28); border-radius:6px; padding:2px 8px;}
 
-  /* ---------- 直播回放卡 ---------- */
-  .lc-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
-  @media (max-width:980px){ .lc-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:660px){ .lc-grid{grid-template-columns:1fr;} }
-  .lc{background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 1px 2px rgba(15,23,42,.04),0 14px 30px -22px rgba(15,23,42,.22); transition:transform .18s,box-shadow .18s;}
-  .lc:hover{transform:translateY(-3px); box-shadow:0 1px 2px rgba(15,23,42,.04),0 22px 40px -22px rgba(15,23,42,.3);}
-  .lc-thumb{position:relative; aspect-ratio:16/9; background:linear-gradient(135deg,#16314f,#0b1c30); display:grid; place-items:center;}
-  .lc-play{width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.92); display:grid; place-items:center; box-shadow:0 6px 18px rgba(0,0,0,.25);}
-  .lc-play::after{content:''; width:0; height:0; border-style:solid; border-width:8px 0 8px 13px; border-color:transparent transparent transparent var(--teal-2); margin-left:3px;}
-  .lc-dur{position:absolute; right:9px; bottom:9px; font-size:11.5px; font-weight:600; color:#fff; background:rgba(0,0,0,.6); border-radius:6px; padding:2px 7px;}
-  .lc-live{position:absolute; left:11px; top:11px; font-size:11px; font-weight:700; color:#fff; background:rgba(0,0,0,.34); border-radius:6px; padding:3px 8px; display:flex; align-items:center; gap:5px;}
-  .lc-live .d{width:6px; height:6px; border-radius:50%; background:#ff5a52;}
-  .lc-body{padding:14px 16px 16px;}
-  .lc-title{font-size:15px; font-weight:600; color:var(--ink); line-height:1.4;}
-  .lc-meta{display:flex; align-items:center; gap:7px; margin-top:10px; font-size:12.5px; color:var(--t3);}
-  .lc-meta .av{width:20px; height:20px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-size:10px; font-weight:600;}
-
   /* ---------- 深海圈航海项目卡 ---------- */
   .vc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
   @media (max-width:760px){ .vc-grid{grid-template-columns:1fr;} }
@@ -103,7 +86,6 @@
 <main class="cs-wrap">
   <div class="cs-tabs">
     <div class="cs-tab on" data-tab="new">最新课程</div>
-    <div class="cs-tab" data-tab="live">直播回放</div>
     <div class="cs-tab" data-tab="past">往期课程</div>
     <div class="cs-tab" data-tab="voyage">深海圈航海</div>
   </div>
@@ -117,18 +99,6 @@
       <a class="cc" href="calendar.html"><div class="cc-head g-blue"><span class="cc-num">04</span><span class="cc-tag">实战进阶 · 2/4</span><div class="cc-title">开发者工具箱</div><div class="cc-author"><span class="av">刘</span><span>刘小排</span></div></div><div class="cc-body"><div class="cc-sub">【实战进阶(2/4)】IDE 工具、GitHub、API、环境变量</div><div class="cc-learned">1979 人学过</div><div class="cc-bar"><i style="width:84%"></i></div><div class="cc-prog">已学习 84%</div><div class="cc-btn">📖 继续学习</div></div></a>
       <a class="cc" href="calendar.html"><div class="cc-head g-blue"><span class="cc-num">05</span><span class="cc-tag">实战进阶 · 3/4</span><div class="cc-title">产品打磨与上线</div><div class="cc-author"><span class="av">刘</span><span>刘小排</span></div></div><div class="cc-body"><div class="cc-sub">【实战进阶(3/4)】数据库进阶、产品设计、Bug 调试、部署上线、域名配置</div><div class="cc-learned">1817 人学过</div><div class="cc-bar"><i style="width:83%"></i></div><div class="cc-prog">已学习 83%</div><div class="cc-btn">📖 继续学习</div></div></a>
       <a class="cc" href="calendar.html"><div class="cc-head g-blue"><span class="cc-num">06</span><span class="cc-tag">实战进阶 · 4/4</span><div class="cc-title">AI 编程全武装</div><div class="cc-author"><span class="av">刘</span><span>刘小排</span></div></div><div class="cc-body"><div class="cc-sub">【实战进阶(4/4)】Claude Code、MCP、Skills、产品迭代、开源生态</div><div class="cc-learned">1705 人学过</div><div class="cc-bar"><i style="width:100%"></i></div><div class="cc-prog">已学习 100%</div><div class="cc-btn">📖 继续学习</div></div></a>
-    </div>
-  </section>
-
-  <!-- ===== 直播回放 ===== -->
-  <section class="cs-panel" data-panel="live">
-    <div class="lc-grid">
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:32:10</span></div><div class="lc-body"><div class="lc-title">第 12 期 · 实战答疑直播：从想法到上线的卡点</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-28</div></div></a>
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:58:24</span></div><div class="lc-body"><div class="lc-title">Claude Code 进阶玩法：把它调教成你的全栈搭子</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-21</div></div></a>
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">2:10:05</span></div><div class="lc-body"><div class="lc-title">一个周末做完并上线一个能收钱的产品</div><div class="lc-meta"><span class="av">唐</span>唐门三叔 · 2026-05-14</div></div></a>
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:05:33</span></div><div class="lc-body"><div class="lc-title">MCP × Skills 实战拆解：给 AI 装上工具与记忆</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-07</div></div></a>
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:18:42</span></div><div class="lc-body"><div class="lc-title">AI 产品出海：从选品到冷启动投放</div><div class="lc-meta"><span class="av">矿</span>矿山 · 2026-04-30</div></div></a>
-      <a class="lc" href="calendar.html"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:47:19</span></div><div class="lc-body"><div class="lc-title">小程序变现实操复盘：3 个月跑通的弯路</div><div class="lc-meta"><span class="av">秋</span>秋水 · 2026-04-23</div></div></a>
     </div>
   </section>
 
@@ -163,7 +133,7 @@
       window.scrollTo({top:0, behavior:'smooth'});
     });
   });
-  /* 支持 #live / #past / #voyage 直达对应 tab */
+  /* 支持 #past / #voyage 直达对应 tab */
   (function(){ var h=(location.hash||'').replace('#',''); if(h){ var t=document.querySelector('.cs-tab[data-tab="'+h+'"]'); if(t){ t.classList.add('on'); document.querySelectorAll('.cs-tab').forEach(function(x){x.classList.toggle('on',x===t);}); document.querySelectorAll('.cs-panel').forEach(function(p){p.classList.toggle('show',p.dataset.panel===h);}); } } })();
 </script>
 </body>
