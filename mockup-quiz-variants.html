@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>问卷弹窗 · 3 个高级方向对比</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --serif:'Noto Serif SC','Songti SC',serif;
+  --sans:'Sora','PingFang SC',-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --teal:#0d9488; --teal-d:#0c7268; --deep:#1e3a52;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:var(--sans);min-height:100vh;padding:40px 28px 56px;
+  /* 仿水彩海图背景 */
+  background:
+    radial-gradient(60% 50% at 18% 22%, rgba(173,222,214,.9), transparent 60%),
+    radial-gradient(55% 60% at 82% 30%, rgba(150,206,210,.85), transparent 62%),
+    radial-gradient(70% 55% at 50% 92%, rgba(120,190,196,.8), transparent 60%),
+    linear-gradient(160deg,#bfe3dd 0%,#a9d6d4 45%,#cfe9e2 100%);
+}
+body::before{ /* 水彩纹理细噪 */
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg, rgba(13,80,76,.04) 1px,transparent 1px);
+  background-size:30px 30px, 30px 30px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 85%);
+}
+.page-h{text-align:center;margin-bottom:34px;position:relative;z-index:2}
+.page-h h1{font-family:var(--serif);font-weight:700;font-size:24px;color:#123a3a;letter-spacing:-.01em}
+.page-h p{font-size:13.5px;color:#2c5a57;margin-top:7px;font-weight:500}
+.row{display:flex;gap:30px;justify-content:center;align-items:flex-start;flex-wrap:wrap;position:relative;z-index:2}
+.col{width:440px;display:flex;flex-direction:column;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:600;font-size:13px;color:#0c4a47;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.9);padding:7px 15px;border-radius:999px;margin-bottom:18px;box-shadow:0 8px 20px -12px rgba(10,50,50,.5)}
+.tag b{color:var(--teal-d)}
+.tag .n{width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+
+/* 通用结构 */
+.pop{width:100%;position:relative}
+.opt-arr{width:15px;height:15px;flex:none}
+.opt-arr path{stroke-width:2}
+
+/* ============================================================
+   方向 A · 海图悬浮玻璃（Frosted Glass）
+   深色磨砂玻璃,海水透出来,荧光 teal,白衬线
+   ============================================================ */
+.va .pop{
+  padding:32px 30px 22px;border-radius:26px;color:#fff;overflow:hidden;
+  background:rgba(15,46,52,.34);
+  -webkit-backdrop-filter:blur(30px) saturate(1.5);backdrop-filter:blur(30px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 44px 90px -34px rgba(6,30,34,.7), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.va .glow{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(63,214,196,.5),transparent 70%);top:-70px;right:-40px;filter:blur(20px);pointer-events:none}
+.va .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#cfeae6;display:grid;place-items:center;font-size:13px}
+.va .prog{display:flex;gap:6px;margin-bottom:14px;position:relative}
+.va .prog i{height:4px;flex:1;border-radius:3px;background:rgba(255,255,255,.18)}
+.va .prog i.on{background:linear-gradient(90deg,#5fe6d4,#2bb6a6);box-shadow:0 0 10px rgba(63,214,196,.7)}
+.va .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#7fded0;margin-bottom:9px}
+.va .q{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.34;color:#fff;margin-bottom:20px;text-shadow:0 1px 18px rgba(0,0,0,.18)}
+.va .opt{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);margin-bottom:11px;cursor:pointer;transition:.18s}
+.va .opt:hover{background:rgba(95,230,212,.16);border-color:rgba(95,230,212,.6);transform:translateY(-1px)}
+.va .dot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.4);flex:none}
+.va .opt:hover .dot{border-color:#5fe6d4;background:radial-gradient(circle,#5fe6d4 0 4px,transparent 5px)}
+.va .ot{flex:1;font-size:15px;font-weight:600;color:#fff;line-height:1.35}
+.va .opt-arr path{stroke:rgba(255,255,255,.5)}
+.va .foot{display:flex;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+.va .all{font-size:12.5px;font-weight:600;color:#9fe9dd}
+
+/* ============================================================
+   方向 B · 深海仪表台（Dark Navigator Console）
+   深墨绿面板 + 黄铜细线 + 荧光 teal,戏剧高对比
+   ============================================================ */
+.vb .pop{
+  padding:32px 30px 22px;border-radius:20px;color:#e9f4f1;overflow:hidden;
+  background:linear-gradient(168deg,#11353c 0%,#0b262c 100%);
+  border:1px solid rgba(120,200,190,.18);
+  box-shadow:0 44px 90px -34px rgba(3,18,22,.75), inset 0 1px 0 rgba(120,200,190,.14);
+}
+.vb .pop::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(120,200,190,.07) 1px,transparent 1px);background-size:18px 18px;
+  mask-image:radial-gradient(ellipse at 50% 0%, black, transparent 75%)}
+.vb .brass{position:absolute;top:0;left:30px;right:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(215,181,106,.7),transparent)}
+.vb .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(120,200,190,.18);color:#8fc7bd;display:grid;place-items:center;font-size:13px}
+.vb .eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#d7b56a;margin-bottom:13px}
+.vb .eyebrow .star{color:#3fd6c4}
+.vb .prog{display:flex;gap:6px;margin-bottom:13px}
+.vb .prog i{height:4px;flex:1;border-radius:3px;background:rgba(255,255,255,.09)}
+.vb .prog i.on{background:linear-gradient(90deg,#3fd6c4,#16a094);box-shadow:0 0 10px rgba(63,214,196,.6)}
+.vb .step{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:#5f8c86;margin-bottom:8px;text-transform:uppercase}
+.vb .q{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.34;color:#f4efe4;margin-bottom:20px}
+.vb .opt{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(120,200,190,.12);border-left:3px solid rgba(120,200,190,.28);margin-bottom:11px;cursor:pointer;transition:.18s}
+.vb .opt:hover{background:rgba(63,214,196,.09);border-color:rgba(63,214,196,.5);border-left-color:#3fd6c4;transform:translateX(2px)}
+.vb .ot{flex:1;font-size:15px;font-weight:600;color:#e9f4f1;line-height:1.35}
+.vb .opt-arr path{stroke:#5f8c86}
+.vb .opt:hover .opt-arr path{stroke:#3fd6c4}
+.vb .foot{display:flex;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid rgba(120,200,190,.14)}
+.vb .all{font-size:12.5px;font-weight:600;color:#7fc8bd}
+
+/* ============================================================
+   方向 C · 杂志编排（Editorial Light · 左栏序号 + 右栏问答）
+   非对称两栏,大衬线,金色细线,克制留白
+   ============================================================ */
+.vc{width:520px}
+.vc .pop{display:grid;grid-template-columns:152px 1fr;border-radius:22px;overflow:hidden;background:#fff;border:1px solid #e6eef0;
+  box-shadow:0 44px 90px -38px rgba(30,58,82,.4), 0 8px 24px -16px rgba(13,148,136,.16);color:#33414d}
+.vc .rail{padding:28px 22px;background:linear-gradient(170deg,#f2f9f8,#e9f4f2);border-right:1px solid #e6eef0;position:relative}
+.vc .rail .idx{font-family:var(--serif);font-weight:700;color:var(--deep);line-height:1;font-size:50px}
+.vc .rail .idx small{font-size:19px;color:#9fb3b2;font-weight:600}
+.vc .rail .gold{width:26px;height:2px;background:#c89854;border-radius:2px;margin:15px 0 18px}
+.vc .rail .steps{display:flex;flex-direction:column;gap:13px}
+.vc .rail .s{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9fb0af;font-weight:500}
+.vc .rail .s .d{width:8px;height:8px;border-radius:50%;background:#cfdedc;flex:none}
+.vc .rail .s.on{color:var(--deep);font-weight:600}
+.vc .rail .s.on .d{background:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.16)}
+.vc .rail .compass{position:absolute;bottom:20px;left:22px;color:#bcd0ce}
+.vc .main{padding:30px 30px 22px;position:relative}
+.vc .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(30,58,82,.05);color:#9aabb2;display:grid;place-items:center;font-size:13px;border:none}
+.vc .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a8b8bb;margin-bottom:11px}
+.vc .q{font-family:var(--serif);font-size:23px;font-weight:700;line-height:1.32;color:var(--deep);letter-spacing:-.01em;margin-bottom:20px}
+.vc .opt{display:flex;align-items:center;gap:13px;padding:14px 4px;cursor:pointer;border-bottom:1px solid #eef3f4;transition:.16s}
+.vc .opt:last-of-type{border-bottom:none}
+.vc .opt .num{font-family:var(--serif);font-size:15px;font-weight:600;color:#bcccca;width:18px;flex:none;transition:.16s}
+.vc .opt:hover{padding-left:9px}
+.vc .opt:hover .num{color:var(--teal)}
+.vc .ot{flex:1;font-size:15px;font-weight:600;color:var(--deep);line-height:1.35}
+.vc .opt-arr{opacity:0;transition:.16s}
+.vc .opt-arr path{stroke:var(--teal)}
+.vc .opt:hover .opt-arr{opacity:1;transform:translateX(2px)}
+.vc .foot{display:flex;justify-content:flex-end;margin-top:18px;padding-top:13px}
+.vc .all{font-size:12.5px;font-weight:600;color:var(--teal-d)}
+</style>
+</head>
+<body>
+<div class="page-h">
+  <h1>找航线问卷 · 3 个「高级」方向</h1>
+  <p>同一份内容(第 1 步),三种完全不同的设计气质 —— 选一个,我把它做进真弹窗</p>
+</div>
+
+<div class="row">
+
+  <!-- ============ A ============ -->
+  <div class="col va">
+    <span class="tag"><span class="n">A</span> 海图悬浮玻璃 · <b>沉浸通透</b></span>
+    <div class="pop">
+      <span class="glow"></span>
+      <button class="close">✕</button>
+      <div class="prog"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="eyebrow">Background · 第 1 / 4 步</div>
+      <div class="q">你现在大概<br>是什么基础?</div>
+      <div class="opt"><span class="dot"></span><span class="ot">零基础,还没正式写过代码</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="opt"><span class="dot"></span><span class="ot">用过 ChatGPT / 扣子,但还没做出东西</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="opt"><span class="dot"></span><span class="ot">自己做出过小作品,想更系统地进阶</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="foot"><span class="all">直接浏览全部方向 →</span></div>
+    </div>
+  </div>
+
+  <!-- ============ B ============ -->
+  <div class="col vb">
+    <span class="tag"><span class="n">B</span> 深海仪表台 · <b>戏剧高级</b></span>
+    <div class="pop">
+      <span class="brass"></span>
+      <button class="close">✕</button>
+      <div class="eyebrow"><span class="star">✦</span> 找航线 · NAVIGATOR</div>
+      <div class="prog"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="step">第 1 / 4 步</div>
+      <div class="q">你现在大概<br>是什么基础?</div>
+      <div class="opt"><span class="ot">零基础,还没正式写过代码</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="opt"><span class="ot">用过 ChatGPT / 扣子,但还没做出东西</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="opt"><span class="ot">自己做出过小作品,想更系统地进阶</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+      <div class="foot"><span class="all">直接浏览全部方向 →</span></div>
+    </div>
+  </div>
+
+  <!-- ============ C ============ -->
+  <div class="col vc">
+    <span class="tag"><span class="n">C</span> 杂志编排 · <b>克制考究</b></span>
+    <div class="pop">
+      <div class="rail">
+        <div class="idx">01<small> ／04</small></div>
+        <div class="gold"></div>
+        <div class="steps">
+          <div class="s on"><span class="d"></span>基础</div>
+          <div class="s"><span class="d"></span>目标</div>
+          <div class="s"><span class="d"></span>方向</div>
+          <div class="s"><span class="d"></span>时间</div>
+        </div>
+        <svg class="compass" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="main">
+        <button class="close">✕</button>
+        <div class="eyebrow">Background</div>
+        <div class="q">你现在大概<br>是什么基础?</div>
+        <div class="opt"><span class="num">1</span><span class="ot">零基础,还没正式写过代码</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+        <div class="opt"><span class="num">2</span><span class="ot">用过 ChatGPT / 扣子,但还没做出东西</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+        <div class="opt"><span class="num">3</span><span class="ot">自己做出过小作品,想更系统地进阶</span><svg class="opt-arr" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5"/></svg></div>
+        <div class="foot"><span class="all">直接浏览全部方向 →</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

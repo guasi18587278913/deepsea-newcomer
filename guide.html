@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- 字体异步加载，不挡首屏渲染 -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="topbar.css">
 <style>
 :root{
@@ -20,81 +20,72 @@
   --text-1:#1a2942; --text-2:#5c7a8a; --text-3:#94a3b8;
   --border:#e2ebec; --border-soft:#eef3f4;
   --surface:#fff;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --teal-light:#7dd3cc; --hairline:#eef3f4;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{background:#f5fafa}
 body{
   font-family:var(--font-sans); color:var(--text-1);
-  background:linear-gradient(180deg,#eaf5f3 0%,#dceee9 30%,#f3faf8 66%,#ffffff 100%);
+  background:linear-gradient(180deg,#eaf5f3 0%,#dceee9 28%,#f3faf8 62%,#ffffff 100%);
   background-attachment:fixed; -webkit-font-smoothing:antialiased; line-height:1.6;
   min-height:100vh; display:flex; flex-direction:column;
 }
-.wrap{max-width:1080px; margin:0 auto; padding:0 24px; width:100%}
 a{color:inherit}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gold)}
 .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--gold);border-radius:2px}
-.sec-title{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--deep-blue);letter-spacing:-.01em}
-.sec-sub{color:var(--text-2);font-size:14px;margin-top:6px}
-.sec-head{margin-bottom:22px}
 
-/* ---------- Hero ---------- */
-.hero{padding:50px 0 22px}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.hero h1{font-family:var(--font-display);font-weight:900;font-size:48px;line-height:1.15;color:var(--deep-blue);letter-spacing:-.02em;margin:14px 0 0}
-.hero .lead{color:var(--text-2);font-size:16px;line-height:1.8;margin-top:18px;max-width:470px}
-.hero .lead b{color:var(--teal-deep);font-weight:600}
-.cta-row{display:flex;gap:13px;margin-top:28px;flex-wrap:wrap}
+/* ---------- 按钮 ---------- */
 .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-sans);font-size:15px;font-weight:600;padding:13px 24px;border-radius:12px;cursor:pointer;text-decoration:none;border:1.5px solid transparent;transition:transform .16s,box-shadow .16s,background .16s,border-color .16s}
 .btn-primary{background:linear-gradient(180deg,#13a394,#0c6f66);color:#fff;box-shadow:0 12px 26px -12px rgba(13,148,136,.7)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px rgba(13,148,136,.8)}
-.btn-ghost{background:rgba(255,255,255,.7);color:var(--teal-deep);border-color:rgba(13,148,136,.4)}
-.btn-ghost:hover{background:#fff;border-color:var(--teal);transform:translateY(-2px)}
 .btn .arr{transition:transform .16s}
 .btn:hover .arr{transform:translateX(3px)}
 
-/* 视频板（占位：深海圈介绍 / 怎么学） */
-.video-plate{position:relative;aspect-ratio:16/11;border-radius:18px;overflow:hidden;cursor:pointer;
-  background:linear-gradient(155deg,#1e3a52 0%,#1f6f6a 55%,#0d9488 100%);
-  box-shadow:0 26px 60px -28px rgba(30,58,82,.6),inset 0 1px 0 rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.14);display:grid;place-items:center;transition:transform .2s,box-shadow .2s}
-.video-plate:hover{transform:translateY(-3px);box-shadow:0 34px 70px -26px rgba(30,58,82,.7)}
-.video-plate::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 30% 20%,rgba(255,255,255,.16),transparent 60%);pointer-events:none}
-.vp-center{position:relative;text-align:center;color:#fff}
-.play-btn{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(4px);border:1.5px solid rgba(255,255,255,.5);display:grid;place-items:center;margin:0 auto 14px;transition:transform .18s,background .18s}
-.video-plate:hover .play-btn{transform:scale(1.08);background:rgba(255,255,255,.26)}
-.play-btn svg{width:24px;height:24px;margin-left:4px;fill:#fff}
-.vp-label{font-size:15px;font-weight:600}
-.vp-meta{font-size:12px;opacity:.78;margin-top:3px}
-.vp-corner{position:absolute;top:14px;left:16px;font-family:var(--font-display);font-weight:700;font-size:13px;color:rgba(255,255,255,.92)}
-.vp-tag{position:absolute;top:13px;right:14px;font-size:11px;font-weight:600;color:#1f6f6a;background:rgba(255,255,255,.9);border-radius:999px;padding:3px 10px}
+/* 视频板（开场致辞 · 刘小排「为什么是现在，为什么是你」） */
+.video-plate {
+  width: 100%; aspect-ratio: 16 / 11; max-height: min(56vh, 460px);
+  background:
+    radial-gradient(ellipse at 76% 18%, rgba(125, 211, 204, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 16% 94%, rgba(30, 58, 82, 0.08) 0%, transparent 55%),
+    linear-gradient(165deg, #ffffff 0%, #f0f8f8 55%, #e8f4f5 100%);
+  border-radius: 18px; border: 1px solid var(--border); display: block; position: relative; overflow: hidden; cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 32px 64px -24px rgba(30,58,82,0.18), 0 8px 24px -8px rgba(13,148,136,0.12);
+  transition: transform 380ms cubic-bezier(0.16,1,0.3,1), box-shadow 380ms cubic-bezier(0.16,1,0.3,1), border-color 380ms cubic-bezier(0.16,1,0.3,1);
+}
+.video-plate::before { content:''; position:absolute; inset:0;
+  background-image: linear-gradient(rgba(13,148,136,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(13,148,136,0.05) 1px, transparent 1px);
+  background-size: 36px 36px; mask-image: radial-gradient(ellipse at center, black 10%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 80%); pointer-events: none; }
+.video-plate:hover { transform: translateY(-4px); border-color: var(--teal-light); box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 40px 80px -20px rgba(30,58,82,0.24), 0 12px 28px -8px rgba(13,148,136,0.22); }
+.plate-corner { position:absolute; width:16px; height:16px; z-index:2; pointer-events:none; }
+.plate-corner::before, .plate-corner::after { content:''; position:absolute; background:var(--teal); opacity:0.55; transition:opacity 320ms ease; }
+.plate-corner.tl{top:14px;left:14px}.plate-corner.tl::before{top:0;left:0;width:12px;height:1.5px}.plate-corner.tl::after{top:0;left:0;width:1.5px;height:12px}
+.plate-corner.tr{top:14px;right:14px}.plate-corner.tr::before{top:0;right:0;width:12px;height:1.5px}.plate-corner.tr::after{top:0;right:0;width:1.5px;height:12px}
+.plate-corner.bl{bottom:14px;left:14px}.plate-corner.bl::before{bottom:0;left:0;width:12px;height:1.5px}.plate-corner.bl::after{bottom:0;left:0;width:1.5px;height:12px}
+.plate-corner.br{bottom:14px;right:14px}.plate-corner.br::before{bottom:0;right:0;width:12px;height:1.5px}.plate-corner.br::after{bottom:0;right:0;width:1.5px;height:12px}
+.video-plate:hover .plate-corner::before, .video-plate:hover .plate-corner::after { opacity:1; }
+.plate-header { position:absolute; top:24px; left:26px; right:26px; display:flex; justify-content:space-between; align-items:center; z-index:3; font-family:var(--font-mono); font-size:10px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-2); }
+.plate-header .chapter{display:inline-flex;align-items:center;gap:8px}.plate-header .chapter .num{color:var(--deep-blue);font-weight:600;letter-spacing:0}
+.plate-header .live-tag{display:inline-flex;align-items:center;gap:7px;color:var(--teal);letter-spacing:0.16em;font-weight:600}
+.plate-header .live-tag .live-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:breathe 1.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:0.35}}
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color 280ms cubic-bezier(0.16,1,0.3,1),background 280ms cubic-bezier(0.16,1,0.3,1),transform 280ms cubic-bezier(0.16,1,0.3,1),box-shadow 280ms cubic-bezier(0.16,1,0.3,1);z-index:3;box-shadow:0 0 0 8px rgba(255,255,255,0.5),0 0 0 9px var(--hairline),0 10px 24px -6px rgba(30,58,82,0.2)}
+.play-btn .play-glyph{width:0;height:0;border-left:13px solid var(--teal);border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:4px;transition:border-left-color 240ms cubic-bezier(0.16,1,0.3,1)}
+.video-plate:hover .play-btn{background:var(--teal);border-color:var(--teal);transform:translate(-50%,-50%) scale(1.06);box-shadow:0 0 0 8px rgba(13,148,136,0.12),0 0 0 9px rgba(13,148,136,0.2),0 14px 34px -6px rgba(13,148,136,0.36)}
+.video-plate:hover .play-glyph{border-left-color:#fff}
+.plate-overlay{position:absolute;bottom:26px;left:26px;right:26px;z-index:3}
+.plate-title{font-family:var(--font-display);font-size:19px;font-weight:700;line-height:1.3;letter-spacing:-0.01em;margin-bottom:9px;color:var(--deep-blue);max-width:90%}
+.plate-meta{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.06em;color:var(--text-2)}
+.plate-meta .by{color:var(--deep-blue);font-weight:600}.plate-meta .dot{width:2.5px;height:2.5px;border-radius:50%;background:var(--text-3)}.plate-meta .duration{color:var(--text-2)}
 
-/* ---------- 核心：航海图怎么用（手把手） ---------- */
-.howto{padding:46px 0 14px}
-.howto-list{display:flex;flex-direction:column;gap:13px}
-.howto-item{display:flex;gap:20px;background:var(--surface);border:1px solid var(--border-soft);border-radius:16px;padding:22px 24px;box-shadow:0 1px 2px rgba(30,58,82,.04);transition:box-shadow .16s,transform .16s}
-.howto-item:hover{box-shadow:0 16px 34px -20px rgba(30,58,82,.26);transform:translateY(-2px)}
-.howto-n{flex:none;width:38px;height:38px;border-radius:11px;background:var(--teal-bg);color:var(--teal-deep);font-family:var(--font-display);font-weight:900;font-size:19px;display:grid;place-items:center}
-.howto-body{flex:1;min-width:0}
-.howto-body h3{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--deep-blue);margin-bottom:6px}
-.howto-body p{font-size:14px;color:var(--text-2);line-height:1.72}
-.howto-body p b{color:var(--teal-deep);font-weight:600}
-.howto-body .muted{color:var(--text-3);font-size:13px;margin-top:5px}
-.flow-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
-.flow-tag{display:inline-flex;align-items:center;gap:7px;font-size:13px;padding:7px 12px;border-radius:10px;font-weight:500}
-.ft-course{background:var(--teal-bg);color:var(--teal-deep)}
-.ft-live{background:rgba(194,96,63,.12);color:#bd5a39}
-.ft-task{background:var(--gold-soft);color:#a9762a}
-
-/* —— 航海图示意图（带标注 + 动画）—— */
-.map-demo{position:relative;height:300px;border-radius:18px;overflow:hidden;margin-bottom:16px;
+/* —— 航海图（带标注 + 动画）—— */
+.map-demo{position:relative;height:300px;border-radius:18px;overflow:hidden;
   background:radial-gradient(125% 105% at 50% 0%,#d2eff1 0%,#a6dcdf 42%,#7cc6cc 74%,#5fb3ba 100%);
-  border:1px solid rgba(255,255,255,.45);
-  box-shadow:inset 0 3px 18px rgba(30,80,90,.16),0 14px 36px -18px rgba(30,80,90,.5)}
+  border:1px solid rgba(255,255,255,.45);box-shadow:inset 0 3px 18px rgba(30,80,90,.16),0 14px 36px -18px rgba(30,80,90,.5)}
 .md-route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .md-isle{position:absolute;transform:translateX(-50%);text-align:center;z-index:2}
 .md-isle .isle-art{display:block;margin:0 auto;filter:drop-shadow(0 7px 9px rgba(20,70,80,.28))}
-.md-isle .isle-lbl{margin-top:6px;font-size:11px;font-weight:600;color:#1f6f6a;white-space:nowrap;
-  background:rgba(255,255,255,.82);border-radius:8px;padding:2px 9px;display:inline-block;box-shadow:0 2px 6px rgba(30,80,90,.12)}
+.md-isle .isle-lbl{margin-top:6px;font-size:11px;font-weight:600;color:#1f6f6a;white-space:nowrap;background:rgba(255,255,255,.82);border-radius:8px;padding:2px 9px;display:inline-block;box-shadow:0 2px 6px rgba(30,80,90,.12)}
 .md-isle.dim .isle-art{opacity:.55;filter:grayscale(.45) drop-shadow(0 6px 8px rgba(20,70,80,.18))}
 .md-isle.dim .isle-lbl{color:#5c7a8a;background:rgba(255,255,255,.62)}
 .md-isle.cur .isle-art{animation:mdGlow 2.6s ease-in-out infinite}
@@ -102,53 +93,77 @@ a{color:inherit}
 .md-boat{position:absolute;z-index:2;animation:mdBob 3.4s ease-in-out infinite}
 .md-boat svg{display:block;filter:drop-shadow(0 5px 6px rgba(20,70,80,.32))}
 @keyframes mdBob{0%,100%{transform:translate(-50%,0) rotate(-3.5deg)}50%{transform:translate(-50%,-6px) rotate(3.5deg)}}
-.md-tip{position:absolute;background:#fff;border:1px solid var(--border);border-radius:10px;
-  padding:6px 11px;font-size:12px;font-weight:600;color:var(--deep-blue);z-index:4;
-  box-shadow:0 8px 20px -10px rgba(30,58,82,.45);white-space:nowrap}
-.md-tip.t-isle{top:24px;left:46%}
-.md-tip.t-boat{bottom:26px;left:5%}
-.md-pill{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:6px;z-index:4;
-  background:linear-gradient(180deg,#fdfaf0,#f3e9cf);border:1px solid var(--gold);border-radius:999px;
-  padding:7px 13px;font-size:12.5px;font-weight:600;color:#8a6d2e;box-shadow:0 6px 16px -8px rgba(120,90,30,.55)}
+.md-tip{position:absolute;background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 11px;font-size:12px;font-weight:600;color:var(--deep-blue);z-index:4;box-shadow:0 8px 20px -10px rgba(30,58,82,.45);white-space:nowrap}
+.md-tip.t-isle{top:24px;left:46%}.md-tip.t-boat{bottom:26px;left:5%}
+.md-pill{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:6px;z-index:4;background:linear-gradient(180deg,#fdfaf0,#f3e9cf);border:1px solid var(--gold);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;color:#8a6d2e;box-shadow:0 6px 16px -8px rgba(120,90,30,.55)}
 .md-pill svg{width:14px;height:14px;stroke:#a07a2e;fill:none;stroke-width:1.7}
 .md-pill .pill-ping{position:absolute;inset:-3px;border:2px solid var(--gold);border-radius:999px;opacity:0;animation:mdPing 2.6s ease-out infinite}
 @keyframes mdPing{0%{opacity:.7;transform:scale(.94)}70%,100%{opacity:0;transform:scale(1.14)}}
 
-/* ---------- 其他板块，什么时候来 ---------- */
-.blocks{padding:46px 0 14px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:14px}
-.card{display:block;background:var(--surface);border:1px solid var(--border-soft);border-radius:14px;padding:17px 18px;text-decoration:none;transition:transform .15s,box-shadow .15s,border-color .15s;box-shadow:0 1px 2px rgba(30,58,82,.04)}
-.card:hover{transform:translateY(-4px);box-shadow:0 16px 34px -18px rgba(30,58,82,.3);border-color:#bfe0d9}
-.card-top{display:flex;align-items:center;gap:11px;margin-bottom:9px}
-.card-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none}
-.card-ic svg{width:20px;height:20px;stroke-width:1.7;fill:none}
-.card h3{font-family:var(--font-display);font-weight:700;font-size:15.5px;color:var(--deep-blue);flex:1;display:flex;align-items:center;justify-content:space-between}
-.card h3 .arr{color:var(--teal);font-size:13px;opacity:0;transform:translateX(-3px);transition:.15s}
-.card:hover h3 .arr{opacity:1;transform:translateX(0)}
-.card .when{font-size:13px;color:var(--text-2);line-height:1.55}
-.card .when b{color:var(--teal-deep);font-weight:600}
-.ic-teal{background:var(--teal-bg)} .ic-teal svg{stroke:var(--teal-deep)}
-.ic-gold{background:var(--gold-soft)} .ic-gold svg{stroke:var(--gold)}
-.ic-blue{background:#e8eff6} .ic-blue svg{stroke:#3f6695}
+/* ============ 信件（文字带路）+ 图文模块（接力） ============ */
+.letter{max-width:724px;margin:0 auto;padding:48px 24px 40px;width:100%}
+.letter-head{text-align:center;margin-bottom:24px}
+.letter-head h1{font-family:var(--font-display);font-weight:900;font-size:46px;color:var(--deep-blue);letter-spacing:-.02em;margin:0;line-height:1.1}
 
-/* ---------- 还卡着？手册 ---------- */
-.help-bar{margin:40px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
-  background:linear-gradient(180deg,#fffdf7,#fbf4e3);border:1px solid #ecdcb6;border-radius:16px;padding:22px 26px}
-.help-bar .hb-l{display:flex;align-items:center;gap:15px}
-.help-bar .hb-ic{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid #ecdcb6;display:grid;place-items:center;flex:none}
-.help-bar .hb-ic svg{width:23px;height:23px;stroke:var(--gold);fill:none;stroke-width:1.7}
-.help-bar h3{font-family:var(--font-display);font-weight:700;font-size:16px;color:#7a5a1e}
-.help-bar p{font-size:13px;color:#9a7a3a;margin-top:3px}
-.help-bar .hb-btn{font-size:14px;font-weight:600;color:#fff;background:linear-gradient(180deg,#cda55a,#b9893f);border-radius:11px;padding:11px 20px;text-decoration:none;white-space:nowrap;transition:transform .15s,box-shadow .15s}
-.help-bar .hb-btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(160,120,40,.6)}
+.letter-body{margin-top:4px;font-size:16.5px;line-height:1.95;color:#2b3d4d}
+.letter-body p{margin-bottom:17px}
+.letter-body strong{color:var(--teal-deep);font-weight:600}
+.letter-body a:not(.map-enter):not(.mod){color:var(--teal-deep);font-weight:600;text-decoration:none;border-bottom:1.5px solid rgba(13,148,136,.32);transition:border-color .15s,color .15s}
+.letter-body a:not(.map-enter):not(.mod):hover{color:var(--teal);border-color:var(--teal)}
+.letter-body h2{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.5;color:var(--deep-blue);margin:42px 0 15px;display:flex;gap:12px;align-items:baseline}
+.letter-body h2 .ln{flex:none;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--gold)}
+.letter-kicker{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--deep-blue);text-align:center;line-height:1.6;margin:8px 0 17px}
 
-.site-foot{text-align:center;color:var(--text-3);font-size:12px;padding:30px 0 38px;line-height:1.7}
+.in-letter-video{margin:10px 0 6px}
 
-@media (max-width:860px){
-  .hero-grid{grid-template-columns:1fr;gap:28px}
-  .hero h1{font-size:38px}
-  .hero{padding:34px 0 12px}
-  .howto-item{padding:18px 18px}
+/* 航海图 = 学习地图入口 */
+.map-enter{display:block;text-decoration:none;margin:22px 0 18px}
+.map-enter .map-demo{transition:transform .2s,box-shadow .2s}
+.map-enter:hover .map-demo{transform:translateY(-3px);box-shadow:inset 0 3px 18px rgba(30,80,90,.16),0 24px 50px -20px rgba(30,80,90,.62)}
+.map-hint{display:block;text-align:center;margin-top:11px;font-size:13px;font-weight:600;color:var(--teal-deep)}
+.map-enter:hover .map-hint{color:var(--teal)}
+.map-shot{display:block;width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.5);box-shadow:0 1px 2px rgba(30,58,82,.05),0 16px 38px -18px rgba(30,80,90,.5);transition:transform .2s,box-shadow .2s}
+.map-enter:hover .map-shot{transform:translateY(-3px);box-shadow:0 26px 54px -20px rgba(30,80,90,.58)}
+.map-pin{display:block;text-align:center;margin-top:11px;font-size:12.5px;color:var(--text-3)}
+
+/* 图文/视频/作业 小标 */
+.mini-chips{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 17px}
+.mini-chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:11px;background:var(--teal-bg);color:var(--teal-deep)}
+
+/* 功能模块卡（广场 / 直播 / 助教 / 刘小排…） */
+.mods{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:4px 0 18px}
+.mod-solo{margin:2px 0 18px}
+.mod{display:flex;gap:13px;background:#fff;border:1px solid var(--border-soft);border-radius:15px;padding:18px;box-shadow:0 1px 2px rgba(30,58,82,.04);text-decoration:none}
+a.mod{transition:transform .15s,box-shadow .15s,border-color .15s}
+a.mod:hover{transform:translateY(-2px);box-shadow:0 16px 32px -20px rgba(30,58,82,.28);border-color:#bfe0d9}
+.mod-ic{flex:none;width:40px;height:40px;border-radius:11px;background:var(--teal-bg);display:grid;place-items:center;font-size:20px}
+.mod-b h4{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--deep-blue);display:flex;align-items:center;gap:6px}
+.mod-b h4 .go{color:var(--teal);font-size:13px;transition:transform .15s}
+a.mod:hover .go{transform:translateX(3px)}
+.mod-b p{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-top:4px}
+
+/* 个性化路线 · 截图占位 */
+.shot-ph{margin:4px 0 18px;border:1.5px dashed #bcd9d4;border-radius:16px;background:linear-gradient(180deg,#f4fbfa,#e9f6f3);padding:28px 22px;text-align:center}
+.shot-ph .ph-ic{font-size:28px;line-height:1}
+.shot-ph .ph-t{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--teal-deep);margin-top:9px}
+.shot-ph .ph-d{font-size:12.5px;color:var(--text-3);margin-top:6px;line-height:1.55}
+
+/* 大按钮 + 落款 */
+.letter-cta{text-align:center;margin:28px 0 22px}
+.letter-cta .btn-primary{font-size:16px;padding:16px 32px}
+.letter-sign{display:flex;align-items:center;gap:13px;margin-top:30px;padding-top:22px;border-top:1px solid var(--border-soft)}
+.sign-ava{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--border);background:var(--teal-bg)}
+.sign-name{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--deep-blue)}
+.sign-role{font-size:12.5px;color:var(--text-3);margin-top:1px}
+
+.site-foot{text-align:center;color:var(--text-3);font-size:12px;padding:24px 0 38px;line-height:1.7}
+
+@media (max-width:760px){
+  .letter{padding:32px 20px 28px}
+  .letter-head h1{font-size:36px}
+  .letter-body{font-size:16px}
+  .mods{grid-template-columns:1fr}
+  .map-demo{height:236px}
 }
 </style>
 </head>
@@ -156,162 +171,113 @@ a{color:inherit}
 <header id="ds-topbar"></header>
 
 <main>
-<!-- ===== 开场 ===== -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-l">
-      <span class="eyebrow">深海圈</span>
-      <h1>学习指南</h1>
-      <p class="lead">深海圈东西不少 —— 课程、社区、训练营、直播。<b>不用急着全搞懂。</b><br>这页帮你理清三件事:<b>先做什么、航海图怎么用、卡住了找谁。</b></p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="calendar.html">进入学习地图 <span class="arr">→</span></a>
-        <a class="btn btn-ghost" href="welcome.html">还没方向?先测一测</a>
-      </div>
-    </div>
-    <div class="hero-r">
-      <div class="video-plate" onclick="alert('演示占位:这里放深海圈介绍 / 怎么学 的视频')">
-        <span class="vp-corner">先看 3 分钟</span>
-        <span class="vp-tag">视频占位</span>
-        <div class="vp-center">
-          <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <div class="vp-label">深海圈是什么 · 怎么学</div>
-          <div class="vp-meta">看完就懂怎么用,再动手不迟</div>
-        </div>
-      </div>
-    </div>
+<article class="letter">
+
+  <div class="letter-head">
+    <h1>学习指南</h1>
   </div>
-</section>
 
-<!-- ===== 核心：航海图怎么用 ===== -->
-<section class="howto">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">最重要的一件事</span>
-      <div class="sec-title" style="margin-top:9px">看懂你的「学习航海图」</div>
-      <div class="sec-sub">这是你学习的主场。把它用明白,后面就顺了。</div>
+  <div class="letter-body">
+    <p>哈喽，欢迎来到深海圈。</p>
+    <p>你刚进来，可能有点懵 —— 这么多课、这么多板块、这么多新词，该从哪儿开始？</p>
+    <p>别慌，请先看这个视频 👇</p>
+
+    <!-- 致辞视频 -->
+    <div class="video-plate in-letter-video" onclick="alert('演示占位：刘小排开场致辞视频')">
+      <span class="plate-corner tl"></span><span class="plate-corner tr"></span><span class="plate-corner bl"></span><span class="plate-corner br"></span>
+      <div class="plate-header">
+        <span class="chapter">CH&nbsp;<span class="num">01</span>&nbsp;/&nbsp;PROLOGUE</span>
+        <span class="live-tag"><span class="live-dot"></span>WATCH</span>
+      </div>
+      <div class="play-btn"><span class="play-glyph"></span></div>
+      <div class="plate-overlay">
+        <div class="plate-title">致辞：为什么是现在，<br>为什么是你</div>
+        <div class="plate-meta"><span class="by">刘小排</span><span class="dot"></span><span>FOUNDER</span><span class="dot"></span><span class="duration">03:24</span></div>
+      </div>
     </div>
 
-    <div class="map-demo" role="img" aria-label="学习航海图示意:海面上由近到远三座岛,小船停在第一座岛,金色虚线是航线">
-      <svg class="md-route" viewBox="0 0 720 300" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M120 252 Q270 234 360 242 T565 200" fill="none" stroke="#d8a44e" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".92"/>
-      </svg>
-      <span class="md-pill"><span class="pill-ping"></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21"/></svg>找适合你的航线</span>
-      <div class="md-isle cur" style="left:20%;bottom:19%">
-        <span class="isle-art"><svg width="56" height="43" viewBox="0 0 72 55"><ellipse cx="36" cy="47" rx="31" ry="7" fill="#ecdba6"/><path d="M13 47 Q25 18 36 20 Q48 22 59 47 Z" fill="#6cc08b"/><path d="M36 20 Q45 25 51 39 Q43 31 36 31 Z" fill="#54a673"/><rect x="47" y="22" width="2.4" height="14" rx="1" fill="#9a7a52"/><path d="M48 22 Q41 17 36 19 M48 22 Q56 17 61 21 M48 22 Q47 13 51 11" stroke="#3f9d6a" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="isle-lbl">岛① 跑通第一个产品</span>
-      </div>
-      <div class="md-isle dim" style="left:49%;bottom:26%">
-        <span class="isle-art"><svg width="72" height="55" viewBox="0 0 72 55"><ellipse cx="36" cy="47" rx="31" ry="7" fill="#ecdba6"/><path d="M13 47 Q25 18 36 20 Q48 22 59 47 Z" fill="#6cc08b"/><path d="M36 20 Q45 25 51 39 Q43 31 36 31 Z" fill="#54a673"/><rect x="47" y="22" width="2.4" height="14" rx="1" fill="#9a7a52"/><path d="M48 22 Q41 17 36 19 M48 22 Q56 17 61 21 M48 22 Q47 13 51 11" stroke="#3f9d6a" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="isle-lbl">岛② 做出能上线的</span>
-      </div>
-      <div class="md-isle dim" style="left:77%;bottom:34%">
-        <span class="isle-art"><svg width="88" height="67" viewBox="0 0 72 55"><ellipse cx="36" cy="47" rx="31" ry="7" fill="#ecdba6"/><path d="M13 47 Q25 18 36 20 Q48 22 59 47 Z" fill="#6cc08b"/><path d="M36 20 Q45 25 51 39 Q43 31 36 31 Z" fill="#54a673"/><rect x="47" y="22" width="2.4" height="14" rx="1" fill="#9a7a52"/><path d="M48 22 Q41 17 36 19 M48 22 Q56 17 61 21 M48 22 Q47 13 51 11" stroke="#3f9d6a" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="isle-lbl">岛③ 能收钱的产品</span>
-      </div>
-      <div class="md-boat" style="left:20%;bottom:12%"><svg width="40" height="38" viewBox="0 0 40 38"><path d="M7 27 L33 27 L29 33 Q20 35 11 33 Z" fill="#9a7a52"/><rect x="19" y="9" width="2.2" height="18" rx="1" fill="#6d5638"/><path d="M21.6 11 L21.6 25 L32 23 Z" fill="#fdfdfb"/><path d="M18.4 11 L18.4 25 L9 23 Z" fill="#e8eef0"/></svg></div>
-      <span class="md-tip t-isle">🏝️ 一座岛 = 一段学习</span>
-      <span class="md-tip t-boat">⛵ 小船 = 你学到哪了</span>
+    <h2><span class="ln">1</span>我们不是来"学 AI 编程"的，是来"做出一个能跑、能收钱的产品"的。</h2>
+    <p>这句话听起来有点功利，但它是你未来几个月最重要的心理锚点。</p>
+    <p>AI 编程工具月月变，新模型、新框架、新概念层出不穷。如果你把目标定为"学会所有工具"，你会永远在追赶，永远觉得"还没准备好"。</p>
+    <p>但如果你把目标定为"做出第一个能收钱的产品"，一切都会反过来 —— 你会主动去学"刚好够用"的那部分，会逼着自己把模糊想法变成一行行能跑的代码，会开始关注"用户愿不愿意付钱"这个最真实的问题。</p>
+    <p>所以，忘掉"我要成为 AI 编程高手"这个宏大目标。我们这趟航行的终点，是你亲手做出一个<strong>哪怕再小、但有人愿意付钱</strong>的产品。</p>
+
+    <h2><span class="ln">2</span>如何开始学习？</h2>
+    <p>我们的课程被设计成一张航海图 —— <strong>一座岛，就是一个阶段</strong>。从"跑通第一个网页"到"把它部署上线"，再到"挂上支付收第一笔钱"。每学完一节，就点亮一座岛。</p>
+
+    <!-- 航海图（可点进学习地图） -->
+    <a class="map-enter" href="calendar.html" aria-label="进入学习地图">
+      <img class="map-shot" src="assets/shot-learnmap.jpg" alt="你的学习地图：跑通第一个产品 → 做出能上线的 → 能收钱的 → 做大">
+      <span class="map-pin">🗺️ 一座岛 = 一个阶段 ｜ ⛵ 小船 = 你学到哪了</span>
+      <span class="map-hint">↑ 这就是你的学习地图，点开进去 →</span>
+    </a>
+
+    <p>点开一座岛，这个阶段的内容全在里面 —— 图文、视频、作业，照着顺序学。</p>
+    <a class="map-enter" href="course.html" aria-label="查看课程">
+      <img class="map-shot" src="assets/shot-lesson.jpg" alt="一节课的样子：左边是这阶段的课程清单，右边是正文，学完点「标记已学完」">
+    </a>
+
+    <!-- 出发前 · 准备装备（环境 / 工具自检） -->
+    <p>不过别急着冲 —— 正式上岛前，先花十分钟把<strong>装备备齐</strong>：账号、开发环境、要用的工具，别让"环境没搞定"挡在第一步前面。</p>
+    <div class="mod-solo">
+      <a class="mod" href="preflight.html"><div class="mod-ic">🎒</div><div class="mod-b"><h4>出航前检查 · 备好你的装备 <span class="go">→</span></h4><p>对着清单把账号、开发环境、必备工具逐项搞定，约 10 分钟，齐了再上岛。</p></div></a>
     </div>
 
-    <div class="howto-list">
-      <div class="howto-item">
-        <div class="howto-n">1</div>
-        <div class="howto-body">
-          <h3>一座岛,就是一段学习</h3>
-          <p>你的课程被画成了一张航海图:<b>一座岛 = 一个章节</b>,小船停在你学到的地方。学完一节,岛会点亮,船往前开一点 —— 进度一眼看得见。</p>
-        </div>
-      </div>
-      <div class="howto-item">
-        <div class="howto-n">2</div>
-        <div class="howto-body">
-          <h3>定制你自己的路线</h3>
-          <p>不想从头学到尾?点地图右上角的 <b>「找到适合你的航线」</b>,回答两个问题:有没有已经想做的东西、想先做哪种(小程序 / 网站 / App / 小游戏…)。系统会给你铺一条<b>最短能跑通的路线</b>,图上只留你要走的岛。</p>
-          <p class="muted">不定制也行 —— 默认就是全部课程的完整航海图。</p>
-        </div>
-      </div>
-      <div class="howto-item">
-        <div class="howto-n">3</div>
-        <div class="howto-body">
-          <h3>点开岛屿,就能学</h3>
-          <p><b>点任意一座岛</b>,会弹出这座岛的内容清单,按学习顺序排好。点开图文就能学,学完自动打勾,船和进度跟着往前走。</p>
-          <div class="flow-tags">
-            <span class="flow-tag ft-course">📘 图文课 · 看着学,是主线</span>
-            <span class="flow-tag ft-live">🔴 直播 · 老师带练,有预告也有回放</span>
-            <span class="flow-tag ft-task">✍️ 作业 · 每阶段交一次,助教会批</span>
-          </div>
-        </div>
-      </div>
-      <div class="howto-item">
-        <div class="howto-n">4</div>
-        <div class="howto-body">
-          <h3>中途想换路线?可以</h3>
-          <p>随时能换一条航线。只是要知道:<b>换了会清掉当前路线的学习进度</b>(已经交的作业还留着)。所以想清楚再换。</p>
-        </div>
-      </div>
+    <!-- 直播板块（单独引出） -->
+    <p>光自己看还不够 —— <strong>每周还有直播</strong>：</p>
+    <div class="mod-solo">
+      <a class="mod" href="live.html"><div class="mod-ic">🔴</div><div class="mod-b"><h4>直播营地 <span class="go">→</span></h4><p>我每周直播带你拆一个真项目、当场回答"卡点"问题；错过了，也有回放。</p></div></a>
     </div>
-  </div>
-</section>
 
-<!-- ===== 其他板块，什么时候来 ===== -->
-<section class="blocks">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">其他地方</span>
-      <div class="sec-title" style="margin-top:9px">什么时候,来这些地方</div>
-      <div class="sec-sub">不用全记住,需要的时候知道去哪就行。</div>
-    </div>
-    <div class="cards">
-      <a class="card" href="live.html">
-        <div class="card-top"><span class="card-ic ic-teal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg></span></div>
-        <h3>直播营地 <span class="arr">→</span></h3>
-        <p class="when">想跟着老师<b>带练、答疑</b>时 —— 看预告、参加、补回放。</p>
-      </a>
-      <a class="card" href="discuss.html">
-        <div class="card-top"><span class="card-ic ic-blue"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z"/></svg></span></div>
-        <h3>广场 <span class="arr">→</span></h3>
-        <p class="when"><b>卡住了、想报喜</b>时 —— 来这问,有同学,也有助教。</p>
-      </a>
-      <a class="card" href="feed.html">
-        <div class="card-top"><span class="card-ic ic-gold"><svg viewBox="0 0 24 24"><path d="M4 19.5V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span></div>
-        <h3>干货 <span class="arr">→</span></h3>
-        <p class="when">遇到问题时 —— 先来<b>搜搜前人趟过的坑</b>,少走弯路。</p>
-      </a>
-      <a class="card" href="showcase.html">
-        <div class="card-top"><span class="card-ic ic-gold"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3z"/><path d="M8 21h8M12 16v5"/></svg></span></div>
-        <h3>作品墙 <span class="arr">→</span></h3>
-        <p class="when"><b>产品做出来了</b> —— 发这儿晒,也看看别人做了啥。</p>
-      </a>
-      <a class="card" href="course.html">
-        <div class="card-top"><span class="card-ic ic-teal"><svg viewBox="0 0 24 24"><path d="M4 4h8a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2V4z"/><path d="M4 4v12a2 2 0 0 0 2 2h8"/></svg></span></div>
-        <h3>全部课程 <span class="arr">→</span></h3>
-        <p class="when">想<b>跳着看、或查某一节</b>时 —— 完整课表都在这。</p>
-      </a>
-      <a class="card" href="members.html">
-        <div class="card-top"><span class="card-ic ic-blue"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span></div>
-        <h3>成员 <span class="arr">→</span></h3>
-        <p class="when">想<b>找同城伙伴、认证高手</b>时 —— 来这儿认识人。</p>
-      </a>
-    </div>
-  </div>
-</section>
+    <p>这些岛你得一座座走通、不跳关。要是你已经想好做哪种产品（小程序、网站、AI 员工……），可以挑一条专门为它铺好的航线，路上每一步都冲着"做出它"去；还没想好，就走默认那条完整路线，照样走得通。走通一条想换个方向，随时能再开一条新的。</p>
 
-<!-- ===== 还卡着？手册 ===== -->
-<section class="wrap">
-  <div class="help-bar">
-    <div class="hb-l">
-      <span class="hb-ic"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span>
+    <!-- 个性化学习路线 → 找航线问卷入口（真实截图：开发一个小程序 这条专属航线） -->
+    <a class="map-enter" href="calendar.html?quiz=1" aria-label="找到适合你的航线">
+      <img class="map-shot" src="assets/shot-route.jpg" alt="选「开发一个小程序」后的专属航线地图：扣子做 demo → 配工位 → 写核心功能 → 上线变现">
+      <span class="map-pin">🧭 比如选「开发一个小程序」，地图就只留这条路要走的岛</span>
+      <span class="map-hint">👉 花 1 分钟答几个问题，找到只属于你的那条航线 →</span>
+    </a>
+
+    <p>你的任务不是"看完所有岛"，而是<strong>用最短的时间，登上第一座岛</strong>。</p>
+    <p>哪怕它只是个"番茄钟"网页，哪怕它丑得没法看。只要你今晚能让它在浏览器里跑起来，你就完成了最重要的一步 —— <strong>你证明了"我能做到"</strong>。这种正反馈，比任何鸡汤都管用。</p>
+
+    <h2><span class="ln">3</span>卡住了怎么办？</h2>
+    <p>一定会卡住。我当年学的时候，卡住的时间比顺畅的时间多得多。</p>
+    <p>但在这里，你不用一个人硬扛：</p>
+    <div class="mods">
+      <a class="mod" href="discuss.html"><div class="mod-ic">💬</div><div class="mod-b"><h4>先去广场 <span class="go">→</span></h4><p>广场上每天都有人在解决类似的问题，你遇到的坑，大概率有人刚爬出来。</p></div></a>
+      <a class="mod" href="discuss.html"><div class="mod-ic">🧑‍🏫</div><div class="mod-b"><h4>再找助教 <span class="go">→</span></h4><p>广场里随时能 @ 到助教——他们都是走过这条路的老学员，知道哪儿最容易摔跤。</p></div></a>
+      <a class="mod" href="feed.html"><div class="mod-ic">📚</div><div class="mod-b"><h4>翻翻干货 <span class="go">→</span></h4><p>报错、卡壳大多有人写过，先搜搜前人趟过的坑，少走弯路。</p></div></a>
+      <div class="mod"><div class="mod-ic">🤖</div><div class="mod-b"><h4>右下角的随身小助手</h4><p>卡住了，直接在那儿把问题甩给我；平时它也能带你一键跳回正在学的地方、推给你最新的直播动态。</p></div></div>
+    </div>
+
+    <h2><span class="ln">4</span>现在，你的第一步是什么？</h2>
+    <p>进入学习地图，上第一座岛「跑通第一个产品」，跟着第一节课做。</p>
+    <p>不要跳，不要快进，不要觉得"太简单了"。跟着它，一步一步做。</p>
+    <p><strong>我只要你做一件事：</strong>在接下来的 2 小时内，让一个网页 —— 哪怕它只显示"Hello World"—— 在你的浏览器里跑起来。</p>
+    <p>然后，截图，发到<a href="discuss.html">广场</a>，说"我跑通了"。</p>
+    <p>你会收到第一波"恭喜"。那一刻，你就已经上路了。</p>
+
+    <div class="letter-cta"><a class="btn btn-primary" href="calendar.html">进入学习地图 · 上第一座岛 <span class="arr">→</span></a></div>
+
+    <p class="letter-kicker">记住，这里没有"学完了再开始"，只有"开始了才算学"。</p>
+    <p>期待看到你的第一个作品。</p>
+
+    <div class="letter-sign">
+      <img class="sign-ava" src="assets/liuxiaopai-avatar.png" alt="刘小排">
       <div>
-        <h3>刚上手,卡在环境、报错这类小问题?</h3>
-        <p>官方这份《AI 编程新手 1000 问》大概率有现成答案。</p>
+        <div class="sign-name">刘小排</div>
+        <div class="sign-role">深海圈 · AI 编程</div>
       </div>
     </div>
-    <a class="hb-btn" href="https://ai-programming-1000qa.netlify.app/" target="_blank" rel="noopener">打开手册 →</a>
   </div>
-</section>
+
+</article>
 </main>
 
 <div class="site-foot">深海圈 · AI 编程 · 学习指南 ｜ 右下角「刘小排」随时能问</div>
 
+<script>/* 学习指南看过一次：写标记，之后 dsHomeUrl 不再强制落到本页 */try{localStorage.setItem('ds_guide_seen','1');}catch(e){}</script>
 <script src="topbar.js"></script>
 <script src="assistant.js?v=4"></script>
 </body>

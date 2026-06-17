@@ -1,5 +1,5 @@
 /* 路线地图 · 生态皮肤应用层（route-art-apply.js）—— 运行时叠加，零侵入 routes-ui.js。
-   选了路线 → 柔化专属海 + 生态岛 + 手调错落布局(对标全量图) + 平滑虚线串圆点 + 深度刻度 + 船校准。
+   选了路线 → 柔化专属海 + 生态岛 + 手调错落布局(对标全量图) + 平滑虚线串圆点 + 船校准。
    加载顺序：routes.js → routes-ui.js → route-art.js → route-art-apply.js（本文件最后）。
    做法：包住 window.render（routes-ui 已包过一层），其后对 DOM 做后处理。 */
 (function () {
@@ -57,7 +57,7 @@
     try { var m = src.match(/([a-z]+-\d+)\.(?:png|webp)/); return (m && window.ISLE_FIT && window.ISLE_FIT[m[1]]) ? window.ISLE_FIT[m[1]] : null; } catch (e) { return null; }
   }
 
-  /* 注入样式：点亮滤镜 + 继续学习卡(右下角缩小) + 圆点(对标 km-dot) + 深度刻度(对标 km-depth) + 海统一柔化 */
+  /* 注入样式：点亮滤镜 + 继续学习卡(右下角缩小) + 圆点(对标 km-dot) + 海统一柔化 */
   var css =
     '.km-wrap .island.route-isle{transition:left .4s cubic-bezier(.4,0,.2,1),bottom .4s cubic-bezier(.4,0,.2,1),width .4s cubic-bezier(.4,0,.2,1),transform .18s}' +
     '.km-wrap .island.route-isle.locked>img{filter:saturate(.85) brightness(1) contrast(1) drop-shadow(0 8px 12px rgba(30,80,90,.16));opacity:.86}' +
@@ -75,8 +75,7 @@
     '.route-dot.done{background:var(--gold);border-color:var(--gold)}' +
     '.route-dot.cur{background:var(--gold);box-shadow:0 0 0 7px rgba(194,137,47,.22)}' +
     '.route-dot.locked{background:#fff;border-color:#bcc8cf}' +
-    /* 深度刻度：对标 .km-depth（route-mode 隐藏了原件，这里用新 class 补回）*/
-    '.route-depth{position:absolute;bottom:2.6%;font-family:var(--font-mono);font-size:12.5px;font-weight:500;color:#5f8f8b;opacity:.85;transform:translateX(-50%);text-shadow:0 1px 2px rgba(247,250,249,.8);pointer-events:none;z-index:2}' +
+    /* 深度刻度 .route-depth 已删除（纯装饰、无含义）*/
     /* 海：干净生态海如实显示（不再降饱和、不再淡青蒙版）*/
     '';
   var st = document.createElement('style'); st.id = 'routeArtStyle'; st.textContent = css; document.head.appendChild(st);
@@ -102,7 +101,7 @@
 
   function svgEl(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
   function clearArt() {
-    ['routeLine', 'routeDots', 'routeDepth'].forEach(function (id) { var e = document.getElementById(id); if (e) e.remove(); });
+    ['routeLine', 'routeDots'].forEach(function (id) { var e = document.getElementById(id); if (e) e.remove(); });
   }
 
   function apply() {
@@ -198,13 +197,7 @@
       dots.appendChild(d);
     });
     wrap.appendChild(dots);
-
-    /* 6) 深度刻度：固定 4 档，补回海图氛围 */
-    var depth = document.createElement('div'); depth.id = 'routeDepth';
-    [['10m', 22], ['30m', 45], ['60m', 68], ['100m', 90]].forEach(function (d) {
-      var s = document.createElement('span'); s.className = 'route-depth'; s.style.left = d[1] + '%'; s.textContent = d[0]; depth.appendChild(s);
-    });
-    wrap.appendChild(depth);
+    /* 深度刻度（10m/30m/60m/100m）已删除：纯装饰、无含义，避免干扰 */
   }
 
   /* 包住 render（routes-ui 已包一层）→ 每次渲染后叠生态皮肤 */

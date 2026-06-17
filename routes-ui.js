@@ -2,7 +2,7 @@
    定制学习路线 · UI 层（routes-ui.js）— 运行时挂载，零侵入
    ------------------------------------------------------------
    它做什么：
-   1) 注入「生成我的专属航线」按钮（船舵图标）+ 问卷弹窗 + 样式；
+   1) 注入「找到适合你的航线」按钮（船舵图标）+ 引导问卷弹窗（4 步：基础→诉求→产品分流→时间→结果页，顺带存 ds_experience(中文)/ds_motive/ds_daily_minutes）+ 全部方向下拉 + 样式；
    2) 在外层包住页面已有的 render() / _fillCalloutContent()：
       选了方向(ds_route) → 进 route-mode，按 routes.js 的显式 flow 渲染岛 + 抽屉；
       没选 → 原样走默认全量航海图，逻辑完全不动。
@@ -22,7 +22,7 @@
   const PIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>';
   /* 船舵图标 = 复用顶栏「深海圈」logo 的舵，前后呼应、入航海世界 */
   const HELM = '<svg class="rg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>';
-  const GEN_LABEL = HELM + '<span>生成你的专属航线</span>' + '<svg class="rg-caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
+  const GEN_LABEL = HELM + '<span>找到适合你的航线</span>' + '<svg class="rg-caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 
   /* ---------- 状态 ---------- */
   function getRoute() { try { const k = localStorage.getItem('ds_route'); return (k && ROUTES[k]) ? ROUTES[k] : null; } catch (e) { return null; } }
@@ -41,7 +41,7 @@
 .route-gen-btn .rg-ico{width:16px;height:16px;color:var(--gold);flex:none}
 .route-gen-btn.reselect{background:none;color:#6f8a86;border:1px solid var(--border);box-shadow:none;font-weight:500;font-size:12.5px;padding:6px 14px}
 .route-gen-btn.reselect:hover{border-color:var(--teal);color:var(--teal);transform:none}
-.km-wrap.route-mode>.island,.km-wrap.route-mode>.km-route,.km-wrap.route-mode>.km-dot,.km-wrap.route-mode .km-depth{display:none}
+.km-wrap.route-mode>.island,.km-wrap.route-mode>.km-route,.km-wrap.route-mode>.km-dot{display:none}
 .km-wrap:not(.route-mode) #routeIslands{display:none}
 /* 「继续学习」= 右下角米白描金长方条：实色暖卡 + 金竖条 + 青圆箭头，只留课程标题 */
 #homeHero{position:absolute;left:0;top:2%;z-index:8;margin:0;max-width:340px}
@@ -79,25 +79,95 @@
 .route-dd .dd-item.cur .di-ic{color:#fff;background:var(--teal)}
 .route-dd .dd-item.full .di-ic{color:#9a7a3a;background:rgba(200,152,84,.13)}
 /* ===== 切换确认框 ===== */
-.route-cfm-mask{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(26,40,46,.34);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);padding:20px}
+.route-cfm-mask{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(18,38,44,.46);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:20px}
 .route-cfm-mask.show{display:grid}
-.route-cfm{position:relative;width:min(380px,92vw);padding:24px 24px 18px;border-radius:15px;color:#33291a;text-align:left;background:linear-gradient(180deg,#fffdf9,#fbf4e6);border:1px solid #e6d8ba;box-shadow:0 30px 70px -24px rgba(46,32,10,.5);animation:cfmIn .22s cubic-bezier(.22,1,.36,1) both}
+.route-cfm{position:relative;width:min(380px,92vw);padding:26px 24px 18px;border-radius:20px;color:#33414d;text-align:left;background:linear-gradient(180deg,#ffffff,#f6fbfb);border:1px solid #e6eef0;box-shadow:0 30px 70px -26px rgba(30,58,82,.42),0 8px 22px -16px rgba(13,148,136,.14);animation:cfmIn .22s cubic-bezier(.22,1,.36,1) both}
 @keyframes cfmIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
-.route-cfm::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;border-radius:15px 15px 0 0;background:linear-gradient(90deg,transparent,rgba(200,152,84,.55) 30%,rgba(200,152,84,.55) 70%,transparent)}
-.route-cfm .cf-ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#a8742a;background:rgba(200,152,84,.14);margin-bottom:13px}
+.route-cfm .cf-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#c08a2e;background:rgba(200,152,84,.16);margin-bottom:13px}
 .route-cfm .cf-ic svg{width:22px;height:22px}
 .route-cfm .cf-t{font-family:var(--font-display,serif);font-size:19px;font-weight:700;color:var(--deep-blue);margin:0 0 7px}
-.route-cfm .cf-d{font-size:13px;color:#5e5132;line-height:1.65;margin:0 0 20px}
+.route-cfm .cf-d{font-size:13px;color:#54636b;line-height:1.65;margin:0 0 20px}
 .route-cfm .cf-d b{color:var(--teal-deep);font-weight:600}
-.route-cfm .cf-d .cf-keep{color:#9a7a3a}
+.route-cfm .cf-d .cf-keep{color:#8aa0a8}
 .route-cfm .cf-act{display:flex;justify-content:flex-end;gap:10px}
-.route-cfm .cf-btn{font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid transparent}
-.route-cfm .cf-cancel{color:#7a6b4a;background:none;border-color:rgba(165,128,60,.4)}
-.route-cfm .cf-cancel:hover{background:rgba(165,128,60,.08)}
-.route-cfm .cf-ok{color:#fff;background:linear-gradient(180deg,#15a89a,#0c7268);border-color:rgba(200,152,84,.5);box-shadow:0 8px 18px -9px rgba(13,148,136,.6)}`;
+.route-cfm .cf-btn{font-family:var(--font-sans);font-size:13px;font-weight:600;cursor:pointer;padding:9px 18px;border-radius:999px;border:1px solid transparent;transition:all .14s}
+.route-cfm .cf-cancel{color:#64798a;background:none;border-color:#d6e0e2}
+.route-cfm .cf-cancel:hover{background:rgba(30,58,82,.05);border-color:#c2d0d2}
+.route-cfm .cf-ok{color:#fff;background:linear-gradient(180deg,#15a89a,#0c7268);border-color:transparent;box-shadow:0 8px 18px -9px rgba(13,148,136,.6)}
+.route-cfm .cf-ok:hover{background:linear-gradient(180deg,#19b3a4,#0e7d72);box-shadow:0 11px 22px -9px rgba(13,148,136,.7)}
+/* ===== 找航线 · 引导问卷弹窗（C 杂志编排 · 双栏）===== */
+.route-quiz-mask{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(18,38,44,.46);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:20px}
+.route-quiz-mask.show{display:grid}
+.route-quiz{position:relative;width:min(540px,94vw);max-height:88vh;overflow:hidden;display:grid;grid-template-columns:152px 1fr;border-radius:22px;color:#33414d;background:#fff;border:1px solid #e6eef0;box-shadow:0 44px 90px -38px rgba(30,58,82,.42),0 10px 28px -18px rgba(13,148,136,.18);animation:cfmIn .26s cubic-bezier(.22,1,.36,1) both}
+.rq-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border:none;border-radius:50%;background:rgba(30,58,82,.05);color:#9aabb2;font-size:14px;cursor:pointer;display:grid;place-items:center;transition:all .14s;z-index:4}
+.rq-close:hover{background:rgba(13,148,136,.12);color:var(--teal)}
+/* 左栏 · 序号 + 步骤清单 + 罗盘 */
+.rq-rail{padding:28px 22px;background:linear-gradient(170deg,#f2f9f8,#e9f4f2);border-right:1px solid #e6eef0;position:relative}
+.rq-idx{font-family:var(--font-display,serif);font-weight:700;color:var(--deep-blue);line-height:1;font-size:50px}
+.rq-idx small{font-size:19px;color:#9fb3b2;font-weight:600}
+.rq-idx .rq-fin{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:50%;background:linear-gradient(155deg,#15a89a,#0c7268);color:#fff;font-size:27px;box-shadow:0 10px 22px -8px rgba(13,148,136,.6)}
+.rq-railline{width:26px;height:2px;background:#c89854;border-radius:2px;margin:15px 0 18px}
+.rq-steps{display:flex;flex-direction:column;gap:13px}
+.rq-s{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#9fb0af;font-weight:500;transition:color .2s}
+.rq-s .d{width:8px;height:8px;border-radius:50%;background:#cfdedc;flex:none;transition:all .2s}
+.rq-s.done{color:#62807c}
+.rq-s.done .d{background:var(--teal-deep,#1f6f6a)}
+.rq-s.on{color:var(--deep-blue);font-weight:600}
+.rq-s.on .d{background:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.16)}
+.rq-compass{position:absolute;bottom:20px;left:22px;color:#bcd0ce}
+/* 右栏 · 问答 */
+.rq-main{padding:30px 30px 22px;position:relative;min-width:0;max-height:88vh;overflow-y:auto}
+.rq-eyebrow{font-family:var(--font-mono,monospace);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a8b8bb;margin-bottom:11px}
+.rq-title{font-family:var(--font-display,serif);font-size:23px;font-weight:700;line-height:1.32;color:var(--deep-blue);letter-spacing:-.01em;margin:0 0 18px}
+.rq-opts{display:flex;flex-direction:column}
+.rq-opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;padding:14px 4px;background:none;border:none;border-bottom:1px solid #eef3f4;font-family:inherit;transition:padding .16s;animation:rqOptIn .34s cubic-bezier(.16,1,.3,1) both}
+.rq-opt:last-child{border-bottom:none}
+.rq-opt:nth-child(1){animation-delay:.04s}
+.rq-opt:nth-child(2){animation-delay:.1s}
+.rq-opt:nth-child(3){animation-delay:.16s}
+.rq-opt:nth-child(4){animation-delay:.22s}
+.rq-opt:nth-child(5){animation-delay:.28s}
+.rq-opt:nth-child(6){animation-delay:.34s}
+.rq-opt:nth-child(7){animation-delay:.4s}
+@keyframes rqOptIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rq-opt:hover{padding-left:11px}
+.rq-mk{flex:none;display:grid;place-items:center;transition:all .16s}
+.rq-num{font-family:var(--font-display,serif);font-size:15px;font-weight:600;color:#bcccca;width:18px}
+.rq-opt:hover .rq-num{color:var(--teal)}
+.rq-ic{width:32px;height:32px;border-radius:9px;color:#0c7a70;background:rgba(13,148,136,.1)}
+.rq-ic svg{width:19px;height:19px}
+.rq-opt:hover .rq-ic{color:#fff;background:linear-gradient(155deg,#15a89a,#0c7268)}
+.rq-av{width:32px;height:32px;border-radius:50%;background:#fff center/cover no-repeat;box-shadow:0 0 0 1.5px rgba(13,148,136,.4)}
+.rq-opt:hover .rq-av{box-shadow:0 0 0 2px var(--teal)}
+.rq-otxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rq-ot{font-size:14.5px;font-weight:600;color:var(--deep-blue);line-height:1.35}
+.rq-od{font-size:12px;color:#7c939c;line-height:1.4}
+.rq-arr{width:15px;height:15px;flex:none;color:var(--teal);opacity:0;transition:all .16s}
+.rq-opt:hover .rq-arr{opacity:1;transform:translateX(2px)}
+.rq-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid #eef3f4}
+.rq-back,.rq-all{font-family:var(--font-sans);font-size:12.5px;font-weight:600;cursor:pointer;background:none;border:none;padding:6px 4px;border-radius:7px;transition:color .14s}
+.rq-back{color:#8aa0a8}
+.rq-back:hover{color:var(--deep-blue)}
+.rq-all{color:var(--teal-deep,#1f6f6a);margin-left:auto}
+.rq-all:hover{color:var(--teal)}
+.rq-result{padding-top:2px}
+.rr-cap{font-family:var(--font-mono,monospace);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9aabb2;margin-bottom:12px}
+@media(max-width:560px){.route-quiz{grid-template-columns:1fr}.rq-rail{display:none}.rq-main{max-height:88vh}}
+.rr-route{display:flex;align-items:center;gap:14px;padding:16px;border-radius:15px;background:linear-gradient(180deg,#f5fbfa,#ecf6f4);border:1px solid rgba(13,148,136,.2);margin-bottom:13px}
+.rr-ic{width:46px;height:46px;border-radius:13px;flex:none;display:grid;place-items:center;color:#fff;background:linear-gradient(155deg,#15a89a,#0c7268);box-shadow:0 8px 18px -8px rgba(13,148,136,.6)}
+.rr-ic svg{width:26px;height:26px}
+.rr-rtxt{flex:1;min-width:0}
+.rr-name{font-family:var(--font-display,serif);font-size:19px;font-weight:700;color:var(--deep-blue);line-height:1.3}
+.rr-promise{font-size:12.5px;color:#5e6b66;line-height:1.5;margin-top:3px}
+.rr-pace{font-size:13px;color:#5c7a8a;text-align:center;padding:9px 12px;border-radius:10px;background:rgba(13,148,136,.08);margin-bottom:11px}
+.rr-first{font-size:12.5px;color:#54636b;line-height:1.6;padding:0 2px}
+.rr-first-k{font-weight:600;color:var(--teal-deep,#0c7268);margin-right:6px}
+.rr-go{width:100%;margin-top:17px;padding:14px;border:none;border-radius:12px;font-family:var(--font-sans);font-size:15px;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(180deg,#15a89a,#0c7268);box-shadow:0 12px 24px -10px rgba(13,148,136,.6);transition:all .15s}
+.rr-go:hover{background:linear-gradient(180deg,#19b3a4,#0e7d72);transform:translateY(-1px);box-shadow:0 15px 30px -10px rgba(13,148,136,.7)}
+.km-route-eb{font-family:var(--font-sans);font-size:13px;font-weight:600;letter-spacing:.02em;color:#b88a3a;margin-bottom:-9px;display:inline-flex;align-items:center;gap:5px}`;
   const st = document.createElement('style'); st.id = 'routeUiStyle'; st.textContent = css; document.head.appendChild(st);
 
-  /* ---------- 注入「航线总览」整页浮层（12 条 · 3 类货架 + Stage 0）---------- */
+  /* ---------- 航线总览数据（11 条专属 · 3 类货架 + Stage 0；全量主线另算，合计 12）---------- */
   const RICN = {
     mp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="3" width="12" height="18" rx="3"/><path d="M10.5 18h3"/></svg>',
     web:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
@@ -124,19 +194,163 @@
     { cat:'skill', key:'spec',       icon:'spec', t:'学会和 AI 提需求', p:'把模糊想法，说成 AI 能一次做对的「任务书」', fit:'所有人 —— 用好 AI 编程的地基', out:'一份能让 AI 一次做对的 SPEC', tag:'地基 · 人人', tagc:'teal' },
     { cat:'start', key:'idea', icon:'compass', t:'找产品需求', p:'还没想好做啥？先从一堆模糊念头里，选出 1 个最该先做的产品需求' },
   ];
+  /* ---------- 引导问卷数据：4 步（基础→诉求→产品分流→时间）→ 结果页 ---------- */
+  const QUIZ = {
+    q1: { step:1, title:'你现在大概是什么基础？', key:'level',
+      opts:[
+        { t:'零基础，还没正式写过代码', v:'零基础' },
+        { t:'用过 ChatGPT / 扣子，但还没真正做出过东西', v:'有基础' },
+        { t:'自己做出过小作品，想更系统地进阶', v:'有产品经验' },
+      ] },
+    q2: { step:2, title:'你来这里，最想解决的是什么？', key:'goal',
+      opts:[
+        { t:'有想法，但不知道从哪里开始', v:'stuck' },
+        { t:'手上有业务或项目，想尽快把它做出来', v:'biz' },
+        { t:'想跟上 AI 的节奏，系统补齐自己的能力', v:'keepup' },
+        { t:'先做出一个能用的小东西练手', v:'try' },
+      ] },
+    q3: { step:3, title:'先帮你做出第一个能用的产品。你最想做哪一种？', key:'route',
+      opts:[
+        { icon:'web',     t:'一个网页 / 网站工具', note:'最稳妥，适合起步', route:'aiwebsite' },
+        { icon:'mp',      t:'一个微信小程序',                          route:'miniprogram' },
+        { icon:'game',    t:'一个小游戏',          note:'挑战性较高',     route:'minigame' },
+        { icon:'app',     t:'一个手机 App',        note:'需要一点 React 基础', route:'app' },
+        { icon:'robot',   t:'让 AI 自动替我处理工作',                   route:'aiemployee' },
+        { icon:'compass', t:'还没想好 —— 先带我做个最简单的', note:'先上线一个网页，拿到第一个成果',               route:'aiwebsite' },
+        { avatar:'assets/liuxiaopai-avatar.png', diag:true, t:'我的想法比较特别，这些都对不上', note:'让刘小排陪你一对一问诊，挑出该补的课' },
+      ] },
+    q4: { step:4, title:'你每天大概能投入多少时间？', key:'minutes',
+      opts:[
+        { t:'20 分钟左右', v:20 },
+        { t:'1 小时左右', v:60 },
+        { t:'2 小时以上', v:120 },
+        { t:'不太固定', v:0 },
+      ] },
+  };
+  const Q_ORDER = ['q1','q2','q3','q4'];
+  const TOTAL_STEPS = 4;
+  const RAIL_STEPS = [
+    { label: '基础', eb: 'BACKGROUND' },
+    { label: '目标', eb: 'OBJECTIVE' },
+    { label: '方向', eb: 'DIRECTION' },
+    { label: '时间', eb: 'CADENCE' },
+  ];
   /* ---------- 航线下拉菜单（替代整页弹窗）---------- */
   const DD_FULL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>';
   const DD_CHK = '<svg class="di-chk" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5L13 4"/></svg>';
   const ddMenu = document.createElement('div'); ddMenu.id = 'routeDD'; ddMenu.className = 'route-dd';
   ddMenu.innerHTML = '<div class="dd-cap">默认</div>'
     + `<button class="dd-item full" data-key="full"><span class="di-ic">${DD_FULL}</span><span class="di-t">全量航海图 · 全部课程</span>${DD_CHK}</button>`
-    + `<div class="dd-sep"></div><div class="dd-cap">${RMETA.length} 条专属航线</div>`
+    + `<div class="dd-sep"></div><div class="dd-cap">${RMETA.length} 条航线</div>`
     + RMETA.map(o => `<button class="dd-item" data-key="${o.key}"><span class="di-ic">${RICN[o.icon]}</span><span class="di-t">${o.t}</span>${DD_CHK}</button>`).join('');
   document.body.appendChild(ddMenu);
   /* ---------- 切换确认框（覆盖学习记录前确认）---------- */
   const cfm = document.createElement('div'); cfm.id = 'routeCfm'; cfm.className = 'route-cfm-mask';
   cfm.innerHTML = `<div class="route-cfm"><div class="cf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 16.5v.5"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><h3 class="cf-t">换一条航线？</h3><p class="cf-d">切到「<b id="cfName"></b>」会把<b>当前航线的学习进度清空、从头来过</b>；<span class="cf-keep">但你已提交的作业会保留。</span></p><div class="cf-act"><button class="cf-btn cf-cancel" id="cfCancel">取消</button><button class="cf-btn cf-ok" id="cfOk">确定切换</button></div></div>`;
   document.body.appendChild(cfm);
+
+  /* ---------- 引导问卷弹窗（点「找到适合你的航线」弹出）：4 步问答 + 结果页 ---------- */
+  const quiz = document.createElement('div'); quiz.id = 'routeQuiz'; quiz.className = 'route-quiz-mask';
+  quiz.innerHTML = '<div class="route-quiz" role="dialog" aria-modal="true">'
+    + '<button class="rq-close" id="rqClose" aria-label="关闭">✕</button>'
+    + '<aside class="rq-rail">'
+    +   '<div class="rq-idx" id="rqIdx">01<small>／04</small></div>'
+    +   '<div class="rq-railline"></div>'
+    +   '<div class="rq-steps" id="rqSteps"></div>'
+    +   '<svg class="rq-compass" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.2 5-5 2.2 2.2-5z" fill="currentColor" stroke="none"/></svg>'
+    + '</aside>'
+    + '<div class="rq-main">'
+    +   '<div id="rqQuestion">'
+    +     '<div class="rq-eyebrow" id="rqEyebrow"></div>'
+    +     '<h3 class="rq-title" id="rqTitle"></h3>'
+    +     '<div class="rq-opts" id="rqOpts"></div>'
+    +     '<div class="rq-foot"><button class="rq-back" id="rqBack" style="display:none">← 上一步</button><button class="rq-all" id="rqAll">直接浏览全部方向 →</button></div>'
+    +   '</div>'
+    +   '<div class="rq-result" id="rqResult" style="display:none"></div>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(quiz);
+  const RQ_ARR = '<svg class="rq-arr" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>';
+  let _ans = {};
+  function dailyLabel(m) { return m === 20 ? '20 分钟' : m === 60 ? '1 小时' : m === 120 ? '2 小时以上' : '不固定'; }
+  function setRail(activeIdx) {
+    var idxEl = document.getElementById('rqIdx');
+    var stepsEl = document.getElementById('rqSteps');
+    if (idxEl) idxEl.innerHTML = activeIdx < 0
+      ? '<span class="rq-fin">✓</span>'
+      : ('0' + (activeIdx + 1)).slice(-2) + '<small>／0' + TOTAL_STEPS + '</small>';
+    if (stepsEl) stepsEl.innerHTML = RAIL_STEPS.map(function (rs, i) {
+      var cls = activeIdx < 0 ? 'done' : (i === activeIdx ? 'on' : (i < activeIdx ? 'done' : ''));
+      return '<div class="rq-s ' + cls + '"><span class="d"></span>' + rs.label + '</div>';
+    }).join('');
+  }
+  function renderQuiz(stepKey) {
+    const s = QUIZ[stepKey]; if (!s) return;
+    document.getElementById('rqResult').style.display = 'none';
+    document.getElementById('rqQuestion').style.display = '';
+    const idx = Q_ORDER.indexOf(stepKey), back = document.getElementById('rqBack');
+    setRail(idx);
+    document.getElementById('rqEyebrow').textContent = (RAIL_STEPS[idx] && RAIL_STEPS[idx].eb) || '';
+    document.getElementById('rqTitle').textContent = s.title;
+    if (idx > 0) { back.style.display = ''; back.onclick = function () { renderQuiz(Q_ORDER[idx - 1]); }; }
+    else { back.style.display = 'none'; back.onclick = null; }
+    const host = document.getElementById('rqOpts');
+    host.innerHTML = s.opts.map(function (o, i) {
+      const mk = o.avatar
+        ? '<span class="rq-mk rq-av" style="background-image:url(' + o.avatar + ')"></span>'
+        : o.icon
+        ? '<span class="rq-mk rq-ic">' + (RICN[o.icon] || '') + '</span>'
+        : '<span class="rq-mk rq-num">' + (i + 1) + '</span>';
+      const note = o.note ? '<span class="rq-od">' + o.note + '</span>' : '';
+      return '<button class="rq-opt" data-i="' + i + '">' + mk
+        + '<span class="rq-otxt"><span class="rq-ot">' + o.t + '</span>' + note + '</span>' + RQ_ARR + '</button>';
+    }).join('');
+    host.querySelectorAll('.rq-opt').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const o = s.opts[+b.dataset.i];
+        if (o.diag) { closeQuiz(); location.href = 'diagnosis.html'; return; }   /* 问诊出口：不选路线，直接进刘小排问诊页 */
+        _ans[s.key] = (o.route != null) ? o.route : o.v;
+        const ni = Q_ORDER.indexOf(stepKey) + 1;
+        if (ni < Q_ORDER.length) renderQuiz(Q_ORDER[ni]); else renderResult();
+      });
+    });
+  }
+  function renderResult() {
+    const key = _ans.route, r = ROUTES[key];
+    if (!r) { renderQuiz('q3'); return; }
+    const stations = r.islands.length;
+    let totalMins = 0; r.islands.forEach(function (is) { is.flow.forEach(function (f) { if (f.type === 'course') totalMins += (f.mins || 0); }); });
+    const daily = +_ans.minutes || 0;
+    const days = daily > 0 ? Math.max(stations, Math.ceil(totalMins / daily)) : 0;
+    const meta = RMETA.find(function (x) { return x.key === key; }), ic = meta ? RICN[meta.icon] : '';
+    const first = (r.islands[0] && r.islands[0].output) ? r.islands[0].output : '第一个小成果';
+    const pace = days > 0
+      ? '共 ' + stations + ' 站 · 预计 ' + days + ' 天走完 · 每天 ' + dailyLabel(daily)
+      : '共 ' + stations + ' 站 · 按你自己的节奏推进';
+    document.getElementById('rqQuestion').style.display = 'none';
+    setRail(-1);
+    const box = document.getElementById('rqResult'); box.style.display = '';
+    box.innerHTML = '<div class="rr-cap">已为你匹配学习路线</div>'
+      + '<div class="rr-route"><span class="rr-ic">' + ic + '</span><div class="rr-rtxt"><div class="rr-name">' + r.name + '</div><div class="rr-promise">' + (r.promise || '') + '</div></div></div>'
+      + '<div class="rr-pace">' + pace + '</div>'
+      + '<div class="rr-first"><span class="rr-first-k">第一站就能拿到</span>' + first + '</div>'
+      + '<button class="rr-go" id="rqGo">出发 →</button>';
+    document.getElementById('rqGo').onclick = function (e) {
+      e.stopPropagation();
+      try {
+        if (_ans.level) localStorage.setItem('ds_experience', _ans.level);   /* 用 profile 认得的中文值（零基础/有基础/有产品经验）*/
+        if (_ans.goal) localStorage.setItem('ds_motive', _ans.goal);         /* 诉求另存新键，不污染旧 ds_goal（值不兼容）*/
+        if (_ans.minutes != null) localStorage.setItem('ds_daily_minutes', String(_ans.minutes));
+      } catch (err) {}
+      closeQuiz(); pickRoute(key);
+    };
+  }
+  function openQuiz() { closeDD(); _ans = {}; renderQuiz('q1'); quiz.classList.add('show'); }
+  function closeQuiz() { quiz.classList.remove('show'); }
+  document.getElementById('rqClose').addEventListener('click', closeQuiz);
+  document.getElementById('rqAll').addEventListener('click', function (e) { e.stopPropagation(); closeQuiz(); openRouteModal(); });
+  quiz.addEventListener('click', function (e) { if (e.target === quiz) closeQuiz(); });
 
   /* ---------- 副标题已删：运行时兜底移除写死的副标题 + 把「生成」按钮挂到标题块末尾 ---------- */
   const oldSub = document.querySelector('.km-head .km-head-sub'); if (oldSub) oldSub.remove();
@@ -145,12 +359,22 @@
   if (headL) {
     genBtn = document.createElement('button');
     genBtn.id = 'routeGenBtn'; genBtn.className = 'route-gen-btn'; genBtn.innerHTML = GEN_LABEL;
-    genBtn.addEventListener('click', e => { e.stopPropagation(); ddMenu.classList.contains('show') ? closeDD() : openRouteModal(); });
+    genBtn.addEventListener('click', e => { e.stopPropagation(); openQuiz(); });
     headL.appendChild(genBtn);
   }
   /* 「继续学习」卡 = 右下角米白描金长方条（样式见上方注入 CSS）：放进地图层(kmWrap) 绝对定位 */
   const hhCard = document.getElementById('homeHero'), kmw0 = document.getElementById('kmWrap');
   if (hhCard && kmw0) kmw0.appendChild(hhCard);
+
+  /* ---------- 路线态标题：大标题换成路线名 + 上方加「你正在走的航线」小字（默认全量图自动还原）---------- */
+  const titleEl = document.querySelector('.km-head .plan-title');
+  const STAR = (titleEl && titleEl.querySelector('.title-star')) ? titleEl.querySelector('.title-star').outerHTML : '';
+  let routeEb = null;
+  if (titleEl) {
+    routeEb = document.createElement('div'); routeEb.id = 'kmRouteEb'; routeEb.className = 'km-route-eb'; routeEb.style.display = 'none';
+    routeEb.textContent = '⚓ 你正在走的航线';
+    titleEl.parentNode.insertBefore(routeEb, titleEl);
+  }
 
   /* ---------- 下拉选择 + 切换确认（覆盖学习记录前拦截）---------- */
   let _pending = null;
@@ -178,7 +402,7 @@
   document.getElementById('cfOk').addEventListener('click', () => { if (_pending != null) applyRoute(_pending); });
   cfm.addEventListener('click', e => { if (e.target === cfm) closeCfm(); });
   document.addEventListener('click', e => { if (ddMenu.classList.contains('show') && !ddMenu.contains(e.target) && !genBtn.contains(e.target) && e.target !== genBtn) closeDD(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDD(); closeCfm(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDD(); closeCfm(); closeQuiz(); } });
   window.addEventListener('scroll', e => { if (ddMenu.classList.contains('show') && !(e.target === ddMenu || (e.target && e.target.nodeType === 1 && ddMenu.contains(e.target)))) closeDD(); }, true);
   window.addEventListener('resize', () => { if (ddMenu.classList.contains('show')) closeDD(); });
 
@@ -205,7 +429,11 @@
     if (ship) { ship.src = 'assets/ship-2.png'; ship.style.width = '9.5%'; const ai = Math.min(cur, N) - 1; ship.style.left = (L(ai) - 9) + '%'; ship.style.top = (100 - B(ai) - 3) + '%'; ship.style.display = ''; }
     host.querySelectorAll('.route-isle').forEach(el => {
       el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button');
-      el.addEventListener('click', e => { e.stopPropagation(); _openDay = parseInt(el.dataset.day, 10); openCallout(_openDay, el, null); });
+      el.addEventListener('click', e => {
+        e.stopPropagation(); const day = parseInt(el.dataset.day, 10); _openDay = day;
+        if (window.IsleFocus && window.openFocusOverlay && !window.matchMedia('(max-width: 639px)').matches) enterRouteFocus(day, el);   /* 桌面：神奇移动聚焦 */
+        else openCallout(day, el, null);   /* 手机端 / 兜底：抽屉 */
+      });
       el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
     });
   }
@@ -221,22 +449,27 @@
     document.getElementById('kdTitle').textContent = is.zone || is.title;   /* 弹窗大标题 = 地图岛名，保持统一 */
     document.getElementById('kdPromise').textContent = is.output ? ('今日产出 · ' + is.output) : (r.promise || '');
     document.getElementById('kdClicked').style.display = 'none';
+    document.getElementById('kdFlow').innerHTML = routeFlowHtml(r, day);
+  }
+  /* 一岛的 flow 列表 HTML —— 抽屉 + 神奇移动聚焦层 共用（onclick 走全局 toggleRouteCourse/openRouteSubmit/gotoLive）*/
+  function routeFlowHtml(r, day) {
+    const done = routeDone(), is = r.islands[day - 1]; if (!is) return '';
     const nc = nextCode(r, done), todayStr = toInput(startOfDay(new Date()));
     let blocked = false;
     /* 第一岛（Day1）开头：出航前检查 = 出海第一件事，点击带当前路线 key 进自检页 */
     const setupItem = day === 1 ? `<li class="kd-flow-item is-course current clickable" style="background:linear-gradient(180deg,rgba(31,111,106,.08),var(--surface));border-color:rgba(31,111,106,.3)" onclick="location.href='preflight.html?track=${r.key}'" title="出航前 · 环境自检"><span class="kd-fi-tag" style="background:rgba(31,111,106,.14);color:#1f6f6a"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="4" r="2"/><path d="M10 6v11M4 10H2.6a7.4 7.4 0 0 0 14.8 0H16M7 9.5h6"/></svg>出航前</span><span class="kd-fi-title" style="color:var(--deep-blue);font-weight:600">出航前检查 · 看看装备齐不齐</span><span class="kd-fi-dur">约 10min</span>${ARROW}</li>` : '';
-    document.getElementById('kdFlow').innerHTML = setupItem + is.flow.map(f => {
+    return setupItem + is.flow.map(f => {
       if (f.type === 'course') {
         const d = done.has(f.code), isCur = f.code === nc, st = d ? 'done' : (isCur ? 'current' : 'locked'), mark = d ? '✓' : (isCur ? '▸' : '');
         if (!d) blocked = true;
-        return `<li class="kd-flow-item is-course ${st} clickable" data-code="${f.code}" onclick="toggleRouteCourse('${f.code}')"><span class="kd-fi-tag">${I_COURSE}图文</span><span class="kd-fi-mark">${mark}</span><span class="kd-fi-title">${escapeHtml(f.t)}</span><span class="kd-fi-dur">${f.mins}min</span>${ARROW}</li>`;
+        return `<li class="kd-flow-item is-course ${st} clickable" data-code="${f.code}" onclick="toggleRouteCourse('${f.code}')"><span class="kd-fi-tag">${I_COURSE}图文</span><span class="kd-fi-mark clickable-mark" title="${d ? '已学完 · 点击撤销' : '标记已学完'}" onclick="event.stopPropagation();toggleRouteCourse('${f.code}')">${mark}</span><span class="kd-fi-title">${escapeHtml(f.t)}</span><span class="kd-fi-dur">${f.mins}min</span>${ARROW}</li>`;
       }
       const reached = !blocked;
       if (f.type === 'live') {
         if (!reached) return `<li class="kd-flow-item is-live locked" onclick="showToast('学到这里就能看视频了')"><span class="kd-fi-tag">${I_LIVE}视频</span><span class="kd-fi-title">${escapeHtml(f.title)}</span><span class="kd-fi-state">未学到</span></li>`;
         const past = f.date < todayStr, p = f.date.split('-');
         const dt = past ? '看回放 ▶' : ((+p[1]) + '/' + (+p[2]) + ' ' + f.time);
-        return `<li class="kd-flow-item is-live clickable" onclick="gotoLive()"><span class="kd-fi-tag">${I_LIVE}视频</span><span class="kd-fi-title">${escapeHtml(f.title)}</span><span class="kd-fi-state">${dt}</span>${ARROW}</li>`;
+        return `<li class="kd-flow-item is-live clickable" onclick="gotoLive('${f.url || ''}')"><span class="kd-fi-tag">${I_LIVE}视频</span><span class="kd-fi-title">${escapeHtml(f.title)}</span><span class="kd-fi-state">${dt}</span>${ARROW}</li>`;
       }
       /* task */
       const subm = getRouteSubmission(r.key, day);
@@ -245,7 +478,54 @@
         ? `<button class="kd-fi-submit submitted" onclick="openRouteSubmit('${r.key}',${day})">已提交 ✓</button>`
         : (reached ? `<button class="kd-fi-submit" onclick="openRouteSubmit('${r.key}',${day})">提交</button>` : `<button class="kd-fi-submit locked" onclick="showToast('学到这里就能交作业了')">提交</button>`);
       return `<li class="kd-flow-item is-task${lockCls}"><span class="kd-fi-tag">${I_TASK}作业</span><div class="kd-fi-task-body"><div class="kd-fi-task-title">${escapeHtml(subm ? subm.title : f.title)}</div><div class="kd-fi-task-sub">可选 · 不计入解锁${subm ? ' · 已提交，待评审' : ''}</div></div>${btn}</li>`;
-    }).join('');
+    }).join('') + routeLivesBlock(r, day);
+  }
+
+  /* ---------- 专属航线 · 神奇移动聚焦（复用 IsleFocus 引擎；内容=本岛 flow 列表）---------- */
+  function routeIsleImg(r, i) {
+    try { const a = (window.ROUTE_ART && ROUTE_ART[r.key] && ROUTE_ART[r.key].isles) || null; if (a && a.length) return a[i % a.length]; } catch (e) {}
+    return 'assets/isle-' + ((i % 4) + 1) + '.webp';
+  }
+  function routeIslandsData(r) {
+    return r.islands.map((is, i) => ({ stage: i + 1, zone: '岛 ' + (i + 1), name: is.zone || is.title, img: routeIsleImg(r, i), badge: '共 ' + islandCourses(is).length + ' 节' }));
+  }
+  function routeTier(r) { return Math.min(4, currentDay(r, routeDone())); }   // 船级 = 真实进度（到第几岛，封顶 4）
+  function routeProgress(r) {
+    const d = routeDone(), p = {};
+    r.islands.forEach((is, i) => { const cs = islandCourses(is); p[i + 1] = { done: cs.filter(f => d.has(f.code)).length, total: cs.length }; });
+    return p;
+  }
+  function mountRouteFlow(slot, key, day) {
+    const r = ROUTES[key]; if (!r) return null;
+    slot.innerHTML = '<div class="if-route-flow"><ul class="kd-flow">' + routeFlowHtml(r, day) + '</ul></div>';
+    return null;
+  }
+  function routeIsleRects() {   // 各真路线岛当前屏幕位置（按 day）→ 聚焦岛从这儿长出 / 收起飞回
+    const m = {}; document.querySelectorAll('#routeIslands .route-isle[data-day]').forEach(el => { const d = parseInt(el.dataset.day, 10); if (d) m[d] = el.getBoundingClientRect(); }); return m;
+  }
+  function enterRouteFocus(day, el) {
+    const r = getRoute(); if (!r || !window.IsleFocus || !window.openFocusOverlay) { openCallout(day, el, null); return; }
+    if (window.IsleFocus.isOpen()) { if (window.IsleFocus.current() !== day) window.IsleFocus.switchTo(day); return; }
+    _openDay = day;
+    const fromRects = routeIsleRects();
+    window.openFocusOverlay();
+    window.IsleFocus.open({
+      root: document.getElementById('isleDiveRoot'),
+      islands: routeIslandsData(r), focusStage: day,
+      tier: function () { return routeTier(r); }, shipStage: function () { return Math.min(currentDay(r, routeDone()), r.islands.length); }, progress: function () { return routeProgress(r); }, fromRects: fromRects,
+      mountContent: function (slot, d) { _openDay = d; return mountRouteFlow(slot, r.key, d); },
+      onClose: window.hideFocusOverlay, onSwitch: function (d) { _openDay = d; }
+    });
+    try { history.pushState({ rday: day }, '', 'calendar.html?route=' + r.key); } catch (e) {}   // 压一条可回退条目：返回键先收起聚焦、且 URL 保留 ?route=
+  }
+
+  /* 往期直播回放：整条路线的真实小鹅通场次（按内容已归到该路线），挂在岛①抽屉底部 */
+  function routeLivesBlock(r, day) {
+    if (day !== 1 || !r.lives || !r.lives.length) return '';
+    const items = r.lives.map(L =>
+      `<li class="kd-flow-item is-live clickable" onclick="gotoLive('${L.url || ''}')"><span class="kd-fi-tag">${I_LIVE}回放</span><span class="kd-fi-title">${escapeHtml(L.t)}</span><span class="kd-fi-state">看回放 ▶</span>${ARROW}</li>`
+    ).join('');
+    return `<li class="kd-flow-sec" style="list-style:none;margin:16px 0 7px;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#0c7a70">📺 这条路线的往期直播回放 · ${r.lives.length} 场</li>` + items;
   }
 
   /* 原型：点路线图文 = 切换已学，刷新地图 + 抽屉 */
@@ -254,6 +534,7 @@
     setRouteDone(d);
     render();
     if (document.getElementById('kmCallout').classList.contains('show')) fillRouteCallout(getRoute(), _openDay);
+    if (window.IsleFocus && window.IsleFocus.isOpen()) window.IsleFocus.refresh();   /* 聚焦层开着 → 即时刷新内容/船/进度 */
   };
 
   /* ---------- 路线作业：复用提交 modal，按 route+day 单独存 ---------- */
@@ -275,10 +556,12 @@
   const _render = window.render;
   window.render = function () {
     const r = getRoute();
-    if (r) { const done = routeDone(); const _hh = document.getElementById('homeHero'); if (_hh) _hh.style.display = ''; renderRouteMap(r, done); renderRouteHero(r, done); updateRouteHead(r); return; }
+    if (r) { const done = routeDone(); const _hh = document.getElementById('homeHero'); if (_hh) _hh.style.display = ''; const _fab = document.getElementById('kmFab'); if (_fab) _fab.style.display = 'none';  /* 路线模式用 #homeHero 卡，收掉默认图浮窗 #kmFab，避免不刷新切路线时两张卡叠出 */ renderRouteMap(r, done); renderRouteHero(r, done); updateRouteHead(r); return; }
     const wrap = document.getElementById('kmWrap'); if (wrap) wrap.classList.remove('route-mode');
     const host = document.getElementById('routeIslands'); if (host) host.innerHTML = '';  /* 退出 route 态：清掉 route 岛，避免与写死岛重叠 + bindInteractions 误绑崩溃 */
     if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }
+    if (titleEl) titleEl.innerHTML = '你的学习地图 ' + STAR;   /* 退出 route 态：标题还原成默认 */
+    if (routeEb) routeEb.style.display = 'none';
     return _render.apply(this, arguments);
   };
 
@@ -314,7 +597,9 @@
 
   /* ---------- 路线态：标题副文案 + 今日该学卡 ---------- */
   function updateRouteHead(r) {
-    if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }  /* 触发器恒为「生成你的专属航线」，当前路线由下拉 ✓ 体现 */
+    if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }  /* 触发器恒为「找到适合你的航线」；当前路线由问卷内「查看全部方向」下拉的 ✓ 体现 */
+    if (titleEl) titleEl.innerHTML = r.name + ' ' + STAR;   /* 大标题换成路线名，让用户一眼知道「这是在做什么」 */
+    if (routeEb) routeEb.style.display = '';
   }
   function renderRouteHero(r, done) {
     const codes = routeCourseCodes(r), d = codes.filter(c => done.has(c)).length, total = r.courseCount || codes.length, nc = nextCode(r, done);
@@ -322,7 +607,7 @@
     if (!nc) {
       document.getElementById('hhEyebrow').textContent = '🎓 走完这条路线';
       document.getElementById('hhTitle').textContent = '恭喜！「' + SHORT[r.key] + '」路线全部走完 🎉';
-      btn.textContent = '重选方向 →'; btn.href = 'javascript:void(0)'; btn.onclick = e => { e.preventDefault(); openRouteModal(); };
+      btn.textContent = '重选方向 →'; btn.href = 'javascript:void(0)'; btn.onclick = e => { e.preventDefault(); openQuiz(); };
       return;
     }
     let dIdx = 1, nTitle = '';
@@ -336,9 +621,12 @@
   /* ---------- 暴露给注入按钮 + 应用当前状态 ---------- */
   window.openRouteModal = openRouteModal;
   window.closeRouteModal = closeRouteModal;
+  window.openQuiz = openQuiz;
   /* 深链 ?route=key：首屏 render 前先把 ds_route 落地，避免首屏先按默认全量图渲染（白下载默认岛/船）再被 route-art-apply 切回路线 */
   try { var _rq = location.search.match(/[?&]route=([a-z]+)/); if (_rq && ROUTES[_rq[1]]) localStorage.setItem('ds_route', _rq[1]); } catch (e) {}
+  /* 深链 ?quiz=1（从学习指南页「找你的航线」进来）→ 自动弹出找航线问卷 */
+  try { if (new URLSearchParams(location.search).get('quiz') === '1') openQuiz(); } catch (e) {}
   try { render(); } catch (e) { console.warn('[routes-ui] 初次渲染失败', e); }
   /* 深链：calendar.html#route 直接打开问卷（便于演示 / 分享）*/
-  if (location.hash === '#route') { try { openRouteModal(); } catch (e) {} }
+  if (location.hash === '#route') { try { openQuiz(); } catch (e) {} }
 })();

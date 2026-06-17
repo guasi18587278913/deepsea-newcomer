@@ -41,10 +41,8 @@ a { color:inherit; text-decoration:none; }
 .avatar:hover { transform:scale(1.05); }
 
 /* Layout */
-.main { display:grid; grid-template-columns:260px 1fr 320px; max-width:1280px; margin:0 auto; padding:0 32px; gap:0; }
-.main.sidebar-collapsed { grid-template-columns:0 1fr 320px; }
-.main.discuss-collapsed { grid-template-columns:260px 1fr 0; }
-.main.both-collapsed { grid-template-columns:0 1fr 0; }
+.main { display:grid; grid-template-columns:260px 1fr; max-width:1280px; margin:0 auto; padding:0 32px; gap:0; }
+.main.sidebar-collapsed { grid-template-columns:0 1fr; }
 
 /* Sidebar */
 .sidebar { padding:32px 16px 48px 0; border-right:1px solid var(--border); overflow:hidden; transition:all .25s; }
@@ -72,6 +70,14 @@ a { color:inherit; text-decoration:none; }
 .content-meta { font-size:12px; color:var(--text3); margin-bottom:12px; letter-spacing:.3px; }
 .content-meta .dot { display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--text3); margin:0 8px; vertical-align:middle; }
 .content-title { font-size:32px; font-weight:700; letter-spacing:-.5px; line-height:1.3; margin-bottom:32px; }
+/* 「标记已学完」按钮（标题下方）+ 侧栏可点圆点 */
+.mark-done-btn { display:inline-flex; align-items:center; gap:7px; margin:-14px 0 30px; padding:8px 15px; border:1px solid var(--border); border-radius:999px; background:var(--white); color:var(--text2); font-size:13px; font-weight:600; cursor:pointer; transition:all .16s; }
+.mark-done-btn:hover { border-color:var(--teal); color:var(--teal); }
+.mark-done-btn .mdb-ic { font-size:14px; line-height:1; }
+.mark-done-btn.done { background:var(--teal); border-color:var(--teal); color:#fff; }
+.mark-done-btn.done:hover { background:var(--teal-dark); color:#fff; }
+.check.clickable-check { cursor:pointer; }
+.check.clickable-check:hover { border-color:var(--teal); box-shadow:0 0 0 3px rgba(20,184,166,.16); }
 
 .article { font-size:15px; line-height:1.9; color:var(--text1); }
 .article p { margin-bottom:20px; color:var(--text2); }
@@ -93,23 +99,13 @@ a { color:inherit; text-decoration:none; }
 .nav-btn-label { font-size:11px; color:var(--text3); }
 .nav-btn-name { font-size:14px; font-weight:500; color:var(--text1); }
 
-/* Discussion panel */
-.discuss { border-left:1px solid var(--border); padding:0; display:flex; flex-direction:column; max-height:calc(100vh - 52px); position:sticky; top:52px; transition:all .25s; overflow:hidden; }
-.main.discuss-collapsed .discuss, .main.both-collapsed .discuss { padding:0; border-left:none; }
-.discuss-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.discuss-title { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+/* 课旁讨论面板已下线（2026-06-16，备份见 _archive/course-discuss-下线备份-2026-06-16）；.pulse 保留供他用 */
 .pulse { width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-/* 课旁讨论面板内部样式（cd-* 类）已移到 course-discuss.js 的 injectCSS，随面板一起渲染 */
-
-/* Discussion collapsed button */
-.open-discuss { position:fixed; right:16px; bottom:32px; width:48px; height:48px; border-radius:50%; background:var(--teal); color:#fff; border:none; cursor:pointer; display:none; place-items:center; box-shadow:0 4px 16px rgba(20,184,166,.3); z-index:40; font-size:20px; }
-.open-discuss:hover { background:var(--teal-dark); }
-.main.discuss-collapsed ~ .open-discuss, .main.both-collapsed ~ .open-discuss { display:grid; }
 
 @media (max-width:900px) {
   .main { grid-template-columns:1fr; }
-  .sidebar, .discuss { display:none; }
+  .sidebar { display:none; }
 }
 
 var[--blue] { color: var(--blue); }
@@ -146,6 +142,7 @@ var[--blue] { color: var(--blue); }
   <main class="content">
     <div class="content-meta">图文课程<span class="dot"></span>约 15 分钟<span class="dot"></span>快速入门 · 第 1 节</div>
     <h1 class="content-title">这套课程有什么不同？</h1>
+    <button class="mark-done-btn" id="markDoneBtn" type="button" onclick="toggleCurrentDone()"><span class="mdb-ic" id="markDoneIc">○</span><span id="markDoneTx">标记已学完</span></button>
 
     <article class="article">
       <p>哈喽，欢迎来到刘小排的 AI 编程课 —— <strong>Idea to Business</strong>。</p>
@@ -217,31 +214,14 @@ var[--blue] { color: var(--blue); }
     </div>
   </main>
 
-  <aside class="discuss" id="discuss">
-    <div class="discuss-header">
-      <div class="discuss-title">
-        <span class="pulse"></span>
-        课旁讨论
-      </div>
-      <button class="side-toggle" onclick="toggleDiscuss()" title="收起">›</button>
-    </div>
-    <!-- 整块面板（本节问答 + 本章动态 + 精华 + 意图发布框）由 course-discuss.js（CourseDiscuss.initLesson）渲染；数据源 ds_course_discuss -->
-    <div id="cdWrap"></div>
-  </aside>
-
 </div>
 
 <button class="open-sidebar" onclick="toggleSidebar()" title="打开目录">☰</button>
-<button class="open-discuss" onclick="toggleDiscuss()" title="打开讨论">💬</button>
 
 <script src="course-data.js"></script>
-<script src="course-discuss.js?v=5"></script>
 <script>
 function toggleSidebar() {
   document.getElementById('main').classList.toggle('sidebar-collapsed');
-}
-function toggleDiscuss() {
-  document.getElementById('main').classList.toggle('discuss-collapsed');
 }
 
 /* ============= COURSES DATA · 与 roadmap.html 同步 ============= */
@@ -268,6 +248,8 @@ function renderLesson() {
   const stageName = STAGE_NAMES[course.s];
   const stageCourses = COURSES.filter(c => c.s === course.s);
   const idxInStage = stageCourses.findIndex(c => c.code === code) + 1;
+  /* 暴露当前课程给 assistant.js（章节级随学随问读这个做上下文） */
+  window.DS_CURRENT_LESSON = { code, title: course.t, stage: stageName, idx: idxInStage, total: stageCourses.length };
   const completed = (() => {
     try { return JSON.parse(localStorage.getItem('ds_completed_demo') || '[]'); }
     catch (e) { return []; }
@@ -286,10 +268,19 @@ function renderLesson() {
       if (isActive) cls.push('active');
       if (isDone) cls.push('done');
       return '<li class="' + cls.join(' ') + '" onclick="goToCourse(\'' + c.code + '\')">' +
-        '<div class="check' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : '') + '</div>' +
+        '<div class="check' + (isDone ? ' done' : '') + ' clickable-check" title="' + (isDone ? '已学完 · 点击撤销' : '标记已学完') + '" onclick="event.stopPropagation();toggleCourseDone(\'' + c.code + '\')">' + (isDone ? '✓' : '') + '</div>' +
         '<span class="course-name">' + c.t + '</span>' +
       '</li>';
     }).join('');
+  }
+
+  /* 「标记已学完」按钮状态（done = 青色实心 ✓）*/
+  const mdBtn = document.getElementById('markDoneBtn');
+  if (mdBtn) {
+    const isDone = completed.includes(code);
+    mdBtn.classList.toggle('done', isDone);
+    const ic = document.getElementById('markDoneIc'); if (ic) ic.textContent = isDone ? '✓' : '○';
+    const tx = document.getElementById('markDoneTx'); if (tx) tx.textContent = isDone ? '已学完 · 点击撤销' : '标记已学完';
   }
 
   /* 内容头 */
@@ -375,6 +366,19 @@ function markCurrentDone() {
   localStorage.setItem('ds_started', 'true');
 }
 
+/* 一键标记已学完（单节课页）：标题下按钮 + 侧栏圆点都调它；可逆，标完即时刷新侧栏 + 按钮状态 */
+function toggleCurrentDone() { toggleCourseDone(getLessonCode()); }
+function toggleCourseDone(code) {
+  let completed;
+  try { completed = JSON.parse(localStorage.getItem('ds_completed_demo') || '[]'); }
+  catch (e) { completed = []; }
+  const i = completed.indexOf(code);
+  if (i >= 0) completed.splice(i, 1); else completed.push(code);
+  localStorage.setItem('ds_completed_demo', JSON.stringify(completed));
+  localStorage.setItem('ds_started', 'true');
+  renderLesson();
+}
+
 function showToast(text) {
   let toast = document.getElementById('learnToast');
   if (!toast) {
@@ -393,18 +397,14 @@ function selectLesson(el) {
   if (code) goToCourse(code);
 }
 
-/* 课旁讨论的数据 / 渲染 / 回复 / 发到广场 已抽到 course-discuss.js
-   （与广场「课程讨论」共用同一数据源 ds_course_discuss）*/
-
-/* 启动：根据 URL 渲染当前课程 + 课旁讨论 */
+/* 启动：根据 URL 渲染当前课程 */
 renderLesson();
-CourseDiscuss.initLesson();
 </script>
 
-<script src="assistant.js?v=3"></script>
+<script src="assistant.js?v=4"></script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','course.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){

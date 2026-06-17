@@ -11,6 +11,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="topbar.css">
+<link rel="stylesheet" href="isle-view.css?v=mm1">
+<link rel="stylesheet" href="isle-focus.css?v=mm5">
+<style>
+/* ===== 神奇移动·岛屿聚焦：浮层透明（透出同一片海，不另起一张图）。聚焦的岛从真岛位置长出、收起飞回，
+   全程一片海、不交叉淡入。挂载点 #isleDiveRoot ===== */
+#isleDive { position: fixed; inset: 0; z-index: 60; display: none; opacity: 0;
+  transition: opacity .25s ease; will-change: opacity; }
+#isleDive.show { opacity: 1; }
+#isleDiveRoot { height: 100%; }
+/* 下潜时：海与地图都不动；只把顶部标题/顶栏淡掉，真岛·真船·真航线临时隐身（避免与聚焦层重影）*/
+.app .km-head, .app #ds-topbar { transition: opacity .3s ease; }
+.app.diving .km-head { opacity: 0; pointer-events: none; }
+.app.diving #ds-topbar { opacity: 0; pointer-events: none; }
+.app.diving #kmWrap .island, .app.diving #routeIslands .route-isle, .app.diving .km-route, .app.diving #kmShip { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { #isleDive, .app .km-head, .app #ds-topbar { transition: none; } }
+</style>
 <style>
 :root {
   --font-display: 'Noto Serif SC', 'Songti SC', serif;
@@ -132,7 +148,6 @@ body {
 .island.locked .comps span { color:var(--text-2); background:rgba(255,255,255,.6); }
 .island .dt { font-size:10.5px; font-family:var(--font-mono,'JetBrains Mono',monospace); color:var(--text-3); margin-top:5px; }
 .km-compass { position:absolute; right:3%; top:-125px; width:88px; height:88px; color:#7fa6ab; opacity:.78; z-index:2; pointer-events:none; }
-.km-depth { position:absolute; bottom:3.5%; font-family:var(--font-mono,'JetBrains Mono',monospace); font-size:12px; color:#7fb0ab; opacity:.7; transform:translateX(-50%); pointer-events:none; }
 
 /* ---------- 阶段详情弹窗（搬自 roadmap：km-callout / kd-* / 引出线）---------- */
 .km-leader-svg { position: absolute; inset: 0; pointer-events: none; z-index: 25; opacity: 0; transition: opacity 0.26s ease; }
@@ -171,6 +186,9 @@ body {
 .kd-fi-mark { flex: none; width: 17px; height: 17px; border-radius: 50%; border: 1.2px solid var(--border); display: grid; place-items: center; background: var(--surface); font-size: 10px; color: var(--text-3); font-weight: 600; }
 .kd-flow-item.done .kd-fi-mark { background: var(--teal); border-color: var(--teal); color: #fff; }
 .kd-flow-item.current .kd-fi-mark { border-color: var(--gold); background: #fffcf5; color: var(--gold); box-shadow: 0 0 0 2px rgba(200,152,84,0.15); }
+/* 可点的「一键标记已学完」圆点（默认图 + 路线图抽屉共用）*/
+.kd-fi-mark.clickable-mark { cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; }
+.kd-fi-mark.clickable-mark:hover { transform: scale(1.16); border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,148,136,0.16); }
 .kd-fi-code { flex: none; font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); font-weight: 600; min-width: 26px; }
 .kd-fi-title { flex: 1; font-size: 13px; color: var(--deep-blue); line-height: 1.4; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kd-flow-item.done .kd-fi-title { color: var(--text-2); }
@@ -284,6 +302,12 @@ body{overflow:hidden}
   background:#cfe9ef center/cover no-repeat;filter:saturate(.86) brightness(1.09) contrast(.84)}
 .sea-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(135% 115% at 50% 36%, rgba(249,245,235,0) 70%, rgba(241,234,216,.42) 100%)}
+/* 专属航线海图（约 1.8:1）在较高视口下整张露出，会把画稿底部的浅色边显成一条"白带"。
+   顶部对齐先裁掉一截底边，再用一道淡海色过渡盖住残余 —— 看起来像近岸浅水，不再是生硬的白带。*/
+body.route-sea .sea-layer{ background-position:center top; }
+body.route-sea .sea-veil{ background:
+  radial-gradient(135% 115% at 50% 36%, rgba(249,245,235,0) 70%, rgba(241,234,216,.42) 100%),
+  linear-gradient(180deg, transparent 74%, rgba(199,229,227,.86) 92%, rgba(199,229,227,.98) 100%); }
 /* head：标题左 + 今日卡右，都浮在海上 */
 /* 与顶栏同一内容列对齐：topbar 内容列 = max-width 1152 − 2×24padding = 1104（border-box），margin auto 居中后左缘落在 50vw−552，正好对齐「深海圈」品牌左缘。整片海/岛仍保持 .wrap 满铺，只约束这条标题带 */
 .km-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;flex:none;width:100%;max-width:none;margin:48px 0 10px;padding-left:6px;position:relative;z-index:6}
@@ -325,6 +349,16 @@ body{overflow:hidden}
 .home-hero .hh-btn:hover::before{transform:rotate(45deg)}
 .home-hero .hh-meta{font-size:12px;color:var(--text-2);margin-top:10px}
 
+/* —— 「正在直播」行：并入「继续学习」卡(#homeHero)顶部，红条 + 跳直播页（点它去直播，点卡身去课程，互不冲突）—— */
+#homeHero .hh-live{display:flex;align-items:center;gap:6px;margin:0 0 7px;padding:5px 8px;border-radius:7px;background:linear-gradient(180deg,#fff1f0,#ffe4e2);border:1px solid #ffc9c5;text-decoration:none}
+#homeHero .hh-live:hover{background:linear-gradient(180deg,#ffe8e6,#ffd7d4)}
+#homeHero .hl-flag{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(180deg,#ff6a62,#ec4b43);border-radius:999px;padding:2px 7px;letter-spacing:.02em}
+#homeHero .hl-flag i{width:5px;height:5px;border-radius:50%;background:#fff;animation:kmLivePulse 1.3s infinite}
+#homeHero .hl-tx{flex:1 1 auto;min-width:0;font-size:10.5px;font-weight:700;color:#bb352e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#homeHero .hl-arr{flex:none;font-size:12px;font-weight:800;color:#ec4b43;line-height:1}
+@keyframes kmLivePulse{0%,100%{opacity:1}50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){#homeHero .hl-flag i{animation:none}}
+
 /* ---- 地图：km-wrap 变透明容器，铺满下半部 ---- */
 .app>.wrap .km-wrap{position:relative;width:100%;margin:0;left:0;height:auto;flex:1;min-height:340px;max-height:none;overflow:visible;background:transparent;box-shadow:none;border:none;border-radius:0;z-index:2}
 .km-route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
@@ -360,17 +394,20 @@ body{overflow:hidden}
 .km-wrap .island.locked .nm .lk{display:inline}
 .km-wrap .comps{display:none}
 .km-wrap .dt{font-size:10px;font-family:var(--font-mono);color:var(--text-3);margin-top:3px;text-shadow:0 1px 2px rgba(247,250,249,.9)}
-/* 「继续学习」按钮：挂在当前岛标记上的主操作（青色药丸 + 课名截断 + 箭头）*/
-.km-wrap .km-go{display:none}
-.km-wrap .island.cur .km-go{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:0 auto 18px;max-width:268px;padding:7px 9px 8px 13px;border-radius:13px;background:linear-gradient(180deg,#fffdf7,#f5ecd7);border:1px solid rgba(200,152,84,.6);text-decoration:none;font-family:var(--font-sans);box-shadow:0 9px 22px -10px rgba(120,90,30,.5),inset 0 1px 0 rgba(255,255,255,.78);transition:transform .15s,box-shadow .15s}
-.km-wrap .island.cur .km-go:hover{transform:translateY(-1px);box-shadow:0 13px 26px -10px rgba(120,90,30,.6)}
-.km-wrap .km-go-here{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.05em;color:#0c7268}
-.km-wrap .km-go-here::before{content:"";width:5px;height:5px;border-radius:50%;background:#19b0a2;box-shadow:0 0 0 2px rgba(25,176,162,.2)}
-.km-wrap .km-go-act{display:flex;align-items:center;gap:8px;overflow:hidden;white-space:nowrap;max-width:100%}
-.km-wrap .km-go-lead{flex:none;font-size:11.5px;font-weight:700;color:#0c6f66;padding-right:8px;border-right:1px solid rgba(200,152,84,.4)}
-.km-wrap .km-go-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:11.5px;font-weight:500;color:#7a6643}
-.km-wrap .km-go svg{flex:none;width:13px;height:13px;padding:5px;box-sizing:content-box;border-radius:50%;color:#fff;background:linear-gradient(180deg,#19b0a2,#0c7268);box-shadow:0 4px 10px -3px rgba(13,148,136,.55)}
-.km-wrap .island.cur:has(.km-go) .pin{display:none}
+/* 「继续学习」已挪到右下角浮窗 #kmFab；岛边木牌(.km-go)及其样式已移除 */
+/* 右下角浮窗（默认全量图）：继续学习 + 直播动态，米白描金小卡，停在地图右下角水面 */
+.km-fab{position:absolute;right:2.4%;bottom:6%;z-index:6;display:flex;flex-direction:column;gap:7px;width:248px;max-width:46vw;padding:9px 11px;border-radius:13px;background:linear-gradient(180deg,#fffdf7,#f5ecd7);border:1px solid rgba(200,152,84,.6);box-shadow:0 14px 30px -12px rgba(120,90,30,.55),inset 0 1px 0 rgba(255,255,255,.78)}
+.km-fab a{text-decoration:none}
+.km-fab .kf-live{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:8px;background:linear-gradient(180deg,#fff1f0,#ffe4e2);border:1px solid #ffc9c5}
+.km-fab .kf-live:hover{background:linear-gradient(180deg,#ffe8e6,#ffd7d4)}
+.km-fab .kf-flag{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(180deg,#ff6a62,#ec4b43);border-radius:999px;padding:2px 7px}
+.km-fab .kf-flag i{width:5px;height:5px;border-radius:50%;background:#fff;animation:kmLivePulse 1.3s infinite}
+.km-fab .kf-tx{flex:1 1 auto;min-width:0;font-size:10.5px;font-weight:700;color:#bb352e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.km-fab .kf-arr{flex:none;font-size:12px;font-weight:800;color:#ec4b43}
+.km-fab .kf-go{display:flex;align-items:center;gap:8px;padding:2px 2px 1px;overflow:hidden}
+.km-fab .kf-lead{flex:none;font-size:11.5px;font-weight:700;color:#0c6f66;padding-right:8px;border-right:1px solid rgba(200,152,84,.4)}
+.km-fab .kf-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:500;color:#7a6643}
+.km-fab .kf-go svg{flex:none;width:13px;height:13px;padding:5px;box-sizing:content-box;border-radius:50%;color:#fff;background:linear-gradient(180deg,#19b0a2,#0c7268);box-shadow:0 4px 10px -3px rgba(13,148,136,.55)}
 /* 组件牌 */
 .km-tag{position:absolute;transform:translate(-50%,-50%);background:linear-gradient(180deg,rgba(253,250,240,.92),rgba(245,238,218,.92));border:1px solid rgba(205,184,134,.85);border-radius:6px;padding:2px 7px;font-size:9.5px;font-weight:600;color:#5a4a2a;white-space:nowrap;box-shadow:0 3px 7px -3px rgba(90,70,30,.4);cursor:pointer;z-index:7;transition:.14s;line-height:1.18;text-align:center;backdrop-filter:blur(1px)}
 .km-tag .tk{display:block;font-size:8.5px;font-weight:500;color:#8a7038;font-family:var(--font-mono);margin-top:0}
@@ -382,7 +419,6 @@ body{overflow:hidden}
 /* 装饰 */
 .km-compass{position:absolute;right:3%;top:-125px;width:70px;height:70px;opacity:.5;z-index:2;filter:drop-shadow(0 2px 5px rgba(30,80,90,.12))}
 .km-gulls{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.km-depth{position:absolute;bottom:2.6%;font-family:var(--font-mono);font-size:12.5px;font-weight:500;color:#5f8f8b;opacity:.85;transform:translateX(-50%);text-shadow:0 1px 2px rgba(247,250,249,.8)}
 .km-bottle{position:absolute;right:20.5%;bottom:4%;width:30px;z-index:6;opacity:.9;transform:rotate(-17deg);filter:drop-shadow(0 5px 7px rgba(30,80,90,.22))}
 /* 键盘焦点 */
 .km-wrap .island:focus-visible,.km-tag:focus-visible,.home-hero .hh-btn:focus-visible{outline:2.5px solid var(--teal);outline-offset:3px;border-radius:8px}
@@ -401,6 +437,7 @@ body{overflow:hidden}
       <h1 class="plan-title">你的学习地图 <svg class="title-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></h1>
     </div>
     <section class="home-hero" id="homeHero">
+    <a class="hh-live" href="live.html"><span class="hl-flag"><i></i>正在直播</span><span class="hl-tx">小排老师正在直播 · 点此进入</span><span class="hl-arr">→</span></a>
     <div class="hh-eyebrow" id="hhEyebrow">继续学习</div>
     <div class="hh-row">
       <div class="hh-lh"><svg viewBox="0 0 50 50">
@@ -465,8 +502,13 @@ body{overflow:hidden}
     </div>
 
     <img class="km-ship" id="kmShip" data-src="assets/ship-1.png" alt="" style="left:7%;top:87%;width:9.5%;display:none">
-    <span class="km-depth" style="left:24%">10m</span><span class="km-depth" style="left:46%">20m</span><span class="km-depth" style="left:67%">50m</span><span class="km-depth" style="left:90%">100m</span>
-    <!-- 海中央装饰（名言卡 / 漂流瓶 / 章鱼剪影）均已移除：地图减重，只留岛屿与航线 -->
+    <!-- 海中央装饰（名言卡 / 漂流瓶 / 章鱼剪影）+ 深度刻度(10m/20m/50m/100m) 均已移除：纯装饰无含义，地图减重只留岛屿与航线 -->
+
+    <!-- 右下角浮窗：继续学习（跳回在学课程）+ 直播动态。默认全量图专用；专属航线模式用各自的卡，本浮窗隐藏 -->
+    <div id="kmFab" class="km-fab" style="display:none">
+      <a class="kf-live" href="live.html"><span class="kf-flag"><i></i>正在直播</span><span class="kf-tx">小排老师正在直播 · 点此进入</span><span class="kf-arr">→</span></a>
+      <a class="kf-go" id="kmFabGo" href="#"><span class="kf-lead">继续学习</span><span class="kf-title" id="kmFabTitle">—</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg></a>
+    </div>
 
   </div>
 
@@ -490,6 +532,9 @@ body{overflow:hidden}
 
 </div>
 </div><!-- /app -->
+
+<!-- 潜入岛屿：页内下潜浮层（共用积木 IsleView 挂这里）-->
+<div id="isleDive" aria-hidden="true"><div id="isleDiveRoot"></div></div>
 
 <!-- 提交作业 modal（搬自 roadmap）-->
 <div class="modal-mask" id="submitModal">
@@ -569,8 +614,38 @@ body{overflow:hidden}
 <div class="toast" id="toast"></div>
 
 <script src="course-data.js"></script>
+<script src="isle-view.js?v=mm2"></script>
+<script src="isle-focus.js?v=mm5"></script>
 <script>
 /* ====== 真实数据来自 course-data.js：COURSES / COURSE_STAGES ====== */
+
+/* —— 首屏自动潜入（页内下潜，取代以往整页跳 isle.html）：
+     · ?stage=X   深链 / 刷新 → 直接潜入该岛
+     · 老生第二次进来 → 潜入当前所在岛
+   守卫（命中任一不潜，照常显示四岛总览）：
+     · ?view=all   用户主动看全景（「升回海面」即用它，防来回弹）
+     · ?demo=      原型演示态，保持总览
+     · 专属航线     ?route= 或 ds_route≠full（潜入只认默认四岛）
+     · 第一次进来   只记 ds_map_seen，看总览（首访教程在此引导）
+   依赖 COURSES（上方 course-data.js 已加载）；只设 window.__AUTO_DIVE，渲染后由末尾脚本消费。 */
+(function () {
+  try {
+    var sp = new URLSearchParams(location.search);
+    if (sp.get('view') === 'all' || sp.get('demo') || sp.get('quiz')) return;
+    var route = sp.get('route') || localStorage.getItem('ds_route');
+    if (route && route !== 'full') return;
+    var explicit = (sp.get('stage') || '').trim().toUpperCase();
+    if ({ A: 1, B: 2, C: 3, D: 4 }[explicit]) { window.__AUTO_DIVE = explicit; return; }   /* 深链 / 刷新 */
+    if (!localStorage.getItem('ds_map_seen')) { localStorage.setItem('ds_map_seen', '1'); return; }
+    if (typeof COURSES === 'undefined') return;
+    var done = {};
+    try { JSON.parse(localStorage.getItem('ds_completed_demo') || '[]').forEach(function (c) { done[c] = 1; }); } catch (e) {}
+    var stage = 4;
+    for (var s = 1; s <= 4; s++) { if (COURSES.some(function (c) { return c.stage === s && !done[c.code]; })) { stage = s; break; } }
+    var letter = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' }[stage];
+    if (letter) window.__AUTO_DIVE = letter;   /* 老生第二次进来 → 潜入当前岛 */
+  } catch (e) {}
+})();
 
 /* 预览开关（仅原型演示用，对真实用户无影响）：
    ?demo=<课程code> → 标记该课之前的所有课为已学、报名日设为今天（避免"落后"），然后清掉 URL 参数。
@@ -656,13 +731,15 @@ function getCurrentStage(completed) {
   return 4;
 }
 
-/* 设船形态（按当前阶段 1-4）+ 升级仪式：仅默认全量图调用；route-mode 由 routes-ui 自行还原单船 */
+/* 设船形态 + 升级仪式：仅默认全量图调用；route-mode 由 routes-ui 自行还原单船。
+   船形态取「当前阶段 lv」与「历史已庆祝最高 seen」的较大者 → 成就只升不降：撤销标记 / 退回前面阶段也不把船变回小船。*/
 function setShipLevel(stage) {
   const lv = Math.max(1, Math.min(4, stage));
-  const ship = document.getElementById('kmShip');
-  if (ship && SHIP_LEVELS[lv - 1]) { ship.src = SHIP_LEVELS[lv - 1].img; ship.style.width = (SHIP_LEVELS[lv - 1].w || 9.5) + '%'; }
   let seen = parseInt(localStorage.getItem('ds_ship_level') || '1', 10);
   if (isNaN(seen) || seen < 1) seen = 1;
+  const showLv = Math.max(lv, seen);   /* 船图封底：升过的级不退回 */
+  const ship = document.getElementById('kmShip');
+  if (ship && SHIP_LEVELS[showLv - 1]) { ship.src = SHIP_LEVELS[showLv - 1].img; ship.style.width = (SHIP_LEVELS[showLv - 1].w || 9.5) + '%'; }
   if (lv > seen) {
     localStorage.setItem('ds_ship_level', String(lv));
     showShipUpgrade(seen, lv);
@@ -733,7 +810,7 @@ function _fillCalloutContent(stageNum, clickedComp) {
     const mark = done ? '✓' : (isCurrent ? '▸' : '');
     return `<li class="kd-flow-item is-course ${st} clickable" data-code="${c.code}" onclick="gotoCourse('${c.code}','${st}')">
       <span class="kd-fi-tag">${ICON_COURSE}图文</span>
-      <span class="kd-fi-mark">${mark}</span>
+      <span class="kd-fi-mark clickable-mark" title="${done ? '已学完 · 点击撤销' : '标记已学完'}" onclick="event.stopPropagation();toggleCourse('${c.code}')">${mark}</span>
       <span class="kd-fi-title">${escapeHtml(cleanTitle(c.t))}</span>
       <span class="kd-fi-dur">${c.mins}min</span>
       <svg class="kd-fi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
@@ -788,6 +865,7 @@ function _fillCalloutContent(stageNum, clickedComp) {
 }
 
 function openCallout(stageNum, sourceEl, clickedComp) {
+  _openStage = stageNum; _openComp = clickedComp || null;   /* 记住当前打开的岛，标记已学完后好原地刷新抽屉 */
   _fillCalloutContent(stageNum, clickedComp);
   const callout = document.getElementById('kmCallout');
   const isSwitching = callout.classList.contains('show');  /* 弹窗已开着、又点别的岛 = 切岛 → 平滑滑动；否则首次打开 → 淡入 */
@@ -880,7 +958,25 @@ function gotoCourse(code, state) {
   }
   location.href = `learn.html?code=${encodeURIComponent(code)}`;
 }
-function gotoLive() { showToast('视频 · 跳小鹅通观看（demo）'); }
+
+/* —— 一键标记已学完（默认全量图）：点抽屉课节圆点 → 写/撤 ds_completed_demo，即时联动岛屿点亮 + 船进化 + 下一节指引 + 抽屉打勾 —— */
+let _openStage = null, _openComp = null;
+window.toggleCourse = function (code) {
+  const set = getCompleted();
+  const nowDone = !set.has(code);
+  if (nowDone) set.add(code); else set.delete(code);
+  localStorage.setItem('ds_completed_demo', JSON.stringify(Array.from(set)));
+  render();
+  const callout = document.getElementById('kmCallout');
+  if (callout && callout.classList.contains('show') && _openStage != null) _fillCalloutContent(_openStage, _openComp);
+  if (window.IsleFocus && window.IsleFocus.isOpen()) window.IsleFocus.refresh();   /* 聚焦层开着 → 即时刷新列表/船/进度 */
+  const lc = COURSES.find(c => c.code === code);
+  showToast((lc ? `《${cleanTitle(lc.t)}》` : '这一节') + (nowDone ? ' 已标记学完 ✓' : ' 已取消标记'));
+};
+function gotoLive(url) { if (url) { window.open(url, '_blank', 'noopener'); } else { showToast('视频 · 跳小鹅通观看（demo）'); } }
+
+/* 点岛 → 进二级「小岛地图」isle.html。四岛均启用（isle.html 支持 ?stage=A/B/C/D）。*/
+const ISLE_STAGES = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
 
 /* 把图上的组件 / 阶段框绑定到弹窗 */
 function bindInteractions() {
@@ -889,7 +985,14 @@ function bindInteractions() {
     el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button');
     el.addEventListener('click', e => {
       e.stopPropagation();
-      openCallout(parseInt(el.dataset.stage, 10), el, null);
+      const stage = parseInt(el.dataset.stage, 10);
+      /* 新手引导进行中（气泡可见）：点岛只开抽屉 + 推进教程，不跳 isle —— 否则页面卸载、引导从第 2 步崩掉 */
+      const tourOn = (function () { const b = document.getElementById('sctour-bubble'); return !!(b && b.style.display === 'block'); })();
+      if (ISLE_STAGES[stage] && !tourOn) {
+        if (window.matchMedia('(max-width: 639px)').matches) { location.href = 'isle.html?stage=' + ISLE_STAGES[stage]; return; }   /* 手机端仍走整页闯关 */
+        enterFocus(ISLE_STAGES[stage], el, 'push'); return;   /* 桌面：神奇移动聚焦这座岛 */
+      }
+      openCallout(stage, el, null);
     });
     el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
   });
@@ -912,7 +1015,88 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (e.target.closest('.km-callout, .km-leader-svg, .island')) return;
   closeCallout();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeCallout(); closeSubmitModal(); closeSubmitDone(); closeCert(); closeShipUpgrade(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (window.IsleFocus && window.IsleFocus.isOpen()) { closeFocus(); return; } closeCallout(); closeSubmitModal(); closeSubmitDone(); closeCert(); closeShipUpgrade(); } });
+
+/* ===== 神奇移动·岛屿聚焦：点岛 → 同页放大成头牌 + 真课程铺开 + 船成长。
+   引擎=IsleFocus；内容=IsleView(header:false)；船级=真实进度。复用 #isleDive 浮层做淡入淡出。===== */
+const LETTER2NUM_C = { A: 1, B: 2, C: 3, D: 4 }, NUM2LETTER_C = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+const FOCUS_ISLE_IMG = { 1: 'assets/isle-1.webp', 2: 'assets/isle-2.webp', 3: 'assets/isle-3.webp', 4: 'assets/isle-4.webp?v=2' };
+const FOCUS_BADGE = { 1: '▸ 能跑通', 2: '⊡ 能上线', 3: '¥ 能收钱', 4: '↗ 能扩张' };
+let _diveLetter = null, _popping = false;
+function diveLetterFromUrl() { const s = (new URLSearchParams(location.search).get('stage') || '').trim().toUpperCase(); return LETTER2NUM_C[s] ? s : null; }
+function focusIslandsData() {
+  return [1, 2, 3, 4].map(s => ({ stage: s, zone: '第' + ['一','二','三','四'][s-1] + '岛', name: STAGE_NAMES[s], img: FOCUS_ISLE_IMG[s], badge: FOCUS_BADGE[s] }));
+}
+function focusProgress() {
+  const completed = getCompleted(), p = {};
+  [1, 2, 3, 4].forEach(s => { const cs = COURSES.filter(c => c.stage === s); p[s] = { done: cs.filter(c => completed.has(c.code)).length, total: cs.length }; });
+  return p;
+}
+function focusTier() { return getCurrentStage(getCompleted()); }   // 船等级 = 真实进度（当前到第几岛）
+/* 默认岛聚焦内容 = 复用现成的"阶段课程列表"（图文/视频/作业，kd-flow 样式），不再用蛇形路线图 */
+function mountStageFlow(slot, stage) {
+  _fillCalloutContent(stage, null);
+  const flow = document.getElementById('kdFlow');
+  slot.innerHTML = '<div class="if-route-flow"><ul class="kd-flow">' + (flow ? flow.innerHTML : '') + '</ul></div>';
+  return null;
+}
+function pushUrl(letter, mode) {
+  const url = letter ? ('calendar.html?stage=' + letter) : 'calendar.html';
+  try { if (mode === 'replace') history.replaceState({ iv: letter }, '', url); else history.pushState({ iv: letter }, '', url); } catch (e) {}
+}
+function realIslandRects() {   // 各真岛(默认4岛)当前屏幕位置 → 聚焦的岛从这儿长出 / 收起飞回，无缝衔接
+  const m = {}; document.querySelectorAll('#kmWrap .island[data-stage]').forEach(el => { const s = parseInt(el.dataset.stage, 10); if (s) m[s] = el.getBoundingClientRect(); }); return m;
+}
+function openFocusOverlay() {
+  try { closeCallout(); } catch (e) {}
+  const app = document.querySelector('.app'), diveEl = document.getElementById('isleDive');
+  if (diveEl) { diveEl.style.display = 'block'; diveEl.setAttribute('aria-hidden', 'false'); }
+  document.body.classList.add('dive-open');
+  requestAnimationFrame(function () { if (app) app.classList.add('diving'); if (diveEl) diveEl.classList.add('show'); });
+}
+function hideFocusOverlay() {       // IsleFocus.onClose：淡出浮层 + 淡回大地图 + 同步 URL
+  const app = document.querySelector('.app'), diveEl = document.getElementById('isleDive');
+  if (app) app.classList.remove('diving');
+  if (diveEl) { diveEl.classList.remove('show'); diveEl.setAttribute('aria-hidden', 'true'); }
+  document.body.classList.remove('dive-open');
+  setTimeout(function () { if (!document.body.classList.contains('dive-open') && diveEl) diveEl.style.display = 'none'; }, 470);
+  _diveLetter = null;
+  if (!_popping) {   /* 升回海面：覆盖当前 ?stage= 条目；路线模式则保留 ?route=<key>，别把路线抹掉 */
+    var _rk = null; try { var _k = localStorage.getItem('ds_route'); if (_k && _k !== 'full') _rk = _k; } catch (e) {}
+    try { history.replaceState({ iv: null }, '', _rk ? ('calendar.html?route=' + _rk) : 'calendar.html'); } catch (e) {}
+  }
+}
+function enterFocus(letter, islandEl, hist) {     // hist: 'push'(默认) / 'replace' / 'none'
+  if (!LETTER2NUM_C[letter] || !window.IsleFocus) return;
+  const stage = LETTER2NUM_C[letter];
+  if (window.IsleFocus.isOpen()) {
+    if (window.IsleFocus.current() !== stage) window.IsleFocus.switchTo(stage);   // 已聚焦 → 神奇移动切焦点
+    _diveLetter = letter; return;   // 切岛分支：URL 由 onSwitch 同步，避免与下方 pushUrl 双写
+  } else {
+    const fromRects = realIslandRects();
+    openFocusOverlay();
+    window.IsleFocus.open({
+      root: document.getElementById('isleDiveRoot'),
+      islands: focusIslandsData(), focusStage: stage, tier: focusTier, shipStage: focusTier, progress: focusProgress, fromRects: fromRects,
+      mountContent: function (slot, st) { return mountStageFlow(slot, st); },
+      onClose: hideFocusOverlay,
+      onSwitch: function (st) { _diveLetter = NUM2LETTER_C[st]; if (!_popping) pushUrl(_diveLetter, 'push'); }
+    });
+  }
+  _diveLetter = letter;
+  if (hist !== 'none') pushUrl(letter, hist === 'replace' ? 'replace' : 'push');
+}
+function closeFocus() { if (window.IsleFocus && window.IsleFocus.isOpen()) window.IsleFocus.close(); }   // → hideFocusOverlay
+/* 暴露给 routes-ui.js（专属航线的聚焦复用同一套浮层开关）*/
+window.openFocusOverlay = openFocusOverlay; window.hideFocusOverlay = hideFocusOverlay; window.closeFocus = closeFocus;
+window.addEventListener('popstate', function () {
+  _popping = true;
+  const want = diveLetterFromUrl();
+  if (want && window.IsleFocus) { if (!window.IsleFocus.isOpen() || window.IsleFocus.current() !== LETTER2NUM_C[want]) enterFocus(want, null, 'none'); }
+  else closeFocus();
+  _popping = false;
+});
+(function () { const d = document.getElementById('isleDive'); if (d) d.addEventListener('click', function (e) { if (e.target === d || e.target.id === 'isleDiveRoot' || (e.target.classList && e.target.classList.contains('isle-focus'))) closeFocus(); }); })();
 
 /* ===== 阶段作业 · 提交流程（搬自 roadmap，去掉项目引擎 UI 调用）===== */
 const PROJECT_STAGES = ['需求定义','原型','开发','部署','上线'];
@@ -999,7 +1183,7 @@ function closeSubmitDone() { document.getElementById('submitDoneModal').classLis
 
 /* 原型阶段开关：4 座岛默认全部点亮（不按进度灰）。接真实学习进度时改回 false，
    即恢复「没学=灰 / 当前=金 / 学完=彩」+ 船升级仪式，逻辑一行都不用动。*/
-const LIT_ALL_ISLANDS = true;
+const LIT_ALL_ISLANDS = false;   /* 已接真实进度：岛按 ds_completed_demo 点亮 + 船随阶段进化（一键标已学完即时联动）*/
 
 /* 学习航海图：4 座岛 = 4 阶段。状态随真实进度切换（CSS 据 cur/done/locked 显示「你在这里」/🔒/灰），点岛复用 openCallout 弹窗。*/
 function renderIslandMap(completed, nextCourse) {
@@ -1025,19 +1209,8 @@ function renderIslandMap(completed, nextCourse) {
     if (LIT_ALL_ISLANDS) { const L = SHIP_LEVELS[Math.min(3, cur - 1)]; if (L) { ship.src = L.img; ship.style.width = (L.w || 9.5) + '%'; } }  // 全亮预览：只摆船、不弹升级庆祝
     else setShipLevel(cur);
   }
-  /* 「继续学习」挂到当前岛的标记上（动作长在你所在的位置，替代角落卡片）*/
+  /* 「继续学习」已挪到右下角浮窗 #kmFab（见 render() → renderFab）；岛上不再挂木牌，当前岛保留静态「你在这里」标 */
   document.querySelectorAll('.km-wrap .island .km-go').forEach(el => el.remove());
-  if (curIsland && nextCourse) {
-    const lbl = curIsland.querySelector('.lbl');
-    if (lbl) {
-      const a = document.createElement('a');
-      a.className = 'km-go';
-      a.href = 'learn.html?code=' + encodeURIComponent(nextCourse.code);
-      a.innerHTML = '<span class="km-go-here">你在这里</span><span class="km-go-act"><span class="km-go-lead">继续学习</span><span class="km-go-title">' + escapeHtml(cleanTitle(nextCourse.t)) + '</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg></span>';
-      a.addEventListener('click', function (e) { e.stopPropagation(); });
-      lbl.insertBefore(a, lbl.firstElementChild);
-    }
-  }
   bindInteractions();
 }
 
@@ -1049,6 +1222,20 @@ function render() {
 
   renderIslandMap(completed, nextCourse);
   renderHero(allCourses, completed, nextCourse);
+  renderFab(nextCourse);
+}
+
+/* 右下角浮窗（默认全量图专用）：继续学习跳回在学课程 + 直播动态。专属航线模式隐藏（用各自的卡）*/
+function renderFab(nextCourse) {
+  const fab = document.getElementById('kmFab');
+  if (!fab) return;
+  const rk = (new URLSearchParams(location.search).get('route')) || localStorage.getItem('ds_route');
+  if ((rk && rk !== 'full') || !nextCourse) { fab.style.display = 'none'; return; }
+  const go = document.getElementById('kmFabGo');
+  const title = document.getElementById('kmFabTitle');
+  if (go) go.href = 'learn.html?code=' + encodeURIComponent(nextCourse.code);
+  if (title) title.textContent = cleanTitle(nextCourse.t);
+  fab.style.display = 'flex';
 }
 
 function renderHero(courses, completed, nextCourse) {
@@ -1084,7 +1271,7 @@ function showToast(msg) {
 </script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1]],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','course.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
@@ -1097,10 +1284,206 @@ function showToast(msg) {
 })();
 </script>
 <script src="routes.js"></script>
-<script src="routes-ui.js?v=dd7"></script>
+<script src="routes-ui.js?v=dd23"></script>
 <script src="route-art.js"></script>
 <script src="route-isle-fit.js"></script>
-<script src="route-art-apply.js?v=fit13"></script>
+<script src="route-art-apply.js?v=fit14"></script>
 <script src="topbar.js"></script>
+<script>
+/* 首屏自动潜入：老生第二次进来 / 深链 ?stage= → 等首屏 render（routes-ui 末尾触发）后页内下潜 */
+(function () {
+  if (!window.__AUTO_DIVE) return;
+  var L = window.__AUTO_DIVE;
+  requestAnimationFrame(function () {
+    if (typeof enterFocus !== 'function' || !window.IsleFocus) return;
+    var hadStage = /[?&]stage=/.test(location.search);
+    enterFocus(L, null, hadStage ? 'none' : 'replace');
+  });
+})();
+</script>
+
+<!-- ===== 新手引导（航海图首访教程）· 自包含，可整块删除回退 ===== -->
+<style id="sctour-css">
+ #sctour-spot{position:fixed;z-index:9000;border-radius:16px;pointer-events:none;box-shadow:0 0 0 9999px rgba(11,28,36,.72);transition:all .42s cubic-bezier(.4,0,.2,1);opacity:0}
+ #sctour-guard{position:fixed;inset:0;z-index:9001;display:none}
+ #sctour-ring{position:fixed;z-index:9002;border:3px solid #ffd36b;border-radius:16px;pointer-events:none;display:none;animation:sctour-ring 1.5s infinite}
+ @keyframes sctour-ring{0%{transform:scale(.96);opacity:1}100%{transform:scale(1.14);opacity:0}}
+ #sctour-finger{position:fixed;z-index:9002;font-size:34px;pointer-events:none;display:none;filter:drop-shadow(0 4px 5px rgba(0,0,0,.4));animation:sctour-poke 1.1s ease-in-out infinite}
+ @keyframes sctour-poke{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+ #sctour-bubble{position:fixed;z-index:9003;width:312px;max-width:calc(100vw - 24px);background:#fff;border-radius:16px;padding:16px 17px 14px;box-shadow:0 24px 60px -18px rgba(11,28,36,.6);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;font-family:'Sora','PingFang SC',-apple-system,sans-serif;color:#1e3a52}
+ #sctour-bubble.in{opacity:1;transform:none}
+ #sctour-bubble .hd{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+ #sctour-bubble .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#13a89c,#0d7d74);color:#fff;font-family:'Noto Serif SC',serif;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+ #sctour-bubble .who{font-weight:700;font-size:14px}
+ #sctour-bubble .who s{display:block;font-weight:500;font-size:10.5px;color:#94a3b8;text-decoration:none;margin-top:1px}
+ #sctour-bubble .tl{font-family:'Noto Serif SC',serif;font-weight:700;font-size:16px;margin-bottom:5px}
+ #sctour-bubble .tx{font-size:13px;line-height:1.7;color:#5c7a8a}
+ #sctour-bubble .tx b{color:#1f6f6a}
+ #sctour-bubble .hint{margin-top:10px;background:#fff7e6;border:1px solid #f3e2bb;border-radius:9px;padding:7px 10px;font-size:12px;color:#9a6b14;font-weight:600;text-align:center}
+ #sctour-bubble .ft{display:flex;align-items:center;justify-content:space-between;margin-top:13px;gap:10px}
+ #sctour-bubble .dots{display:flex;gap:5px}
+ #sctour-bubble .dots i{width:6px;height:6px;border-radius:50%;background:#d6e3e0;transition:all .2s}
+ #sctour-bubble .dots i.on{background:#0d9488;width:16px;border-radius:3px}
+ #sctour-bubble .btns{display:flex;gap:8px;align-items:center}
+ #sctour-bubble button{border:none;border-radius:999px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12.5px;padding:7px 15px}
+ #sctour-bubble .skip{background:none;color:#94a3b8;padding:7px 4px}
+ #sctour-bubble .prev{background:#eef3f2;color:#5c7a8a}
+ #sctour-bubble .next{background:#0d9488;color:#fff}
+ #sctour-bubble .next:hover{background:#1f6f6a}
+ #sctour-bubble .arrow{position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg)}
+ #sctour-replay{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:12.5px;color:#1f6f6a;background:rgba(255,255,255,.7);border:1px solid rgba(200,152,84,.4);border-radius:999px;padding:5px 11px;white-space:nowrap;font-family:'Sora','PingFang SC',sans-serif}
+ #sctour-replay:hover{background:#fff;border-color:#0d9488}
+ @media (prefers-reduced-motion:reduce){#sctour-spot,#sctour-bubble{transition:none}#sctour-ring,#sctour-finger{animation:none}}
+ /* 字幕作为唯一文字内容：稍放大、加深 */
+ #sctour-bubble .tx{font-size:14.5px;line-height:1.65;color:#1e3a52;font-weight:500}
+ /* —— 演示用临时视觉：只加临时类/临时节点，绝不改真实进度 —— */
+ .km-wrap .island.sctour-glow>img{filter:drop-shadow(0 0 16px rgba(255,210,110,.9)) drop-shadow(0 0 7px rgba(255,210,110,.6))!important}
+ .km-wrap .island.sctour-glow{z-index:5;animation:sctour-pulse 1.1s ease-in-out infinite}
+ #routeGenBtn.sctour-glow{position:relative;z-index:9002;border-radius:13px;box-shadow:0 0 0 3px rgba(255,210,110,.95),0 0 22px rgba(255,210,110,.7)!important;animation:sctour-pulse 1.1s ease-in-out infinite}
+ /* #kmFab / #homeHero 本就是 position:absolute（右下角锚定）；只抬 z-index、绝不碰 position，否则卡会被挤回左上角 */
+ #kmFab.sctour-glow,#homeHero.sctour-glow{z-index:9002;border-radius:13px;box-shadow:0 0 0 3px rgba(255,210,110,.95),0 0 22px rgba(255,210,110,.7)!important;animation:sctour-pulse 1.1s ease-in-out infinite}
+ @keyframes sctour-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+ .sctour-stage-badge{position:absolute;left:50%;bottom:34%;transform:translateX(-50%);background:#0d9488;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;box-shadow:0 5px 12px -3px rgba(13,148,136,.65);z-index:9;pointer-events:none;font-family:'Sora','PingFang SC',sans-serif;animation:sctour-badge-in .32s ease both}
+ @keyframes sctour-badge-in{from{opacity:0;transform:translate(-50%,5px)}to{opacity:1;transform:translate(-50%,0)}}
+ .sctour-unlock{animation:sctour-unlockpulse 1.2s ease}
+ @keyframes sctour-unlockpulse{0%{filter:none}45%{filter:drop-shadow(0 0 15px rgba(255,210,110,.75))}100%{filter:none}}
+ #kmCallout .kd-flow-item.sctour-tick{background:linear-gradient(180deg,rgba(13,148,136,.13),transparent)!important;transition:background .25s}
+ #kmCallout .kd-flow-item.sctour-tick .kd-fi-mark{background:#0d9488!important;border-color:#0d9488!important;color:#fff!important}
+ .sctour-flash{animation:sctour-flash 1s ease}
+ @keyframes sctour-flash{0%,100%{box-shadow:none}30%,65%{box-shadow:0 0 0 3px rgba(13,148,136,.45)}}
+</style>
+<div id="sctour-spot"></div>
+<div id="sctour-guard"></div>
+<div id="sctour-ring"></div>
+<div id="sctour-finger">👆</div>
+<div id="sctour-bubble">
+  <div class="arrow" id="sctour-arrow"></div>
+  <div class="tx" id="sctour-text"></div>
+  <div class="ft">
+    <div class="dots" id="sctour-dots"></div>
+    <div class="btns">
+      <button class="skip" id="sctour-skip" type="button">跳过</button>
+      <button class="prev" id="sctour-prev" type="button">上一步</button>
+      <button class="next" id="sctour-next" type="button">下一步</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var DONE_KEY='ds_tour_done', d=document;
+  function q(s){ return d.querySelector(s); }
+  function qa(s){ return Array.prototype.slice.call(d.querySelectorAll(s)); }
+  var spot=d.getElementById('sctour-spot'),guard=d.getElementById('sctour-guard'),
+      bubble=d.getElementById('sctour-bubble'),arrow=d.getElementById('sctour-arrow');
+  var i=0, timers=[];
+  function after(ms,fn){ var t=setTimeout(fn,ms); timers.push(t); return t; }
+  function clearTimers(){ for(var k=0;k<timers.length;k++) clearTimeout(timers[k]); timers=[]; }
+  function safeClose(){ try{ if(typeof closeCallout==='function') closeCallout(); }catch(e){} }
+  function vis(el){ return !!(el && el.offsetWidth>2 && el.offsetHeight>2); }
+  /* 清掉演示用临时视觉 —— 全程只加临时类/临时节点，绝不写 localStorage、不调 toggleCourse，不动真实学习进度 */
+  function clearDemo(){
+    qa('.sctour-stage-badge').forEach(function(e){ e.remove(); });
+    ['sctour-glow','sctour-unlock','sctour-tick','sctour-flash'].forEach(function(c){
+      qa('.'+c).forEach(function(e){ e.classList.remove(c); }); });
+    var qz=d.getElementById('routeQuiz'); if(qz) qz.classList.remove('show');   /* 收掉 beat④ 演示打开的找航线问卷 */
+    var rg=d.getElementById('sctour-ring'); if(rg) rg.style.display='none';      /* 收掉 beat④ 罩在找航线按钮上的高亮圈 */
+    var bc=d.getElementById('sctour-btnclone'); if(bc) bc.remove();              /* 收掉 beat④ 的按钮清晰副本 */
+  }
+  /* —— 5 步分镜：sel=高亮目标，cap=唯一字幕，open/closeFirst=进退抽屉，play=进入时演的动画 —— */
+  var STEPS=[
+    { sel:'#kmWrap', place:'center', cap:'每座岛 = 一个学习阶段',
+      play:function(){ qa('.km-wrap .island').forEach(function(el,k){ after(k*240,function(){
+        el.classList.add('sctour-glow');
+        var b=d.createElement('div'); b.className='sctour-stage-badge'; b.textContent='阶段 '+(k+1); el.appendChild(b); }); }); } },
+    { sel:'#kmCallout', place:'left', open:true, cap:'点开岛，看这阶段的内容：图文、视频、作业',
+      play:function(){ ['is-course','is-live','is-task'].forEach(function(cls,k){ after(280+k*460,function(){
+        var it=q('#kmCallout .kd-flow-item.'+cls); if(!it) return;
+        it.classList.add('sctour-flash'); after(950,function(){ if(it) it.classList.remove('sctour-flash'); }); }); }); } },
+    { sel:'#kmCallout', place:'left', open:true, cap:'图文全部看完，这一阶段才通关',
+      play:function(){ var marks=qa('#kmCallout .kd-flow-item.is-course');
+        marks.forEach(function(it,k){ after(k*230,function(){ it.classList.add('sctour-tick'); }); });
+        after(marks.length*230+450,function(){ var isls=qa('.km-wrap .island');
+          if(isls[0]) isls[0].classList.add('sctour-glow'); if(isls[1]) isls[1].classList.add('sctour-unlock'); }); } },
+    { sel:'#routeGenBtn', place:'bottom', closeFirst:true, nodim:true, cap:'你可以在这里定制你的专属学习路线',
+      play:function(){ var b=q('#routeGenBtn');
+        if(b){ var br=b.getBoundingClientRect(), rg=d.getElementById('sctour-ring');   /* 顶层金圈罩住找航线按钮：z9002 在问卷暗背景之上，不被父层层叠上下文困住 */
+          if(rg){ rg.style.display='block'; rg.style.left=(br.left-6)+'px'; rg.style.top=(br.top-6)+'px'; rg.style.width=(br.width+12)+'px'; rg.style.height=(br.height+12)+'px'; }
+          /* 顶层放一份按钮的清晰副本盖在原位：问卷弹出会把整个背景(含此按钮)打成毛玻璃，真按钮被父层层叠上下文困住抬不出来，故复制一份到 body 顶层(z9002，在问卷模糊之上)，按钮看着就清晰了。纯视觉、pointer-events:none，不接管点击 */
+          var oldc=d.getElementById('sctour-btnclone'); if(oldc) oldc.remove();
+          var cl=b.cloneNode(true); cl.id='sctour-btnclone'; cl.removeAttribute('onclick');
+          cl.style.cssText='position:fixed;margin:0;left:'+br.left+'px;top:'+br.top+'px;width:'+br.width+'px;height:'+br.height+'px;z-index:9002;pointer-events:none';
+          d.body.appendChild(cl); }
+        try{ if(typeof window.openQuiz==='function') after(260,window.openQuiz); }catch(e){} } },
+    { sel:'#kmFab', altSel:'#homeHero', place:'auto', last:true, closeFirst:true, cap:'右下角浮窗：随时跳回在学内容，还能看最新直播',
+      play:function(){ var f=q('#kmFab'); if(!vis(f)) f=q('#homeHero'); if(!f) return;
+        f.classList.add('sctour-glow');
+        var live=f.querySelector('.kf-live')||f.querySelector('.hh-live');
+        if(live) after(750,function(){ live.classList.add('sctour-flash'); after(1100,function(){ if(live) live.classList.remove('sctour-flash'); }); }); } }
+  ];
+  function dots(){ var h=''; for(var k=0;k<STEPS.length;k++) h+='<i class="'+(k===i?'on':'')+'"></i>'; d.getElementById('sctour-dots').innerHTML=h; }
+  function place(r,where){ var bw=bubble.offsetWidth,bh=bubble.offsetHeight,gap=16,vw=innerWidth,vh=innerHeight,left,top,ax,ay;
+    if(where==='auto') where=(r.top>bh+gap)?'top':'bottom';
+    if(where==='center'){ left=(vw-bw)/2; top=(vh-bh)/2; arrow.style.display='none'; }
+    else{ arrow.style.display='block';
+      if(where==='top'){ left=r.left+r.width/2-bw/2; top=r.top-bh-gap; ax=bw/2-7; ay=bh-1; }
+      else if(where==='bottom'){ left=r.left+r.width/2-bw/2; top=r.bottom+gap; ax=bw/2-7; ay=-7; }
+      else if(where==='left'){ left=r.left-bw-gap; top=r.top+r.height/2-bh/2; ax=bw-1; ay=bh/2-7; }
+      else{ left=r.right+gap; top=r.top+r.height/2-bh/2; ax=-7; ay=bh/2-7; } }
+    left=Math.max(12,Math.min(left,vw-bw-12)); top=Math.max(12,Math.min(top,vh-bh-12));
+    bubble.style.left=left+'px'; bubble.style.top=top+'px';
+    if(where!=='center'){ arrow.style.left=ax+'px'; arrow.style.top=ay+'px'; } }
+  function render(){ clearTimers(); clearDemo();
+    var step=STEPS[i], el=q(step.sel);
+    if(!vis(el) && step.altSel){ var a=q(step.altSel); if(vis(a)) el=a; }
+    if(!vis(el)) el=d.getElementById('kmWrap');
+    if(!el){ return i<STEPS.length-1?next():finish(); }
+    var where=step.place, r=el.getBoundingClientRect();
+    if(r.top<0||r.bottom>innerHeight){ try{ el.scrollIntoView({block:'center'}); }catch(e){} r=el.getBoundingClientRect(); }
+    if((r.width<8||r.height<8) && d.getElementById('kmWrap')){ el=d.getElementById('kmWrap'); r=el.getBoundingClientRect(); where='center'; }
+    var pad=step.pad==null?10:step.pad;
+    if(step.nodim){ spot.style.left='-30px'; spot.style.top='-30px'; spot.style.width=(innerWidth+60)+'px'; spot.style.height=(innerHeight+60)+'px'; spot.style.opacity='1'; }
+    else{ spot.style.opacity='1'; spot.style.left=(r.left-pad)+'px'; spot.style.top=(r.top-pad)+'px'; spot.style.width=(r.width+pad*2)+'px'; spot.style.height=(r.height+pad*2)+'px'; }
+    d.getElementById('sctour-text').innerHTML=step.cap;
+    d.getElementById('sctour-prev').style.display=i===0?'none':'';
+    d.getElementById('sctour-next').textContent=step.last?'完成 ⚓':'下一步';
+    dots();
+    bubble.classList.remove('in'); void bubble.offsetWidth;
+    requestAnimationFrame(function(){ place(r,where); bubble.classList.add('in'); });
+    guard.style.display='block';
+    if(typeof step.play==='function'){ try{ step.play(); }catch(e){} } }
+  function show(){ clearTimers(); clearDemo(); var step=STEPS[i];
+    if(step.open){ var c=d.getElementById('kmCallout');
+      if(c && c.getAttribute('aria-hidden')!=='false'){ try{ if(typeof openCallout==='function') openCallout(1,q('.km-wrap .island'),null); }catch(e){} return after(380,render); }
+      return render(); }
+    if(step.closeFirst){ var c2=d.getElementById('kmCallout');
+      if(c2 && c2.getAttribute('aria-hidden')==='false'){ safeClose(); return after(340,render); } }
+    render(); }
+  function next(){ if(i<STEPS.length-1){ i++; show(); } else finish(); }
+  function prev(){ if(i>0){ i--; show(); } }
+  function start(){ i=0; clearTimers(); clearDemo(); safeClose(); bubble.style.display='block'; show(); }
+  function teardown(){ clearTimers(); clearDemo(); spot.style.opacity='0'; guard.style.display='none'; bubble.classList.remove('in'); bubble.style.display='none'; safeClose(); }
+  function persist(){ try{ localStorage.setItem(DONE_KEY,'1'); }catch(e){} }
+  function finish(){ teardown(); persist(); }
+  function skip(){ teardown(); persist(); }
+  d.getElementById('sctour-next').addEventListener('click',next);
+  d.getElementById('sctour-prev').addEventListener('click',prev);
+  d.getElementById('sctour-skip').addEventListener('click',skip);
+  guard.addEventListener('click',function(e){ e.stopPropagation(); });
+  addEventListener('keydown',function(e){ if(bubble.style.display!=='none' && e.key==='Escape') skip(); });
+  addEventListener('resize',function(){ if(bubble.style.display!=='none') render(); });
+  function mountReplay(t){ t=t||0; var bar=q('#ds-topbar .dst-inner')||d.getElementById('ds-topbar');
+    if(bar && bar.children.length && !d.getElementById('sctour-replay')){
+      var b=d.createElement('button'); b.id='sctour-replay'; b.type='button'; b.textContent='↻ 新手引导';
+      b.addEventListener('click',start); bar.appendChild(b); }
+    else if(t<40 && !d.getElementById('sctour-replay')){ setTimeout(function(){mountReplay(t+1);},120); } }
+  function autoStart(t){ t=t||0; var isle=q('.km-wrap .island'), r=isle&&isle.getBoundingClientRect();
+    if(isle&&r&&r.width>4){ start(); } else if(t<50){ setTimeout(function(){autoStart(t+1);},120); } }
+  function boot(){ mountReplay(); var seen=false; try{ seen=localStorage.getItem(DONE_KEY)==='1'; }catch(e){} var quiz=false; try{ quiz=new URLSearchParams(location.search).get('quiz')==='1'; }catch(e){} var diving=window.__AUTO_DIVE||document.body.classList.contains('dive-open')||quiz; if(!seen && !diving) setTimeout(autoStart,450); }   /* 潜水动画开着 / 带 ?quiz=1 从学习指南来时 不自动弹引导，避免顶掉问卷 */
+  if(d.readyState==='complete'||d.readyState==='interactive') setTimeout(boot,300);
+  else addEventListener('DOMContentLoaded',function(){ setTimeout(boot,300); });
+})();
+</script>
+<!-- ===== /新手引导 ===== -->
 </body>
 </html>

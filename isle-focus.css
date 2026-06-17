@@ -1,0 +1,83 @@
+/* ============================================================
+   深海圈 · 「神奇移动」岛屿聚焦层（isle-focus）
+   —— 大航海图点岛后：被点的岛放大成顶部头牌、其余岛缩到两侧
+      （身后✓ / 前方），小船随等级成长，主区铺真课程内容
+      （内容 = 复用 isle-view，header:false 只出内容）。
+   规则全部 scope 在 .isle-focus 下；配套 isle-focus.js。
+   ============================================================ */
+.isle-focus{ position:absolute; inset:0; z-index:1; }
+.isle-focus *, .isle-focus *::before, .isle-focus *::after{ box-sizing:border-box; }
+
+/* 航线弧（顺着一排岛的岛脚蜿蜒：走过实线高亮 / 没到金色虚线）*/
+.isle-focus .if-route{ position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; overflow:visible; }
+.isle-focus .if-route .seg-rest{ fill:none; stroke:#bf842a; stroke-width:.34; stroke-dasharray:1.2 1.1; stroke-linecap:round; opacity:.85; }
+.isle-focus .if-route .seg-done{ fill:none; stroke:#20cdb8; stroke-width:.55; stroke-linecap:round; opacity:.95; filter:drop-shadow(0 0 .6px rgba(40,200,180,.7)); }
+
+/* 岛 = 持久元素（FLIP 在 left/top/width 之间插值）*/
+.isle-focus .if-isle{ position:absolute; cursor:pointer; will-change:transform; z-index:3; }
+.isle-focus .if-isle>img{ width:100%; display:block; pointer-events:none; filter:saturate(1.06) brightness(1.02) drop-shadow(0 14px 16px rgba(30,80,90,.26)); }
+.isle-focus .if-isle .if-nm{ position:absolute; left:50%; bottom:100%; transform:translateX(-50%); margin-bottom:6px; white-space:nowrap;
+  font-family:var(--font-display,'Noto Serif SC',serif); font-weight:700; color:#1e3a52; font-size:13px; text-shadow:0 1px 5px rgba(248,251,250,.95); transition:font-size .4s,opacity .4s; }
+.isle-focus .if-isle .if-zone{ display:block; font-family:var(--font-mono,'JetBrains Mono',monospace); font-size:10px; font-weight:600; color:#c89854; letter-spacing:.06em; text-align:center; }
+.isle-focus .if-isle::after{ content:""; position:absolute; left:50%; top:64%; transform:translate(-50%,-50%); width:120%; height:104%; z-index:-1; pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(158,214,207,.5) 0%,rgba(158,214,207,0) 68%); filter:blur(5px); }
+
+/* 三态：主角 / 缩略 / 身后(✓) */
+.isle-focus .if-isle.is-hero{ z-index:6; }
+.isle-focus .if-isle.is-hero .if-nm{ opacity:0; }                /* 头牌态：岛名交给 title 卡 */
+.isle-focus .if-isle.is-hero>img{ filter:saturate(1.1) brightness(1.04) drop-shadow(0 0 22px rgba(200,152,84,.36)) drop-shadow(0 14px 16px rgba(30,80,90,.28)); }
+.isle-focus .if-isle.is-mini{ opacity:.6; }
+.isle-focus .if-isle.is-mini .if-nm{ display:none; }   /* 小船队不显名字（焦点岛名在右卡；悬停看 title）*/
+.isle-focus .if-isle.is-mini>img{ filter:saturate(.9) brightness(1.01) drop-shadow(0 6px 8px rgba(30,80,90,.2)); }
+.isle-focus .if-isle.is-mini:hover{ opacity:1; }
+.isle-focus .if-isle.is-done::before{ content:"✓"; position:absolute; top:-3px; right:-3px; z-index:2; width:18px; height:18px; border-radius:50%; background:#0d9488; color:#fff; font-size:11px; font-weight:700; display:grid; place-items:center; border:2px solid #eef6f4; box-shadow:0 2px 6px rgba(13,90,80,.45); }
+
+/* 小船：跟着焦点岛航行；形态随真实等级长大 */
+.isle-focus .if-ship{ position:absolute; width:6%; z-index:5; pointer-events:none; transform:translateX(-50%);
+  transition:left .62s cubic-bezier(.45,.05,.25,1),bottom .62s cubic-bezier(.45,.05,.25,1),width .5s cubic-bezier(.34,1.4,.64,1);
+  filter:drop-shadow(0 6px 8px rgba(30,80,90,.3)); }
+
+/* 头牌 title 卡 */
+/* 内容底板：标题 + 列表放进一张不透明卡片，海面只在卡片上方露岛（解决"内容浮在海上看不清"）*/
+.isle-focus .if-sheet{ position:absolute; right:3.5%; left:auto; margin:0; width:min(560px,46vw); top:7%; bottom:6%; z-index:4;
+  display:flex; flex-direction:column; overflow:hidden; background:rgba(255,253,250,.95); border:1px solid rgba(200,180,140,.45);
+  border-radius:20px; box-shadow:0 30px 70px -28px rgba(30,80,90,.5); backdrop-filter:blur(6px);
+  opacity:0; transform:translateY(20px); transition:opacity .5s,transform .5s; }
+.isle-focus.shown .if-sheet{ opacity:1; transform:none; transition:opacity .55s .16s cubic-bezier(.22,1,.36,1),transform .55s .16s cubic-bezier(.22,1,.36,1); }
+.isle-focus .if-title{ flex:none; text-align:center; padding:18px 22px 13px; border-bottom:1px solid rgba(200,180,140,.28); }
+.isle-focus .if-title .tc-no{ font-family:var(--font-mono,monospace); font-size:11.5px; font-weight:600; letter-spacing:.08em; color:#c89854; }
+.isle-focus .if-title .tc-name{ font-family:var(--font-display,serif); font-size:25px; font-weight:700; color:#1e3a52; margin-top:2px; text-shadow:0 1px 6px rgba(248,251,250,.9); }
+.isle-focus .if-title .tc-meta{ display:flex; align-items:center; justify-content:center; gap:12px; margin-top:9px; }
+.isle-focus .tc-prog{ display:flex; align-items:center; gap:7px; font-size:12px; color:#5c7a8a; }
+.isle-focus .tc-prog b{ font-family:var(--font-mono,monospace); color:#1f6f6a; }
+.isle-focus .tc-bar{ width:88px; height:6px; border-radius:999px; background:rgba(31,111,106,.16); overflow:hidden; }
+.isle-focus .tc-bar i{ display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,#0d9488,#1bb3a3); }
+.isle-focus .tc-badge{ font-size:11.5px; font-weight:600; padding:3px 11px; border-radius:999px; background:#c89854; color:#fff; }
+.isle-focus .tc-ship{ margin-top:8px; font-size:12px; color:#5c7a8a; }
+.isle-focus .tc-ship b{ color:#1f6f6a; font-weight:600; }
+
+/* 主区内容（isle-view header:false 挂这里）*/
+.isle-focus .if-content{ flex:1 1 auto; min-height:0; overflow-y:auto; z-index:2; }
+.isle-focus .if-content .isle-view{ height:100%; }
+/* 专属航线：内容=本岛 flow 列表（复用 kd-flow 样式），居中可滚 */
+.isle-focus .if-route-flow{ padding:8px 18px 18px; }
+
+/* 收起按钮 */
+.isle-focus .if-back{ position:absolute; left:22px; top:14px; z-index:8; display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#1f6f6a; cursor:pointer; padding:7px 14px 7px 11px; border-radius:999px; border:1px solid rgba(31,111,106,.3); background:rgba(255,255,255,.8); opacity:0; transform:translateX(-6px); pointer-events:none; transition:opacity .35s,transform .35s,background .15s; }
+.isle-focus.shown .if-back{ opacity:1; transform:none; pointer-events:auto; }
+.isle-focus .if-back:hover{ background:#e8f6f5; }
+.isle-focus .if-back svg{ width:14px; height:14px; }
+
+/* 升级庆祝（真实进度升级时由地图页触发；此处样式备用）*/
+.isle-focus .if-celebrate{ position:absolute; left:50%; top:40%; transform:translate(-50%,-50%) scale(.8); z-index:30; text-align:center; pointer-events:none; opacity:0;
+  background:linear-gradient(160deg,#fffdf7,#f5ecd7); border:1px solid rgba(200,152,84,.6); border-radius:18px; padding:20px 32px; box-shadow:0 24px 60px -18px rgba(120,90,30,.5);
+  transition:opacity .3s,transform .4s cubic-bezier(.34,1.56,.64,1); }
+.isle-focus .if-celebrate.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+.isle-focus .if-celebrate .cb-emoji{ font-size:44px; line-height:1; }
+.isle-focus .if-celebrate .cb-title{ font-family:var(--font-display,serif); font-size:21px; font-weight:700; color:#1e3a52; margin-top:8px; }
+.isle-focus .if-celebrate .cb-sub{ font-size:12.5px; color:#7a6643; margin-top:5px; }
+
+@media (prefers-reduced-motion:reduce){ .isle-focus .if-isle, .isle-focus .if-sheet, .isle-focus .if-back, .isle-focus .if-ship{ transition:none!important; } }
+
+/* 移动端不走聚焦层（整页 isle.html 兜底）；此处仅防止极端窄屏错乱 */
+@media (max-width:639px){ .isle-focus .if-title .tc-name{ font-size:20px; } }

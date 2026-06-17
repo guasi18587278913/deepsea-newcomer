@@ -168,7 +168,7 @@ body{font-family:var(--font-sans);color:var(--text-1);-webkit-font-smoothing:ant
       </h1>
       <div class="pf-lead">环境是出海前最容易翻船的一关。点一下「开始自检」，<b>10 秒看清你的装备齐不齐</b> —— 缺什么、怎么补，一目了然。补齐就能扬帆。</div>
 
-      <div class="pf-track-hint" id="pfTrackHint" style="display:none;font-size:12.5px;color:#8a6d3b;background:rgba(252,247,235,.85);border:1px solid rgba(200,152,84,.4);border-radius:10px;padding:9px 14px;margin:18px 0 0;max-width:560px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)">你还没选方向 —— 下面是 4 条路线<b>分别</b>要准备什么；去学习地图「生成专属航线」选定后，这里会直接显示<b>你那条</b>的清单。</div>
+      <div class="pf-track-hint" id="pfTrackHint" style="display:none;font-size:12.5px;color:#8a6d3b;background:rgba(252,247,235,.85);border:1px solid rgba(200,152,84,.4);border-radius:10px;padding:9px 14px;margin:18px 0 0;max-width:560px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)">你还没选方向 —— 下面是 4 条路线<b>分别</b>要准备什么；去学习地图「找到适合你的航线」选定后，这里会直接显示<b>你那条</b>的清单。</div>
       <div class="pf-tracks" id="pfTracks"></div>
 
       <div class="pf-card">
@@ -420,7 +420,7 @@ function toast(msg){
 
 /* 顶栏导航：复刻 calendar.html 的 NAV2 渲染 */
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','https://scys.com/deepsea/2001/course',1],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','course.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){

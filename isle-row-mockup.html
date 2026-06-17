@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 · 岛屿展开「一排 · 选中放大」小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   岛屿展开 · 一排选中放大 —— 设计小样（自包含、占位数据）
+   · 四岛按顺序排成一排、整排靠左；点中的就地放大提亮，其余缩小压暗（不洗牌）
+   · 航线虚线弧串四岛：走过实线、没到虚线
+   · 小船泊真实进度岛旁的航线上，形态随等级
+   · 右卡 = 现状课程清单（标题 + kd-flow 列表，原样不动）
+   · 点岛 → 展开；点空白 / 升回海面 → 退回大海全景（总览态示意）
+   可调参数集中在 <script> 顶部 TUNE 区
+   ============================================================ */
+:root{
+  --font-display:'Noto Serif SC','Songti SC',serif;
+  --font-sans:'Sora','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono',monospace;
+  --deep-blue:#1e3a52; --teal:#0d9488; --teal-deep:#1f6f6a; --teal-bg:#e8f6f5; --gold:#c89854;
+  --surface:#ffffff; --border:#dde7ea; --text-2:#5c7a8a; --text-3:#94a3b8;
+  --c-live:#c2603f; --c-task:#b8852f;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--font-sans);color:var(--deep-blue);overflow:hidden;
+  background:linear-gradient(180deg,#eaf5f3 0%,#dbede8 38%,#c6e5de 68%,#b6dcd4 100%)}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:#cfe9ef url("assets/sea-i.webp") center/cover no-repeat;filter:saturate(.86) brightness(1.09) contrast(.84)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(135% 115% at 50% 36%,rgba(249,245,235,0) 70%,rgba(241,234,216,.42) 100%)}
+
+/* 顶部说明条（仅小样用）*/
+.bar{position:fixed;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:14px;padding:0 22px;z-index:40;
+  background:rgba(248,251,250,.72);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,152,84,.28)}
+.bar .brand{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--teal-deep)}
+.bar .hint{font-size:12.5px;color:#5c7a8a}
+.bar .tag{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--gold);border:1px solid rgba(200,152,84,.5);border-radius:999px;padding:3px 10px}
+
+.stage{position:fixed;inset:50px 0 0 0;overflow:hidden}
+
+/* 航线弧 */
+.route{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
+.route .seg-rest{fill:none;stroke:#bf842a;stroke-width:.34;stroke-dasharray:1.2 1.1;stroke-linecap:round;opacity:.85}
+.route .seg-done{fill:none;stroke:#20cdb8;stroke-width:.55;stroke-linecap:round;opacity:.95;filter:drop-shadow(0 0 .6px rgba(40,200,180,.7))}
+
+/* 岛 = 持久元素：left/bottom/width 之间平滑过渡（底边对齐一条水位线）*/
+.isle{position:absolute;cursor:pointer;will-change:left,bottom,width;z-index:3;
+  transition:left .62s cubic-bezier(.45,.05,.25,1),bottom .62s cubic-bezier(.45,.05,.25,1),width .62s cubic-bezier(.45,.05,.25,1),filter .4s,opacity .4s}
+.isle>img{width:100%;display:block;pointer-events:none;filter:saturate(1.04) brightness(1.02) drop-shadow(0 14px 16px rgba(30,80,90,.26))}
+.isle .nm{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:6px;white-space:nowrap;
+  font-family:var(--font-display);font-weight:700;color:var(--deep-blue);font-size:13px;text-shadow:0 1px 5px rgba(248,251,250,.95);transition:opacity .35s}
+.isle .zone{display:block;font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.06em;text-align:center}
+.isle::after{content:"";position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);width:118%;height:104%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(158,214,207,.5) 0%,rgba(158,214,207,0) 68%);filter:blur(5px)}
+/* 选中(主角) */
+.isle.is-hero{z-index:6}
+.isle.is-hero>img{filter:saturate(1.1) brightness(1.04) drop-shadow(0 0 22px rgba(200,152,84,.36)) drop-shadow(0 14px 16px rgba(30,80,90,.28))}
+/* 配角 */
+.isle.is-mini{opacity:.62}
+.isle.is-mini>img{filter:saturate(.86) brightness(1.01) drop-shadow(0 6px 8px rgba(30,80,90,.2))}
+.isle.is-mini:hover{opacity:1}
+/* 焦点态：岛名都收起（焦点岛名在右卡，配角悬停看 title）；总览态显示 */
+.stage[data-mode="focus"] .isle .nm{opacity:0}
+.isle[title]{}
+
+/* 小船 */
+.ship{position:absolute;width:6%;z-index:5;pointer-events:none;
+  transition:left .62s cubic-bezier(.45,.05,.25,1),bottom .62s cubic-bezier(.45,.05,.25,1),width .5s cubic-bezier(.34,1.4,.64,1);
+  filter:drop-shadow(0 6px 8px rgba(30,80,90,.3))}
+
+/* 升回海面 */
+.back{position:absolute;left:22px;top:14px;z-index:8;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--teal-deep);cursor:pointer;
+  padding:7px 14px 7px 11px;border-radius:999px;border:1px solid rgba(31,111,106,.3);background:rgba(255,255,255,.8);
+  opacity:0;transform:translateX(-6px);pointer-events:none;transition:opacity .35s,transform .35s,background .15s}
+.stage[data-mode="focus"] .back{opacity:1;transform:none;pointer-events:auto}
+.back:hover{background:#e8f6f5}.back svg{width:14px;height:14px}
+
+/* 右卡：标题 + 课程清单 */
+.sheet{position:absolute;right:3.5%;top:7%;bottom:6%;width:min(560px,46vw);z-index:4;
+  display:flex;flex-direction:column;overflow:hidden;background:rgba(255,253,250,.96);border:1px solid rgba(200,180,140,.45);
+  border-radius:20px;box-shadow:0 30px 70px -28px rgba(30,80,90,.5);backdrop-filter:blur(6px);
+  opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .5s,transform .5s}
+.stage[data-mode="focus"] .sheet{opacity:1;transform:none;pointer-events:auto;transition:opacity .55s .16s cubic-bezier(.22,1,.36,1),transform .55s .16s cubic-bezier(.22,1,.36,1)}
+.sheet .if-title{flex:none;text-align:center;padding:20px 24px 14px;border-bottom:1px solid rgba(200,180,140,.28)}
+.tc-no{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;color:var(--gold)}
+.tc-name{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--deep-blue);margin-top:3px;text-shadow:0 1px 6px rgba(248,251,250,.9)}
+.tc-meta{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+.tc-prog{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-2)}
+.tc-prog b{font-family:var(--font-mono);color:var(--teal-deep)}
+.tc-bar{width:90px;height:6px;border-radius:999px;background:rgba(31,111,106,.16);overflow:hidden}
+.tc-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--teal),#1bb3a3)}
+.tc-badge{font-size:11.5px;font-weight:600;padding:3px 11px;border-radius:999px;background:var(--gold);color:#fff}
+.tc-ship{margin-top:9px;font-size:12px;color:var(--text-2)}
+.tc-ship b{color:var(--teal-deep);font-weight:600}
+.if-content{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px 18px 18px}
+
+/* kd-flow 课程清单（与现状一致）*/
+.kd-flow{list-style:none;display:flex;flex-direction:column;gap:5px;padding:0;margin:0}
+.kd-flow-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;border:1px solid transparent;position:relative;transition:background .16s ease,transform .14s ease}
+.kd-flow-item.clickable{cursor:pointer}
+.kd-flow-item.clickable:hover{background:var(--teal-bg);transform:translateX(2px)}
+.kd-fi-tag{flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.kd-fi-tag svg{width:13px;height:13px}
+.kd-flow-item.is-course .kd-fi-tag{background:var(--teal-bg);color:var(--teal)}
+.kd-flow-item.is-live .kd-fi-tag{background:rgba(194,96,63,.15);color:#c2603f}
+.kd-flow-item.is-task .kd-fi-tag{background:rgba(200,152,84,.16);color:#a9762a}
+.kd-fi-mark{flex:none;width:17px;height:17px;border-radius:50%;border:1.2px solid var(--border);display:grid;place-items:center;background:var(--surface);font-size:10px;color:var(--text-3);font-weight:600}
+.kd-flow-item.done .kd-fi-mark{background:var(--teal);border-color:var(--teal);color:#fff}
+.kd-flow-item.current .kd-fi-mark{border-color:var(--gold);background:#fffcf5;color:var(--gold);box-shadow:0 0 0 2px rgba(200,152,84,.15)}
+.kd-fi-title{flex:1;font-size:13px;color:var(--deep-blue);line-height:1.4;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kd-flow-item.done .kd-fi-title{color:var(--text-2)}
+.kd-flow-item.locked .kd-fi-title{color:var(--text-3)}
+.kd-flow-item.is-live .kd-fi-title{color:var(--text-3)}
+.kd-flow-item.is-live.lit .kd-fi-title{color:var(--deep-blue)}
+.kd-fi-dur{flex:none;font-family:var(--font-mono);font-size:10.5px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.kd-fi-arrow{flex:none;width:12px;height:12px;color:#aab4c0;opacity:0;transition:opacity .16s ease,transform .16s ease;transform:translateX(-4px)}
+.kd-flow-item.clickable:hover .kd-fi-arrow{opacity:1;transform:translateX(0);color:var(--teal)}
+.kd-fi-state{flex:none;font-family:var(--font-mono);font-size:10.5px;color:#c2603f;font-weight:600;font-variant-numeric:tabular-nums}
+.kd-flow-item.is-live{background:linear-gradient(180deg,rgba(194,96,63,.07) 0%,var(--surface) 80%);border-color:rgba(194,96,63,.24)}
+.kd-flow-item.is-task{background:linear-gradient(180deg,rgba(200,152,84,.06) 0%,var(--surface) 80%);border-color:rgba(200,152,84,.26)}
+.kd-fi-task-body{flex:1;min-width:0}
+.kd-fi-task-title{font-size:13px;font-weight:600;color:var(--deep-blue);line-height:1.35}
+.kd-fi-task-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.kd-fi-submit{flex:none;padding:7px 14px;border-radius:7px;background:var(--gold);color:#fff;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:background .15s}
+.kd-fi-submit:hover{background:#d6a45f}
+
+@media (prefers-reduced-motion:reduce){.isle,.ship,.sheet,.back{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="brand">深海圈</span>
+  <span class="hint">点任意岛 → 展开看课；点中的岛就地放大、其余缩小不洗牌；点空白 / 升回海面 → 退回大海全景</span>
+  <span class="tag">一排·选中放大 小样</span>
+</div>
+
+<div class="stage" id="stage" data-mode="focus">
+  <svg class="route" id="route" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="seg-rest" d=""/><path class="seg-done" d=""/></svg>
+  <button class="back" id="back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>升回海面</button>
+
+  <div class="isle" data-i="0"><img src="assets/isle-1.webp" alt=""><span class="nm"><span class="zone">第一岛</span>跑通第一个 AI 产品</span></div>
+  <div class="isle" data-i="1"><img src="assets/isle-2.webp" alt=""><span class="nm"><span class="zone">第二岛</span>做出能上线的产品</span></div>
+  <div class="isle" data-i="2"><img src="assets/isle-3.webp" alt=""><span class="nm"><span class="zone">第三岛</span>做一个能收钱的产品</span></div>
+  <div class="isle" data-i="3"><img src="assets/isle-4.webp?v=2" alt=""><span class="nm"><span class="zone">第四岛</span>让 AI 干活、把产品做大</span></div>
+
+  <img class="ship" id="ship" src="assets/ship-1.png" alt="">
+  <div class="sheet" id="sheet"><div class="if-title" id="title"></div><div class="if-content" id="content"></div></div>
+</div>
+
+<script>
+/* ===== 可调参数 TUNE ===== */
+const TUNE = {
+  wSel:16, wOth:7.5, gap:2, startX:2, bottomFocus:30,   // 焦点态：选中宽/其余宽/间距/起点x/底边水位（均 %）
+  wOv:13, ovLeft:8, ovRight:96, bottomOv:34,             // 总览态：等宽/铺开左右边界/底边水位
+  offset:[0,6,9,1],      // 四座岛高低错落（仿之前航道·中间偏高两头低），航线顺势蜿蜒
+  shipTier:1,            // 小船真实等级 1-4（竹筏/木帆船/战舰/航母）
+  shipStage:0,           // 小船真实所在岛 index（0=第一岛）—— 翻看别的岛船不动
+  routeYNudge:2          // 航线相对岛底再往水面下沉一点
+};
+const SHIPS=[
+  {img:'assets/ship-1.png',name:'竹筏',emoji:'🛶',w:6,next:'木帆船'},
+  {img:'assets/ship-2.png',name:'木帆船',emoji:'⛵',w:7.6,next:'战舰'},
+  {img:'assets/ship-3.png',name:'战舰',emoji:'🚢',w:9.4,next:'航空母舰'},
+  {img:'assets/ship-4.png',name:'航空母舰',emoji:'🛳️',w:11,next:null},
+];
+
+/* ===== 图标 ===== */
+const IC_COURSE='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h8a2 2 0 0 1 2 2v10H6a2 2 0 0 1-2-2V4z"/><path d="M4 4v12a2 2 0 0 0 2 2h8"/><path d="M7 8h4M7 11h3"/></svg>';
+const IC_LIVE='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7.6"/><path d="M8.2 6.7l5.3 3.3-5.3 3.3z" fill="currentColor" stroke="none"/></svg>';
+const IC_TASK='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="12" height="14" rx="1.5"/><path d="M7 8l2 2 4-4M7 13h6"/></svg>';
+const IC_ANCHOR='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="4" r="2"/><path d="M10 6v11M4 10H2.6a7.4 7.4 0 0 0 14.8 0H16M7 9.5h6"/></svg>';
+const ARROW='<svg class="kd-fi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>';
+
+/* ===== 占位数据 ===== */
+const ISLES=[
+ {zone:'第一岛',name:'跑通第一个 AI 产品',badge:'▸ 能跑通',done:0,total:12,items:[
+   {k:'setup',t:'出航前检查 · 看看装备齐不齐',d:'约 10min'},
+   {k:'course',t:'这套课程有什么不同?',d:'8min',st:'current'},
+   {k:'course',t:'我祖上十八代都不会编程,我为什么需要会?',d:'5min'},
+   {k:'course',t:'开挂式学习:用 AI 来学 AI',d:'20min'},
+   {k:'course',t:'AI 到底是什么?别怕,它就是个超级实习生',d:'6min'},
+   {k:'live',t:'案例拆解 · 从 demo 到产品',d:'看回放 ▶'},
+   {k:'course',t:'初体验:10 分钟做出你的第一个网站',d:'30min'},
+   {k:'course',t:'跟 AI 讨论需求:从模糊想法到清晰指令',d:'18min'},
+   {k:'task',t:'用 AI 做出一个能在线访问的网站',sub:'可选 · 不计入解锁'},
+ ]},
+ {zone:'第二岛',name:'做出能上线的产品',badge:'⊡ 能上线',done:0,total:18,items:[
+   {k:'course',t:'离开扣子:认识真正的代码世界',d:'12min'},
+   {k:'course',t:'前端 / 后端 / 数据库,到底各管什么?',d:'15min'},
+   {k:'live',t:'技术深水区答疑',d:'6/28 20:00'},
+   {k:'course',t:'把产品部署上线:域名 + 服务器',d:'22min'},
+   {k:'task',t:'完成产品部署上线 + 域名 + API + 数据库',sub:'可选 · 不计入解锁'},
+ ]},
+ {zone:'第三岛',name:'做一个能收钱的产品',badge:'¥ 能收钱',done:0,total:21,items:[
+   {k:'course',t:'能赚钱的 AI 产品长什么样?去哪儿找?',d:'14min'},
+   {k:'course',t:'学习的第一步不是创新,是像素级模仿',d:'18min'},
+   {k:'live',t:'商业化方法论 · 如何挑产品',d:'看回放 ▶'},
+   {k:'course',t:'落地页 + 认证 + 支付,一条龙搭起来',d:'26min'},
+   {k:'task',t:'从零搭建完整产品:落地页 + 认证 + 支付',sub:'可选 · 不计入解锁'},
+ ]},
+ {zone:'第四岛',name:'让 AI 干活、把产品做大',badge:'↗ 能扩张',done:0,total:15,items:[
+   {k:'course',t:'把 AI 变成你的员工:多智能体协作',d:'16min'},
+   {k:'course',t:'写出不翻车的代码:工程化与测试',d:'20min'},
+   {k:'live',t:'增长案例复盘',d:'7/08 20:00'},
+   {k:'course',t:'冷启动获客:从 0 到第一批用户',d:'19min'},
+   {k:'task',t:'毕业大作业 · 执行 1 个增长动作',sub:'可选 · 不计入解锁'},
+ ]},
+];
+
+const stage=document.getElementById('stage'), routeRest=document.querySelector('#route .seg-rest'),
+  routeDone=document.querySelector('#route .seg-done'), ship=document.getElementById('ship'),
+  back=document.getElementById('back'), titleEl=document.getElementById('title'), contentEl=document.getElementById('content');
+const isleEls=Array.from(stage.querySelectorAll('.isle'));
+let mode='focus', sel=0;
+
+/* ===== 布局 ===== */
+function layoutFocus(s){
+  const {wSel,wOth,gap,startX,bottomFocus}=TUNE; let x=startX, out=[];
+  for(let i=0;i<4;i++){ const w=(i===s)?wSel:wOth; out[i]={left:x,width:w,bottom:bottomFocus+TUNE.offset[i]}; x+=w+gap; }
+  return out;
+}
+function layoutOverview(){
+  const {wOv,ovLeft,ovRight,bottomOv}=TUNE; const span=ovRight-ovLeft; const gap=(span-4*wOv)/3;
+  let x=ovLeft, out=[]; for(let i=0;i<4;i++){ out[i]={left:x,width:wOv,bottom:bottomOv+TUNE.offset[i]}; x+=wOv+gap; } return out;
+}
+function applyLayout(L){ isleEls.forEach((el,i)=>{ el.style.left=L[i].left+'%'; el.style.bottom=L[i].bottom+'%'; el.style.width=L[i].width+'%'; }); }
+
+/* 经过给定点的平滑曲线（Catmull-Rom → 贝塞尔）*/
+function catmull(P){
+  if(P.length<2) return P.length?`M ${P[0].x} ${P[0].y}`:'';
+  let d=`M ${P[0].x.toFixed(1)} ${P[0].y.toFixed(1)}`;
+  for(let i=0;i<P.length-1;i++){ const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||P[i+1];
+    const c1x=p1.x+(p2.x-p0.x)/6,c1y=p1.y+(p2.y-p0.y)/6,c2x=p2.x-(p3.x-p1.x)/6,c2y=p2.y-(p3.y-p1.y)/6;
+    d+=` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`; }
+  return d;
+}
+function anchors(L){ return L.map(p=>({x:p.left+p.width/2, y:100-p.bottom+TUNE.routeYNudge})); }
+function drawRoute(L){
+  const A=anchors(L);
+  // 整条航线：船起点（真实所在岛左侧）→ 各岛
+  const start={x:A[TUNE.shipStage].x-6, y:A[TUNE.shipStage].y};
+  const full=[start,...A];
+  routeRest.setAttribute('d', catmull(full));
+  // 走过段：起点 → 真实所在岛（含），实线高亮
+  const doneArr=[start, ...A.slice(0, TUNE.shipStage+1)];
+  routeDone.setAttribute('d', catmull(doneArr));
+}
+function placeShip(L){
+  const s=SHIPS[Math.min(4,Math.max(1,TUNE.shipTier))-1];
+  ship.src=s.img; ship.style.width=s.w+'%';
+  const p=L[TUNE.shipStage];
+  ship.style.left=(p.left+p.width/2 - p.width*0.55)+'%';
+  ship.style.bottom=(p.bottom-4)+'%';
+}
+
+/* ===== 右卡 ===== */
+function flowHtml(items){
+  return items.map(it=>{
+    if(it.k==='setup') return `<li class="kd-flow-item is-course current clickable" style="background:linear-gradient(180deg,rgba(31,111,106,.08),var(--surface));border-color:rgba(31,111,106,.3)"><span class="kd-fi-tag" style="background:rgba(31,111,106,.14);color:#1f6f6a">${IC_ANCHOR}出航前</span><span class="kd-fi-title" style="color:var(--deep-blue);font-weight:600">${it.t}</span><span class="kd-fi-dur">${it.d}</span>${ARROW}</li>`;
+    if(it.k==='course'){ const st=it.st||''; const mk=st==='current'?'▸':(st==='done'?'✓':''); return `<li class="kd-flow-item is-course ${st} clickable"><span class="kd-fi-tag">${IC_COURSE}图文</span><span class="kd-fi-mark">${mk}</span><span class="kd-fi-title">${it.t}</span><span class="kd-fi-dur">${it.d}</span>${ARROW}</li>`; }
+    if(it.k==='live') return `<li class="kd-flow-item is-live lit clickable"><span class="kd-fi-tag">${IC_LIVE}视频</span><span class="kd-fi-title">${it.t}</span><span class="kd-fi-state">${it.d}</span>${ARROW}</li>`;
+    return `<li class="kd-flow-item is-task lit"><span class="kd-fi-tag">${IC_TASK}作业</span><div class="kd-fi-task-body"><div class="kd-fi-task-title">${it.t}</div><div class="kd-fi-task-sub">${it.sub||''}</div></div><button class="kd-fi-submit">提交</button></li>`;
+  }).join('');
+}
+function renderSheet(s){
+  const d=ISLES[s], pct=d.total?Math.round(d.done/d.total*100):0;
+  const tier=Math.min(4,Math.max(1,TUNE.shipTier)), sh=SHIPS[tier-1];
+  const shipLine = sh.next ? `${sh.emoji} 你的船:<b>${sh.name}</b>(Lv${tier})· 再打通 1 岛升${sh.next}` : `${sh.emoji} 你的船:<b>${sh.name}</b>(Lv${tier})· 已满级 🏆`;
+  titleEl.innerHTML=`<div class="tc-no">${d.zone}</div><div class="tc-name">${d.name}</div>`+
+    `<div class="tc-meta"><span class="tc-prog"><b>${d.done}/${d.total}</b><span class="tc-bar"><i style="width:${pct}%"></i></span></span><span class="tc-badge">${d.badge}</span></div>`+
+    `<div class="tc-ship">${shipLine}</div>`;
+  contentEl.innerHTML=`<ul class="kd-flow">${flowHtml(d.items)}</ul>`;
+  contentEl.scrollTop=0;
+}
+
+/* ===== 态切换 ===== */
+function setClasses(){
+  isleEls.forEach((el,i)=>{
+    el.classList.toggle('is-hero', mode==='focus' && i===sel);
+    el.classList.toggle('is-mini', mode==='focus' && i!==sel);
+  });
+}
+function enterFocus(s){
+  mode='focus'; sel=s; stage.dataset.mode='focus';
+  setClasses(); const L=layoutFocus(s); applyLayout(L); drawRoute(L); placeShip(L); renderSheet(s);
+}
+function toOverview(){
+  mode='overview'; stage.dataset.mode='overview';
+  setClasses(); const L=layoutOverview(); applyLayout(L); drawRoute(L); placeShip(L);
+}
+
+/* ===== 事件 ===== */
+isleEls.forEach((el,i)=>el.addEventListener('click', e=>{ e.stopPropagation(); if(mode==='overview') enterFocus(i); else if(i!==sel) enterFocus(i); }));
+back.addEventListener('click', e=>{ e.stopPropagation(); toOverview(); });
+stage.addEventListener('click', ()=>{ if(mode==='focus') toOverview(); });
+document.getElementById('sheet').addEventListener('click', e=>e.stopPropagation());
+
+/* ===== 初始：先静默落位，再展开第一岛（避免首帧从左上角滑入）===== */
+[...isleEls, ship].forEach(el=>el.style.transition='none');
+enterFocus(0);
+void stage.offsetWidth;
+[...isleEls, ship].forEach(el=>el.style.transition='');
+window.addEventListener('resize', ()=>{ const L=(mode==='focus')?layoutFocus(sel):layoutOverview(); applyLayout(L); drawRoute(L); placeShip(L); });
+</script>
+</body>
+</html>

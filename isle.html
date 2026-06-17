@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海圈 | 小岛地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="topbar.css">
+<link rel="stylesheet" href="isle-view.css?v=mm1">
+<style>
+/* ============================================================
+   isle.html —— 单岛闯关「整页壳」
+   闯关视图本体已抽到共用积木 isle-view.css / isle-view.js
+   （大航海图 calendar.html 的「潜入岛屿」浮层也复用同一套）。
+   本文件只负责：海面背景 + 顶栏 + 单屏外壳，然后挂载 IsleView。
+   通过 ?stage=A|B|C|D 接收当前岛（兼容 1-4）。
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: #f5fafa; }
+body {
+  font-family: 'Sora', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #1a2942; -webkit-font-smoothing: antialiased; line-height: 1.5;
+  background: linear-gradient(180deg, #eaf5f3 0%, #dbede8 38%, #c6e5de 68%, #b6dcd4 100%);
+  background-attachment: fixed;
+  overflow: hidden;            /* 桌面单屏：一眼看全，不滚动 */
+}
+/* 海面：与 calendar 大航海图同一张水彩海图 sea-i.webp（两页是同一片海）*/
+body::before { content:""; position:fixed; inset:0; z-index:-2; background:#cfe9ef url("assets/sea-i.webp") center/cover no-repeat; filter:saturate(.86) brightness(1.09) contrast(.84); }
+body::after { content:""; position:fixed; inset:0; z-index:-1; background:radial-gradient(135% 115% at 50% 36%, rgba(249,245,235,0) 70%, rgba(241,234,216,.42) 100%); }
+.app { display: flex; flex-direction: column; height: 100vh; min-height: 0; position: relative; z-index: 0; }
+#isleRoot { flex: 1 1 auto; min-height: 0; }
+@media (max-width: 639px) {
+  body { overflow: auto; }              /* 节点多时允许竖向滚 */
+  .app { height: auto; min-height: 100vh; }
+  #isleRoot { height: auto; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header id="ds-topbar"></header>
+  <div id="isleRoot"></div>
+</div>
+
+<script src="course-data.js"></script>
+<script src="homework-data.js"></script>
+<script src="isle-view.js?v=mm2"></script>
+<script>
+/* 整页挂载：解析 ?stage= → 挂到 #isleRoot；返回 / 下一岛走整页跳转 */
+(function () {
+  var stage = (new URLSearchParams(location.search).get('stage') || '').trim();
+  if (!window.IsleView) return;
+  var inst = IsleView.mount(document.getElementById('isleRoot'), stage, {
+    backLabel: '大航海图',
+    onClose: function () { location.href = 'calendar.html?view=all'; },
+    onNextIsle: function (nl) { location.href = 'isle.html?stage=' + nl; }
+  });
+  if (inst) { var zh = { A:'一', B:'二', C:'三', D:'四' }[stage.toUpperCase()]; if (zh) document.title = '深海圈 | 第' + zh + '岛'; }
+})();
+</script>
+<script src="topbar.js"></script>
+</body>
+</html>

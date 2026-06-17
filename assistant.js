@@ -8,13 +8,6 @@
 (function () {
   if (document.getElementById('assistant-root')) return; // 防重复
 
-  /* 「学习中心」按有无 idea 智能跳转：有 idea → 路线图，没 idea → 日历 */
-  try {
-    var _courseTarget = localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
-    document.querySelectorAll('.nav a').forEach(function (a) {
-      if (a.textContent.trim() === '学习中心') a.setAttribute('href', _courseTarget);
-    });
-  } catch (e) {}
 
   /* ---------------- CSS ---------------- */
   const css = `
@@ -196,6 +189,39 @@
   30% { opacity: 1; transform: translateY(-3px); }
 }
 
+/* 进课程页时，按钮旁冒一个章节感知的提示气泡 */
+.assistant-nudge {
+  position: absolute; bottom: 8px; right: 70px;
+  background: #1a2942; color: #fff;
+  font-size: 12.5px; line-height: 1.5;
+  padding: 9px 13px; border-radius: 12px; border-bottom-right-radius: 3px;
+  width: max-content; max-width: 230px;
+  box-shadow: 0 6px 20px rgba(30, 41, 66, 0.22);
+  cursor: pointer; opacity: 0; transform: translateX(8px);
+  transition: opacity .25s, transform .25s; pointer-events: none;
+}
+.assistant-nudge.show { opacity: 1; transform: none; pointer-events: auto; }
+.assistant-nudge b { color: #5eead4; font-weight: 600; }
+.assistant-nudge .nudge-x { margin-left: 6px; opacity: .55; }
+
+/* 划词提问浮标 */
+.assistant-selask {
+  position: absolute; z-index: 10000;
+  background: #1a2942; color: #fff;
+  font-size: 12.5px; font-weight: 500;
+  padding: 6px 11px; border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(30, 41, 66, 0.28);
+  cursor: pointer; white-space: nowrap;
+  display: none; transform: translate(-50%, -100%);
+  font-family: 'PingFang SC', -apple-system, sans-serif;
+}
+.assistant-selask.show { display: block; animation: slide-in .15s ease; }
+.assistant-selask::after {
+  content: ''; position: absolute; left: 50%; bottom: -5px;
+  transform: translateX(-50%); border: 5px solid transparent;
+  border-top-color: #1a2942; border-bottom: none;
+}
+
 @media (max-width: 640px) {
   #assistant-root { bottom: 16px; right: 16px; }
   .assistant-panel { width: calc(100vw - 32px); max-width: 380px; }
@@ -243,6 +269,7 @@
 
   btn.addEventListener('click', () => {
     panel.classList.toggle('open');
+    hideNudge();
     if (panel.classList.contains('open')) {
       setTimeout(() => input.focus(), 250);
     }
@@ -305,10 +332,23 @@
     });
   }
 
+  function currentLesson() {
+    var l = window.DS_CURRENT_LESSON;
+    return (l && l.code) ? l : null;
+  }
+
   function initGreeting() {
+    const lesson = currentLesson();
     const project = loadProject();
     let greet, suggestions;
-    if (project) {
+    if (lesson) {
+      /* 章节级随学随问：知道你在第几节、哪条线 */
+      greet = '看到你在学 ' + lesson.code + '《' + lesson.title + '》'
+        + (lesson.stage ? '（' + lesson.stage + ' · 第 ' + lesson.idx + '/' + lesson.total + ' 节）' : '')
+        + '。\n\n卡在哪一步了？把报错或没看懂的地方发我，也可以直接在正文里划选句子问我。'
+        + (project ? '\n\n（你在做的「' + project.name + '」我也记着）' : '');
+      suggestions = ['这一步报错怎么办', '这段我没看懂', '给我一个更简单的例子', '本节重点是什么'];
+    } else if (project) {
       greet = 'Hi 我是 AI 刘小排 👋 看到你在做「' + project.name + '」，目前在「' + (project.stage || '需求定义') + '」阶段。\n\n有什么需要我帮的？';
       suggestions = [
         '帮我拆解下一步要做什么',
@@ -321,7 +361,7 @@
       suggestions = [
         '怎么找一个能赚钱的 idea',
         '零基础该从哪节课开始',
-        '推荐一个技术栈',
+        { text: '让你给我做个项目问诊', href: 'diagnosis.html' },
         '怎么写 SPEC'
       ];
     }
@@ -363,15 +403,63 @@
      真接入 AI 刘小排 API 时只换这个函数。
      ------------------------------------------ */
   function mockReply(text) {
+    const lesson = currentLesson();
+    /* 章节级随学随问：在课程页时，优先用本节上下文回答常见卡点 */
+    if (lesson) {
+      const lr = lessonReply(text, lesson);
+      if (lr) return withGrounding(lr, lesson);
+    }
+    const r = replyCore(text);
+    return lesson ? withGrounding(r, lesson) : r;
+  }
+
+  /* 给回答补一行「依据」，把 grounding / 可控性显式呈现 */
+  function withGrounding(r, lesson) {
+    if (r && r.text && r.text.indexOf('📍') < 0) {
+      r.text = r.text + '\n\n📍 依据：本节《' + lesson.title + '》 + #踩坑经验频道';
+    }
+    return r;
+  }
+
+  /* 本节上下文专属回答；命中返回对象，否则返回 null 走通用逻辑 */
+  function lessonReply(text, lesson) {
+    if (/报错|不工作|跑不起来|错误|这一步|这步/.test(text)) {
+      return {
+        text: '先别慌，' + lesson.code + ' 这一节卡住，报错八成是这几类：\n1. 环境 / 依赖没装全\n2. 上一步代码没跑通就往下走了\n3. key 或路径写错\n\n你把红色那段报错原文贴给我，我对着 ' + lesson.code + ' 帮你定位。吃不准的我直接让你转助教，不瞎编。',
+        suggestions: ['我把报错贴给你', { text: '这个我吃不准 → 转助教', href: 'discuss.html' }]
+      };
+    }
+    if (/没看懂|看不懂|不懂|不理解|啥意思|什么意思/.test(text)) {
+      return {
+        text: '《' + lesson.title + '》卡住，通常是某个概念跳太快。你告诉我具体是哪句、哪个词，或者直接在正文里划选那段问我，我用大白话给你重讲一遍。',
+        suggestions: ['给我一个更简单的例子', '本节重点是什么']
+      };
+    }
+    if (/更简单|简单点|大白话|打个比方|举例|例子/.test(text)) {
+      return {
+        text: '行，我尽量用生活里的例子讲《' + lesson.title + '》的核心。你先划选正文里最绕的那段发我，我对着它打比方，比空讲更准。',
+        suggestions: ['本节重点是什么']
+      };
+    }
+    if (/重点|核心|总结|讲了啥|讲了什么/.test(text)) {
+      return {
+        text: lesson.code + '《' + lesson.title + '》抓三点就行：① 先看懂这节要解决的「那个问题是什么」；② 跟着把 demo 动手做一遍；③ 完成本节作业。卡在哪一块，单独问我那一块。',
+        suggestions: ['这段我没看懂', '这一步报错怎么办']
+      };
+    }
+    return null;
+  }
+
+  function replyCore(text) {
     const t = text.toLowerCase();
     const project = loadProject();
 
     if (/idea|想法|做什么|做啥|方向/i.test(text)) {
       return {
-        text: '可以去工具箱里用 "Idea 探索器"（没想法时用）或 "Idea 验证器"（有想法时用）。两个工具都在顶栏的工具箱里。',
+        text: '可以去工具箱里用 "Idea 探索器"（没想法时用）或 "Idea 验证器"（有想法时用）。\n\n如果你的想法 11 条路线都对不上号，让我给你做个项目问诊也行。',
         suggestions: [
           { text: '打开 Idea 探索器', href: 'toolbox.html?t=idea-explore' },
-          { text: '打开 Idea 验证器', href: 'toolbox.html?t=idea-validate' }
+          { text: '让刘小排做项目问诊', href: 'diagnosis.html' }
         ]
       };
     }
@@ -386,25 +474,25 @@
     }
     if (/落地页|landing|文案/i.test(text)) {
       return {
-        text: '工具箱有 "落地页文案生成器"，输入产品信息能出"8 秒打动用户版本"。课程里 C11 讲落地页方法论，可以配合看。',
+        text: '工具箱有 "落地页文案生成器"，输入产品信息能出"8 秒打动用户版本"。课程里 M8.2 讲落地页方法论，可以配合看。',
         suggestions: [
           { text: '打开落地页生成器', href: 'toolbox.html?t=landing' },
-          { text: '打开 C11 课程', href: 'learn.html?code=C11' }
+          { text: '打开 M8.2 课程', href: 'learn.html?code=M8.2' }
         ]
       };
     }
     if (/冷启动|没人用|找用户|增长/i.test(text)) {
       return {
-        text: '工具箱里的 "冷启动剧本" 会给你 7 个具体动作（去哪个平台发什么）。课程对应 D16 节。\n\n核心心法：前 100 个用户都得自己一个一个聊出来，不是流量推来的。',
+        text: '工具箱里的 "冷启动剧本" 会给你 7 个具体动作（去哪个平台发什么）。课程对应 M12.1 节。\n\n核心心法：前 100 个用户都得自己一个一个聊出来，不是流量推来的。',
         suggestions: [
           { text: '打开冷启动剧本', href: 'toolbox.html?t=cold-start' },
-          { text: '打开 D16 课程', href: 'learn.html?code=D16' }
+          { text: '打开 M12.1 课程', href: 'learn.html?code=M12.1' }
         ]
       };
     }
     if (/spec|需求|怎么写/i.test(text)) {
       return {
-        text: '一份好 SPEC 包括：\n1. 一句话产品描述\n2. 目标用户（具体，不要"年轻人"这种）\n3. 核心场景 3 个\n4. 必须有的功能 / 暂时不要的功能\n5. 给 AI 的具体指令\n\n课程 A6 + B17（期中考试）有完整 SPEC 示例可以照着改。',
+        text: '一份好 SPEC 包括：\n1. 一句话产品描述\n2. 目标用户（具体，不要"年轻人"这种）\n3. 核心场景 3 个\n4. 必须有的功能 / 暂时不要的功能\n5. 给 AI 的具体指令\n\n课程 M2.3 + M6.4（期中考试）有完整 SPEC 示例可以照着改。',
         suggestions: ['SPEC 长什么样', '让 AI 帮我打磨 SPEC']
       };
     }
@@ -428,15 +516,15 @@
         text: '建议先看路线图，从快速入门第 1 节开始（这套课程有什么不同？）。零基础 12 节课大约 2-3 周能跑通第一个 demo。',
         suggestions: [
           { text: '打开路线图', href: 'roadmap.html' },
-          { text: '打开 A1 第一节', href: 'learn.html?code=A1' }
+          { text: '打开 M1.1 第一节', href: 'learn.html?code=M1.1' }
         ]
       };
     }
     if (/支付|stripe|微信支付|收钱/i.test(text)) {
       return {
-        text: '海外用 Stripe（首选）或 Paddle / LemonSqueezy（Stripe 不行的国家）。国内用微信支付或支付宝。\n\n课程 C13 节专门讲海外订阅支付。',
+        text: '海外用 Stripe（首选）或 Paddle / LemonSqueezy（Stripe 不行的国家）。国内用微信支付或支付宝。\n\n课程 M8.5 节专门讲海外订阅支付。',
         suggestions: [
-          { text: '打开 C13 课程', href: 'learn.html?code=C13' },
+          { text: '打开 M8.5 课程', href: 'learn.html?code=M8.5' },
           'Stripe 还是 Paddle'
         ]
       };
@@ -449,7 +537,7 @@
     }
     if (/坑|常见问题/i.test(text)) {
       return {
-        text: '前三大坑：\n1. SPEC 写太模糊 → AI 出的代码全跑偏\n2. 没用 git → 改坏了回不去\n3. 环境变量直接写在代码里 → 推到 GitHub 泄露密钥\n\n对应课程：A6 / B2 / B10。',
+        text: '前三大坑：\n1. SPEC 写太模糊 → AI 出的代码全跑偏\n2. 没用 git → 改坏了回不去\n3. 环境变量直接写在代码里 → 推到 GitHub 泄露密钥\n\n对应课程：M2.3 / M4.2 / M4.5。',
         suggestions: ['SPEC 怎么写', 'GitHub 怎么用']
       };
     }
@@ -466,13 +554,78 @@
 
   function stageToLessons(stage) {
     const map = {
-      '需求定义': 'A6 跟 AI 讨论需求（SPEC 起点）+ A5 第一个网站',
-      '原型': 'A5 / A9 / A10（黑话翻译器、哄哄模拟器）',
-      '开发': 'B6 进入深水区 + B3 数据库 + B4 用户认证',
-      '部署': 'B12 部署上线 + B13 域名配置',
-      '上线': 'D16 冷启动 + D17 产品里种传播'
+      '需求定义': 'M2.3 跟 AI 讨论需求（SPEC 起点）+ M2.2 第一个网站',
+      '原型': 'M2.2 / M2.6 / M2.7（黑话翻译器、哄哄模拟器）',
+      '开发': 'M3.6 进入深水区 + M3.3 数据库 + M3.4 用户认证',
+      '部署': 'M5.4 部署上线 + M5.5 域名配置',
+      '上线': 'M12.1 冷启动 + M12.2 产品里种传播'
     };
     return map[stage] || map['需求定义'];
+  }
+
+  /* ---------- 章节级随学随问：进页面冒泡 + 划词提问 ---------- */
+  function openPanel(prefill) {
+    panel.classList.add('open');
+    hideNudge();
+    if (prefill) {
+      input.value = prefill;
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 80) + 'px';
+    }
+    setTimeout(() => input.focus(), 250);
+  }
+
+  let nudgeEl = null;
+  function hideNudge() { if (nudgeEl) nudgeEl.classList.remove('show'); }
+  function setupNudge(lesson) {
+    nudgeEl = document.createElement('div');
+    nudgeEl.className = 'assistant-nudge';
+    nudgeEl.innerHTML = '在学 <b>' + escapeHtml(lesson.code) + '</b> 卡住了？点我问 →<span class="nudge-x">×</span>';
+    root.appendChild(nudgeEl);
+    nudgeEl.addEventListener('click', e => {
+      if (e.target.classList.contains('nudge-x')) { e.stopPropagation(); hideNudge(); return; }
+      openPanel();
+    });
+    setTimeout(() => { if (!panel.classList.contains('open')) nudgeEl.classList.add('show'); }, 900);
+    setTimeout(hideNudge, 9000);
+  }
+
+  function setupSelectAsk() {
+    const article = document.querySelector('.article');
+    if (!article) return;
+    const tip = document.createElement('div');
+    tip.className = 'assistant-selask';
+    tip.textContent = '🤔 问刘小排';
+    document.body.appendChild(tip);
+    let lastText = '';
+    const hide = () => tip.classList.remove('show');
+    document.addEventListener('mouseup', () => {
+      setTimeout(() => {
+        const s = window.getSelection();
+        if (!s || s.isCollapsed) { hide(); return; }
+        const txt = s.toString().trim();
+        if (txt.length < 2 || txt.length > 280) { hide(); return; }
+        if (!article.contains(s.anchorNode) || !article.contains(s.focusNode)) { hide(); return; }
+        lastText = txt;
+        const rect = s.getRangeAt(0).getBoundingClientRect();
+        tip.style.left = (rect.left + rect.width / 2 + window.scrollX) + 'px';
+        tip.style.top = (rect.top + window.scrollY - 8) + 'px';
+        tip.classList.add('show');
+      }, 10);
+    });
+    tip.addEventListener('mousedown', e => e.preventDefault()); // 防点击清空选区
+    tip.addEventListener('click', () => {
+      const q = lastText.length > 50 ? lastText.slice(0, 50) + '…' : lastText;
+      hide();
+      openPanel('这段我没看懂：「' + q + '」，能用大白话讲讲吗？');
+    });
+    document.addEventListener('scroll', hide, true);
+  }
+
+  const _lesson = currentLesson();
+  if (_lesson) {
+    setupNudge(_lesson);
+    setupSelectAsk();
   }
 
   initGreeting();

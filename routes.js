@@ -1,5 +1,5 @@
 /* ============================================================
-   定制学习路线 · 数据（routes.js）— 12 条
+   定制学习路线 · 数据（routes.js）— 11 条专属航线（+ 全量主线 = 共 12 条）
    来源：① 现有 4 条「5 天体验课」教学方案（小程序/网站/AI员工/找方向，已并成 4 岛）；
         ② 第三期《实战手册》77 节（新方向，取真实节名）。
    设计依据：docs/plans/2026-06-08-学习路线文本框架-design.md
@@ -24,6 +24,10 @@ const ROUTES = {
     key: 'miniprogram', name: '开发一个小程序',
     promise: '从 0 到一个能上线、能变现的微信小程序',
     courseCount: 18,
+    /* 往期直播回放（小鹅通真实场次）；按内容归到本路线 */
+    lives: [
+      { t:'小程序制作与流量经验分享', date:'2026-05-18', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a0acc80e4b0694c350aaad7?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'用扣子 5 分钟做出 demo', title:'用扣子 5 分钟做出 demo',
         output:'1 个扣子 demo + 一张"小程序方向卡"',
@@ -74,6 +78,23 @@ const ROUTES = {
     key: 'aiwebsite', name: '上线你的第一个网站',
     promise: '从认识 AI 到上线一个真正的 AI 网页工具',
     courseCount: 13,
+    /* 往期直播回放（小鹅通真实场次，spu_id → /v4/course/alive/）；按内容归到本路线 */
+    lives: [
+      { t:'刘小排：高强度学习期开营直播', date:'2025-10-30', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69031d42e4b0694ca137af19?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'刘小排：内功篇导学', date:'2025-11-03', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69087d4ae4b0694c5b487adb?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'刘小排：订阅支付的原理 & 使用脚手架加快开发', date:'2025-11-11', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69130af7e4b0694ca140acae?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'刘小排：流量篇导读', date:'2025-11-26', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69266b93e4b0694ca14b27fa?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'章晗：0 基础使用刘小排课程的最佳攻略', date:'2025-12-03', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_692ff8e1e4b0694ca150d723?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'陈江河：0 基础 131 天跑通闭环，我做了些什么', date:'2025-12-29', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69523754e4b0694ca1625eaa?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'小辉：拆解竞品 + 跑通模板，从分析到动手', date:'2026-02-04', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6982b851e4b0694c34d70595?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'小辉：让网站能登录、能存图、能接更多模型', date:'2026-02-05', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69843f9ae4b0694c34d7b609?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'刘小排：快速入门串讲 + 答疑', date:'2026-03-30', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69ca24dbe4b0694c5ba4a959?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'井然：土木哥 AI 出海实录，从 0 到月入几万刀', date:'2026-04-07', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69d4da09e4b0694c34f5a573?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'刘小排：核心技术概念密集输入', date:'2026-04-13', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69dce299e4b0694c5bae870a?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'发布正式产品', date:'2026-05-11', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a017c5ae4b0694c3506d86e?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'从个人到 3-5 人小工作室：搭建流程及避坑', date:'2026-05-12', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a02c882e4b0694c35076610?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'商单入门：怎么接、怎么定价、怎么谈', date:'2026-06-08', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a262256e4b0694c5bd25a34?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'认识 AI：把它当超级实习生', title:'认识你的"超级实习生"',
         output:'一张"我和 AI 的关系卡" + 你的北极星目标',
@@ -183,6 +204,10 @@ const ROUTES = {
     key: 'aiemployee', name: '搭建你的 AI 员工',
     promise: '从"用 AI 工具"升级到"让 AI 替你自动干活"',
     courseCount: 15,
+    /* 往期直播回放（小鹅通真实场次）；按内容归到本路线 */
+    lives: [
+      { t:'把 AI 当员工', date:'2026-05-26', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a156747e4b0694c5bca5bd2?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'认知：把 AI 当员工，不是工具', title:'认知升级 · AI 是员工',
         output:'一份"AI 员工岗位清单"',
@@ -289,6 +314,12 @@ const ROUTES = {
     key: 'claudecode', name: '学习 Claude Code',
     promise: '从"AI 住在编辑器"升级到"AI 住在终端"，用对话驱动写码 / 部署',
     courseCount: 2,
+    /* 往期直播回放（小鹅通真实场次）；按内容归到本路线 */
+    lives: [
+      { t:'码叔编程：新手编程避坑指南', date:'2026-01-12', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6964b03fe4b0694ca16b4232?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'智昊：如何用 Skills 提效 vibe coding', date:'2026-02-05', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_698446c8e4b0694c5b8443ab?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'找到真需求、Claude Code 学习指南', date:'2026-04-27', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69ef2800e4b0694c5bb89791?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'认识 Claude Code（终端里的 AI）', title:'为什么要用这个"黑窗口"',
         output:'搞懂 Claude Code 是什么、强在哪，并装好它',
@@ -310,6 +341,11 @@ const ROUTES = {
     key: 'mcp', name: '解锁 MCP 和 Skills',
     promise: '给 AI 装上"连接一切的万能插头"和"上岗 SOP"',
     courseCount: 3,
+    /* 往期直播回放（小鹅通真实场次）；按内容归到本路线 */
+    lives: [
+      { t:'钱塘江鲤：如何用 Skills 控制 AI 自动帮你干活', date:'2026-02-04', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6982b9a6e4b0694c5b834a9a?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'成峰：用 Skills 做一个越用越聪明的剪辑 Agent', date:'2026-02-09', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_698941e9e4b0694c5b8699c7?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'用 MCP 给 AI 连上各种工具', title:'MCP：AI 的万能插头',
         output:'装好一个能用的 MCP',
@@ -360,6 +396,16 @@ const ROUTES = {
     key: 'idea', name: '找方向',
     promise: '从一堆模糊念头里，选出 1 个最该先做的 idea',
     courseCount: 14,
+    /* 往期直播回放（小鹅通真实场次）；按内容归到本路线 */
+    lives: [
+      { t:'刘小排：优秀产品案例拆解', date:'2025-11-18', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_691c64cee4b0694ca14597d0?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'邬轼：如何判断一个词值不值得做', date:'2026-02-04', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6982b925e4b0694c5b8349ff?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'前行：1 小时从 0 到上线，建站全流程实操', date:'2026-02-05', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69844633e4b0694c34d7bcfc?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'前行：找新词玩法 · 直播答疑', date:'2026-02-09', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69894d15e4b0694c34d964ae?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'小耳朵：我从完全不懂到做出产品，中间经历了什么', date:'2026-03-24', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69c2325fe4b0694c5ba06bf3?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'droidHZ：如何找到需求，并加速网站变现', date:'2026-05-06', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_69faed86e4b0694c5bbd1216?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+      { t:'我的产品怎么拿到前 100 个用户', date:'2026-06-01', url:'https://appamvpb5mq9834.h5.xiaoeknow.com/v4/course/alive/l_6a1d5c1ee4b0694c5bce5c7b?app_id=appamvpb5mq9834&alive_mode=0&type=2' },
+    ],
     islands: [
       { day:1, zone:'找 idea：去差评 / 产品里翻机会', title:'找 idea 是"打猎"不是"灵感"',
         output:'一份"产品方向诊断报告"',

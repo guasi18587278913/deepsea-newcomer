@@ -60,15 +60,6 @@ const ROUTE_ART = {
       "assets/route-isles/automedia-3.webp"
     ]
   },
-  "briefing": {
-    "biome": "晨曦薄雾",
-    "sea": "assets/route-seas/sea-briefing.webp",
-    "isles": [
-      "assets/route-isles/briefing-1.webp",
-      "assets/route-isles/briefing-2.webp",
-      "assets/route-isles/briefing-3.webp"
-    ]
-  },
   "workflow": {
     "biome": "丛林瀑布",
     "sea": "assets/route-seas/sea-workflow.webp",

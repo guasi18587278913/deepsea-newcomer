@@ -8,6 +8,7 @@
 <script>
 window.dsHomeUrl = function () {
   // 统一的「主页去向」规则，问卷结营卡也共用这一条，避免两处飘走
+  // 首页即直接进学习地图；「学习指南」改为导航里随时可看（不再强制首次落地）
   return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
 };
 (function () {
@@ -971,6 +972,29 @@ body::after {
   font-weight: 500;
 }
 
+/* 开场屏 · 加微信块 */
+.hero-wx {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.hero-wx .qr-wrap { margin-top: 0; padding: 12px; }
+.hero-wx .qr-image { width: 124px; height: 124px; }
+.hero-wx-copy { max-width: 230px; }
+.hero-wx-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1, #1e3a52);
+  margin-bottom: 8px;
+}
+.hero-wx-desc {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-2, #5a6b7a);
+}
+
 /* Secondary button */
 .btn-primary {
   display: inline-flex;
@@ -1341,9 +1365,20 @@ body::after {
         用&nbsp;AI&nbsp;编程，<span class="line-2">做<span class="hl">可持续</span>的<span class="serif-acc">&nbsp;生意</span>。</span>
       </h1>
 
+      <div class="hero-wx">
+        <div class="qr-wrap">
+          <img src="assets/wx-qr.jpg" alt="运营微信二维码" class="qr-image">
+          <div class="qr-caption">扫码或长按识别</div>
+        </div>
+        <div class="hero-wx-copy">
+          <div class="hero-wx-title">先加个运营小伙伴</div>
+          <div class="hero-wx-desc">进圈不迷路 —— 有问题随时找到人，也帮你把深海圈用明白。</div>
+        </div>
+      </div>
+
       <div class="hero-cta-wrap">
-        <button class="btn-primary-big" onclick="goToStep(2)">
-          <span>开始这段旅程</span>
+        <button class="btn-primary-big" onclick="enterMap()">
+          <span>进入学习地图</span>
           <span class="arrow-wrap">
             <span class="arrow-line"></span>
             <span class="arrow-tip"></span>
@@ -1382,160 +1417,11 @@ body::after {
     </div>
   </div>
 
-  <!-- Step 2: Background -->
-  <div class="step" id="step2">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">02</span>&nbsp;/&nbsp;06</span><span>BACKGROUND</span></div>
-    <h2 class="section-title">你的<span class="hl">编程基础</span></h2>
-    <p class="section-desc">选择最接近你当前状态的选项，帮我们为你定制学习路径。</p>
-    <div class="option-grid" id="exp-options">
-      <div class="option-card" onclick="selectOption(this, 'exp-options')">
-        <div class="option-title">零基础</div>
-        <div class="option-desc">从没写过代码，但对 AI 产品很感兴趣</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'exp-options')">
-        <div class="option-title">有基础</div>
-        <div class="option-desc">用过 ChatGPT/Claude，尝试过一些 AI 工具</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'exp-options')">
-        <div class="option-title">有产品经验</div>
-        <div class="option-desc">做过产品或创业项目，想用 AI 提升效率</div>
-      </div>
-    </div>
-    <div class="step-actions">
-      <button class="btn-back" onclick="goToStep(1)">← 上一步</button>
-      <button class="btn-primary" id="btn-step2" disabled onclick="goToStep(3)">
-        继续
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-      </button>
-    </div>
-  </div>
+  <!-- 新人问卷已移除：首页只保留开场屏，点「进入学习地图」直接进主页；选方向改到地图上的「找航线」弹窗 -->
 
-  <!-- Step 3: Goals -->
-  <div class="step" id="step3">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">03</span>&nbsp;/&nbsp;06</span><span>OBJECTIVE</span></div>
-    <h2 class="section-title">你的<span class="hl">目标</span></h2>
-    <p class="section-desc">你的目标决定了我们推荐的重点内容。</p>
-    <div class="option-grid" id="goal-options">
-      <div class="option-card" onclick="selectOption(this, 'goal-options')">
-        <div class="option-title">做产品赚钱</div>
-        <div class="option-desc">从 idea 到上线，做一个真正有人付费的产品</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'goal-options')">
-        <div class="option-title">提升技术</div>
-        <div class="option-desc">掌握 AI 编程能力，拓宽职业可能性</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'goal-options')">
-        <div class="option-title">产品出海</div>
-        <div class="option-desc">面向全球市场，做一个国际化的产品</div>
-      </div>
-    </div>
-    <div class="step-actions">
-      <button class="btn-back" onclick="goToStep(2)">← 上一步</button>
-      <button class="btn-primary" id="btn-step3" disabled onclick="goToStep(4)">
-        继续
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 4: Your Idea -->
-  <div class="step" id="step4">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">04</span>&nbsp;/&nbsp;06</span><span>YOUR&nbsp;IDEA</span></div>
-    <h2 class="section-title">你有想做的<span class="hl">产品 idea</span> 吗？</h2>
-    <p class="section-desc">课程里有默认教学项目（黑话翻译器、哄哄模拟器…）。如果你已经有自己的想法，下一步会进入 AI 刘小排的项目诊断。</p>
-    <div class="option-grid option-grid-2" id="idea-options">
-      <div class="option-card" onclick="selectIdeaOption(this, 'has')">
-        <div class="option-title">有，想做自己的</div>
-        <div class="option-desc">已经有产品想法，想让 AI 刘小排做一次完整诊断</div>
-      </div>
-      <div class="option-card" onclick="selectIdeaOption(this, 'no')">
-        <div class="option-title">还没有，先跟课程做</div>
-        <div class="option-desc">先跟教学项目走，做完第一个 demo 再想</div>
-      </div>
-    </div>
-    <div class="step-actions">
-      <button class="btn-back" onclick="goToStep(3)">← 上一步</button>
-      <button class="btn-primary" id="btn-step4" disabled onclick="continueFromIdea()">
-        继续
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 5: Daily Pace -->
-  <div class="step" id="step5">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">05</span>&nbsp;/&nbsp;06</span><span>CADENCE</span></div>
-    <h2 class="section-title">你每天大概能<span class="hl">投入多久</span>？</h2>
-    <p class="section-desc">我们会根据你的节奏，生成一份属于你的学习日历。节奏不是定死的，后面随时可以调。</p>
-    <div class="option-grid" id="pace-options">
-      <div class="option-card" onclick="selectOption(this, 'pace-options')" data-minutes="30">
-        <div class="option-title">每天 30 分钟</div>
-        <div class="option-desc">轻量节奏 · 约 8 个月完成 77 节课</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'pace-options')" data-minutes="60">
-        <div class="option-title">每天 1 小时</div>
-        <div class="option-desc">推荐节奏 · 约 4 个月完成 77 节课</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'pace-options')" data-minutes="120">
-        <div class="option-title">每天 2 小时</div>
-        <div class="option-desc">冲刺节奏 · 约 2 个月完成 77 节课</div>
-      </div>
-      <div class="option-card" onclick="selectOption(this, 'pace-options')" data-minutes="0">
-        <div class="option-title">我自己安排</div>
-        <div class="option-desc">不生成日历，按自己节奏自由推进</div>
-      </div>
-    </div>
-    <div class="step-actions">
-      <button class="btn-back" onclick="goToStep(4)">← 上一步</button>
-      <button class="btn-primary" id="btn-step5" disabled onclick="goToStep(6)">
-        继续
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 6: Ready -->
-  <div class="step" id="step6">
-    <div class="section-eyebrow"><span class="rule"></span><span><span class="num">06</span>&nbsp;/&nbsp;06</span><span>READY</span></div>
-    <h2 class="section-title">欢迎加入，这是一段<span class="hl">真正的旅程</span></h2>
-    <p class="section-desc">接下来，只需要做两件事。</p>
-    <ul class="ready-list">
-      <li>
-        <div class="ready-dot"></div>
-        <div class="ready-content">
-          <div class="ready-title">添加运营小伙伴微信</div>
-          <div class="ready-desc">了解你的背景，有问题可以直接找到人</div>
-          <div class="qr-wrap">
-            <img src="assets/wx-qr.jpg" alt="运营微信二维码" class="qr-image">
-            <div class="qr-caption">长按识别或扫码添加</div>
-          </div>
-        </div>
-      </li>
-    </ul>
-    <a href="roadmap.html" class="action-card" id="finalCard">
-      <div class="action-dot"></div>
-      <div class="action-content">
-        <div class="action-title" id="finalCardTitle">查看我的学习路线</div>
-        <div class="action-desc">根据你刚才的回答，我们已经为你生成了个性化的学习日历</div>
-      </div>
-      <svg class="action-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>
-    </a>
-    <div class="step-actions" style="margin-top:18px;">
-      <button class="btn-back" onclick="goToStep(5)">← 上一步</button>
-    </div>
-  </div>
 
 </div>
 
-<!-- Step indicator -->
-<div class="step-indicator">
-  <div class="step-dot active" onclick="goToStep(1)"></div>
-  <div class="step-dot" onclick="goToStep(2)"></div>
-  <div class="step-dot" onclick="goToStep(3)"></div>
-  <div class="step-dot" onclick="goToStep(4)"></div>
-  <div class="step-dot" onclick="goToStep(5)"></div>
-  <div class="step-dot" onclick="goToStep(6)"></div>
-</div>
 
 <script>
 // ?fresh=1：重置为全新状态（demo 专用）
@@ -1546,80 +1432,13 @@ if (_params.get('fresh') === '1') {
   history.replaceState(null, '', location.pathname);
 }
 
-let currentStep = 1;
-
-function goToStep(n) {
-  document.getElementById('step' + currentStep).classList.remove('active');
-  currentStep = n;
-  document.getElementById('step' + n).classList.add('active');
-  document.querySelectorAll('.step-dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === n - 1);
-  });
-  if (n === 6) setupFinalCard();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-/* 第 6 步那张卡片按「有没有 idea」决定去向：没 idea → 学习日历，有 idea → 学习路线 */
-function setupFinalCard() {
-  const card = document.getElementById('finalCard');
-  if (!card) return;
-  /* 走到第 6 步 = 问卷答完，置「已入营」标记：以后再进 welcome 会被顶部闸门直接放进主页 */
-  localStorage.setItem('ds_onboarded', 'true');
-  const hasIdea = localStorage.getItem('ds_has_idea') === 'has';
-  card.href = dsHomeUrl();   // 跟顶部闸门同一条规则
-  document.getElementById('finalCardTitle').textContent = hasIdea ? '查看我的学习路线' : '查看我的学习日历';
-}
-
-/* 入口路由：?step=N 跳到指定步骤 */
-(function () {
-  const stepParam = parseInt(_params.get('step') || '1', 10);
-  if (stepParam >= 2 && stepParam <= 6) {
-    setTimeout(() => goToStep(stepParam), 0);
-  }
-})();
-
-function selectOption(card, groupId) {
-  const group = document.getElementById(groupId);
-  group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  const title = card.querySelector('.option-title')?.textContent || '';
-  if (groupId === 'exp-options') {
-    document.getElementById('btn-step2').disabled = false;
-    localStorage.setItem('ds_experience', title); // 零基础 / 有基础 / 有产品经验
-  } else if (groupId === 'goal-options') {
-    document.getElementById('btn-step3').disabled = false;
-    localStorage.setItem('ds_goal', title); // 做产品赚钱 / 提升技术 / 产品出海
-  } else if (groupId === 'pace-options') {
-    document.getElementById('btn-step5').disabled = false;
-    const minutes = parseInt(card.dataset.minutes, 10);
-    localStorage.setItem('ds_daily_minutes', String(minutes));
-    if (!localStorage.getItem('ds_enrolled_at')) {
-      localStorage.setItem('ds_enrolled_at', '2026-05-04');
-    }
-  }
-}
-
-/* ============= Step 4: Idea capture (lightweight) ============= */
-function selectIdeaOption(card, type) {
-  const group = document.getElementById('idea-options');
-  group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  localStorage.setItem('ds_has_idea', type);
-  document.getElementById('btn-step4').disabled = false;
-  if (type === 'no') {
-    /* 选「没有 idea」: 清掉之前可能存在的项目数据 */
-    localStorage.removeItem('ds_project');
-  }
-}
-
-function continueFromIdea() {
-  const has = localStorage.getItem('ds_has_idea');
-  if (has === 'has') {
-    /* 诊断页已下线：直接进学习地图 */
-    location.href = 'calendar.html';
-  } else {
-    goToStep(5);
-  }
+/* 首页只剩一屏：点「进入学习地图」= 入营完成，打标记后进主页 */
+function enterMap() {
+  try {
+    localStorage.setItem('ds_onboarded', 'true');
+    if (!localStorage.getItem('ds_enrolled_at')) localStorage.setItem('ds_enrolled_at', '2026-05-04');
+  } catch (e) {}
+  location.href = dsHomeUrl();   // 跟顶部闸门同一条规则（默认进学习地图 calendar.html）
 }
 
 </script>
