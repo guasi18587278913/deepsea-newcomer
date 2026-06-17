@@ -78,6 +78,31 @@
 .route-dd .dd-item.cur .di-chk{opacity:1}
 .route-dd .dd-item.cur .di-ic{color:#fff;background:var(--teal)}
 .route-dd .dd-item.full .di-ic{color:#9a7a3a;background:rgba(200,152,84,.13)}
+.route-dd .dd-item.custom .di-ic{color:#0c7a70;background:rgba(13,148,136,.12)}
+.rec-dd-spark{width:17px;height:17px;color:#0c7a70}
+/* 刘小排定制 · 推荐清单卡（替代画岛，浮在海图中央）*/
+.rec-list{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:min(640px,92%);max-height:calc(100% - 34px);overflow:auto;background:rgba(255,255,255,.97);border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 44px -20px rgba(30,58,82,.42);padding:17px 18px 13px;z-index:6;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.rec-head{display:flex;align-items:center;gap:11px;padding-bottom:12px;margin-bottom:4px;border-bottom:1px solid var(--border-soft)}
+.rec-av{width:38px;height:38px;border-radius:50%;flex:none;background:#fff center/cover no-repeat;background-image:url('assets/liuxiaopai-avatar.png');box-shadow:0 0 0 1.5px rgba(13,148,136,.4)}
+.rec-t{font-size:16px;font-weight:700;color:var(--deep-blue);font-family:var(--font-display,serif)}
+.rec-sub{font-size:12px;color:#5c7a8a;margin-top:2px}
+.rec-items{list-style:none;margin:2px 0 0;padding:0}
+.rec-item{display:flex;align-items:flex-start;gap:10px;padding:11px 2px;border-bottom:1px solid var(--border-soft)}
+.rec-item:last-child{border-bottom:none}
+.rec-mark{flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;border:1.6px solid #cdd9da;background:#fff;color:#fff;font-size:12.5px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:all .15s;padding:0}
+.rec-item.done .rec-mark{background:var(--teal);border-color:var(--teal)}
+.rec-item.cur .rec-mark{border-color:var(--teal)}
+.rec-main{flex:1;min-width:0;display:flex;align-items:flex-start;gap:10px;text-decoration:none;color:inherit}
+.rec-code{flex:none;font-family:var(--font-mono,monospace);font-size:11.5px;font-weight:600;color:var(--teal);background:var(--teal-bg);padding:2px 7px;border-radius:6px;margin-top:1px}
+.rec-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rec-ttl{font-size:14px;font-weight:600;color:var(--deep-blue);line-height:1.4}
+.rec-item.done .rec-ttl{color:#8aa0a6;text-decoration:line-through}
+.rec-why{font-size:12px;color:#5c7a8a;line-height:1.5}
+.rec-arr{flex:none;color:var(--teal);font-size:14px;opacity:0;transition:all .15s;margin-top:1px}
+.rec-main:hover .rec-arr{opacity:1;transform:translateX(2px)}
+.rec-main:hover .rec-ttl{color:var(--teal)}
+.rec-foot{margin-top:11px;padding-top:10px;border-top:1px solid var(--border-soft);font-size:12px;color:#94a3b8}
+.rec-foot a{color:var(--teal);font-weight:600;text-decoration:none}
 /* ===== 切换确认框 ===== */
 .route-cfm-mask{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(18,38,44,.46);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:20px}
 .route-cfm-mask.show{display:grid}
@@ -194,6 +219,24 @@
     { cat:'skill', key:'spec',       icon:'spec', t:'学会和 AI 提需求', p:'把模糊想法，说成 AI 能一次做对的「任务书」', fit:'所有人 —— 用好 AI 编程的地基', out:'一份能让 AI 一次做对的 SPEC', tag:'地基 · 人人', tagc:'teal' },
     { cat:'start', key:'idea', icon:'compass', t:'找产品需求', p:'还没想好做啥？先从一堆模糊念头里，选出 1 个最该先做的产品需求' },
   ];
+  /* ===== 刘小排定制清单 · 把问诊结果当一条「路线」注册（渲染成清单，不画岛）=====
+     问诊页写入 ds_route_custom = { name, promise, items:[{code,t,why}] }，并把 ds_route 置为 'diagnosis'。
+     这里包成 route 形状，复用进度 / 切换 / 标题 等现成管道；渲染时由 render() 分支成清单卡。 */
+  function _esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  const SPARK = '<svg class="rec-dd-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"/></svg>';
+  try {
+    const _cr = JSON.parse(localStorage.getItem('ds_route_custom') || 'null');
+    if (_cr && _cr.items && _cr.items.length) {
+      ROUTES['diagnosis'] = {
+        key:'diagnosis', name:_cr.name || '刘小排定制', promise:_cr.promise || '按你的想法挑的重点章节',
+        courseCount:_cr.items.length, custom:true, items:_cr.items,
+        islands:[{ zone:'刘小排为你挑的重点', title:'刘小排为你挑的重点', output:'',
+          flow:_cr.items.map(function (it) { return { type:'course', code:it.code, t:it.t, mins:0 }; }) }]
+      };
+      SHORT['diagnosis'] = '刘小排定制';
+    }
+  } catch (e) {}
+
   /* ---------- 引导问卷数据：4 步（基础→诉求→产品分流→时间）→ 结果页 ---------- */
   const QUIZ = {
     q1: { step:1, title:'你现在大概是什么基础？', key:'level',
@@ -241,6 +284,7 @@
   const ddMenu = document.createElement('div'); ddMenu.id = 'routeDD'; ddMenu.className = 'route-dd';
   ddMenu.innerHTML = '<div class="dd-cap">默认</div>'
     + `<button class="dd-item full" data-key="full"><span class="di-ic">${DD_FULL}</span><span class="di-t">全量航海图 · 全部课程</span>${DD_CHK}</button>`
+    + (ROUTES['diagnosis'] ? `<div class="dd-sep"></div><div class="dd-cap">为你定制</div><button class="dd-item custom" data-key="diagnosis"><span class="di-ic">${SPARK}</span><span class="di-t">${_esc(ROUTES['diagnosis'].name)}</span>${DD_CHK}</button>` : '')
     + `<div class="dd-sep"></div><div class="dd-cap">${RMETA.length} 条航线</div>`
     + RMETA.map(o => `<button class="dd-item" data-key="${o.key}"><span class="di-ic">${RICN[o.icon]}</span><span class="di-t">${o.t}</span>${DD_CHK}</button>`).join('');
   document.body.appendChild(ddMenu);
@@ -438,6 +482,33 @@
     });
   }
 
+  /* ---------- 刘小排定制：把推荐章节渲染成一张清单卡（替代画岛）---------- */
+  function renderRecList(r, done) {
+    const wrap = document.getElementById('kmWrap'); wrap.classList.add('route-mode');
+    const ship = document.getElementById('kmShip'); if (ship) ship.style.display = 'none';
+    let host = document.getElementById('routeIslands');
+    if (!host) { host = document.createElement('div'); host.id = 'routeIslands'; wrap.appendChild(host); }
+    const items = r.items || [], nc = nextCode(r, done);
+    const rows = items.map(function (it) {
+      const d = done.has(it.code), isCur = it.code === nc, st = d ? 'done' : (isCur ? 'cur' : '');
+      return '<li class="rec-item ' + st + '">'
+        + '<button class="rec-mark" data-code="' + _esc(it.code) + '" title="' + (d ? '已学完 · 点击撤销' : '标记已学完') + '" onclick="event.stopPropagation();toggleRouteCourse(this.dataset.code)">' + (d ? '✓' : '') + '</button>'
+        + '<a class="rec-main" href="learn.html?code=' + encodeURIComponent(it.code) + '">'
+        +   '<span class="rec-code">' + _esc(it.code) + '</span>'
+        +   '<span class="rec-tx"><span class="rec-ttl">' + _esc(it.t) + '</span>'
+        +   (it.why ? '<span class="rec-why">' + _esc(it.why) + '</span>' : '') + '</span>'
+        +   '<span class="rec-arr">→</span>'
+        + '</a></li>';
+    }).join('');
+    const dN = items.filter(function (it) { return done.has(it.code); }).length;
+    host.innerHTML = '<div class="rec-list">'
+      + '<div class="rec-head"><span class="rec-av" role="img" aria-label="刘小排"></span><div><div class="rec-t">刘小排为你挑的重点</div>'
+      +   '<div class="rec-sub">' + _esc(r.promise || '') + ' · 共 ' + items.length + ' 章 · 已看 ' + dN + '</div></div></div>'
+      + '<ol class="rec-items">' + rows + '</ol>'
+      + '<div class="rec-foot">想换个方向？<a href="diagnosis.html">重新问诊</a> · 或在上方「找到适合你的航线」里切回全量航海图</div>'
+      + '</div>';
+  }
+
   let _openDay = 1;
 
   /* ---------- 路线抽屉：按岛的显式 flow 渲染（图文/视频/作业），视频&作业未学到则灰显 ---------- */
@@ -556,7 +627,13 @@
   const _render = window.render;
   window.render = function () {
     const r = getRoute();
-    if (r) { const done = routeDone(); const _hh = document.getElementById('homeHero'); if (_hh) _hh.style.display = ''; const _fab = document.getElementById('kmFab'); if (_fab) _fab.style.display = 'none';  /* 路线模式用 #homeHero 卡，收掉默认图浮窗 #kmFab，避免不刷新切路线时两张卡叠出 */ renderRouteMap(r, done); renderRouteHero(r, done); updateRouteHead(r); return; }
+    if (r) {
+      const done = routeDone();
+      const _hh = document.getElementById('homeHero'); const _fab = document.getElementById('kmFab'); if (_fab) _fab.style.display = 'none';
+      if (r.custom) { if (_hh) _hh.style.display = 'none'; renderRecList(r, done); updateRouteHead(r); return; }   /* 定制线：清单自带全部章节，收掉继续学习卡 */
+      if (_hh) _hh.style.display = '';   /* 标准航线用 #homeHero 卡，收掉默认图浮窗 #kmFab，避免切路线时两张卡叠出 */
+      renderRouteMap(r, done); renderRouteHero(r, done); updateRouteHead(r); return;
+    }
     const wrap = document.getElementById('kmWrap'); if (wrap) wrap.classList.remove('route-mode');
     const host = document.getElementById('routeIslands'); if (host) host.innerHTML = '';  /* 退出 route 态：清掉 route 岛，避免与写死岛重叠 + bindInteractions 误绑崩溃 */
     if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }

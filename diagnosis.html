@@ -237,6 +237,7 @@ const composer = document.getElementById('composer');
 let stage = 'await-intent';   // await-intent → await-clarify → done
 let profile = null;
 let userIntentText = '';
+let lastRec = null;   // 最近一次问诊挑出的章节（含标题/why），用于生成「刘小排定制」清单
 
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
@@ -311,6 +312,7 @@ function renderDiagnosis(overseas, domestic){
   else if (domestic && profile.domestic) lessons[4] = profile.domestic;
 
   const codes = lessons.map(l => l[0]);
+  lastRec = lessons.map(l => ({ code: l[0], t: lessonTitle(l[0]), why: l[1] }));   /* 给「刘小排定制」清单用：章节号 + 标题 + 为什么 */
 
   const lessonsHtml = lessons.map(([code, why]) =>
     '<div class="lesson" onclick="goLesson(\''+code+'\')">' +
@@ -325,12 +327,12 @@ function renderDiagnosis(overseas, domestic){
   card.innerHTML =
     '<div class="dc-tag">问诊结果</div>' +
     '<div class="dc-understand">你想做的是 <span class="q">「'+esc(profile.understand)+'」</span>，这超出了 11 条标准路线能直接覆盖的范围。</div>' +
-    '<div class="boundary">🧭&nbsp;<div><b>关于可控性：</b>路线分流仍然归问卷管，我<b>不替你新生成一条路线</b>（那不可控）。我只做一件事 —— 从课程 77 节里，挑出跟你这个需求真正相关的几章，告诉你重点看哪些。</div></div>' +
+    '<div class="boundary">🧭&nbsp;<div><b>关于这份清单：</b>我从课程 77 节里，挑出跟你这个需求真正相关的几章，<b>给你连成一条专属清单</b>。它会进你的学习地图，随时能<b>切回全量航海图</b>。</div></div>' +
     '<div class="dc-sec-title"><span class="n">★</span>为你挑的重点章节（按学习顺序）</div>' +
     lessonsHtml +
     '<div class="dc-actions">' +
       '<a class="btn btn-primary" onclick="saveProject(\''+esc(codes.join(','))+'\')" href="learn.html?code='+codes[0]+'">先看第一章：'+codes[0]+' →</a>' +
-      '<button class="btn btn-ghost" onclick="finishDiagnosis(\''+esc(codes.join(','))+'\')">'+(fromWelcome?'完成，继续设置 →':'完成，进入学习')+'</button>' +
+      '<button class="btn btn-ghost" onclick="finishDiagnosis(\''+esc(codes.join(','))+'\')">'+(fromWelcome?'完成，继续设置 →':'完成 · 进我的学习地图 →')+'</button>' +
     '</div>';
   chat.appendChild(card);
   card.scrollIntoView({behavior:'smooth', block:'end'});
@@ -356,11 +358,21 @@ function persist(codesStr){
   try {
     localStorage.setItem('ds_project', JSON.stringify(buildProject(codesStr)));
     localStorage.setItem('ds_has_idea', 'has');
+    /* 把推荐清单存成「刘小排定制」航线 + 设为当前航线（学习地图据此画清单卡，可在切换菜单切回全量图）*/
+    if (lastRec && lastRec.length) {
+      localStorage.setItem('ds_route_custom', JSON.stringify({
+        name: '刘小排定制 · ' + (userIntentText.length > 12 ? userIntentText.slice(0,12) + '…' : (userIntentText || '你的想法')),
+        promise: (profile && profile.understand) || '',
+        items: lastRec
+      }));
+      localStorage.setItem('ds_route', 'diagnosis');
+      localStorage.removeItem('ds_route_completed');   /* 重开问诊 = 新清单从头来过，别串上一版的"已学"标记 */
+    }
   } catch(e) {}
 }
 function goLesson(code){ persist(code); location.href = 'learn.html?code=' + code; }
 function saveProject(codesStr){ persist(codesStr); /* href 继续跳第一章 */ }
-function finishDiagnosis(codesStr){ persist(codesStr); location.href = returnUrl; }
+function finishDiagnosis(codesStr){ persist(codesStr); location.href = fromWelcome ? returnUrl : 'calendar.html'; }
 
 /* ---- 开场 ---- */
 window.addEventListener('DOMContentLoaded', () => {
