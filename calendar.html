@@ -394,14 +394,14 @@ body.route-sea .sea-veil{ background:
 .km-wrap .island.cur .pin{display:inline-block;font-size:12.5px;padding:5px 13px;animation:hereBob 2.6s ease-in-out infinite}
 .km-wrap .zone{font-size:10.5px;font-family:var(--font-mono);color:var(--gold);letter-spacing:.06em;font-weight:600}
 .km-wrap .zone b{color:var(--deep-blue);font-size:12.5px}
-.km-wrap .island.locked .zone{color:#9aa7ad}.km-wrap .island.locked .zone b{color:#5c7280}
-.km-wrap .nm{font-family:var(--font-display);font-size:15.5px;font-weight:700;color:var(--deep-blue);line-height:1.15;margin-top:1px;text-shadow:0 1px 3px rgba(247,250,249,.9)}
-.km-wrap .island.locked .nm{color:#4a5a68}
+.km-wrap .island.locked .zone{color:#8a98a0}.km-wrap .island.locked .zone b{color:#46606c}
+.km-wrap .nm{font-family:var(--font-display);font-size:15.5px;font-weight:700;color:var(--deep-blue);line-height:1.15;margin-top:1px;text-shadow:0 1px 3px rgba(247,250,249,.98),0 0 11px rgba(247,250,249,.72)}
+.km-wrap .island.locked .nm{color:#37485a}
 .km-wrap .nm .lk{display:none;font-size:11px;opacity:.6}
 .km-wrap .island.locked .nm .lk{display:inline}
 .km-wrap .comps{display:none}
-.km-wrap .dt{font-size:10px;font-family:var(--font-mono);color:var(--text-3);margin-top:3px;text-shadow:0 1px 2px rgba(247,250,249,.9)}
-.km-wrap .dt b{color:var(--teal-deep);font-weight:700;font-size:11.5px}
+.km-wrap .dt{font-size:10.5px;font-family:var(--font-mono);color:#577079;font-weight:600;margin-top:3px;text-shadow:0 1px 2px rgba(247,250,249,.96)}
+.km-wrap .dt b{color:var(--teal-deep);font-weight:700;font-size:12px}
 .km-wrap .island.cur .dt{color:var(--teal-deep)}
 .km-wrap .island.done .dt{color:#5c8a72}
 /* 「继续学习」已挪到右下角浮窗 #kmFab；岛边木牌(.km-go)及其样式已移除 */
@@ -434,6 +434,12 @@ body.route-sea .sea-veil{ background:
 .km-fab .kf-arr{flex:none;font-size:12px;font-weight:800;color:#9ed0c3}
 .km-fab .kf-task{width:100%;box-sizing:border-box;font-size:11px;font-weight:600;color:#a9762a;background:rgba(200,152,84,.16);border:1px solid rgba(200,152,84,.4);border-radius:7px;padding:5px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .km-fab .kf-task.done{color:#1f6f6a;background:var(--teal-bg);border-color:rgba(13,148,136,.3)}
+/* 特写页「本岛全部标记已学」按钮（课程列表上方）*/
+.isle-focus .if-markall{display:inline-flex;align-items:center;gap:6px;margin:2px 0 12px;padding:7px 15px;border-radius:999px;border:1px solid rgba(13,148,136,.45);background:rgba(232,246,245,.72);color:#0c6f66;font-family:var(--font-sans);font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,transform .12s}
+.isle-focus .if-markall:hover{background:#d7eeec;border-color:#0d9488;transform:translateY(-1px)}
+.isle-focus .if-markall svg{width:15px;height:15px}
+.isle-focus .if-markall.is-clear{color:#a9762a;border-color:rgba(200,152,84,.5);background:rgba(200,152,84,.12)}
+.isle-focus .if-markall.is-clear:hover{background:rgba(200,152,84,.2)}
 /* 组件牌 */
 .km-tag{position:absolute;transform:translate(-50%,-50%);background:linear-gradient(180deg,rgba(253,250,240,.92),rgba(245,238,218,.92));border:1px solid rgba(205,184,134,.85);border-radius:6px;padding:2px 7px;font-size:9.5px;font-weight:600;color:#5a4a2a;white-space:nowrap;box-shadow:0 3px 7px -3px rgba(90,70,30,.4);cursor:pointer;z-index:7;transition:.14s;line-height:1.18;text-align:center;backdrop-filter:blur(1px)}
 .km-tag .tk{display:block;font-size:8.5px;font-weight:500;color:#8a7038;font-family:var(--font-mono);margin-top:0}
@@ -463,12 +469,20 @@ body.km-routed .km-view-toggle{display:none}
 .kvt-btn:not(.active):hover{color:var(--teal-deep)}
 .kvt-btn.active{background:var(--teal);color:#fff;box-shadow:0 3px 9px -3px rgba(13,148,136,.55)}
 .kvt-btn:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+/* 一键全部标记已学（顶栏，与视图切换同排）：青色描边药丸；标满后切「清空标记」金色态 */
+.km-markall{display:inline-flex;align-items:center;gap:6px;flex:none;cursor:pointer;font-family:var(--font-sans);font-size:12.5px;font-weight:600;color:var(--teal-deep);padding:7px 14px;border-radius:999px;border:1px solid rgba(13,148,136,.32);background:rgba(255,255,255,.82);box-shadow:0 2px 9px -5px rgba(30,80,90,.3);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);transition:color .15s,background .15s,border-color .15s,transform .15s}
+.km-markall svg{width:14px;height:14px;flex:none}
+.km-markall:hover{border-color:var(--teal);background:#eafaf8;transform:translateY(-1px)}
+.km-markall.is-clear{color:#a06a32;border-color:rgba(200,152,84,.5)}
+.km-markall.is-clear:hover{border-color:var(--gold);background:#fbf4e6}
+.km-markall:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
 .kvt-sep{width:1px;height:16px;background:var(--border);flex:none}
 
 /* 列表平铺：默认隐藏；body.km-list 时顶替海图（海面背景仍在底层透出）*/
 .km-list-view{display:none}
 body.km-list #kmWrap{display:none}
 body.km-list #kmFab{display:none!important}
+body.km-list .app>.wrap{min-height:0}  /* 关键：让外层容器可被压缩，列表才会在自己区域内出滚动条（否则被 77 张卡撑高、被整页 overflow:hidden 裁掉 → 滑不动）*/
 body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow-y:auto;position:relative;z-index:6;gap:22px;padding:4px 2px 34px}
 .klv-head{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin:0 2px 12px;padding-bottom:9px;border-bottom:1px solid rgba(200,152,84,.34)}
 .klv-num{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--gold)}
@@ -512,6 +526,7 @@ body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-
           <span class="kvt-sep"></span>
           <button class="kvt-btn" type="button" data-view="list" aria-pressed="false"><svg class="kvt-ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h10M7 10h10M7 15h10M3.5 5h.01M3.5 10h.01M3.5 15h.01"/></svg>列表</button>
         </div>
+        <!-- 「全部标记已学」已挪到岛展开后的卡里（特写页课程列表上方·标记本岛）；此处不再放 -->
       </div>
     </div>
     <section class="home-hero" id="homeHero">
@@ -1089,6 +1104,49 @@ window.toggleCourse = function (code) {
   const lc = COURSES.find(c => c.code === code);
   showToast((lc ? `《${cleanTitle(lc.t)}》` : '这一节') + (nowDone ? ' 已标记学完 ✓' : ' 已取消标记'));
 };
+/* —— 一键全部标记已学（77 节）：顶栏按钮。标全 → 进度条/小船直接到顶 + 解锁毕业卡(证书)；
+   再点=清空（小船按既有规则「只升不降」，等级不回退）。标全时升级仪式只弹一次（setShipLevel 跨级单弹）。—— */
+window.markAllToggle = function () {
+  const all = COURSES.map(c => c.code);
+  const set = getCompleted();
+  const allDone = all.length > 0 && all.every(c => set.has(c));
+  if (!allDone) {
+    if (!confirm('确定把全部 ' + all.length + ' 节都标记为「已学」吗？\n进度条和小船会直接到顶，并解锁结业证书。')) return;
+    localStorage.setItem('ds_completed_demo', JSON.stringify(all));
+    render();
+    showToast('已把全部 ' + all.length + ' 节标记为已学 🎉');
+  } else {
+    if (!confirm('确定清空全部学习标记吗？（小船等级不会退回）')) return;
+    localStorage.setItem('ds_completed_demo', '[]');
+    render();
+    showToast('已清空全部标记');
+  }
+  if (window.IsleFocus && window.IsleFocus.isOpen()) window.IsleFocus.refresh();
+};
+/* —— 本岛全部标记已学（特写页按钮）：把当前岛 stage 的全部课一次标记 / 清空，进度·船·岛点亮即时联动 —— */
+window.markStageAll = function (stageNum) {
+  const codes = COURSES.filter(c => c.stage === stageNum).map(c => c.code);
+  if (!codes.length) return;
+  const set = getCompleted();
+  const allDone = codes.every(c => set.has(c));
+  if (allDone) codes.forEach(c => set.delete(c)); else codes.forEach(c => set.add(c));
+  localStorage.setItem('ds_completed_demo', JSON.stringify(Array.from(set)));
+  render();
+  if (window.IsleFocus && window.IsleFocus.isOpen()) window.IsleFocus.refresh();
+  showToast(allDone ? '已清空本岛标记' : '本岛 ' + codes.length + ' 节已全部标记 ✓');
+};
+function syncMarkAllBtn(completed) {
+  const btn = document.getElementById('kmMarkAll');
+  if (!btn) return;
+  const set = completed || getCompleted();
+  const all = COURSES.map(c => c.code);
+  const allDone = all.length > 0 && all.every(c => set.has(c));
+  btn.classList.toggle('is-clear', allDone);
+  btn.title = allDone ? '清空全部学习标记' : '把全部 ' + all.length + ' 节一次标记为已学';
+  btn.innerHTML = allDone
+    ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12M8 7V5.4h4V7M6.5 7l.7 8.6h5.6L13.5 7"/></svg>清空标记'
+    : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l3.5 3.5L16 6"/></svg>全部标记已学';
+}
 function gotoLive(url) { if (url) { window.open(url, '_blank', 'noopener'); } else { showToast('视频 · 跳小鹅通观看（demo）'); } }
 
 /* 点岛 → 进二级「小岛地图」isle.html。四岛均启用（isle.html 支持 ?stage=A/B/C/D）。*/
@@ -1153,7 +1211,16 @@ function focusTier() { return getCurrentStage(getCompleted()); }   // 船等级 
 function mountStageFlow(slot, stage) {
   _fillCalloutContent(stage, null);
   const flow = document.getElementById('kdFlow');
-  slot.innerHTML = '<div class="if-route-flow"><ul class="kd-flow">' + (flow ? flow.innerHTML : '') + '</ul></div>';
+  /* 本岛「全部标记已学」按钮：放课程列表正上方；本岛已全标 → 切「清空本岛」态 */
+  const set = getCompleted();
+  const codes = COURSES.filter(c => c.stage === stage).map(c => c.code);
+  const allDone = codes.length > 0 && codes.every(c => set.has(c));
+  const markBtn = '<button class="if-markall' + (allDone ? ' is-clear' : '') + '" type="button" onclick="markStageAll(' + stage + ')">'
+    + (allDone
+        ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12M8 7V5.4h4V7M6.5 7l.7 8.6h5.6L13.5 7"/></svg>清空本岛标记'
+        : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l3.5 3.5L16 6"/></svg>本岛全部标记已学')
+    + '</button>';
+  slot.innerHTML = '<div class="if-route-flow">' + markBtn + '<ul class="kd-flow">' + (flow ? flow.innerHTML : '') + '</ul></div>';
   return null;
 }
 function pushUrl(letter, mode) {
@@ -1348,6 +1415,7 @@ function render() {
   renderIslandMap(completed, nextCourse);
   renderHero(allCourses, completed, nextCourse);
   renderFab(completed, nextCourse);
+  syncMarkAllBtn(completed);
 }
 
 /* 重点带（默认全量图专用，原右下角浮窗升级）：继续学习 + 总进度 + 提醒(直播占位/本阶段作业)。
@@ -1414,7 +1482,7 @@ function showToast(msg) {
 </script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','course.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){
@@ -1502,6 +1570,8 @@ function showToast(msg) {
   function setView(v) {
     if (isRouted()) return;
     try { localStorage.setItem(VIEW_KEY, v); } catch (e) {}
+    /* 清掉 URL 里的 ?view=list/map，免得刷新时旧参数又把视图按死（保留 ?view=all 给演示绕闸用）*/
+    try { var u = new URL(location.href), pvv = (u.searchParams.get('view') || '').toLowerCase(); if (pvv === 'list' || pvv === 'map') { u.searchParams.delete('view'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}
     document.body.classList.toggle('km-list', v === 'list');
     syncButtons(v);
     try { if (window.closeCallout) closeCallout(); } catch (e) {}
@@ -1520,11 +1590,16 @@ function showToast(msg) {
     window.render = function () { var r = _render.apply(this, arguments); try { syncView(); } catch (e) {} return r; };
   }
 
-  /* 首屏：route-art-apply 的初次 render 在本脚本之前已跑过 → 这里补一次同步 */
+  /* 首屏：route-art-apply 的初次 render 在本脚本之前已跑过 → 这里补一次同步。
+     URL 直达视图：?view=list（「全部课程」入口 / 老 course.html 跳转过来）→ 列表；?view=map/all 或 ?stage= → 地图 */
+  var sp = new URLSearchParams(location.search);
+  var pv = (sp.get('view') || '').toLowerCase();
   var deepStage = /[?&]stage=/.test(location.search);
+  if (pv === 'list') { try { localStorage.setItem(VIEW_KEY, 'list'); } catch (e) {} }
+  else if (pv === 'map' || pv === 'all') { try { localStorage.setItem(VIEW_KEY, 'map'); } catch (e) {} }
   syncView();
   if (deepStage) { document.body.classList.remove('km-list'); syncButtons('map'); }   /* 深链 ?stage= 要进岛特写 → 本次强制地图，让潜入动画有真岛可依 */
-  else if (document.body.classList.contains('km-list')) { window.__AUTO_DIVE = null; }  /* 列表偏好 → 不自动潜入 */
+  else if (document.body.classList.contains('km-list')) { window.__AUTO_DIVE = null; }  /* 列表 → 不自动潜入 */
 })();
 </script>
 <script>
