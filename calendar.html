@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>深海圈 | 你的学习地图</title>
+<script>/* 权限闸：没通过审核别进学习地图，弹回报名落地页。演示态（?view=all / ?demo / ?fresh / ?route）与已通过审核者放行 */
+(function(){try{
+  var p=new URLSearchParams(location.search);
+  if(p.get('view')==='all'||p.has('demo')||p.get('fresh')==='1'||p.has('route'))return;
+  var approved=localStorage.getItem('ds_approved')==='1'||localStorage.getItem('ds_onboarded')==='true'||!!localStorage.getItem('ds_enrolled_at');
+  if(!approved)location.replace('enrolled.html');
+}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script>/* 仅默认全量航海图才预载主海 sea-i；选了专属航线（?route= 或 ds_route）时它用不上，避免白下载 ~208KB */
@@ -12,7 +19,7 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="topbar.css">
 <link rel="stylesheet" href="isle-view.css?v=mm1">
-<link rel="stylesheet" href="isle-focus.css?v=mm5">
+<link rel="stylesheet" href="isle-focus.css?v=mm6">
 <style>
 /* ===== 神奇移动·岛屿聚焦：浮层透明（透出同一片海，不另起一张图）。聚焦的岛从真岛位置长出、收起飞回，
    全程一片海、不交叉淡入。挂载点 #isleDiveRoot ===== */
@@ -24,7 +31,7 @@
 .app .km-head, .app #ds-topbar { transition: opacity .3s ease; }
 .app.diving .km-head { opacity: 0; pointer-events: none; }
 .app.diving #ds-topbar { opacity: 0; pointer-events: none; }
-.app.diving #kmWrap .island, .app.diving #routeIslands .route-isle, .app.diving .km-route, .app.diving #kmShip { visibility: hidden; }
+.app.diving #kmWrap .island, .app.diving #routeIslands .route-isle, .app.diving .km-route, .app.diving #kmShip, .app.diving #kmWrap .sea-float { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { #isleDive, .app .km-head, .app #ds-topbar { transition: none; } }
 </style>
 <style>
@@ -394,20 +401,39 @@ body.route-sea .sea-veil{ background:
 .km-wrap .island.locked .nm .lk{display:inline}
 .km-wrap .comps{display:none}
 .km-wrap .dt{font-size:10px;font-family:var(--font-mono);color:var(--text-3);margin-top:3px;text-shadow:0 1px 2px rgba(247,250,249,.9)}
+.km-wrap .dt b{color:var(--teal-deep);font-weight:700;font-size:11.5px}
+.km-wrap .island.cur .dt{color:var(--teal-deep)}
+.km-wrap .island.done .dt{color:#5c8a72}
 /* 「继续学习」已挪到右下角浮窗 #kmFab；岛边木牌(.km-go)及其样式已移除 */
-/* 右下角浮窗（默认全量图）：继续学习 + 直播动态，米白描金小卡，停在地图右下角水面 */
-.km-fab{position:absolute;right:2.4%;bottom:6%;z-index:6;display:flex;flex-direction:column;gap:7px;width:248px;max-width:46vw;padding:9px 11px;border-radius:13px;background:linear-gradient(180deg,#fffdf7,#f5ecd7);border:1px solid rgba(200,152,84,.6);box-shadow:0 14px 30px -12px rgba(120,90,30,.55),inset 0 1px 0 rgba(255,255,255,.78)}
+/* 右下角浮窗（默认全量图）：继续学习 + 进度 + 直播小黑板 + 作业，米白描金小卡，停在地图右下角水面。
+   ⚠️ 曾被「上提」拍平成横跨「标题↔海图」的一行大横条(挡图/很挤/直播被压成小药丸)，现复原回
+   右下角竖排小卡；直播单拎出来做成「贴在海图角上的小黑板」(深板+木框+微倾+粉笔字)，醒目又不挡图。
+   仍是默认全量图专用；专属航线模式由 routes-ui 的 render 按 id 隐藏(零冲突)。*/
+.km-fab{position:absolute;right:22px;bottom:20px;z-index:7;display:flex;flex-direction:column;align-items:stretch;gap:9px;width:250px;max-width:calc(100vw - 40px);margin:0;padding:12px 13px 13px;border-radius:13px;background:linear-gradient(180deg,#fffdf7,#f5ecd4);border:1px solid rgba(200,152,84,.6);box-shadow:0 20px 40px -18px rgba(120,90,30,.5),inset 0 1px 0 rgba(255,255,255,.82)}
 .km-fab a{text-decoration:none}
-.km-fab .kf-live{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:8px;background:linear-gradient(180deg,#fff1f0,#ffe4e2);border:1px solid #ffc9c5}
-.km-fab .kf-live:hover{background:linear-gradient(180deg,#ffe8e6,#ffd7d4)}
-.km-fab .kf-flag{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(180deg,#ff6a62,#ec4b43);border-radius:999px;padding:2px 7px}
+/* 继续学习：顶行主块（下方一条淡描金分隔）*/
+.km-fab .kf-go{display:flex;align-items:center;gap:9px;width:100%;min-width:0;padding:0 0 9px;border-bottom:1px solid rgba(200,152,84,.32)}
+.km-fab .kf-lead{flex:none;font-size:11.5px;font-weight:700;color:#0c6f66}
+.km-fab .kf-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-display);font-size:14.5px;font-weight:700;color:var(--deep-blue)}
+.km-fab .kf-go svg{flex:none;width:13px;height:13px;padding:5px;box-sizing:content-box;border-radius:50%;color:#fff;background:linear-gradient(180deg,#19b0a2,#0c7268);box-shadow:0 4px 10px -3px rgba(13,148,136,.55);transition:transform .15s}
+.km-fab .kf-go:hover svg{transform:translateX(2px)}
+/* 总进度 */
+.km-fab .kf-prog{display:flex;align-items:center;gap:8px;width:100%;min-width:0}
+.km-fab .kf-prog-bar{flex:1 1 auto;height:6px;border-radius:999px;background:rgba(31,111,106,.15);overflow:hidden}
+.km-fab .kf-prog-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#0d9488,#1bb3a3);transition:width .5s cubic-bezier(.22,1,.36,1)}
+.km-fab .kf-prog-tx{flex:none;font-size:11px;font-weight:600;color:#5c7a8a;white-space:nowrap}
+.km-fab .kf-prog-tx b{color:#1f6f6a;font-family:var(--font-mono)}
+/* 提醒：直播小黑板 + 本阶段作业（竖排）*/
+.km-fab .kf-rem{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;min-width:0}
+/* 直播 = 贴在海图角上的小黑板：深色板 + 木框 + 微微倾斜 + 粉笔字 */
+.km-fab .kf-live{position:relative;display:flex;align-items:center;gap:7px;width:100%;padding:7px 9px;border-radius:6px;background:linear-gradient(165deg,#34494c,#26393c);border:2px solid #b3854f;box-shadow:0 5px 12px -5px rgba(40,30,12,.55),inset 0 0 0 1px rgba(255,255,255,.05);transform:rotate(-1.4deg);transition:transform .16s,box-shadow .16s}
+.km-fab .kf-live:hover{transform:rotate(-1.4deg) translateY(-1.5px);box-shadow:0 9px 18px -6px rgba(40,30,12,.6),inset 0 0 0 1px rgba(255,255,255,.05)}
+.km-fab .kf-flag{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;color:#fff;background:linear-gradient(180deg,#ff6a62,#ec4b43);border-radius:999px;padding:2px 7px;box-shadow:0 2px 7px -1px rgba(190,50,40,.65)}
 .km-fab .kf-flag i{width:5px;height:5px;border-radius:50%;background:#fff;animation:kmLivePulse 1.3s infinite}
-.km-fab .kf-tx{flex:1 1 auto;min-width:0;font-size:10.5px;font-weight:700;color:#bb352e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.km-fab .kf-arr{flex:none;font-size:12px;font-weight:800;color:#ec4b43}
-.km-fab .kf-go{display:flex;align-items:center;gap:8px;padding:2px 2px 1px;overflow:hidden}
-.km-fab .kf-lead{flex:none;font-size:11.5px;font-weight:700;color:#0c6f66;padding-right:8px;border-right:1px solid rgba(200,152,84,.4)}
-.km-fab .kf-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:500;color:#7a6643}
-.km-fab .kf-go svg{flex:none;width:13px;height:13px;padding:5px;box-sizing:content-box;border-radius:50%;color:#fff;background:linear-gradient(180deg,#19b0a2,#0c7268);box-shadow:0 4px 10px -3px rgba(13,148,136,.55)}
+.km-fab .kf-tx{flex:1 1 auto;font-size:11px;font-weight:600;color:#e9f2ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
+.km-fab .kf-arr{flex:none;font-size:12px;font-weight:800;color:#9ed0c3}
+.km-fab .kf-task{width:100%;box-sizing:border-box;font-size:11px;font-weight:600;color:#a9762a;background:rgba(200,152,84,.16);border:1px solid rgba(200,152,84,.4);border-radius:7px;padding:5px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.km-fab .kf-task.done{color:#1f6f6a;background:var(--teal-bg);border-color:rgba(13,148,136,.3)}
 /* 组件牌 */
 .km-tag{position:absolute;transform:translate(-50%,-50%);background:linear-gradient(180deg,rgba(253,250,240,.92),rgba(245,238,218,.92));border:1px solid rgba(205,184,134,.85);border-radius:6px;padding:2px 7px;font-size:9.5px;font-weight:600;color:#5a4a2a;white-space:nowrap;box-shadow:0 3px 7px -3px rgba(90,70,30,.4);cursor:pointer;z-index:7;transition:.14s;line-height:1.18;text-align:center;backdrop-filter:blur(1px)}
 .km-tag .tk{display:block;font-size:8.5px;font-weight:500;color:#8a7038;font-family:var(--font-mono);margin-top:0}
@@ -417,12 +443,57 @@ body.route-sea .sea-veil{ background:
 .km-tag:hover{border-color:var(--teal);color:var(--teal-deep);box-shadow:0 7px 15px -4px rgba(13,148,136,.5);transform:translate(-50%,-54%) scale(1.05);z-index:12}
 .island.locked .km-tag{opacity:.9}
 /* 装饰 */
-.km-compass{position:absolute;right:3%;top:-125px;width:70px;height:70px;opacity:.5;z-index:2;filter:drop-shadow(0 2px 5px rgba(30,80,90,.12))}
-.km-gulls{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+/* 罗盘：缩小、收进海图右上角落（原 top:-125px 飘在标题区，喧宾夺主）*/
+.km-compass{position:absolute;right:2%;top:10px;width:54px;height:54px;opacity:.4;z-index:2;filter:drop-shadow(0 2px 5px rgba(30,80,90,.12))}
 .km-bottle{position:absolute;right:20.5%;bottom:4%;width:30px;z-index:6;opacity:.9;transform:rotate(-17deg);filter:drop-shadow(0 5px 7px rgba(30,80,90,.22))}
 /* 键盘焦点 */
 .km-wrap .island:focus-visible,.km-tag:focus-visible,.home-hero .hh-btn:focus-visible{outline:2.5px solid var(--teal);outline-offset:3px;border-radius:8px}
 .km-wrap .island:focus-visible,.km-tag:focus-visible{outline-offset:5px}
+</style>
+<style id="kmViewToggleCss">
+/* ===== 视图切换（地图/列表）+ 列表平铺 + 海面占位 —— 与航线(ds_route)正交，自包含，可整块删除回退 ===== */
+/* 标题行：标题 + 视图开关同一排；路线小字 #kmRouteEb 自动占整行落到上方 */
+.km-title-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.km-title-row>#kmRouteEb{order:-1;flex-basis:100%}
+/* 视图开关：米白胶囊·双段；航线模式(body.km-routed)隐藏 */
+.km-view-toggle{display:inline-flex;align-items:center;gap:2px;flex:none;padding:3px;border-radius:999px;background:rgba(255,255,255,.82);border:1px solid var(--border);box-shadow:0 2px 9px -5px rgba(30,80,90,.3),inset 0 1px 0 rgba(255,255,255,.7);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+body.km-routed .km-view-toggle{display:none}
+.kvt-btn{display:inline-flex;align-items:center;gap:6px;border:none;background:none;cursor:pointer;font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--text-2);padding:6px 14px;border-radius:999px;line-height:1;transition:color .15s,background .15s,box-shadow .15s}
+.kvt-btn .kvt-ic{width:15px;height:15px;flex:none}
+.kvt-btn:not(.active):hover{color:var(--teal-deep)}
+.kvt-btn.active{background:var(--teal);color:#fff;box-shadow:0 3px 9px -3px rgba(13,148,136,.55)}
+.kvt-btn:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.kvt-sep{width:1px;height:16px;background:var(--border);flex:none}
+
+/* 列表平铺：默认隐藏；body.km-list 时顶替海图（海面背景仍在底层透出）*/
+.km-list-view{display:none}
+body.km-list #kmWrap{display:none}
+body.km-list #kmFab{display:none!important}
+body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow-y:auto;position:relative;z-index:6;gap:22px;padding:4px 2px 34px}
+.klv-head{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin:0 2px 12px;padding-bottom:9px;border-bottom:1px solid rgba(200,152,84,.34)}
+.klv-num{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--gold)}
+.klv-name{font-family:var(--font-display);font-size:21px;font-weight:700;color:var(--deep-blue);margin:0;letter-spacing:-.01em}
+.klv-badge{font-size:11.5px;font-weight:600;color:var(--teal-deep);background:var(--teal-bg);border-radius:999px;padding:2px 10px}
+.klv-prog{margin-left:auto;font-family:var(--font-mono);font-size:12px;color:var(--text-2)}
+.klv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+/* 复用抽屉里的 kd-flow-item，但列表里给白底卡 + 标题换行不省略 */
+.km-list-view .kd-flow-item{align-items:flex-start;background:rgba(255,255,255,.93);border:1px solid var(--border-soft);box-shadow:0 2px 10px -6px rgba(30,80,90,.3)}
+.km-list-view .kd-flow-item.clickable:hover{background:#fff;transform:translateY(-1px);box-shadow:0 9px 20px -11px rgba(13,148,136,.45)}
+.km-list-view .kd-fi-title{white-space:normal;overflow:visible;text-overflow:clip}
+.km-list-view .kd-fi-mark{margin-top:1px}
+.km-list-view .kd-fi-arrow{align-self:center}
+
+/* 海面占位：直播浮标 / 往期手册小岛，水彩风·纯装饰·不接数据；航线模式让位 */
+.km-wrap.route-mode>.sea-float{display:none}
+.sea-float{position:absolute;transform:translate(-50%,-50%);z-index:5;pointer-events:none;text-align:center;filter:drop-shadow(0 9px 11px rgba(30,80,90,.2));animation:seaBob 5.5s ease-in-out infinite}
+.sea-float .sf-art{width:100%;display:block}
+.sea-float .sf-label{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--deep-blue);background:rgba(253,250,240,.94);border:1px solid rgba(200,152,84,.6);border-radius:999px;padding:2px 11px;box-shadow:0 3px 8px -4px rgba(120,90,30,.4);white-space:nowrap}
+.sea-float .sf-dot{width:6px;height:6px;border-radius:50%;background:#ec4b43;box-shadow:0 0 0 2px rgba(236,75,67,.25);animation:sfDot 1.3s infinite}
+.sea-float .sf-ico{width:13px;height:13px;stroke:var(--teal-deep);fill:none;stroke-width:1.6}
+.sea-float .sf-soon{display:block;margin-top:3px;font-size:9.5px;color:var(--text-3);letter-spacing:.04em}
+@keyframes seaBob{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 6px))}}
+@keyframes sfDot{0%,100%{box-shadow:0 0 0 2px rgba(236,75,67,.25)}50%{box-shadow:0 0 0 4px rgba(236,75,67,.06)}}
+@media (prefers-reduced-motion:reduce){.sea-float{animation:none}}
 </style>
 </head>
 <body>
@@ -434,7 +505,14 @@ body.route-sea .sea-veil{ background:
   <div class="sea-layer"></div><div class="sea-veil"></div>
   <div class="km-head">
     <div class="km-head-l">
-      <h1 class="plan-title">你的学习地图 <svg class="title-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></h1>
+      <div class="km-title-row">
+        <h1 class="plan-title">你的学习地图 <svg class="title-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></h1>
+        <div class="km-view-toggle" id="kmViewToggle" role="group" aria-label="视图切换：地图 / 列表">
+          <button class="kvt-btn active" type="button" data-view="map" aria-pressed="true"><svg class="kvt-ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3 3 5v12l4.5-2 5 2 4.5-2V3l-4.5 2-5-2z"/><path d="M7.5 3v12M12.5 5v12"/></svg>地图</button>
+          <span class="kvt-sep"></span>
+          <button class="kvt-btn" type="button" data-view="list" aria-pressed="false"><svg class="kvt-ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h10M7 10h10M7 15h10M3.5 5h.01M3.5 10h.01M3.5 15h.01"/></svg>列表</button>
+        </div>
+      </div>
     </div>
     <section class="home-hero" id="homeHero">
     <a class="hh-live" href="live.html"><span class="hl-flag"><i></i>正在直播</span><span class="hl-tx">小排老师正在直播 · 点此进入</span><span class="hl-arr">→</span></a>
@@ -459,6 +537,16 @@ body.route-sea .sea-veil{ background:
   </section>
   </div><!-- /km-head -->
 
+  <!-- 重点带：继续学习 + 总进度 + 提醒（从海图右下浮窗上提到标题下方；默认全量图专用，专属航线模式由 routes-ui 按 id 隐藏）-->
+  <div id="kmFab" class="km-fab" style="display:none">
+    <a class="kf-go" id="kmFabGo" href="#"><span class="kf-lead">继续学习</span><span class="kf-title" id="kmFabTitle">—</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg></a>
+    <div class="kf-prog"><div class="kf-prog-bar"><i id="kmFabProgBar"></i></div><span class="kf-prog-tx" id="kmFabProgTx">—</span></div>
+    <div class="kf-rem">
+      <a class="kf-live" href="live.html"><span class="kf-flag"><i></i>正在直播</span><span class="kf-tx">小排老师正在直播</span><span class="kf-arr">→</span></a>
+      <span class="kf-task" id="kmFabTask"></span>
+    </div>
+  </div>
+
   <!-- 学习航海图：4 座岛 = 4 阶段 -->
   <div class="km-wrap" id="kmWrap" role="img" aria-label="学习航海图">
     <svg class="km-route" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M9 88 C 13 85, 16 84, 23 82 C 31 80, 34 85, 43 77 C 50 72, 54 79, 62 71 C 69 78, 74 83, 80 85" fill="none" stroke="#bf842a" stroke-width="1" stroke-dasharray="2 1.7" stroke-linecap="round" opacity="1"/></svg>
@@ -466,9 +554,7 @@ body.route-sea .sea-veil{ background:
     <div class="km-dot" data-stage="2" style="left:37%;top:76%"></div>
     <div class="km-dot" data-stage="3" style="left:59%;top:71%"></div>
     <div class="km-dot" data-stage="4" style="left:80%;top:85%"></div>
-    <svg class="km-gulls" viewBox="0 0 100 60" preserveAspectRatio="none"><g fill="none" stroke="#7a9ca0" stroke-width="0.22" stroke-linecap="round" opacity="0.42">
-      <path d="M12 12 Q 13.3 10.3 14.6 12 Q 15.9 10.3 17.2 12"/><path d="M16 16 Q 17.1 14.6 18.2 16 Q 19.3 14.6 20.4 16"/><path d="M31 8.5 Q 32.2 7 33.4 8.5 Q 34.6 7 35.8 8.5"/><path d="M45 13 Q 46.1 11.6 47.2 13 Q 48.3 11.6 49.4 13"/><path d="M39 18.5 Q 39.9 17.3 40.8 18.5 Q 41.7 17.3 42.6 18.5"/>
-    </g></svg>
+    <!-- 海鸥装饰已移除（降信息密度：纯装饰、不可点） -->
     <svg class="km-compass" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="47" fill="rgba(250,246,233,.55)" stroke="#6f9298" stroke-width="1.4"/>
       <circle cx="50" cy="50" r="44" fill="none" stroke="#8fb0b3" stroke-width="0.6"/>
@@ -501,16 +587,46 @@ body.route-sea .sea-veil{ background:
       <img data-src="assets/isle-4.webp?v=2" alt="">
     </div>
 
+    <!-- 海面占位：直播浮标 / 往期手册小岛（水彩风·纯装饰·先不接数据；航线/列表模式自动让位）-->
+    <div class="sea-float" style="left:30%;top:24%;width:60px" aria-hidden="true">
+      <svg class="sf-art" viewBox="0 0 64 80" fill="none">
+        <ellipse cx="32" cy="64" rx="22" ry="6" fill="#9ed6cf" opacity=".55"/>
+        <ellipse cx="32" cy="64" rx="12" ry="3.2" fill="#74c0b8" opacity=".55"/>
+        <rect x="30.4" y="12" width="3.2" height="15" rx="1.6" fill="#9c7a45"/>
+        <circle cx="32" cy="10.5" r="4.6" fill="#ffce5e"/>
+        <path d="M19 41 Q19 26 32 26 Q45 26 45 41 Z" fill="#ef6f64"/>
+        <rect x="19" y="41" width="26" height="7.5" fill="#fbf3e3"/>
+        <path d="M19 48.5 Q19 64 32 64 Q45 64 45 48.5 Z" fill="#df574d"/>
+        <path d="M24 33 Q27 30 31.5 31" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+      </svg>
+      <span class="sf-label"><i class="sf-dot"></i>直播</span>
+      <span class="sf-soon">即将开放</span>
+    </div>
+    <div class="sea-float" style="left:72%;top:20%;width:70px" aria-hidden="true">
+      <svg class="sf-art" viewBox="0 0 72 78" fill="none">
+        <ellipse cx="36" cy="60" rx="26" ry="7" fill="#9ed6cf" opacity=".55"/>
+        <path d="M13 55 Q17 41 36 41 Q55 41 59 55 Q50 61 36 61 Q22 61 13 55 Z" fill="#ecd6a6"/>
+        <path d="M13 55 Q22 59 36 59 Q50 59 59 55" stroke="#cdb277" stroke-width="1.2" opacity=".6"/>
+        <rect x="25" y="22" width="22" height="19" rx="2.5" fill="#5aa39b"/>
+        <rect x="25" y="22" width="22" height="19" rx="2.5" fill="none" stroke="#3f857d" stroke-width="1.1"/>
+        <path d="M36 23.5 V39.5" stroke="#f3faf8" stroke-width="1.5"/>
+        <path d="M29 28h4M39 28h4M29 32h4M39 32h4" stroke="#d4ece8" stroke-width="1" stroke-linecap="round"/>
+        <rect x="50" y="15" width="2.2" height="17" rx="1.1" fill="#9c7a45"/>
+        <path d="M52 16 L61 19 L52 22 Z" fill="#c89854"/>
+      </svg>
+      <span class="sf-label"><svg class="sf-ico" viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4.2C6.6 3.2 4.6 3 3 3.3v8.4c1.6-.3 3.6-.1 5 .9 1.4-1 3.4-1.2 5-.9V3.3c-1.6-.3-3.6-.1-5 .9z"/><path d="M8 4.2v8.3"/></svg>往期手册</span>
+      <span class="sf-soon">即将开放</span>
+    </div>
+
     <img class="km-ship" id="kmShip" data-src="assets/ship-1.png" alt="" style="left:7%;top:87%;width:9.5%;display:none">
     <!-- 海中央装饰（名言卡 / 漂流瓶 / 章鱼剪影）+ 深度刻度(10m/20m/50m/100m) 均已移除：纯装饰无含义，地图减重只留岛屿与航线 -->
 
-    <!-- 右下角浮窗：继续学习（跳回在学课程）+ 直播动态。默认全量图专用；专属航线模式用各自的卡，本浮窗隐藏 -->
-    <div id="kmFab" class="km-fab" style="display:none">
-      <a class="kf-live" href="live.html"><span class="kf-flag"><i></i>正在直播</span><span class="kf-tx">小排老师正在直播 · 点此进入</span><span class="kf-arr">→</span></a>
-      <a class="kf-go" id="kmFabGo" href="#"><span class="kf-lead">继续学习</span><span class="kf-title" id="kmFabTitle">—</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5 5-5 5"/></svg></a>
-    </div>
+    <!-- 「继续学习」卡已上提为标题下方的「重点带」#kmFab（见 km-head 之后），此处不再放浮窗 -->
 
   </div>
+
+  <!-- 列表平铺视图（视图开关·与海图二选一；默认隐藏，body.km-list 时顶替海图显示）-->
+  <div class="km-list-view" id="kmListView"></div>
 
   <!-- 引出线 + 阶段详情弹窗（搬自 roadmap）-->
   <svg class="km-leader-svg" id="kmLeader" aria-hidden="true"></svg>
@@ -615,7 +731,7 @@ body.route-sea .sea-veil{ background:
 
 <script src="course-data.js"></script>
 <script src="isle-view.js?v=mm2"></script>
-<script src="isle-focus.js?v=mm5"></script>
+<script src="isle-focus.js?v=mm6"></script>
 <script>
 /* ====== 真实数据来自 course-data.js：COURSES / COURSE_STAGES ====== */
 
@@ -1210,6 +1326,15 @@ function renderIslandMap(completed, nextCourse) {
     else setShipLevel(cur);
   }
   /* 「继续学习」已挪到右下角浮窗 #kmFab（见 render() → renderFab）；岛上不再挂木牌，当前岛保留静态「你在这里」标 */
+  /* 每座岛补真实进度：done=已通关 X/Y，cur=学习中 X/Y(加粗)，locked=共 Y 节。让海图本身有信息，不只是风景 */
+  const _prog = focusProgress();
+  document.querySelectorAll('.km-wrap .island').forEach(el => {
+    const n = parseInt(el.dataset.stage, 10), p = _prog[n] || { done: 0, total: 0 }, dt = el.querySelector('.dt');
+    if (!dt) return;
+    if (n < cur) dt.innerHTML = '已通关 · ' + p.done + '/' + p.total + ' 节';
+    else if (n === cur) dt.innerHTML = '学习中 · <b>' + p.done + '</b>/' + p.total + ' 节';
+    else dt.innerHTML = '共 ' + p.total + ' 节';
+  });
   document.querySelectorAll('.km-wrap .island .km-go').forEach(el => el.remove());
   bindInteractions();
 }
@@ -1222,19 +1347,37 @@ function render() {
 
   renderIslandMap(completed, nextCourse);
   renderHero(allCourses, completed, nextCourse);
-  renderFab(nextCourse);
+  renderFab(completed, nextCourse);
 }
 
-/* 右下角浮窗（默认全量图专用）：继续学习跳回在学课程 + 直播动态。专属航线模式隐藏（用各自的卡）*/
-function renderFab(nextCourse) {
+/* 重点带（默认全量图专用，原右下角浮窗升级）：继续学习 + 总进度 + 提醒(直播占位/本阶段作业)。
+   专属航线模式由 routes-ui 的 render 包装按 id 隐藏；已毕业(nextCourse=null)交给 renderHero 的毕业卡。*/
+function renderFab(completed, nextCourse) {
   const fab = document.getElementById('kmFab');
   if (!fab) return;
   const rk = (new URLSearchParams(location.search).get('route')) || localStorage.getItem('ds_route');
   if ((rk && rk !== 'full') || !nextCourse) { fab.style.display = 'none'; return; }
+  /* 继续学习：下一节 */
   const go = document.getElementById('kmFabGo');
   const title = document.getElementById('kmFabTitle');
   if (go) go.href = 'learn.html?code=' + encodeURIComponent(nextCourse.code);
   if (title) title.textContent = cleanTitle(nextCourse.t);
+  /* 总进度：已学 X/Y 节 · 第几岛 */
+  const total = COURSES.length, doneN = completed.size;
+  const pct = total ? Math.round(doneN / total * 100) : 0;
+  const curStage = getCurrentStage(completed);
+  const bar = document.getElementById('kmFabProgBar');
+  const ptx = document.getElementById('kmFabProgTx');
+  if (bar) bar.style.width = pct + '%';
+  if (ptx) ptx.innerHTML = '已学 <b>' + doneN + '/' + total + '</b> 节 · 第 ' + curStage + ' 岛';
+  /* 本阶段作业提醒：读 ds_submissions 判已交/待交（直播仍为占位） */
+  const task = document.getElementById('kmFabTask');
+  if (task) {
+    const asg = ASSIGNMENTS[curStage], sub = getSubmissionForStage(curStage);
+    if (!asg) { task.style.display = 'none'; }
+    else if (sub) { task.style.display = ''; task.className = 'kf-task done'; task.textContent = '本阶段作业 ✓ 已交'; }
+    else { task.style.display = ''; task.className = 'kf-task'; task.textContent = '作业待交 · ' + cleanTitle(asg.title); }
+  }
   fab.style.display = 'flex';
 }
 
@@ -1284,11 +1427,106 @@ function showToast(msg) {
 })();
 </script>
 <script src="routes.js"></script>
-<script src="routes-ui.js?v=dd24"></script>
+<script src="routes-ui.js?v=dd29"></script>
 <script src="route-art.js"></script>
 <script src="route-isle-fit.js"></script>
 <script src="route-art-apply.js?v=fit14"></script>
 <script src="topbar.js"></script>
+<script>
+/* ===== 视图切换（地图 / 列表）· 自包含，可整块删除回退 =====
+   与航线(ds_route)正交：本块只读不写 ds_route，绝不参与航线渲染。
+   · 默认全量海图：按存的偏好 ds_map_view 显示「地图」或「列表」；列表=四阶段课程卡片全摊开（复用抽屉 kd-flow 卡）。
+   · 专属航线模式（#kmWrap.route-mode）：藏开关、强制地图（航线图），列表不参与。
+   依赖 calendar.html 的全局：COURSES / getCompleted / STAGE_NAMES / STAGE_BADGES / cleanTitle / escapeHtml / gotoCourse / toggleCourse / render。 */
+(function () {
+  'use strict';
+  var VIEW_KEY = 'ds_map_view';
+  var toggle = document.getElementById('kmViewToggle');
+  var listHost = document.getElementById('kmListView');
+  if (!toggle || !listHost) return;
+
+  function isRouted() { var w = document.getElementById('kmWrap'); return !!(w && w.classList.contains('route-mode')); }
+  function savedView() { try { return localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'map'; } catch (e) { return 'map'; } }
+  function syncButtons(v) {
+    toggle.querySelectorAll('.kvt-btn').forEach(function (b) {
+      var on = b.dataset.view === v;
+      b.classList.toggle('active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  /* 单张课程卡：复用抽屉里的 kd-flow-item（状态 已学/在学/未解锁，点击走全局 gotoCourse/toggleCourse，与点开海岛看到的同一套卡）*/
+  function cardHtml(c, completed, nextCode) {
+    var done = completed.has(c.code), isCur = c.code === nextCode, st = done ? 'done' : (isCur ? 'current' : 'locked'), mark = done ? '✓' : (isCur ? '▸' : '');
+    return '<div class="kd-flow-item is-course ' + st + ' clickable" data-code="' + c.code + '" onclick="gotoCourse(\'' + c.code + '\',\'' + st + '\')">'
+      + '<span class="kd-fi-mark clickable-mark" title="' + (done ? '已学完 · 点击撤销' : '标记已学完') + '" onclick="event.stopPropagation();toggleCourse(\'' + c.code + '\')">' + mark + '</span>'
+      + '<span class="kd-fi-code">' + escapeHtml(c.code) + '</span>'
+      + '<span class="kd-fi-title">' + escapeHtml(cleanTitle(c.t)) + '</span>'
+      + '<span class="kd-fi-dur">' + (c.mins || 0) + 'min</span>'
+      + '<svg class="kd-fi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>'
+      + '</div>';
+  }
+  function renderListView() {
+    if (typeof COURSES === 'undefined') return;
+    var completed = (typeof getCompleted === 'function') ? getCompleted() : new Set();
+    var next = COURSES.find(function (c) { return !completed.has(c.code); });
+    var nextCode = next ? next.code : null;
+    var ZH = ['一', '二', '三', '四'], html = '';
+    for (var s = 1; s <= 4; s++) {
+      var list = COURSES.filter(function (c) { return c.stage === s; });
+      if (!list.length) continue;
+      var name = (typeof STAGE_NAMES !== 'undefined' && STAGE_NAMES[s]) || (typeof COURSE_STAGES !== 'undefined' && COURSE_STAGES[s] && COURSE_STAGES[s].name) || ('第' + s + '阶段');
+      var badge = (typeof STAGE_BADGES !== 'undefined' && STAGE_BADGES[s]) ? (STAGE_BADGES[s].icon + ' ' + STAGE_BADGES[s].text) : '';
+      var doneN = list.filter(function (c) { return completed.has(c.code); }).length;
+      html += '<section class="klv-stage">'
+        + '<div class="klv-head"><span class="klv-num">第' + ZH[s - 1] + '岛</span>'
+        + '<h2 class="klv-name">' + escapeHtml(name) + '</h2>'
+        + (badge ? '<span class="klv-badge">' + escapeHtml(badge) + '</span>' : '')
+        + '<span class="klv-prog">已学 ' + doneN + '/' + list.length + ' 节</span></div>'
+        + '<div class="klv-grid">' + list.map(function (c) { return cardHtml(c, completed, nextCode); }).join('') + '</div>'
+        + '</section>';
+    }
+    listHost.innerHTML = html;
+  }
+
+  /* 航线模式 → 藏开关、强制地图；默认全量图 → 按存的偏好显示地图/列表（列表开着时刷新内容）*/
+  function syncView() {
+    var routed = isRouted();
+    document.body.classList.toggle('km-routed', routed);
+    if (routed) { document.body.classList.remove('km-list'); return; }
+    var v = savedView();
+    document.body.classList.toggle('km-list', v === 'list');
+    syncButtons(v);
+    if (v === 'list') renderListView();
+  }
+
+  function setView(v) {
+    if (isRouted()) return;
+    try { localStorage.setItem(VIEW_KEY, v); } catch (e) {}
+    document.body.classList.toggle('km-list', v === 'list');
+    syncButtons(v);
+    try { if (window.closeCallout) closeCallout(); } catch (e) {}
+    try { if (window.closeFocus) closeFocus(); } catch (e) {}
+    if (v === 'list') renderListView();
+    else { try { if (window.render) render(); } catch (e) {} }
+  }
+  toggle.querySelectorAll('.kvt-btn').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.stopPropagation(); setView(b.dataset.view); });
+  });
+
+  /* 包住 render（routes-ui / route-art-apply 已各包一层）：每次重渲染后按航线状态+偏好同步视图。
+     列表开着时随之刷新（标记已学即时联动），不调 render 自身 → 无递归。 */
+  var _render = window.render;
+  if (typeof _render === 'function') {
+    window.render = function () { var r = _render.apply(this, arguments); try { syncView(); } catch (e) {} return r; };
+  }
+
+  /* 首屏：route-art-apply 的初次 render 在本脚本之前已跑过 → 这里补一次同步 */
+  var deepStage = /[?&]stage=/.test(location.search);
+  syncView();
+  if (deepStage) { document.body.classList.remove('km-list'); syncButtons('map'); }   /* 深链 ?stage= 要进岛特写 → 本次强制地图，让潜入动画有真岛可依 */
+  else if (document.body.classList.contains('km-list')) { window.__AUTO_DIVE = null; }  /* 列表偏好 → 不自动潜入 */
+})();
+</script>
 <script>
 /* 首屏自动潜入：老生第二次进来 / 深链 ?stage= → 等首屏 render（routes-ui 末尾触发）后页内下潜 */
 (function () {

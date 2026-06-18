@@ -20,7 +20,7 @@
 const DUR = 620, EASE = 'cubic-bezier(.45,.05,.25,1)';
 /* 聚焦布局（一排·选中放大）：N 个岛按顺序横排靠左、底边对齐一条水位线再高低错落；
    被点中的岛就地放大、其余缩小；右半边留给课程卡。参数随手可调，自适应任意岛数。*/
-const LAY = { wSel:16, wOth:7.5, gap:2, startX:2, baseBottom:30, amp:9 };   // 选中宽/其余宽/间距/起点x/底边水位/错落幅度（% of 浮层）
+const LAY = { wSel:13, wOth:6, gap:1.6, startX:2, baseBottom:30, amp:9 };   // 选中宽/其余宽/间距/起点x/底边水位/错落幅度（% of 浮层）— 岛区压窄，给右侧加宽的课程卡让位（信息密度）
 function offsetFor(i, N){ return N <= 1 ? 0 : Math.round(LAY.amp * Math.sin(i/(N-1)*Math.PI)); }   // 高低错落：中间偏高两头低（单峰），随岛数自适应
 const SHIPS = [
   { img:'assets/ship-1.png', name:'竹筏',     emoji:'🛶', w:6   },
