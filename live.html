@@ -95,6 +95,16 @@ a{color:inherit;text-decoration:none}
 .lc-meta{display:flex;align-items:center;gap:7px;margin-top:10px;font-size:12.5px;color:var(--text-3)}
 .lc-meta .av{width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600}
 
+/* 往期回放·分类 tab（全部 / 老师·教练 / 船员分享）*/
+.lr-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.lr-tab{font-family:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-2);font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.lr-tab:hover{border-color:#bfe0d9;color:var(--teal-deep)}
+.lr-tab.is-on{background:var(--teal);border-color:var(--teal);color:#fff}
+.lr-tab-n{font-size:11.5px;font-weight:600;min-width:18px;height:17px;padding:0 5px;border-radius:999px;background:var(--teal-bg);color:var(--teal-deep);display:inline-grid;place-items:center}
+.lr-tab.is-on .lr-tab-n{background:rgba(255,255,255,.22);color:#fff}
+.lc.crew .lc-meta .av{background:var(--deep-blue)}
+.lc[hidden]{display:none}
+
 .site-foot{margin-top:56px;padding:22px;text-align:center;font-size:12.5px;color:var(--text-3);border-top:1px solid var(--border-soft)}
 </style>
 </head>
@@ -151,16 +161,24 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
-  <!-- ===== 往期回放 ===== -->
+  <!-- ===== 往期回放（tab 切换：全部 / 老师·教练 / 船员分享）===== -->
   <section class="sec wrap">
-    <h2 class="sec-h">往期回放 <span class="sec-n">共 6 场</span></h2>
-    <div class="lc-grid">
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:32:10</span></div><div class="lc-body"><div class="lc-title">第 12 期 · 实战答疑直播：从想法到上线的卡点</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-28</div></div></a>
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:58:24</span></div><div class="lc-body"><div class="lc-title">Claude Code 进阶玩法：把它调教成你的全栈搭子</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-21</div></div></a>
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">2:10:05</span></div><div class="lc-body"><div class="lc-title">一个周末做完并上线一个能收钱的产品</div><div class="lc-meta"><span class="av">唐</span>唐门三叔 · 2026-05-14</div></div></a>
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:05:33</span></div><div class="lc-body"><div class="lc-title">MCP × Skills 实战拆解：给 AI 装上工具与记忆</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-07</div></div></a>
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:18:42</span></div><div class="lc-body"><div class="lc-title">AI 产品出海：从选品到冷启动投放</div><div class="lc-meta"><span class="av">矿</span>矿山 · 2026-04-30</div></div></a>
-      <a class="lc" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:47:19</span></div><div class="lc-body"><div class="lc-title">小程序变现实操复盘：3 个月跑通的弯路</div><div class="lc-meta"><span class="av">秋</span>秋水 · 2026-04-23</div></div></a>
+    <h2 class="sec-h">往期回放 <span class="sec-n">共 9 场</span></h2>
+    <div class="lr-tabs" role="tablist">
+      <button class="lr-tab is-on" data-filter="all" role="tab">全部 <span class="lr-tab-n">9</span></button>
+      <button class="lr-tab" data-filter="teach" role="tab">老师 · 教练 <span class="lr-tab-n">5</span></button>
+      <button class="lr-tab" data-filter="crew" role="tab">船员分享 <span class="lr-tab-n">4</span></button>
+    </div>
+    <div class="lc-grid" id="lr-grid">
+      <a class="lc" data-kind="teach" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:32:10</span></div><div class="lc-body"><div class="lc-title">第 12 期 · 实战答疑直播：从想法到上线的卡点</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-28</div></div></a>
+      <a class="lc" data-kind="teach" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:58:24</span></div><div class="lc-body"><div class="lc-title">Claude Code 进阶玩法：把它调教成你的全栈搭子</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-21</div></div></a>
+      <a class="lc" data-kind="teach" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">2:10:05</span></div><div class="lc-body"><div class="lc-title">一个周末做完并上线一个能收钱的产品</div><div class="lc-meta"><span class="av">唐</span>唐门三叔 · 2026-05-14</div></div></a>
+      <a class="lc" data-kind="teach" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:05:33</span></div><div class="lc-body"><div class="lc-title">MCP × Skills 实战拆解：给 AI 装上工具与记忆</div><div class="lc-meta"><span class="av">刘</span>刘小排 · 2026-05-07</div></div></a>
+      <a class="lc" data-kind="teach" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:18:42</span></div><div class="lc-body"><div class="lc-title">AI 产品出海：从选品到冷启动投放</div><div class="lc-meta"><span class="av">矿</span>矿山 · 2026-04-30</div></div></a>
+      <a class="lc crew" data-kind="crew" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:47:19</span></div><div class="lc-body"><div class="lc-title">小程序变现实操复盘：3 个月跑通的弯路</div><div class="lc-meta"><span class="av">秋</span>秋水 · 2026-04-23</div></div></a>
+      <a class="lc crew" data-kind="crew" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:12:48</span></div><div class="lc-body"><div class="lc-title">0 基础 131 天跑通闭环，我做了些什么</div><div class="lc-meta"><span class="av">陈</span>陈江河 · 2026-04-16</div></div></a>
+      <a class="lc crew" data-kind="crew" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">0:52:30</span></div><div class="lc-body"><div class="lc-title">0 基础上手刘小排课程的最佳攻略</div><div class="lc-meta"><span class="av">章</span>章晗 · 2026-04-09</div></div></a>
+      <a class="lc crew" data-kind="crew" href="javascript:void(0)"><div class="lc-thumb"><div class="lc-play"></div><span class="lc-dur">1:08:15</span></div><div class="lc-body"><div class="lc-title">土木哥 AI 出海实录：从 0 到月入几万刀</div><div class="lc-meta"><span class="av">井</span>井然 · 2026-04-02</div></div></a>
     </div>
   </section>
 </main>
@@ -168,5 +186,20 @@ a{color:inherit;text-decoration:none}
 <div class="site-foot">深海圈 · AI 编程新人常态化运营 · 原型 Demo（数据均为模拟）</div>
 
 <script src="topbar.js"></script>
+<script>
+/* 往期回放·分类筛选（全部 / 老师·教练 / 船员分享）*/
+(function(){
+  var tabs = document.querySelectorAll('.lr-tab');
+  var cards = document.querySelectorAll('#lr-grid .lc');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(x){ x.classList.remove('is-on'); });
+      t.classList.add('is-on');
+      var f = t.dataset.filter;
+      cards.forEach(function(c){ c.hidden = !(f === 'all' || c.dataset.kind === f); });
+    });
+  });
+})();
+</script>
 </body>
 </html>

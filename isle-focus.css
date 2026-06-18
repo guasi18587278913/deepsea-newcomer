@@ -17,8 +17,8 @@
 .isle-focus .if-isle{ position:absolute; cursor:pointer; will-change:transform; z-index:3; }
 .isle-focus .if-isle>img{ width:100%; display:block; pointer-events:none; filter:saturate(1.06) brightness(1.02) drop-shadow(0 14px 16px rgba(30,80,90,.26)); }
 .isle-focus .if-isle .if-nm{ position:absolute; left:50%; bottom:100%; transform:translateX(-50%); margin-bottom:6px; white-space:nowrap;
-  font-family:var(--font-display,'Noto Serif SC',serif); font-weight:700; color:#1e3a52; font-size:13px; text-shadow:0 1px 5px rgba(248,251,250,.95); transition:font-size .4s,opacity .4s; }
-.isle-focus .if-isle .if-zone{ display:block; font-family:var(--font-mono,'JetBrains Mono',monospace); font-size:10px; font-weight:600; color:#c89854; letter-spacing:.06em; text-align:center; }
+  font-family:var(--font-display,'Noto Serif SC',serif); font-weight:700; color:#1e3a52; font-size:13.5px; text-shadow:0 1px 4px rgba(248,251,250,.98),0 0 12px rgba(248,251,250,.72); transition:font-size .4s,opacity .4s; }
+.isle-focus .if-isle .if-zone{ display:inline-block; font-family:var(--font-mono,'JetBrains Mono',monospace); font-size:10.5px; font-weight:700; color:#8a5a1e; letter-spacing:.03em; text-align:center; background:rgba(255,251,242,.8); padding:1px 7px; border-radius:6px; box-shadow:0 1px 4px rgba(120,90,30,.18); margin-top:1px; }
 .isle-focus .if-isle::after{ content:""; position:absolute; left:50%; top:64%; transform:translate(-50%,-50%); width:120%; height:104%; z-index:-1; pointer-events:none;
   background:radial-gradient(ellipse at center,rgba(158,214,207,.5) 0%,rgba(158,214,207,0) 68%); filter:blur(5px); }
 

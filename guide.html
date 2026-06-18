@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>深海圈 · 学习指南</title>
+<script>/* 权限闸：没通过审核别进学习内容，弹回报名落地页。演示态（?demo / ?fresh）放行 */
+(function(){try{
+  var p=new URLSearchParams(location.search);
+  if(p.has('demo')||p.get('fresh')==='1')return;
+  var approved=localStorage.getItem('ds_approved')==='1'||localStorage.getItem('ds_onboarded')==='true'||!!localStorage.getItem('ds_enrolled_at');
+  if(!approved)location.replace('enrolled.html');
+}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- 字体异步加载，不挡首屏渲染 -->
@@ -108,8 +115,8 @@ a{color:inherit}
 .letter-body{margin-top:4px;font-size:16.5px;line-height:1.95;color:#2b3d4d}
 .letter-body p{margin-bottom:17px}
 .letter-body strong{color:var(--teal-deep);font-weight:600}
-.letter-body a:not(.map-enter):not(.mod){color:var(--teal-deep);font-weight:600;text-decoration:none;border-bottom:1.5px solid rgba(13,148,136,.32);transition:border-color .15s,color .15s}
-.letter-body a:not(.map-enter):not(.mod):hover{color:var(--teal);border-color:var(--teal)}
+.letter-body a:not(.map-enter):not(.mod):not(.btn){color:var(--teal-deep);font-weight:600;text-decoration:none;border-bottom:1.5px solid rgba(13,148,136,.32);transition:border-color .15s,color .15s}
+.letter-body a:not(.map-enter):not(.mod):not(.btn):hover{color:var(--teal);border-color:var(--teal)}
 .letter-body h2{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.5;color:var(--deep-blue);margin:42px 0 15px;display:flex;gap:12px;align-items:baseline}
 .letter-body h2 .ln{flex:none;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--gold)}
 .letter-kicker{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--deep-blue);text-align:center;line-height:1.6;margin:8px 0 17px}
@@ -165,6 +172,51 @@ a.mod:hover .go{transform:translateX(3px)}
   .mods{grid-template-columns:1fr}
   .map-demo{height:236px}
 }
+
+/* ============ 第一步 · 找路线问卷（入口卡 + 弹窗）============ */
+.gq-entry{display:flex;align-items:center;gap:16px;margin:20px 0 6px;padding:20px 22px;border-radius:18px;position:relative;overflow:hidden;color:#fff;
+  background:linear-gradient(135deg,#0e7d73 0%,#0d9488 55%,#13a394 100%);box-shadow:0 18px 40px -20px rgba(13,148,136,.7)}
+.gq-entry::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 88% 8%,rgba(255,255,255,.2) 0,transparent 52%)}
+.gq-entry-badge{flex:none;position:relative;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.12em;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38);border-radius:999px;padding:5px 12px}
+.gq-entry-main{flex:1;min-width:0;position:relative}
+.gq-entry-t{font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.4}
+.gq-entry-d{font-size:13px;line-height:1.6;color:rgba(255,255,255,.92);margin-top:5px}
+.gq-entry-btn{flex:none;position:relative;background:#fff;color:var(--teal-deep);font-family:var(--font-sans);font-weight:700;font-size:15px;border:none;border-radius:12px;padding:13px 22px;cursor:pointer;transition:transform .16s,box-shadow .16s;box-shadow:0 8px 20px -8px rgba(0,0,0,.3)}
+.gq-entry-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(0,0,0,.42)}
+@media(max-width:600px){.gq-entry{flex-direction:column;align-items:flex-start}.gq-entry-btn{width:100%}}
+
+.gq-mask{position:fixed;inset:0;z-index:120;background:rgba(20,40,50,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
+.gq-mask.show{display:flex;animation:gqFade .2s ease}
+@keyframes gqFade{from{opacity:0}to{opacity:1}}
+.gq-card{position:relative;width:100%;max-width:480px;background:#fff;border-radius:22px;padding:32px 30px 26px;box-shadow:0 40px 90px -30px rgba(20,40,50,.55);max-height:90vh;overflow:auto}
+.gq-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border:none;background:#f1f5f6;border-radius:50%;color:var(--text-2);font-size:15px;line-height:1;cursor:pointer;transition:.15s}
+.gq-close:hover{background:#e2ebec;color:var(--text-1)}
+.gq-prog{display:flex;align-items:center;gap:7px;margin-bottom:18px}
+.gq-dot{width:24px;height:4px;border-radius:99px;background:#e2ebec;transition:.2s}
+.gq-dot.on{background:var(--teal);width:30px}
+.gq-dot.done{background:var(--teal-light)}
+.gq-step{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gold);margin-bottom:8px}
+.gq-title{font-family:var(--font-display);font-weight:700;font-size:21px;line-height:1.45;color:var(--deep-blue);margin-bottom:18px}
+.gq-opts{display:flex;flex-direction:column;gap:10px}
+.gq-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#f7fafa;border:1.5px solid var(--border-soft);border-radius:13px;padding:14px 16px;cursor:pointer;transition:.15s;font-family:var(--font-sans)}
+.gq-opt:hover{border-color:var(--teal-light);background:var(--teal-bg);transform:translateX(2px)}
+.gq-opt-tx{flex:1;min-width:0}
+.gq-opt-t{font-size:15px;font-weight:600;color:var(--text-1);line-height:1.4}
+.gq-opt-n{font-size:12.5px;color:var(--text-3);margin-top:2px}
+.gq-opt-arr{flex:none;color:var(--teal);font-weight:700;opacity:0;transition:.15s}
+.gq-opt:hover .gq-opt-arr{opacity:1}
+.gq-back{margin-top:16px;background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;font-family:var(--font-sans)}
+.gq-back:hover{color:var(--text-1)}
+.gq-result{text-align:center;padding:6px 2px}
+.gq-rs-ic{font-size:40px;line-height:1}
+.gq-rs-t{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--deep-blue);margin:12px 0 8px}
+.gq-rs-d{font-size:14.5px;line-height:1.7;color:var(--text-2);margin-bottom:6px}
+.gq-rs-d b{color:var(--teal-deep)}
+.gq-rs-route{display:inline-flex;align-items:center;gap:8px;background:var(--teal-bg);color:var(--teal-deep);font-weight:700;font-size:15px;border-radius:11px;padding:10px 18px;margin:8px 0 18px}
+.gq-rs-go{display:block;width:100%;background:linear-gradient(180deg,#13a394,#0c6f66);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:16px;border:none;border-radius:13px;padding:15px;cursor:pointer;transition:transform .16s;box-shadow:0 12px 26px -12px rgba(13,148,136,.7)}
+.gq-rs-go:hover{transform:translateY(-2px)}
+.gq-rs-alt{display:block;width:100%;background:none;border:none;color:var(--text-3);font-size:13.5px;margin-top:14px;cursor:pointer;font-family:var(--font-sans);text-decoration:underline;text-underline-offset:3px}
+.gq-rs-alt:hover{color:var(--teal-deep)}
 </style>
 </head>
 <body>
@@ -180,7 +232,19 @@ a.mod:hover .go{transform:translateX(3px)}
   <div class="letter-body">
     <p>哈喽，欢迎来到深海圈。</p>
     <p>你刚进来，可能有点懵 —— 这么多课、这么多板块、这么多新词，该从哪儿开始？</p>
-    <p>别慌，请先看这个视频 👇</p>
+    <p>别急，<strong>第一步特别简单</strong>：先花 30 秒告诉我你的情况，我帮你把该走的路铺好。</p>
+
+    <!-- 第一步 · 找路线问卷入口 -->
+    <div class="gq-entry">
+      <div class="gq-entry-badge">第一步</div>
+      <div class="gq-entry-main">
+        <div class="gq-entry-t">先花 30 秒，找到你的专属学习路线</div>
+        <div class="gq-entry-d">答 4 个小问题，我直接帮你把路铺好 —— 是跟着地图一步步做，还是挑没掌握的补。</div>
+      </div>
+      <button class="gq-entry-btn" type="button" onclick="openGuideQuiz()">开始 →</button>
+    </div>
+
+    <p>路铺好了，再回来听我把这趟航行讲清楚 —— 先看这个视频 👇</p>
 
     <!-- 致辞视频 -->
     <div class="video-plate in-letter-video" onclick="alert('演示占位：刘小排开场致辞视频')">
@@ -213,7 +277,7 @@ a.mod:hover .go{transform:translateX(3px)}
     </a>
 
     <p>点开一座岛，这个阶段的内容全在里面 —— 图文、视频、作业，照着顺序学。</p>
-    <a class="map-enter" href="course.html" aria-label="查看课程">
+    <a class="map-enter" href="calendar.html?view=list" aria-label="查看课程">
       <img class="map-shot" src="assets/shot-lesson.jpg" alt="一节课的样子：左边是这阶段的课程清单，右边是正文，学完点「标记已学完」">
     </a>
 
@@ -231,11 +295,11 @@ a.mod:hover .go{transform:translateX(3px)}
 
     <p>这些岛你得一座座走通、不跳关。要是你已经想好做哪种产品（小程序、网站、AI 员工……），可以挑一条专门为它铺好的航线，路上每一步都冲着"做出它"去；还没想好，就走默认那条完整路线，照样走得通。走通一条想换个方向，随时能再开一条新的。</p>
 
-    <!-- 个性化学习路线 → 找航线问卷入口（真实截图：开发一个小程序 这条专属航线） -->
-    <a class="map-enter" href="calendar.html?quiz=1" aria-label="找到适合你的航线">
+    <!-- 想换条路线 → 回到本页第一步问卷重选 -->
+    <a class="map-enter" href="javascript:void(0)" role="button" tabindex="0" aria-label="重新找航线" onclick="openGuideQuiz();return false;">
       <img class="map-shot" src="assets/shot-route.jpg" alt="选「开发一个小程序」后的专属航线地图：扣子做 demo → 配工位 → 写核心功能 → 上线变现">
       <span class="map-pin">🧭 比如选「开发一个小程序」，地图就只留这条路要走的岛</span>
-      <span class="map-hint">👉 花 1 分钟答几个问题，找到只属于你的那条航线 →</span>
+      <span class="map-hint">👉 想换条路线？点这儿重新答几个问题 →</span>
     </a>
 
     <p>你的任务不是"看完所有岛"，而是<strong>用最短的时间，登上第一座岛</strong>。</p>
@@ -258,7 +322,7 @@ a.mod:hover .go{transform:translateX(3px)}
     <p>然后，截图，发到<a href="discuss.html">广场</a>，说"我跑通了"。</p>
     <p>你会收到第一波"恭喜"。那一刻，你就已经上路了。</p>
 
-    <div class="letter-cta"><a class="btn btn-primary" href="calendar.html">进入学习地图 · 上第一座岛 <span class="arr">→</span></a></div>
+    <div class="letter-cta"><a class="btn btn-primary" id="ctaGo" href="calendar.html">进入学习地图 · 上第一座岛 <span class="arr">→</span></a></div>
 
     <p class="letter-kicker">记住，这里没有"学完了再开始"，只有"开始了才算学"。</p>
     <p>期待看到你的第一个作品。</p>
@@ -277,7 +341,109 @@ a.mod:hover .go{transform:translateX(3px)}
 
 <div class="site-foot">深海圈 · AI 编程 · 学习指南 ｜ 右下角「刘小排」随时能问</div>
 
-<script>/* 学习指南看过一次：写标记，之后 dsHomeUrl 不再强制落到本页 */try{localStorage.setItem('ds_guide_seen','1');}catch(e){}</script>
+<script>/* 学习指南看过一次：写「已看」标记——仅限已通过审核者。无权限会被顶部闸 location.replace 弹走，
+   但弹走前页面仍会解析到这里，若无条件写标记，会让这人将来真通过审核时「第一次」就跳过指南，故加判断。 */
+(function(){try{
+  var approved=localStorage.getItem('ds_approved')==='1'||localStorage.getItem('ds_onboarded')==='true'||!!localStorage.getItem('ds_enrolled_at');
+  if(approved)localStorage.setItem('ds_guide_seen','1');
+}catch(e){}})();</script>
+<script>
+/* ============ 学习指南 · 第一步「找路线」问卷（自包含）============
+   写 ds_experience(中文) / ds_motive / ds_daily_minutes；按「基础」分流出口：
+   有产品经验=老手 → 全部课程(查缺补漏)；新手 → 刘小排一对一问诊(diagnosis.html)，由它配专属路线。
+   产品方向「不」在问卷里选，交给刘小排问诊（营养师式）；预设产品路线仍在地图「切换航线」菜单备选。 */
+(function(){
+  var QUIZ=[
+    {key:'level',q:'你现在大概是什么基础？',opts:[
+      {t:'零基础，还没正式写过代码',v:'零基础'},
+      {t:'用过 ChatGPT / 扣子，但还没真正做出过东西',v:'有基础'},
+      {t:'自己做出过小作品，想更系统地进阶',v:'有产品经验'}
+    ]},
+    {key:'goal',q:'你来这里，最想解决的是什么？',opts:[
+      {t:'有想法，但不知道从哪里开始',v:'stuck'},
+      {t:'手上有业务或项目，想尽快把它做出来',v:'biz'},
+      {t:'想跟上 AI 的节奏，系统补齐自己的能力',v:'keepup'},
+      {t:'先做出一个能用的小东西练手',v:'try'}
+    ]},
+    {key:'minutes',q:'你每天大概能投入多少时间？',opts:[
+      {t:'20 分钟左右',v:20},
+      {t:'1 小时左右',v:60},
+      {t:'2 小时以上',v:120},
+      {t:'不太固定',v:0}
+    ]}
+  ];
+  var ans={},cur=0,mask=null;
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function build(){
+    mask=document.createElement('div');mask.className='gq-mask';
+    mask.innerHTML='<div class="gq-card" role="dialog" aria-modal="true" aria-label="找路线问卷"><button class="gq-close" type="button" aria-label="关闭">✕</button><div class="gq-body"></div></div>';
+    document.body.appendChild(mask);
+    mask.querySelector('.gq-close').onclick=close;
+    mask.addEventListener('click',function(e){if(e.target===mask)close();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mask.classList.contains('show'))close();});
+  }
+  function open(){if(!mask)build();ans={};cur=0;renderQ();mask.classList.add('show');}
+  function close(){if(mask)mask.classList.remove('show');}
+  function dots(){var s='';for(var i=0;i<QUIZ.length;i++){s+='<span class="gq-dot '+(i<cur?'done':(i===cur?'on':''))+'"></span>';}return s;}
+  function renderQ(){
+    var q=QUIZ[cur];
+    var opts=q.opts.map(function(o,i){return '<button class="gq-opt" type="button" data-i="'+i+'"><span class="gq-opt-tx"><span class="gq-opt-t">'+esc(o.t)+'</span>'+(o.n?'<span class="gq-opt-n">'+esc(o.n)+'</span>':'')+'</span><span class="gq-opt-arr">→</span></button>';}).join('');
+    mask.querySelector('.gq-body').innerHTML='<div class="gq-prog">'+dots()+'</div><div class="gq-step">第 '+(cur+1)+' / '+QUIZ.length+' 步</div><h3 class="gq-title">'+esc(q.q)+'</h3><div class="gq-opts">'+opts+'</div>'+(cur>0?'<button class="gq-back" type="button">← 上一步</button>':'');
+    var body=mask.querySelector('.gq-body');
+    body.querySelectorAll('.gq-opt').forEach(function(b){b.onclick=function(){
+      var o=q.opts[+b.dataset.i];
+      if(o.diag){close();location.href='diagnosis.html';return;}
+      ans[q.key]=o.v;
+      if(cur<QUIZ.length-1){cur++;renderQ();}else{renderResult();}
+    };});
+    var bk=body.querySelector('.gq-back');if(bk)bk.onclick=function(){cur--;renderQ();};
+  }
+  function renderResult(){
+    try{
+      if(ans.level)localStorage.setItem('ds_experience',ans.level);
+      if(ans.goal)localStorage.setItem('ds_motive',ans.goal);
+      if(ans.minutes!=null)localStorage.setItem('ds_daily_minutes',String(ans.minutes));
+    }catch(e){}
+    var vet=ans.level==='有产品经验',h;
+    if(vet){
+      /* 老手：去全部课程查缺补漏，不绑路线 */
+      try{localStorage.removeItem('ds_route');localStorage.removeItem('ds_route_completed');}catch(e){}
+      h='<div class="gq-result"><div class="gq-rs-ic">🎯</div><div class="gq-rs-t">你已经做出过东西了</div><div class="gq-rs-d">那就别从头啃了 —— 建议直接进<b>全部课程</b>，哪里不会补哪里，把缺的那块补上。<b>但先别急着走</b>，下面这封信还有几句要紧的。</div><button class="gq-rs-go" type="button" data-act="stay">✓ 好，接着把这封信看完</button><button class="gq-rs-alt" type="button" data-act="go">想直接去全部课程？这就去 →</button></div>';
+    }else{
+      /* 新手：产品方向交给刘小排——引导去一对一问诊配专属路线；默认仍留下看完信，页底大按钮即去问诊 */
+      h='<div class="gq-result"><div class="gq-rs-ic">🧭</div><div class="gq-rs-t">路线交给刘小排帮你配</div><div class="gq-rs-d">产品方向这块<b>不用自己纠结</b> —— 花两分钟跟<b>刘小排</b>聊聊你想做的东西，它会按你的情况，挑出该走的路、该补的课。<b>不用急</b>，先把这封信看完，页底随时能去找它。</div><button class="gq-rs-go" type="button" data-act="stay">✓ 好，先把这封信看完</button><button class="gq-rs-alt" type="button" data-act="go">或现在就去找刘小排配路线 →</button></div>';
+    }
+    mask.querySelector('.gq-body').innerHTML=h;
+    syncCta();
+    var stay=mask.querySelector('[data-act="stay"]');if(stay)stay.onclick=stayAndRead;
+    var go=mask.querySelector('[data-act="go"]');if(go)go.onclick=function(){vet?goCourse():goDiagnose();};
+  }
+  /* 方案A：填完不跳走——关弹窗、回到信的开头接着读；路线已存、页底大按钮已同步成你选的去向 */
+  function stayAndRead(){
+    close();syncCta();
+    try{var v=document.querySelector('.in-letter-video');if(v)v.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+    showHint();
+  }
+  /* 把页底大按钮同步成去向：老手→全部课程；问诊过→定制路线地图；新手未问诊→先去找刘小排；没填→原样 */
+  function syncCta(){
+    var cta=document.getElementById('ctaGo');if(!cta)return;
+    var lv=null,custom=null,rt=null;try{lv=localStorage.getItem('ds_experience');custom=localStorage.getItem('ds_route_custom');rt=localStorage.getItem('ds_route');}catch(e){}
+    if(lv==='有产品经验'){cta.setAttribute('href','calendar.html?view=list');cta.innerHTML='进入全部课程 · 开始查缺补漏 <span class="arr">→</span>';}
+    else if(custom||rt==='diagnosis'){cta.setAttribute('href','calendar.html');cta.innerHTML='进入学习地图 · 走刘小排为你配的路线 <span class="arr">→</span>';}
+    else if(lv){cta.setAttribute('href','diagnosis.html');cta.innerHTML='先让刘小排帮你配条路线 <span class="arr">→</span>';}
+  }
+  function showHint(){
+    var t=document.createElement('div');t.textContent='✓ 路线已定，接着往下看就好';
+    t.style.cssText='position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:130;background:#1f6f6a;color:#fff;font-size:14px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);opacity:0;transition:opacity .25s';
+    document.body.appendChild(t);requestAnimationFrame(function(){t.style.opacity='1';});
+    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},2400);
+  }
+  function goDiagnose(){location.href='diagnosis.html';}
+  function goCourse(){location.href='calendar.html?view=list';}
+  window.openGuideQuiz=open;
+  syncCta();
+})();
+</script>
 <script src="topbar.js"></script>
 <script src="assistant.js?v=4"></script>
 </body>

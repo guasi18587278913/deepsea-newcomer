@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>报名成功 · 深海圈 AI 编程</title>
+<!-- 报名后落地页：没通过审核（无权限）的人，进来只看到这一页。
+     审核通过的人不该停在这里 → 自动去「学习指南（第一次）/ 学习地图」。
+     页面内含「审核中 / 审核通过」两态，底部演示开关可切换查看。 -->
+<script>
+window.dsHomeUrl = function () {
+  try { return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html'; }
+  catch (e) { return 'calendar.html'; }
+};
+(function () {
+  try {
+    var p = new URLSearchParams(location.search);
+    if (p.get('fresh') === '1') {                       // 演示：清空，从「刚报名」看起
+      localStorage.clear();
+      history.replaceState(null, '', location.pathname);
+      return;
+    }
+    var approved = localStorage.getItem('ds_approved') === '1'
+                || localStorage.getItem('ds_onboarded') === 'true'
+                || !!localStorage.getItem('ds_enrolled_at');   // 兼容老 demo 数据
+    if (approved) {                                     // 已通过审核 → 不停留，去学习
+      location.replace(localStorage.getItem('ds_guide_seen') === '1' ? dsHomeUrl() : 'guide.html');
+    }
+  } catch (e) {}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+:root{
+  --font-display:'Noto Serif SC','Songti SC',serif;
+  --font-sans:'Sora','PingFang SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --teal:#0d9488; --teal-deep:#1f6f6a; --teal-bg:#e8f6f5;
+  --deep-blue:#1e3a52;
+  --gold:#c89854; --gold-soft:#fbf3e3;
+  --text-1:#1a2942; --text-2:#5c7a8a; --text-3:#94a3b8;
+  --border:#dde7ea; --border-soft:#e8eef0; --surface:#fff;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#f5fafa}
+body{
+  font-family:var(--font-sans); color:var(--text-1);
+  background:linear-gradient(180deg,#eaf5f3 0%,#dceee9 30%,#f3faf8 64%,#fff 100%);
+  background-attachment:fixed; -webkit-font-smoothing:antialiased; line-height:1.6;
+  min-height:100vh; display:flex; flex-direction:column; align-items:center;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 46% at 82% 14%,rgba(125,211,204,.22) 0%,transparent 60%),
+             radial-gradient(ellipse 56% 44% at 8% 94%,rgba(13,148,136,.06) 0%,transparent 55%);}
+
+.brand{position:relative;z-index:1;display:flex;align-items:center;gap:9px;margin:34px 0 4px;font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--deep-blue)}
+
+.card{position:relative;z-index:1;width:100%;max-width:520px;margin:14px 20px 8px;background:var(--surface);
+  border:1px solid var(--border-soft);border-radius:22px;padding:36px 30px 30px;
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 32px 64px -28px rgba(30,58,82,.22),0 8px 24px -10px rgba(13,148,136,.1)}
+
+/* 两态切换：data-state 决定显示哪一套 */
+.card[data-state="pending"] [data-approved]{display:none}
+.card[data-state="approved"] [data-pending]{display:none}
+
+/* 头部 */
+.hero{text-align:center}
+.badge{width:62px;height:62px;margin:0 auto 15px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(180deg,#e8f6f5,#d4efe9);border:1px solid #bfe3dc;box-shadow:0 8px 20px -10px rgba(13,148,136,.45)}
+.badge svg{width:30px;height:30px;stroke:var(--teal);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.badge.ok{background:linear-gradient(180deg,#13a394,#0c6f66);border-color:transparent;box-shadow:0 12px 26px -10px rgba(13,148,136,.6)}
+.badge.ok svg{stroke:#fff}
+.hero h1{font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--deep-blue);letter-spacing:-.01em;line-height:1.3}
+.hero p{margin-top:9px;font-size:14.5px;color:var(--text-2)}
+.hero .enr{display:inline-block;margin-top:12px;font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--teal-deep);background:var(--teal-bg);border-radius:8px;padding:5px 12px}
+
+/* 区块 */
+.step{margin-top:24px;padding-top:22px;border-top:1px solid var(--border-soft)}
+.step-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.step-n{flex:none;width:23px;height:23px;border-radius:50%;background:var(--deep-blue);color:#fff;font-family:var(--font-mono);font-size:12.5px;font-weight:600;display:grid;place-items:center}
+.step-h h2{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--deep-blue)}
+
+/* 企微 */
+.wecom{display:flex;gap:18px;align-items:center;background:linear-gradient(180deg,#fbfdfd,#f4faf9);border:1px solid var(--border-soft);border-radius:16px;padding:18px}
+.qr{flex:none;width:112px;height:112px;border-radius:12px;background:#fff;border:1.5px dashed #bcd9d4;display:grid;place-items:center;padding:10px}
+.qr svg{width:100%;height:100%}
+.wecom-t{font-size:13.5px;color:var(--text-2);line-height:1.7}
+.wecom-t b{color:var(--teal-deep);font-weight:600}
+
+/* 时间线 */
+.timeline{list-style:none}
+.timeline li{position:relative;padding:0 0 16px 28px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:'';position:absolute;left:7px;top:19px;bottom:-2px;width:2px;background:var(--border)}
+.timeline li:last-child::before{display:none}
+.tl-dot{position:absolute;left:0;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--border)}
+.tl-done .tl-dot{background:var(--teal);border-color:var(--teal)}
+.tl-now .tl-dot{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.tl-now .tl-dot::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--gold);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.tl-t{font-size:14px;font-weight:600;color:var(--deep-blue);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tl-t .when{font-family:var(--font-mono);font-size:11.5px;font-weight:500;color:var(--text-3)}
+.tl-now .tl-t .when{color:var(--gold)}
+
+/* 状态条 */
+.status{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:24px;padding:13px;border-radius:13px;font-size:13.5px;font-weight:600}
+.status.wait{background:var(--gold-soft);border:1px solid rgba(200,152,84,.32);color:#8a6d2e}
+.status.pass{background:var(--teal-bg);border:1px solid #bfe3dc;color:var(--teal-deep)}
+.status .dot{width:8px;height:8px;border-radius:50%}
+.status.wait .dot{background:var(--gold);animation:pulse 1.8s ease-in-out infinite}
+.status.pass .dot{background:var(--teal)}
+
+.hint-line{margin-top:14px;text-align:center;font-size:12.5px;color:var(--text-3)}
+
+/* 审核通过态：进入学习 */
+.go-wrap{text-align:center;margin-top:26px}
+.btn-go{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-sans);font-size:16px;font-weight:600;padding:16px 36px;border-radius:13px;border:none;cursor:pointer;text-decoration:none;
+  background:linear-gradient(180deg,#13a394,#0c6f66);color:#fff;box-shadow:0 14px 30px -12px rgba(13,148,136,.7);transition:transform .16s,box-shadow .16s}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 20px 38px -12px rgba(13,148,136,.8)}
+.btn-go .arr{transition:transform .16s}.btn-go:hover .arr{transform:translateX(3px)}
+
+/* 演示切换器 */
+.demo-bar{position:relative;z-index:1;width:100%;max-width:520px;margin:8px 20px 30px;text-align:center}
+.demo-bar .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--text-3);margin-bottom:9px}
+.seg{display:inline-flex;background:#eef3f4;border-radius:11px;padding:3px}
+.seg button{font-family:var(--font-sans);font-size:12.5px;font-weight:600;padding:8px 16px;border:none;border-radius:9px;background:transparent;color:var(--text-2);cursor:pointer;transition:background .15s,color .15s}
+.seg button.on{background:#fff;color:var(--teal-deep);box-shadow:0 1px 3px rgba(30,58,82,.14)}
+.demo-bar .reset{display:block;margin-top:11px;font-size:12px;color:var(--text-3);text-decoration:none}
+.demo-bar .reset:hover{color:var(--text-2)}
+
+.foot{position:relative;z-index:1;color:var(--text-3);font-size:12px;text-align:center;padding-bottom:30px}
+
+@media (max-width:560px){
+  .card{padding:30px 20px 24px;border-radius:18px}
+  .hero h1{font-size:23px}
+  .wecom{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="brand">
+  <svg width="26" height="26" viewBox="0 0 28 28" fill="none"><path d="M2.01316 14.5591C1.6828 7.50721 7.50361 1.68261 14.5512 2.01317C20.7178 2.29657 25.7046 7.28645 25.9878 13.4253C26.3024 20.4929 20.4974 26.3174 13.4341 25.9868C7.28329 25.7034 2.29653 20.7135 2.01316 14.5591ZM24.3364 14.685C24.7297 8.43596 19.569 3.27297 13.3237 3.66649C8.16406 3.99721 3.99496 8.1679 3.66453 13.3149C3.27124 19.564 8.43189 24.727 14.6772 24.3335C19.8368 24.0028 24.0058 19.8477 24.3364 14.685Z" fill="#00A8A9"/></svg>
+  深海圈 · AI 编程
+</div>
+
+<main class="card" data-state="pending">
+
+  <!-- ====== 审核中 ====== -->
+  <div data-pending>
+    <div class="hero">
+      <div class="badge"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h1>报名成功 🎉</h1>
+      <p>席位已锁定。开课前，先完成下面两步。</p>
+      <span class="enr">订单已确认 · 第四期</span>
+    </div>
+
+    <section class="step">
+      <div class="step-h"><span class="step-n">1</span><h2>加运营企微</h2></div>
+      <div class="wecom">
+        <div class="qr" aria-label="运营企微二维码（占位）">
+          <svg viewBox="0 0 116 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="30" height="30" rx="5" stroke="#1e3a52" stroke-width="6"/><rect x="19" y="19" width="8" height="8" rx="2" fill="#1e3a52"/>
+            <rect x="78" y="8" width="30" height="30" rx="5" stroke="#1e3a52" stroke-width="6"/><rect x="89" y="19" width="8" height="8" rx="2" fill="#1e3a52"/>
+            <rect x="8" y="78" width="30" height="30" rx="5" stroke="#1e3a52" stroke-width="6"/><rect x="19" y="89" width="8" height="8" rx="2" fill="#1e3a52"/>
+            <rect x="50" y="10" width="7" height="7" fill="#0d9488"/><rect x="50" y="24" width="7" height="7" fill="#1e3a52"/><rect x="62" y="17" width="7" height="7" fill="#1e3a52"/>
+            <rect x="52" y="50" width="9" height="9" fill="#0d9488"/><rect x="68" y="52" width="7" height="7" fill="#1e3a52"/><rect x="84" y="50" width="9" height="9" fill="#1e3a52"/><rect x="98" y="54" width="7" height="7" fill="#0d9488"/>
+            <rect x="52" y="70" width="7" height="7" fill="#1e3a52"/><rect x="66" y="68" width="9" height="9" fill="#1e3a52"/><rect x="86" y="72" width="7" height="7" fill="#0d9488"/>
+            <rect x="50" y="86" width="7" height="7" fill="#1e3a52"/><rect x="64" y="90" width="7" height="7" fill="#0d9488"/><rect x="80" y="86" width="9" height="9" fill="#1e3a52"/><rect x="98" y="88" width="7" height="7" fill="#1e3a52"/>
+          </svg>
+        </div>
+        <div class="wecom-t"><b>扫码加「深海圈学习运营」</b><br>开课时间、审核结果都通过她通知；有问题也直接找她。</div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="step-h"><span class="step-n">2</span><h2>接下来</h2></div>
+      <ul class="timeline">
+        <li class="tl-done"><span class="tl-dot"></span><div class="tl-t">报名成功 <span class="when">已完成</span></div></li>
+        <li class="tl-now"><span class="tl-dot"></span><div class="tl-t">资格审核中 <span class="when">1–2 个工作日</span></div></li>
+        <li><span class="tl-dot"></span><div class="tl-t">审核通过 → 开始学习 <span class="when">通过后通知</span></div></li>
+      </ul>
+    </section>
+
+    <div class="status wait"><span class="dot"></span>资格审核中</div>
+    <div class="hint-line">这页可随时回来看，审核通过后会自动更新。</div>
+  </div>
+
+  <!-- ====== 审核通过 ====== -->
+  <div data-approved>
+    <div class="hero">
+      <div class="badge ok"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h1>审核通过 🎉</h1>
+      <p>欢迎正式加入。点下面开始 —— 先有份学习指南带你认路。</p>
+    </div>
+
+    <div class="go-wrap">
+      <button class="btn-go" onclick="dsEnter()">进入学习 <span class="arr">→</span></button>
+    </div>
+
+    <div class="status pass"><span class="dot"></span>已通过审核</div>
+    <div class="hint-line">学习中有任何问题，随时找运营企微。</div>
+  </div>
+
+</main>
+
+<!-- 演示开关：仅原型演示用，正式上线删掉本段 -->
+<div class="demo-bar">
+  <div class="lbl">— 仅供演示：切换查看两种状态 —</div>
+  <div class="seg">
+    <button class="on" data-s="pending" onclick="setState('pending')">⏳ 审核中</button>
+    <button data-s="approved" onclick="setState('approved')">✅ 审核通过</button>
+  </div>
+  <a class="reset" href="enrolled.html?fresh=1">重新演示（清空数据）</a>
+</div>
+
+<div class="foot">深海圈 · AI 编程</div>
+
+<script>
+/* 演示：在「审核中 / 审核通过」两态间切换查看，不改任何数据、不跳转 */
+function setState(s){
+  document.querySelector('.card').setAttribute('data-state', s);
+  document.querySelectorAll('.seg button').forEach(function(b){ b.classList.toggle('on', b.dataset.s === s); });
+}
+/* 用户在「审核通过」态主动点「进入学习」→ 解锁权限 → 第一次先看学习指南 */
+function dsEnter(){
+  try{
+    localStorage.setItem('ds_approved','1');
+    localStorage.setItem('ds_onboarded','true');
+    if(!localStorage.getItem('ds_enrolled_at')) localStorage.setItem('ds_enrolled_at','2026-05-04');
+  }catch(e){}
+  location.href = 'guide.html';
+}
+</script>
+</body>
+</html>

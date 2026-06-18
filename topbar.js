@@ -18,7 +18,7 @@
     { label: '交流区',   href: 'discuss.html', match: ['discuss', 'feed', 'community', 'course-discuss', 'article'],
       sub: [['广场', 'discuss.html'], ['干货', 'feed.html']] },
     { label: '学习中心', href: 'calendar.html', match: ['guide', 'calendar', 'roadmap', 'learn', 'course', 'live', 'isle'],
-      sub: [['学习地图', 'calendar.html'], ['全部课程', 'course.html'], ['直播学习', 'live.html'], ['📖 学习指南', 'guide.html', 'help']] },
+      sub: [['学习地图', 'calendar.html'], ['直播学习', 'live.html'], ['📖 学习指南', 'guide.html', 'help']] },
     { label: '作品墙',   href: 'showcase.html', match: ['showcase', 'profile'],
       sub: [['全部作品', 'showcase.html'], ['我的作品', 'profile.html']] },
     { label: '成员',     href: 'members.html', match: ['members'],

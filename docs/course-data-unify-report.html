@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>课程数据统一 · 调研报告 + 实施方案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0d9488; --teal-bg:#e8f6f5; --teal-d:#0b7a70;
+  --deep:#1a2942; --deep2:#1e3a52;
+  --gold:#c89854; --gold-bg:#faf4e8;
+  --ink:#26323f; --mut:#6b7b8a; --line:#e3eaed;
+  --red:#d9534f; --red-bg:#fdeeee; --grn:#2f9e6f; --grn-bg:#eaf7f1;
+  --paper:#fbfdfd;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:linear-gradient(180deg,#f3faf9,#eef6f5 40%,#f4f8f8);
+  color:var(--ink); font-family:'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  line-height:1.75; font-size:16px;
+}
+.wrap{max-width:920px; margin:0 auto; padding:48px 24px 96px}
+.serif{font-family:'Noto Serif SC',serif}
+
+/* header */
+.hd{text-align:center; margin-bottom:40px}
+.tag{display:inline-block; font-size:12px; letter-spacing:.12em; color:var(--teal-d);
+  background:var(--teal-bg); border:1px solid #cfeae7; padding:5px 14px; border-radius:999px; font-weight:600}
+.hd h1{font-family:'Noto Serif SC',serif; font-weight:900; font-size:34px; color:var(--deep);
+  margin:18px 0 8px; letter-spacing:.01em}
+.hd .sub{color:var(--mut); font-size:15px}
+.warn-stamp{display:inline-block; margin-top:14px; font-size:12.5px; color:#8a6d3b;
+  background:var(--gold-bg); border:1px dashed #e2cfa0; padding:6px 14px; border-radius:8px}
+
+/* tldr */
+.tldr{background:var(--deep); color:#eaf2f1; border-radius:18px; padding:26px 30px; margin:30px 0 44px;
+  box-shadow:0 18px 40px -22px rgba(26,41,66,.5)}
+.tldr h2{font-family:'Noto Serif SC',serif; font-size:15px; letter-spacing:.1em; color:#7fd4cb;
+  margin:0 0 12px; font-weight:700}
+.tldr p{margin:0 0 10px; font-size:16.5px; color:#f0f6f5}
+.tldr b{color:#ffe6b0}
+.tldr .big{font-size:19px; font-weight:700; color:#fff; font-family:'Noto Serif SC',serif}
+
+/* sections */
+section{background:var(--paper); border:1px solid var(--line); border-radius:16px;
+  padding:30px 32px; margin:22px 0; box-shadow:0 8px 26px -20px rgba(20,60,55,.4)}
+.sec-no{display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px;
+  background:var(--teal); color:#fff; border-radius:9px; font-weight:700; font-size:15px; margin-right:11px}
+h2.sec{font-family:'Noto Serif SC',serif; font-size:22px; color:var(--deep); font-weight:700;
+  margin:0 0 6px; display:flex; align-items:center}
+.sec-lead{color:var(--mut); margin:2px 0 20px; font-size:14.5px; padding-left:41px}
+h3{font-size:16.5px; color:var(--deep2); margin:24px 0 10px; font-weight:700}
+p{margin:11px 0}
+ul{margin:11px 0; padding-left:22px}
+li{margin:7px 0}
+code{font-family:'SF Mono',Menlo,monospace; font-size:13px; background:#eef3f3; color:var(--teal-d);
+  padding:2px 6px; border-radius:5px}
+.kw{color:var(--deep); font-weight:600}
+
+/* diagram */
+.dgm{background:#f6faf9; border:1px solid #dfeceb; border-radius:13px; padding:24px 20px; margin:18px 0;
+  overflow-x:auto}
+.dgm-cap{text-align:center; font-size:12.5px; color:var(--mut); margin-top:14px; font-style:italic}
+.row{display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap}
+.row+.row{margin-top:16px}
+.box{border-radius:11px; padding:13px 16px; min-width:130px; text-align:center; font-size:13.5px; line-height:1.5}
+.box .t{font-weight:700; font-size:14.5px; display:block; margin-bottom:3px}
+.box .s{font-size:12px; opacity:.8}
+.box-teal{background:#fff; border:2px solid var(--teal); color:var(--deep)}
+.box-teal .t{color:var(--teal-d)}
+.box-deep{background:var(--deep); border:2px solid var(--deep); color:#eef5f4}
+.box-deep .t{color:#9fe0d7}
+.box-gold{background:var(--gold-bg); border:2px solid var(--gold); color:#6b5326}
+.box-gold .t{color:#9a7327}
+.box-red{background:var(--red-bg); border:2px solid #e7b7b5; color:#8a3b39}
+.box-grn{background:var(--grn-bg); border:2px solid #b6e0cd; color:#256b4d}
+.box-mut{background:#eef2f3; border:2px dashed #c4d0d4; color:#5a6a76}
+.arr{font-size:22px; color:var(--teal); font-weight:700}
+.arr-x{font-size:13px; color:var(--red); font-weight:700; text-align:center; line-height:1.3}
+.arr-down{font-size:20px; color:var(--teal); text-align:center; width:100%}
+.brace{font-size:12px; color:var(--mut); text-align:center; margin-top:6px}
+.stack{display:flex; flex-direction:column; gap:8px}
+
+.verdict{font-size:13px; font-weight:700; padding:4px 12px; border-radius:8px; display:inline-block}
+.v-no{background:var(--red-bg); color:var(--red); border:1px solid #e7b7b5}
+.v-yes{background:var(--grn-bg); color:var(--grn); border:1px solid #b6e0cd}
+.v-maybe{background:var(--gold-bg); color:#9a7327; border:1px solid #e2cfa0}
+
+/* step cards */
+.step{border-left:3px solid var(--teal); padding:4px 0 4px 20px; margin:26px 0}
+.step-h{display:flex; align-items:center; gap:10px; margin-bottom:4px}
+.step-n{background:var(--teal); color:#fff; font-weight:700; font-size:13px; padding:3px 10px; border-radius:7px}
+.step-h .ti{font-family:'Noto Serif SC',serif; font-size:17.5px; color:var(--deep); font-weight:700}
+.cost{margin-left:auto; font-size:12px; font-weight:600; padding:3px 10px; border-radius:6px}
+.c-low{background:var(--grn-bg); color:var(--grn)}
+.c-mid{background:var(--gold-bg); color:#9a7327}
+.c-high{background:var(--red-bg); color:var(--red)}
+
+/* tables */
+table{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px}
+th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line)}
+th{background:#f0f6f5; color:var(--deep2); font-weight:600; font-size:13px}
+tr:last-child td{border-bottom:none}
+
+.callout{border-radius:11px; padding:14px 18px; margin:16px 0; font-size:14px}
+.co-teal{background:var(--teal-bg); border:1px solid #cfeae7}
+.co-gold{background:var(--gold-bg); border:1px solid #ecdcbb}
+.co-red{background:var(--red-bg); border:1px solid #eccac8}
+.co b{color:var(--deep)}
+
+.foot{text-align:center; color:var(--mut); font-size:13px; margin-top:40px; padding-top:22px; border-top:1px solid var(--line)}
+.pill{display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px; background:#eef2f3; color:var(--mut); margin:0 3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hd">
+    <span class="tag">合并第一步 · 调研报告</span>
+    <h1>课程数据「统一成一份」<br>到底该怎么做</h1>
+    <div class="sub">深海圈 AI 编程 · 学习地图与全部课程合并 · 2026-06-18</div>
+    <div class="warn-stamp">本报告为调研结论与建议方案 · 全程只读、未改任何代码</div>
+  </div>
+
+  <!-- TLDR -->
+  <div class="tldr">
+    <h2>一句话结论</h2>
+    <p class="big">原以为是「两份重复的课、合成一份」——调研发现其实是<b>「两套完全不同的课」</b>,合不了。</p>
+    <p>教材(<code style="color:#bfe9e3;background:#163a4d">course-data.js</code>)77 节是<b>通用知识</b>;专属航线(<code style="color:#bfe9e3;background:#163a4d">routes.js</code>)的产品实操课,跟教材<b>零重叠(0%)</b>。所以"统一"的真正含义不是"删掉重复",而是要做一个<b>方向选择</b>:是把航线课正式并进教材(大动作),还是承认两层、只统一"格式与渲染"(推荐、务实)。</p>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <h2 class="sec"><span class="sec-no">1</span>调研发现:不是「两份重复」,是「两套不同的课」</h2>
+    <div class="sec-lead">这一节先把"现状到底是什么"摆清楚,后面的方案都建立在这上面。</div>
+
+    <p>站里跟课程有关的数据,真正成"源"的是两处。我让调查员把两边的课<span class="kw">逐条比对了课名</span>:</p>
+
+    <div class="dgm">
+      <div class="row">
+        <div class="box box-teal" style="min-width:200px">
+          <span class="t">教材 · course-data.js</span>
+          <span class="s">77 节 · <b>通用知识</b><br>编号 M1.1–M12.x · 按模块组织<br><span style="opacity:.7">例:用 AI 写出第一个页面 / 数据库设计</span></span>
+        </div>
+        <div class="stack" style="align-items:center">
+          <div class="arr-x">✗ 课名对不上 ✗<br><span style="font-size:16px">⟺</span><br>0% 重叠</div>
+        </div>
+        <div class="box box-gold" style="min-width:200px">
+          <span class="t">航线 · routes.js</span>
+          <span class="s">11 条专属路线 · 数十节 <b>产品专属实操课</b><br>编号 MP/AW/MG/AE… · 按"天"组织<br><span style="opacity:.7">例:网站三件套 / 小程序数据绑定</span></span>
+        </div>
+      </div>
+      <div class="row" style="margin-top:20px">
+        <div class="box box-mut" style="min-width:200px">全部课程页<br><span class="s">course.html</span></div>
+        <div class="box box-mut">地图 · 默认四岛<br><span class="s">calendar 默认态</span></div>
+        <div style="width:30px"></div>
+        <div class="box box-mut" style="min-width:200px">地图 · 航线模式<br><span class="s">calendar + routes-ui</span></div>
+      </div>
+      <div class="row" style="margin-top:4px; gap:60px">
+        <div class="arr-down">↑ 都读「教材」</div>
+        <div class="arr-down">↑ 读「航线」</div>
+      </div>
+      <div class="dgm-cap">图 1 · 两套数据各喂各的页面,课名零重叠</div>
+    </div>
+
+    <table>
+      <tr><th>对比项</th><th>教材(course-data.js)</th><th>航线(routes.js)</th></tr>
+      <tr><td>课的性质</td><td>通用知识(怎么用 AI 写页面、连数据库)</td><td>产品专属(小程序/网站/游戏 各自的实操)</td></tr>
+      <tr><td>编号体系</td><td><code>M1.1 … M12.x</code></td><td><code>MP/AW/MG/APP/AE/AM/WF/CC/MS/SP/ID</code></td></tr>
+      <tr><td>组织方式</td><td>模块(M1–M12)→ 节</td><td>天(Day1/Day2)→ 课/直播/作业 混排</td></tr>
+      <tr><td>能对上教材的</td><td colspan="2"><span class="verdict v-no">0 节(0%)· 判断把握:极高</span></td></tr>
+    </table>
+
+    <div class="callout co-teal">
+      <b>一个例外值得记住:</b> 刘小排问诊生成的"定制航线"(<code>diagnosis.html</code>)用的是<b>真实教材编号</b>,是目前唯一一条"引用教材"的航线——它能成为方案里的现成范例。
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2 class="sec"><span class="sec-no">2</span>这把问题变了:「统一成一份」到底指什么</h2>
+    <div class="sec-lead">既然两套是不同的课,"合成一份"就有三条路,头一条直接堵死。</div>
+
+    <div class="dgm">
+      <div class="row" style="justify-content:flex-start; gap:12px">
+        <div class="box box-red" style="min-width:64px">路 A</div>
+        <div class="box box-teal">航线</div><span class="arr">→</span>
+        <div class="box box-deep">引用教材编号</div>
+        <span class="verdict v-no" style="margin-left:8px">✗ 走不通:教材里根本没有这些课</span>
+      </div>
+      <div class="row" style="justify-content:flex-start; gap:12px; margin-top:16px">
+        <div class="box box-gold" style="min-width:64px">路 B</div>
+        <div class="box box-teal">航线 53 节</div><span class="arr">→</span>
+        <div class="box box-deep">正式并进教材</div>
+        <span class="verdict v-maybe" style="margin-left:8px">可行但重:要做课程归类 + 重新编号</span>
+      </div>
+      <div class="row" style="justify-content:flex-start; gap:12px; margin-top:16px">
+        <div class="box box-grn" style="min-width:64px">路 C</div>
+        <div class="box box-teal" style="font-size:12.5px">教材‖航线 两层保留</div><span class="arr">→</span>
+        <div class="box box-deep" style="font-size:12.5px">统一格式 + 统一渲染</div>
+        <span class="verdict v-yes" style="margin-left:8px">✓ 推荐:务实、尊重两者本质不同</span>
+      </div>
+      <div class="dgm-cap">图 2 · 三条路:A 堵死,B 重,C 务实</div>
+    </div>
+
+    <p><span class="kw">为什么推荐 C?</span> 你做合并的真正动机,是用户"以为全部课程和地图是两样东西、还怀疑地图缺课"。这个困惑的根子<b>在界面、不在数据</b>——两个页面长得不一样、各画各的。所以真正该消除的是<b>"两套界面/两套渲染"</b>,而不是硬把两批不同的课捏成一团。C 正好对症:数据该两层就两层,但<b>用同一套格式喂同一套渲染</b>,用户看到的就是一致的东西。</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2 class="sec"><span class="sec-no">3</span>推荐方案 C:一套格式 + 一套渲染,两层数据</h2>
+    <div class="sec-lead">下面是 C 的全貌,共 4 步;每步都标了改哪、成本、怎么验收。</div>
+
+    <div class="dgm">
+      <div class="row">
+        <div class="stack">
+          <div class="box box-teal">教材数据</div>
+          <div class="box box-gold">航线数据</div>
+        </div>
+        <span class="arr">→</span>
+        <div class="box box-deep" style="min-width:150px"><span class="t">统一字段规范</span><span class="s">同一个"课程节"结构</span></div>
+        <span class="arr">→</span>
+        <div class="box box-deep" style="min-width:150px"><span class="t">一套渲染引擎</span><span class="s">一个函数喂两种源</span></div>
+        <span class="arr">→</span>
+        <div class="box box-grn" style="min-width:140px"><span class="t">一致的界面</span><span class="s">地图 ⇄ 卡片 随便切</span></div>
+      </div>
+      <div class="dgm-cap">图 3 · 方案 C 总览:两层数据 → 一种格式 → 一套渲染 → 一致界面</div>
+    </div>
+
+    <!-- step 1 -->
+    <div class="step">
+      <div class="step-h"><span class="step-n">步骤 1</span><span class="ti">给两套数据定一个"共同格式"</span><span class="cost c-low">成本 低</span></div>
+      <p>现在教材的"节"是 <code>{code, module, stage, t, mins}</code>,航线的"节"是 <code>{type, code, t, mins}</code>——<b>八成像、但不完全一样</b>。先定一个两边都遵守的"课程节"规范(字段名、必填项统一),不动内容,只统一外壳。</p>
+      <div class="dgm">
+        <div class="row">
+          <div class="stack">
+            <div class="box box-teal" style="font-size:12px">教材节<br><code style="font-size:11px">{code,module,stage,t,mins}</code></div>
+            <div class="box box-gold" style="font-size:12px">航线节<br><code style="font-size:11px">{type,code,t,mins}</code></div>
+          </div>
+          <span class="arr">→</span>
+          <div class="box box-deep" style="min-width:190px"><span class="t">统一"课程节"规范</span><span class="s"><code style="font-size:11px;color:#bfe9e3;background:#163a4d">{id, title, mins, kind, stage?}</code></span></div>
+        </div>
+        <div class="dgm-cap">图 1-① · 两种节 → 收敛成一个字段规范(只统一外壳,不并内容)</div>
+      </div>
+      <p style="font-size:13.5px;color:var(--mut)"><b>验收:</b>写一张字段对照表,两套数据都能无损映射到新规范。这步可纯文档先行,零代码风险。</p>
+    </div>
+
+    <!-- step 2 -->
+    <div class="step">
+      <div class="step-h"><span class="step-n">步骤 2</span><span class="ti">把"两套渲染"并成"一套引擎"</span><span class="cost c-mid">成本 中</span></div>
+      <p>现在地图<b>默认态</b>用 <code>_fillCalloutContent</code> 读教材、<b>航线态</b>用 routes-ui 的 <code>mountRouteFlow</code> 读航线——<b>两套画卡片的逻辑各写一遍</b>。把它们抽成<b>一个</b> <code>renderFlow(节列表)</code>,喂谁都出一样的卡片。</p>
+      <div class="dgm">
+        <div class="row">
+          <div class="stack">
+            <div class="box box-red" style="font-size:12px"><code style="font-size:11px">_fillCalloutContent</code><br><span class="s">教材那套</span></div>
+            <div class="box box-red" style="font-size:12px"><code style="font-size:11px">mountRouteFlow</code><br><span class="s">航线那套</span></div>
+          </div>
+          <span class="arr">→</span>
+          <div class="box box-grn" style="min-width:170px"><span class="t">renderFlow(列表)</span><span class="s">一个函数,喂教材或航线都行</span></div>
+          <span class="arr">→</span>
+          <div class="box box-deep">同样的卡片 / 岛</div>
+        </div>
+        <div class="dgm-cap">图 2-② · 两套画法 → 一套引擎(这步是"消除重复"的真正价值所在)</div>
+      </div>
+      <p style="font-size:13.5px;color:var(--mut)"><b>验收:</b>切换默认态/航线态,卡片样式与交互完全一致,且代码里只剩一处渲染函数。</p>
+    </div>
+
+    <!-- step 3 -->
+    <div class="step">
+      <div class="step-h"><span class="step-n">步骤 3</span><span class="ti">把"全部课程"和"地图默认态"并成一个 + 加开关</span><span class="cost c-mid">成本 中</span></div>
+      <p>关键认知:<b>"全部课程"(course.html)和"地图默认四岛"读的本来就是同一份教材!</b>它俩根本不是两套数据,只是两个页、两种皮。所以把那个空壳 <code>course.html</code> 并掉,统一进地图,加一个 <span class="kw">「地图 ⇄ 卡片」开关</span>(复用步骤 2 的引擎),就是你要的"合并"。</p>
+      <div class="dgm">
+        <div class="row">
+          <div class="box box-mut" style="font-size:12px">course.html<br><span class="s">卡片(空壳)</span></div>
+          <div class="box box-mut" style="font-size:12px">地图默认四岛<br><span class="s">同一份教材</span></div>
+        </div>
+        <div class="row"><div class="arr-down">↓ 并成一个</div></div>
+        <div class="row">
+          <div class="box box-grn" style="min-width:230px"><span class="t">一个学习地图页</span><span class="s">[ 地图 ] ⇄ [ 卡片 ] 一键切 · 同一份教材内容</span></div>
+        </div>
+        <div class="dgm-cap">图 3-③ · 同源的两个页 → 合成一个 + 视图开关</div>
+      </div>
+      <p style="font-size:13.5px;color:var(--mut)"><b>验收:</b>导航里不再有重复的"全部课程"入口;地图/卡片切换内容一致;手机端正常。</p>
+    </div>
+
+    <!-- step 4 -->
+    <div class="step">
+      <div class="step-h"><span class="step-n">步骤 4</span><span class="ti">航线接到同一套渲染 + 收尾清理</span><span class="cost c-mid">成本 中</span></div>
+      <p>让航线模式也走步骤 2 的引擎(航线数据按步骤 1 的规范喂进去)。再顺手收三个尾巴:</p>
+      <ul>
+        <li><b>修一个隐藏断点:</b>航线里点课会跳 <code>learn.html?code=MP1.1</code>,但单节页只认教材编号、查不到 MP 码——现在就是断的,这一步顺带接上(或明确航线课的落地页规则)。</li>
+        <li><b>清两处冗余:</b>直播/作业数据(<code>LIVES</code>/<code>ASSIGNMENTS</code>)在地图页和单岛页<b>各存一份</b>,归并成一处。</li>
+        <li><b>改过时文档:</b><code>CLAUDE.md</code> 还写着"learn 自存一份课程"——早已不成立,顺手改掉。</li>
+      </ul>
+      <div class="dgm">
+        <div class="row">
+          <div class="box box-gold">航线数据</div><span class="arr">→</span>
+          <div class="box box-deep">按规范映射</div><span class="arr">→</span>
+          <div class="box box-grn">renderFlow(同一套)</div>
+        </div>
+        <div class="row" style="margin-top:14px; gap:10px">
+          <div class="box box-mut" style="font-size:12px">修 learn 跳转断点</div>
+          <div class="box box-mut" style="font-size:12px">并 LIVES/ASSIGNMENTS</div>
+          <div class="box box-mut" style="font-size:12px">改 CLAUDE.md</div>
+        </div>
+        <div class="dgm-cap">图 4-④ · 航线归一 + 三处收尾</div>
+      </div>
+      <p style="font-size:13.5px;color:var(--mut)"><b>验收:</b>航线模式与默认态共用同一渲染;点航线课不再 404;全仓只剩一处直播/作业数据。</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2 class="sec"><span class="sec-no">4</span>备选方案 B:把航线课正式并进教材</h2>
+    <div class="sec-lead">如果产品上希望"全部课程"里也能看到那些产品专属课,才走这条。</div>
+    <p>方案 B 是把航线那数十节产品专属课,<b>正式收编进教材</b>(给真实编号、归到对应模块),航线再改成引用。这才是字面意义上的"真合成一份"。</p>
+    <div class="callout co-gold">
+      <b>代价:</b>这不只是写代码,是<b>课程内容的决策</b>——每节航线课归到哪个模块?和现有 77 节通用课什么关系?要不要在"全部课程"里平铺给所有人看?这些得课程团队拍板,不是工程能独立完成的。<b>所以除非产品明确要这个,否则建议先走 C。</b>
+    </div>
+    <table>
+      <tr><th></th><th>方案 C(推荐)</th><th>方案 B(备选)</th></tr>
+      <tr><td>数据</td><td>两层保留,统一格式</td><td>合成一份(航线并入教材)</td></tr>
+      <tr><td>主要工作</td><td>工程为主(统一格式+渲染)</td><td>课程归类决策 + 工程</td></tr>
+      <tr><td>成本</td><td><span class="verdict v-yes">中</span></td><td><span class="verdict v-maybe">高</span></td></tr>
+      <tr><td>适合场景</td><td>只想消除"两套界面"的困惑</td><td>想让全部课程也含产品专属课</td></tr>
+    </table>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2 class="sec"><span class="sec-no">5</span>风险点 + 顺带能清的小冗余</h2>
+    <h3>真正要小心的</h3>
+    <ul>
+      <li><b>航线那套用了"暗改"机制:</b>routes-ui 会<b>覆盖</b>地图的 <code>window.render</code>、接管弹层——步骤 2/4 抽统一引擎时,要在这个被覆盖的逻辑里小心分叉,别和"默认/航线"两态、以及地址栏历史(<code>pushUrl</code>/<code>popstate</code>)打架。</li>
+      <li><b>这是原型、靠缓存版本号:</b>改带 <code>?v=</code> 的脚本要同步升版本号,否则老用户读到旧缓存。</li>
+    </ul>
+    <h3>顺手能清(低成本)</h3>
+    <ul>
+      <li>阶段名 <code>STAGE_NAMES</code> 散在 5+ 文件,还有<b>两套打架的文案</b>("快速入门" vs "跑通第一个 AI 产品")——统一。</li>
+      <li>地图上 <code>.km-tag</code> 羊皮纸标签是<b>0 渲染的死代码</b>;<code>course-discuss.js</code> 引用课程却没页面加载;工具箱残留废弃旧码 <code>C11/D16</code>——清掉。</li>
+    </ul>
+  </section>
+
+  <div class="foot">
+    <p><b>建议的下一步</b>:先就"<b>走 C 还是 B</b>"拍个板(C = 只统一界面/格式,B = 把航线课并进教材)。定了 C,我就能把步骤 1 的"字段对照表"先做出来,仍然只读不改。</p>
+    <p style="margin-top:14px">
+      <span class="pill">调研态</span><span class="pill">未改代码</span><span class="pill">course-data.js 77 节</span><span class="pill">航线 0% 重叠</span><span class="pill">推荐方案 C</span>
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

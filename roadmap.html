@@ -4,11 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-  /* 路线图是「有 idea」的家。没 idea 的人不该停在这里——自动送回日历。
-     在 head 最早处执行，避免闪一下 roadmap 再跳。 */
-  if (localStorage.getItem('ds_has_idea') !== 'has') {
-    location.replace('calendar.html');
-  }
+  /* 入口闸：先按审核权限挡，再按 ds_has_idea 决定路线图/日历。head 最早处执行，避免闪屏。
+     ⚠️ 这是纯前端 demo 的 UI 引导，不是真鉴权；并入官网做真交付时权限须由服务端判定。 */
+  (function () {
+    var p = new URLSearchParams(location.search);
+    var demo = p.has('demo') || p.get('fresh') === '1';
+    if (!demo) {
+      var approved = localStorage.getItem('ds_approved') === '1'
+                  || localStorage.getItem('ds_onboarded') === 'true'
+                  || !!localStorage.getItem('ds_enrolled_at');
+      if (!approved) { location.replace('enrolled.html'); return; }   // 没通过审核 → 报名落地页
+    }
+    // 路线图是「有 idea」的家；没 idea 的人送回日历
+    if (localStorage.getItem('ds_has_idea') !== 'has') { location.replace('calendar.html'); }
+  })();
 </script>
 <title>深海圈 · 你的学习路线</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2744,7 +2753,7 @@ renderAll();
 <script src="assistant.js?v=4"></script>
 <script>
 (function(){
-  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['全部课程','course.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
+  var NAV2={'交流区':[['广场','discuss.html'],['干货','feed.html']],'学习中心':[['学习指南','guide.html'],['我的路线','calendar.html'],['直播学习','live.html']],'作品墙':[['全部作品','https://scys.com/deepsea/2001/showcase',1],['我的作品','showcase.html']],'成员':[['全部成员','https://scys.com/deepsea/2001/members',1],['认证高手','https://scys.com/deepsea/2001/members?tab=experts',1],['同城伙伴','members.html']]};
   var ACTIVE='学习中心';
   var nav=document.getElementById('snav'); if(!nav)return;
   nav.innerHTML=Object.keys(NAV2).map(function(k){

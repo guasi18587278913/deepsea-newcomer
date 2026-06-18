@@ -8,15 +8,18 @@
 <script>
 window.dsHomeUrl = function () {
   // 统一的「主页去向」规则，问卷结营卡也共用这一条，避免两处飘走
-  // 首页即直接进学习地图；「学习指南」改为导航里随时可看（不再强制首次落地）
   return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
 };
 (function () {
   var p = new URLSearchParams(location.search);
-  if (p.get('fresh') === '1' || p.has('step') || p.get('from') === 'home') return;   // 重置 / 诊断回跳 / 从首页片头进入 → 放行，照常显示（含开场致辞视频）
-  var onboarded = localStorage.getItem('ds_onboarded') === 'true'
-               || !!localStorage.getItem('ds_enrolled_at');        // 填过问卷的老用户（含已有 demo 数据）
-  if (onboarded) location.replace(dsHomeUrl());                    // 直接进主页，replace 不留历史（后退键不会弹回问卷）
+  if (p.get('fresh') === '1' || p.has('step') || p.get('from') === 'home') return;   // 重置 / 诊断回跳 / 显式看开场片头 → 放行
+  // 入口闸：按「报名审核」状态分流（与 index.html 同一条规则）
+  var approved = localStorage.getItem('ds_approved') === '1'
+              || localStorage.getItem('ds_onboarded') === 'true'
+              || !!localStorage.getItem('ds_enrolled_at');
+  if (!approved) { location.replace('enrolled.html'); return; }                                   // 无权限 → 报名落地页
+  if (localStorage.getItem('ds_guide_seen') !== '1') { location.replace('guide.html'); return; }  // 有权限·第一次 → 学习指南
+  location.replace(dsHomeUrl());                                                                  // 有权限·之后 → 学习地图
 })();
 </script>
 <title>欢迎来到深海圈</title>
@@ -1435,10 +1438,12 @@ if (_params.get('fresh') === '1') {
 /* 首页只剩一屏：点「进入学习地图」= 入营完成，打标记后进主页 */
 function enterMap() {
   try {
+    localStorage.setItem('ds_approved', '1');        // 看完开场即视为入营（演示旁路）
     localStorage.setItem('ds_onboarded', 'true');
+    localStorage.setItem('ds_guide_seen', '1');      // 开场屏本身就是引导，标记看过、不再二次导去指南
     if (!localStorage.getItem('ds_enrolled_at')) localStorage.setItem('ds_enrolled_at', '2026-05-04');
   } catch (e) {}
-  location.href = dsHomeUrl();   // 跟顶部闸门同一条规则（默认进学习地图 calendar.html）
+  location.href = dsHomeUrl();   // 直接进学习地图
 }
 
 </script>

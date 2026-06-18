@@ -22,7 +22,7 @@
   const PIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>';
   /* 船舵图标 = 复用顶栏「深海圈」logo 的舵，前后呼应、入航海世界 */
   const HELM = '<svg class="rg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>';
-  const GEN_LABEL = HELM + '<span>找到适合你的航线</span>' + '<svg class="rg-caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
+  const GEN_LABEL = HELM + '<span>切换航线</span>' + '<svg class="rg-caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 
   /* ---------- 状态 ---------- */
   function getRoute() { try { const k = localStorage.getItem('ds_route'); return (k && ROUTES[k]) ? ROUTES[k] : null; } catch (e) { return null; } }
@@ -103,6 +103,38 @@
 .rec-main:hover .rec-ttl{color:var(--teal)}
 .rec-foot{margin-top:11px;padding-top:10px;border-top:1px solid var(--border-soft);font-size:12px;color:#94a3b8}
 .rec-foot a{color:var(--teal);font-weight:600;text-decoration:none}
+/* ===== 刘小排定制 · 点状航线（桌面：复用海图背景 + 蜿蜒航线，章节串成一个个站点）===== */
+.rec-path-svg{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}
+.rec-path-svg path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.rec-path-svg .rp-rest{stroke:#bf842a;stroke-width:2;stroke-dasharray:5 6;opacity:.82}
+.rec-path-svg .rp-done{stroke:#15b3a1;stroke-width:2.6;filter:drop-shadow(0 0 2px rgba(40,200,180,.6))}
+/* 站点卡（全展开：编号/标题/为什么/去学/打勾常驻；等高·顶端对齐成一排，航线串过卡顶圆点）*/
+.rec-card{position:absolute;transform:translateX(-50%);width:clamp(150px,13.5vw,182px);min-height:162px;display:flex;flex-direction:column;z-index:5;background:#fff;border:1px solid #e5ebe8;border-radius:16px;box-shadow:0 14px 32px -20px rgba(20,50,60,.5),0 2px 5px -3px rgba(20,50,60,.1);padding:15px 15px 24px;animation:recCardIn .5s cubic-bezier(.2,.8,.2,1) both}
+.rec-card:hover{box-shadow:0 24px 46px -22px rgba(20,50,60,.55),0 3px 8px -3px rgba(20,50,60,.14);z-index:7}
+.rec-card:hover .rc-ttl{color:var(--teal)}
+@keyframes recCardIn{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.rec-card .rc-dot{position:absolute;bottom:0;left:50%;transform:translate(-50%,50%);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-mono,monospace);font-size:13px;font-weight:700;background:#fff;border:2px solid #cdb277;color:#9a7a3a;box-shadow:0 4px 10px -4px rgba(120,90,30,.5)}
+.rec-card.done{background:linear-gradient(180deg,#f3faf8,#fff)}
+.rec-card.done .rc-dot{background:var(--teal);border-color:var(--teal);color:#fff}
+.rec-card.cur{border-color:rgba(13,148,136,.42);box-shadow:0 20px 42px -18px rgba(13,148,136,.5),0 2px 6px -3px rgba(13,148,136,.18)}
+.rec-card.cur .rc-dot{width:36px;height:36px;font-size:15px;border-color:var(--teal);color:var(--teal-deep,#0c7268);box-shadow:0 0 0 4px rgba(13,148,136,.16),0 6px 16px -6px rgba(13,148,136,.5);animation:recPulse 1.9s ease-in-out infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 4px rgba(13,148,136,.16),0 6px 16px -6px rgba(13,148,136,.5)}50%{box-shadow:0 0 0 7px rgba(13,148,136,.07),0 6px 16px -6px rgba(13,148,136,.5)}}
+.rec-card .rc-code{display:inline-block;font-family:var(--font-mono,monospace);font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--teal);background:var(--teal-bg);padding:1px 7px;border-radius:5px;margin-bottom:8px}
+.rec-card .rc-body{display:block;text-decoration:none;color:inherit}
+.rec-card .rc-ttl{font-size:13.5px;font-weight:700;color:var(--deep-blue);line-height:1.36;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:calc(1.36em * 2)}
+.rec-card.done .rc-ttl{color:#93a6aa}
+.rec-card .rc-why{font-size:11.5px;color:#647c86;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:calc(1.55em * 2)}
+.rec-card .rc-foot{margin-top:auto;padding-top:11px;display:flex;align-items:center;justify-content:space-between;gap:6px;border-top:1px solid #eef2f0}
+.rec-card .rc-go{font-size:11.5px;font-weight:600;color:var(--teal);text-decoration:none;white-space:nowrap}
+.rec-card .rc-go:hover{color:var(--teal-deep,#0c7268)}
+.rec-card .rc-mark{flex:none;width:23px;height:23px;border-radius:50%;border:1.5px solid #cdd9da;background:#fff;color:#fff;font-size:11.5px;cursor:pointer;display:grid;place-items:center;padding:0;transition:all .14s}
+.rec-card .rc-mark:hover{border-color:var(--teal);transform:scale(1.08)}
+.rec-card.done .rc-mark{background:var(--teal);border-color:var(--teal)}
+.rec-banner{position:absolute;left:16px;top:14px;z-index:6;display:flex;align-items:center;gap:10px;max-width:60%;padding:9px 14px 9px 10px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:13px;box-shadow:0 10px 26px -14px rgba(30,58,82,.4);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.rec-banner .rb-av{width:34px;height:34px;border-radius:50%;flex:none;background:#fff center/cover no-repeat;background-image:url('assets/liuxiaopai-avatar.png');box-shadow:0 0 0 1.5px rgba(13,148,136,.4)}
+.rec-banner .rb-t{font-size:13.5px;font-weight:700;color:var(--deep-blue);font-family:var(--font-display,serif);line-height:1.2}
+.rec-banner .rb-sub{font-size:11.5px;color:#5c7a8a;margin-top:2px}
+.rec-banner .rb-sub a{color:var(--teal);font-weight:600;text-decoration:none}
 /* ===== 切换确认框 ===== */
 .route-cfm-mask{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(18,38,44,.46);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:20px}
 .route-cfm-mask.show{display:grid}
@@ -284,7 +316,10 @@
   const ddMenu = document.createElement('div'); ddMenu.id = 'routeDD'; ddMenu.className = 'route-dd';
   ddMenu.innerHTML = '<div class="dd-cap">默认</div>'
     + `<button class="dd-item full" data-key="full"><span class="di-ic">${DD_FULL}</span><span class="di-t">全量航海图 · 全部课程</span>${DD_CHK}</button>`
-    + (ROUTES['diagnosis'] ? `<div class="dd-sep"></div><div class="dd-cap">为你定制</div><button class="dd-item custom" data-key="diagnosis"><span class="di-ic">${SPARK}</span><span class="di-t">${_esc(ROUTES['diagnosis'].name)}</span>${DD_CHK}</button>` : '')
+    + '<div class="dd-sep"></div><div class="dd-cap">为你定制</div>'
+    + (ROUTES['diagnosis']
+        ? `<button class="dd-item custom" data-key="diagnosis"><span class="di-ic">${SPARK}</span><span class="di-t">${_esc(ROUTES['diagnosis'].name)}</span>${DD_CHK}</button>`
+        : `<button class="dd-item dd-diag" data-key="__diag__"><span class="di-ic">${SPARK}</span><span class="di-t">拿不准？让刘小排帮你挑一条 →</span></button>`)
     + `<div class="dd-sep"></div><div class="dd-cap">${RMETA.length} 条航线</div>`
     + RMETA.map(o => `<button class="dd-item" data-key="${o.key}"><span class="di-ic">${RICN[o.icon]}</span><span class="di-t">${o.t}</span>${DD_CHK}</button>`).join('');
   document.body.appendChild(ddMenu);
@@ -403,7 +438,7 @@
   if (headL) {
     genBtn = document.createElement('button');
     genBtn.id = 'routeGenBtn'; genBtn.className = 'route-gen-btn'; genBtn.innerHTML = GEN_LABEL;
-    genBtn.addEventListener('click', e => { e.stopPropagation(); openQuiz(); });
+    genBtn.addEventListener('click', e => { e.stopPropagation(); openRouteModal(); });
     headL.appendChild(genBtn);
   }
   /* 「继续学习」卡 = 右下角米白描金长方条（样式见上方注入 CSS）：放进地图层(kmWrap) 绝对定位 */
@@ -441,7 +476,7 @@
     if (c) { _pending = key; document.getElementById('cfName').textContent = routeName(key); cfm.classList.add('show'); return; }   /* 在某条路线上切走 → 一律确认（A②）*/
     applyRoute(key);
   }
-  ddMenu.querySelectorAll('.dd-item').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); pickRoute(b.dataset.key); }));
+  ddMenu.querySelectorAll('.dd-item').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); if (b.dataset.key === '__diag__') { closeDD(); location.href = 'diagnosis.html'; return; } pickRoute(b.dataset.key); }));
   document.getElementById('cfCancel').addEventListener('click', closeCfm);
   document.getElementById('cfOk').addEventListener('click', () => { if (_pending != null) applyRoute(_pending); });
   cfm.addEventListener('click', e => { if (e.target === cfm) closeCfm(); });
@@ -507,6 +542,56 @@
       + '<ol class="rec-items">' + rows + '</ol>'
       + '<div class="rec-foot">想换个方向？<a href="diagnosis.html">重新问诊</a> · 或在上方「找到适合你的航线」里切回全量航海图</div>'
       + '</div>';
+  }
+
+  /* ---------- 刘小排定制（桌面）：复用海图背景 + 蜿蜒航线，把推荐章节串成「一个个的点」---------- */
+  /* 经过给定点的平滑曲线（Catmull-Rom → 三次贝塞尔），与聚焦层 isle-focus 同一套画法 */
+  /* 经过给定点的平滑曲线（Catmull-Rom → 三次贝塞尔）：把上行的各站点连成一条顺滑的海路 */
+  function smoothRec(P) {
+    if (P.length < 2) return P.length ? 'M ' + P[0].x + ' ' + P[0].y : '';
+    var d = 'M ' + P[0].x.toFixed(1) + ' ' + P[0].y.toFixed(1);
+    for (var i = 0; i < P.length - 1; i++) {
+      var p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || P[i + 1];
+      var c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6,
+          c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ' C ' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ', ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ', ' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+    }
+    return d;
+  }
+  function renderRecPath(r, done) {
+    var wrap = document.getElementById('kmWrap'); wrap.classList.add('route-mode');
+    var host = document.getElementById('routeIslands');
+    if (!host) { host = document.createElement('div'); host.id = 'routeIslands'; wrap.appendChild(host); }
+    var items = r.items || [], N = items.length, nc = nextCode(r, done);
+    var reached = -1; for (var k = 0; k < N; k++) { if (items[k].code === nc) { reached = k; break; } }
+    if (reached < 0) reached = N - 1;   /* 全部学完 → 船停最后一站 */
+    /* 航程左下→右上爬升：水位线左低右高 → 填进右上那片空海、避开左上标题，读成一段上行的海路 */
+    var WL = function (i) { return N > 1 ? 82 - i * (28 / (N - 1)) : 66; };            /* 每站水线(% from top)：左 82(低) → 右 54(高) */
+    var X = function (i) { return N > 1 ? 11 + i * (78 / (N - 1)) : 50; };             /* 站点横排铺开 */
+    var pts = items.map(function (it, i) { return { x: X(i), y: WL(i) }; });           /* 圆点落在各自水线上(卡片底部) */
+    var line = [{ x: pts[0].x - 7, y: WL(0) + 3 }].concat(pts);                        /* 航线从第一站左下侧海面起 */
+    var restD = smoothRec(line);                                                       /* 全程 · 金色虚线（平滑上行）*/
+    var doneD = smoothRec(line.slice(0, reached + 2));                                 /* 已走段 · 青色实线（含起点，故 +2）*/
+    var dN = items.filter(function (it) { return done.has(it.code); }).length;
+    var cards = items.map(function (it, i) {
+      var d = done.has(it.code), st = d ? 'done' : (it.code === nc ? 'cur' : ''), href = 'learn.html?code=' + encodeURIComponent(it.code);
+      return '<div class="rec-card ' + st + '" style="left:' + X(i).toFixed(1) + '%;bottom:' + (100 - WL(i)).toFixed(1) + '%;animation-delay:' + (i * 0.07).toFixed(2) + 's">'
+        + '<span class="rc-dot">' + (d ? '✓' : (i + 1)) + '</span>'
+        + '<a class="rc-body" href="' + href + '"><span class="rc-code">' + _esc(it.code) + '</span>'
+        +   '<div class="rc-ttl">' + _esc(it.t) + '</div>'
+        +   (it.why ? '<div class="rc-why">' + _esc(it.why) + '</div>' : '') + '</a>'
+        + '<div class="rc-foot"><a class="rc-go" href="' + href + '">去学这一章 →</a>'
+        +   '<button class="rc-mark" title="' + (d ? '已学完 · 点击撤销' : '标记学完') + '" onclick="toggleRouteCourse(\'' + _esc(it.code) + '\')">' + (d ? '✓' : '') + '</button></div>'
+        + '</div>';
+    }).join('');
+    host.innerHTML =
+      '<svg class="rec-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="rp-rest" d="' + restD + '"/><path class="rp-done" d="' + doneD + '"/></svg>'
+      + '<div class="rec-banner"><span class="rb-av" role="img" aria-label="刘小排"></span><div><div class="rb-t">刘小排为你挑的重点</div>'
+      + '<div class="rb-sub">共 ' + N + ' 章 · 已看 ' + dN + ' · <a href="diagnosis.html">重新问诊</a></div></div></div>'
+      + cards;
+    /* 船缩小、精准贴在航线上当前这一章（复用木帆船 ship-2）*/
+    var ship = document.getElementById('kmShip');
+    if (ship) { ship.src = 'assets/ship-2.png'; ship.style.width = '7%'; ship.style.left = (X(reached) - 4).toFixed(1) + '%'; ship.style.top = (WL(reached) - 9).toFixed(1) + '%'; ship.style.bottom = 'auto'; ship.style.display = ''; }
   }
 
   let _openDay = 1;
@@ -630,7 +715,12 @@
     if (r) {
       const done = routeDone();
       const _hh = document.getElementById('homeHero'); const _fab = document.getElementById('kmFab'); if (_fab) _fab.style.display = 'none';
-      if (r.custom) { if (_hh) _hh.style.display = 'none'; renderRecList(r, done); updateRouteHead(r); return; }   /* 定制线：清单自带全部章节，收掉继续学习卡 */
+      if (r.custom) {   /* 定制线：清单自带全部章节，收掉继续学习卡 */
+        if (_hh) _hh.style.display = 'none';
+        if (window.matchMedia && window.matchMedia('(max-width: 639px)').matches) renderRecList(r, done);   /* 手机：竖排清单卡 */
+        else renderRecPath(r, done);   /* 桌面：点状航线（复用海图背景 + 蜿蜒航线，章节串成站点）*/
+        updateRouteHead(r); return;
+      }
       if (_hh) _hh.style.display = '';   /* 标准航线用 #homeHero 卡，收掉默认图浮窗 #kmFab，避免切路线时两张卡叠出 */
       renderRouteMap(r, done); renderRouteHero(r, done); updateRouteHead(r); return;
     }
@@ -674,7 +764,7 @@
 
   /* ---------- 路线态：标题副文案 + 今日该学卡 ---------- */
   function updateRouteHead(r) {
-    if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }  /* 触发器恒为「找到适合你的航线」；当前路线由问卷内「查看全部方向」下拉的 ✓ 体现 */
+    if (genBtn) { genBtn.innerHTML = GEN_LABEL; genBtn.classList.remove('reselect'); }  /* 触发器恒为「切换航线」；点开即直接选路线，当前路线由下拉的 ✓ 体现 */
     if (titleEl) titleEl.innerHTML = r.name + ' ' + STAR;   /* 大标题换成路线名，让用户一眼知道「这是在做什么」 */
     if (routeEb) routeEb.style.display = '';
   }
@@ -684,7 +774,7 @@
     if (!nc) {
       document.getElementById('hhEyebrow').textContent = '🎓 走完这条路线';
       document.getElementById('hhTitle').textContent = '恭喜！「' + SHORT[r.key] + '」路线全部走完 🎉';
-      btn.textContent = '重选方向 →'; btn.href = 'javascript:void(0)'; btn.onclick = e => { e.preventDefault(); openQuiz(); };
+      btn.textContent = '换条航线 →'; btn.href = 'javascript:void(0)'; btn.onclick = e => { e.preventDefault(); openRouteModal(); };
       return;
     }
     let dIdx = 1, nTitle = '';

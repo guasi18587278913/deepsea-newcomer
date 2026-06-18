@@ -3,12 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=welcome.html?from=home">
 <title>深海圈 · AI 编程</title>
-<link rel="canonical" href="welcome.html">
-<script>location.replace('welcome.html?from=home' + location.hash);</script>
+<link rel="canonical" href="enrolled.html">
+<script>
+/* 站点总入口闸：按「报名审核」状态把三个去向彻底分开
+   1) 没通过审核（无权限）   → 报名落地页 enrolled.html
+   2) 审核通过 · 第一次进    → 学习指南 guide.html
+   3) 审核通过 · 看过指南    → 学习地图（dsHomeUrl，默认 calendar.html）
+   想看开场片头：直接访问 welcome.html?from=home
+   ⚠️ 纯前端 demo 的 UI 引导，非真鉴权（localStorage 假标记，加 ?demo/?view=all 即可绕过）；
+      并入官网做真交付时，「谁能看学习内容」必须由服务端判定，这套闸只能当 UI 引导。 */
+(function(){
+  function homeUrl(){ try{ return localStorage.getItem('ds_has_idea')==='has' ? 'roadmap.html' : 'calendar.html'; }catch(e){ return 'calendar.html'; } }
+  function approved(){ try{ return localStorage.getItem('ds_approved')==='1' || localStorage.getItem('ds_onboarded')==='true' || !!localStorage.getItem('ds_enrolled_at'); }catch(e){ return false; } }
+  var dest = !approved() ? 'enrolled.html'
+           : (localStorage.getItem('ds_guide_seen')!=='1' ? 'guide.html' : homeUrl());
+  location.replace(dest + location.hash);
+})();
+</script>
 </head>
 <body style="margin:0;background:#f5fafa">
-<noscript><a href="welcome.html?from=home" style="color:#0d9488;font-family:sans-serif">进入深海圈 →</a></noscript>
+<noscript><a href="enrolled.html" style="color:#0d9488;font-family:sans-serif">进入深海圈 →</a></noscript>
 </body>
 </html>
