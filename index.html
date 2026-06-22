@@ -14,7 +14,7 @@
    ⚠️ 纯前端 demo 的 UI 引导，非真鉴权（localStorage 假标记，加 ?demo/?view=all 即可绕过）；
       并入官网做真交付时，「谁能看学习内容」必须由服务端判定，这套闸只能当 UI 引导。 */
 (function(){
-  function homeUrl(){ try{ return localStorage.getItem('ds_has_idea')==='has' ? 'roadmap.html' : 'calendar.html'; }catch(e){ return 'calendar.html'; } }
+  function homeUrl(){ return 'calendar.html'; }   /* 已审核·看过指南 → 统一进学习地图（不再按 ds_has_idea 分流到 roadmap） */
   function approved(){ try{ return localStorage.getItem('ds_approved')==='1' || localStorage.getItem('ds_onboarded')==='true' || !!localStorage.getItem('ds_enrolled_at'); }catch(e){ return false; } }
   var dest = !approved() ? 'enrolled.html'
            : (localStorage.getItem('ds_guide_seen')!=='1' ? 'guide.html' : homeUrl());

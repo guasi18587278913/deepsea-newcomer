@@ -357,7 +357,6 @@ function buildProject(codesStr){
 function persist(codesStr){
   try {
     localStorage.setItem('ds_project', JSON.stringify(buildProject(codesStr)));
-    localStorage.setItem('ds_has_idea', 'has');
     /* 把推荐清单存成「刘小排定制」航线 + 设为当前航线（学习地图据此画清单卡，可在切换菜单切回全量图）*/
     if (lastRec && lastRec.length) {
       localStorage.setItem('ds_route_custom', JSON.stringify({

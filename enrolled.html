@@ -9,8 +9,7 @@
      页面内含「审核中 / 审核通过」两态，底部演示开关可切换查看。 -->
 <script>
 window.dsHomeUrl = function () {
-  try { return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html'; }
-  catch (e) { return 'calendar.html'; }
+  return 'calendar.html';   // 审核通过 → 统一进学习地图（不再按 ds_has_idea 分流到 roadmap）
 };
 (function () {
   try {
@@ -154,8 +153,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="hero">
       <div class="badge"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
       <h1>报名成功 🎉</h1>
-      <p>席位已锁定。开课前，先完成下面两步。</p>
-      <span class="enr">订单已确认 · 第四期</span>
     </div>
 
     <section class="step">
@@ -186,7 +183,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </section>
 
     <div class="status wait"><span class="dot"></span>资格审核中</div>
-    <div class="hint-line">这页可随时回来看，审核通过后会自动更新。</div>
   </div>
 
   <!-- ====== 审核通过 ====== -->

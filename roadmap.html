@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-  /* 入口闸：先按审核权限挡，再按 ds_has_idea 决定路线图/日历。head 最早处执行，避免闪屏。
+  /* 入口闸：按审核权限挡（未审核 → 报名落地页）。head 最早处执行，避免闪屏。
+     学习路线页对所有已审核用户开放（经导航/链接进入），不再按 ds_has_idea 把人踢回学习地图。
      ⚠️ 这是纯前端 demo 的 UI 引导，不是真鉴权；并入官网做真交付时权限须由服务端判定。 */
   (function () {
     var p = new URLSearchParams(location.search);
@@ -15,8 +16,6 @@
                   || !!localStorage.getItem('ds_enrolled_at');
       if (!approved) { location.replace('enrolled.html'); return; }   // 没通过审核 → 报名落地页
     }
-    // 路线图是「有 idea」的家；没 idea 的人送回日历
-    if (localStorage.getItem('ds_has_idea') !== 'has') { location.replace('calendar.html'); }
   })();
 </script>
 <title>深海圈 · 你的学习路线</title>

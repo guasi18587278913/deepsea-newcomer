@@ -7,10 +7,10 @@
      放在 <head> 最顶（早于字体/样式加载），跳得最快、不会先闪一下问卷。 -->
 <script>
 window.dsHomeUrl = function () {
-  // 统一的「主页去向」规则，问卷结营卡也共用这一条，避免两处飘走
-  return localStorage.getItem('ds_has_idea') === 'has' ? 'roadmap.html' : 'calendar.html';
+  // 统一的「主页去向」规则：已审核·看过指南 → 学习地图（不再按 ds_has_idea 分流到 roadmap）
+  return 'calendar.html';
 };
-(function () {
+(function () { try {
   var p = new URLSearchParams(location.search);
   if (p.get('fresh') === '1' || p.has('step') || p.get('from') === 'home') return;   // 重置 / 诊断回跳 / 显式看开场片头 → 放行
   // 入口闸：按「报名审核」状态分流（与 index.html 同一条规则）
@@ -20,7 +20,7 @@ window.dsHomeUrl = function () {
   if (!approved) { location.replace('enrolled.html'); return; }                                   // 无权限 → 报名落地页
   if (localStorage.getItem('ds_guide_seen') !== '1') { location.replace('guide.html'); return; }  // 有权限·第一次 → 学习指南
   location.replace(dsHomeUrl());                                                                  // 有权限·之后 → 学习地图
-})();
+} catch (e) {}   /* localStorage 异常（隐私模式等）→ 安全降级：停在开场页，不跳转 */ })();
 </script>
 <title>欢迎来到深海圈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">

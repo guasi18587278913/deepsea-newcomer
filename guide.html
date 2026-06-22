@@ -39,6 +39,17 @@ body{
   min-height:100vh; display:flex; flex-direction:column;
 }
 a{color:inherit}
+.guide-shell{position:relative;width:min(1120px,100%);margin:0 auto}
+.guide-quick{position:fixed;left:max(24px,calc((100vw - 1120px)/2));top:122px;width:178px;z-index:20;padding:14px;border-radius:18px;background:rgba(255,255,255,.78);border:1px solid rgba(226,235,236,.9);box-shadow:0 18px 42px -26px rgba(30,58,82,.38);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.guide-quick-title{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--deep-blue);margin-bottom:3px}
+.guide-quick-note{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-bottom:11px}
+.guide-quick-group{display:flex;flex-direction:column;gap:7px}
+.guide-quick-group+.guide-quick-group{margin-top:12px;padding-top:12px;border-top:1px solid rgba(226,235,236,.9)}
+.guide-quick a,.guide-quick button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0;padding:8px 10px;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--text-2);font-family:var(--font-sans);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform .15s;text-align:left}
+.guide-quick a:hover,.guide-quick button:hover{background:var(--teal-bg);border-color:rgba(13,148,136,.2);color:var(--teal-deep);transform:translateX(2px)}
+.guide-quick .q-main{color:#fff;background:linear-gradient(180deg,#13a394,#0c6f66);border-color:transparent;box-shadow:0 10px 20px -14px rgba(13,148,136,.7)}
+.guide-quick .q-main:hover{color:#fff;background:linear-gradient(180deg,#16aa9c,#0d7d72)}
+.guide-quick .q-arr{flex:none;color:currentColor;opacity:.72}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gold)}
 .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--gold);border-radius:2px}
 
@@ -125,13 +136,16 @@ a{color:inherit}
 
 /* 航海图 = 学习地图入口 */
 .map-enter{display:block;text-decoration:none;margin:22px 0 18px}
-.map-enter .map-demo{transition:transform .2s,box-shadow .2s}
-.map-enter:hover .map-demo{transform:translateY(-3px);box-shadow:inset 0 3px 18px rgba(30,80,90,.16),0 24px 50px -20px rgba(30,80,90,.62)}
+.map-enter .map-demo{transition:box-shadow .2s}
 .map-hint{display:block;text-align:center;margin-top:11px;font-size:13px;font-weight:600;color:var(--teal-deep)}
-.map-enter:hover .map-hint{color:var(--teal)}
 .map-shot{display:block;width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.5);box-shadow:0 1px 2px rgba(30,58,82,.05),0 16px 38px -18px rgba(30,80,90,.5);transition:transform .2s,box-shadow .2s}
-.map-enter:hover .map-shot{transform:translateY(-3px);box-shadow:0 26px 54px -20px rgba(30,80,90,.58)}
 .map-pin{display:block;text-align:center;margin-top:11px;font-size:12.5px;color:var(--text-3)}
+
+.feature-shot{margin:8px 0 22px}
+.feature-shot-frame{background:rgba(255,255,255,.72);border:1px solid rgba(226,235,236,.9);border-radius:18px;padding:10px;box-shadow:0 1px 2px rgba(30,58,82,.04),0 18px 42px -24px rgba(30,80,90,.34)}
+.feature-shot img{display:block;width:100%;border-radius:12px;border:1px solid rgba(226,235,236,.8)}
+.feature-shot-cap{display:block;margin-top:9px;font-size:12.5px;line-height:1.6;color:var(--text-3)}
+.feature-shot-cap b{font-family:var(--font-display);font-size:14px;color:var(--deep-blue);margin-right:7px}
 
 /* 图文/视频/作业 小标 */
 .mini-chips{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 17px}
@@ -165,7 +179,20 @@ a.mod:hover .go{transform:translateX(3px)}
 
 .site-foot{text-align:center;color:var(--text-3);font-size:12px;padding:24px 0 38px;line-height:1.7}
 
+@media (max-width:1120px){
+  .guide-shell{width:100%}
+  .guide-quick{position:sticky;top:58px;left:auto;width:auto;margin:0 auto 8px;padding:10px 12px;border-radius:14px;max-width:724px}
+  .guide-quick-title,.guide-quick-note{display:none}
+  .guide-quick-group,.guide-quick-group+.guide-quick-group{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0;padding:0;border:0}
+  .guide-quick-group+.guide-quick-group{margin-top:7px}
+  .guide-quick a,.guide-quick button{padding:8px 9px;font-size:12px}
+}
 @media (max-width:760px){
+  .guide-quick{display:flex;gap:7px;margin:0 14px 8px;overflow-x:auto;scrollbar-width:none}
+  .guide-quick::-webkit-scrollbar{display:none}
+  .guide-quick-group,.guide-quick-group+.guide-quick-group{display:contents}
+  .guide-quick-group+.guide-quick-group{margin-top:0}
+  .guide-quick a,.guide-quick button{flex:none;width:auto;min-width:104px;white-space:nowrap}
   .letter{padding:32px 20px 28px}
   .letter-head h1{font-size:36px}
   .letter-body{font-size:16px}
@@ -173,56 +200,83 @@ a.mod:hover .go{transform:translateX(3px)}
   .map-demo{height:236px}
 }
 
-/* ============ 第一步 · 找路线问卷（入口卡 + 弹窗）============ */
-.gq-entry{display:flex;align-items:center;gap:16px;margin:20px 0 6px;padding:20px 22px;border-radius:18px;position:relative;overflow:hidden;color:#fff;
-  background:linear-gradient(135deg,#0e7d73 0%,#0d9488 55%,#13a394 100%);box-shadow:0 18px 40px -20px rgba(13,148,136,.7)}
-.gq-entry::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 88% 8%,rgba(255,255,255,.2) 0,transparent 52%)}
-.gq-entry-badge{flex:none;position:relative;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.12em;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38);border-radius:999px;padding:5px 12px}
-.gq-entry-main{flex:1;min-width:0;position:relative}
-.gq-entry-t{font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.4}
-.gq-entry-d{font-size:13px;line-height:1.6;color:rgba(255,255,255,.92);margin-top:5px}
-.gq-entry-btn{flex:none;position:relative;background:#fff;color:var(--teal-deep);font-family:var(--font-sans);font-weight:700;font-size:15px;border:none;border-radius:12px;padding:13px 22px;cursor:pointer;transition:transform .16s,box-shadow .16s;box-shadow:0 8px 20px -8px rgba(0,0,0,.3)}
-.gq-entry-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(0,0,0,.42)}
-@media(max-width:600px){.gq-entry{flex-direction:column;align-items:flex-start}.gq-entry-btn{width:100%}}
-
-.gq-mask{position:fixed;inset:0;z-index:120;background:rgba(20,40,50,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
-.gq-mask.show{display:flex;animation:gqFade .2s ease}
-@keyframes gqFade{from{opacity:0}to{opacity:1}}
-.gq-card{position:relative;width:100%;max-width:480px;background:#fff;border-radius:22px;padding:32px 30px 26px;box-shadow:0 40px 90px -30px rgba(20,40,50,.55);max-height:90vh;overflow:auto}
-.gq-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border:none;background:#f1f5f6;border-radius:50%;color:var(--text-2);font-size:15px;line-height:1;cursor:pointer;transition:.15s}
-.gq-close:hover{background:#e2ebec;color:var(--text-1)}
-.gq-prog{display:flex;align-items:center;gap:7px;margin-bottom:18px}
-.gq-dot{width:24px;height:4px;border-radius:99px;background:#e2ebec;transition:.2s}
-.gq-dot.on{background:var(--teal);width:30px}
-.gq-dot.done{background:var(--teal-light)}
-.gq-step{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gold);margin-bottom:8px}
-.gq-title{font-family:var(--font-display);font-weight:700;font-size:21px;line-height:1.45;color:var(--deep-blue);margin-bottom:18px}
-.gq-opts{display:flex;flex-direction:column;gap:10px}
-.gq-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#f7fafa;border:1.5px solid var(--border-soft);border-radius:13px;padding:14px 16px;cursor:pointer;transition:.15s;font-family:var(--font-sans)}
-.gq-opt:hover{border-color:var(--teal-light);background:var(--teal-bg);transform:translateX(2px)}
-.gq-opt-tx{flex:1;min-width:0}
-.gq-opt-t{font-size:15px;font-weight:600;color:var(--text-1);line-height:1.4}
-.gq-opt-n{font-size:12.5px;color:var(--text-3);margin-top:2px}
-.gq-opt-arr{flex:none;color:var(--teal);font-weight:700;opacity:0;transition:.15s}
-.gq-opt:hover .gq-opt-arr{opacity:1}
-.gq-back{margin-top:16px;background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;font-family:var(--font-sans)}
-.gq-back:hover{color:var(--text-1)}
-.gq-result{text-align:center;padding:6px 2px}
-.gq-rs-ic{font-size:40px;line-height:1}
-.gq-rs-t{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--deep-blue);margin:12px 0 8px}
-.gq-rs-d{font-size:14.5px;line-height:1.7;color:var(--text-2);margin-bottom:6px}
-.gq-rs-d b{color:var(--teal-deep)}
-.gq-rs-route{display:inline-flex;align-items:center;gap:8px;background:var(--teal-bg);color:var(--teal-deep);font-weight:700;font-size:15px;border-radius:11px;padding:10px 18px;margin:8px 0 18px}
-.gq-rs-go{display:block;width:100%;background:linear-gradient(180deg,#13a394,#0c6f66);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:16px;border:none;border-radius:13px;padding:15px;cursor:pointer;transition:transform .16s;box-shadow:0 12px 26px -12px rgba(13,148,136,.7)}
-.gq-rs-go:hover{transform:translateY(-2px)}
-.gq-rs-alt{display:block;width:100%;background:none;border:none;color:var(--text-3);font-size:13.5px;margin-top:14px;cursor:pointer;font-family:var(--font-sans);text-decoration:underline;text-underline-offset:3px}
-.gq-rs-alt:hover{color:var(--teal-deep)}
+/* ============ 第一步 · 学习路线分流器 ============ */
+.guide-router{scroll-margin-top:92px;margin:22px 0 16px;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(244,251,250,.96));border:1px solid rgba(188,217,212,.92);box-shadow:0 22px 52px -28px rgba(30,58,82,.34),0 1px 0 rgba(255,255,255,.9) inset}
+.gr-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:22px 24px 18px;background:linear-gradient(135deg,rgba(13,148,136,.1),rgba(251,243,227,.6))}
+.gr-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:#9b7331;text-transform:uppercase}
+.guide-router .gr-title{display:block;font-family:var(--font-display);font-weight:900;font-size:26px;line-height:1.25;color:var(--deep-blue);margin:5px 0 6px;gap:0;align-items:initial}
+.gr-sub{font-size:14px;line-height:1.7;color:#48606d;margin:0}
+.gr-meter{justify-self:end;display:grid;place-items:center;width:76px;height:76px;border-radius:20px;background:#fff;border:1px solid rgba(226,235,236,.94);box-shadow:0 14px 32px -22px rgba(30,58,82,.45)}
+.gr-meter strong{font-family:var(--font-display);font-size:25px;line-height:1;color:var(--teal-deep)}
+.gr-meter span{font-size:11px;font-weight:700;color:var(--text-3);margin-top:-9px}
+.gr-grid{display:grid;gap:14px;padding:18px 22px 20px}
+.gr-q{border:1px solid rgba(226,235,236,.95);border-radius:16px;background:rgba(255,255,255,.78);padding:15px}
+.gr-q-head{display:flex;align-items:baseline;gap:10px;margin-bottom:11px}
+.gr-num{flex:none;font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--gold)}
+.gr-q-title{font-size:15px;font-weight:700;color:var(--deep-blue);line-height:1.45}
+.gr-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.gr-options.wide{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gr-opt{min-width:0;border:1.5px solid var(--border-soft);border-radius:12px;background:#f8fbfb;color:var(--text-1);font-family:var(--font-sans);text-align:left;cursor:pointer;padding:11px 12px;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s}
+.gr-opt:hover{background:#eef9f7;border-color:rgba(13,148,136,.28);transform:translateY(-1px)}
+.gr-opt.is-selected{background:linear-gradient(180deg,#e8f6f5,#dff1ee);border-color:rgba(13,148,136,.68);box-shadow:0 0 0 3px rgba(13,148,136,.09)}
+.gr-opt-title{display:block;font-size:13.5px;font-weight:700;line-height:1.4;color:var(--deep-blue)}
+.gr-opt-note{display:block;font-size:11.5px;line-height:1.5;color:var(--text-3);margin-top:3px}
+.gr-result{display:none;margin:0 22px 22px;padding:18px;border-radius:18px;background:linear-gradient(180deg,#fffdf8,#f4fbfa);border:1px solid rgba(200,152,84,.32);box-shadow:0 16px 36px -28px rgba(120,90,30,.4)}
+.guide-router.has-result .gr-result{display:block;animation:grIn .22s ease both}
+@keyframes grIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.gr-result-cap{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.09em;color:#a47b35;text-transform:uppercase;margin-bottom:6px}
+.gr-result-title{font-family:var(--font-display);font-weight:900;font-size:22px;line-height:1.35;color:var(--deep-blue);margin-bottom:7px}
+.gr-result-text{font-size:14px;line-height:1.8;color:#48606d;margin:0}
+.gr-result-text b{color:var(--teal-deep)}
+.gr-result-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 15px}
+.gr-mini{border-radius:13px;background:#fff;border:1px solid rgba(226,235,236,.9);padding:11px 12px}
+.gr-mini-k{display:block;font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:2px}
+.gr-mini-v{display:block;font-size:13px;font-weight:700;line-height:1.45;color:var(--deep-blue)}
+.gr-actions{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.gr-read{border:none;border-radius:12px;background:linear-gradient(180deg,#13a394,#0c6f66);color:#fff;font-family:var(--font-sans);font-size:14px;font-weight:700;padding:12px 18px;cursor:pointer;box-shadow:0 12px 24px -13px rgba(13,148,136,.75);transition:transform .15s,box-shadow .15s}
+.gr-read:hover{transform:translateY(-1px);box-shadow:0 16px 30px -13px rgba(13,148,136,.85)}
+.gr-reset{border:none;background:transparent;color:var(--text-3);font-family:var(--font-sans);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.gr-reset:hover{color:var(--teal-deep)}
+.gr-footnote{font-size:12.5px;color:var(--text-3);line-height:1.65;margin:0 22px 18px}
+.gr-footnote b{color:var(--deep-blue)}
+.guide-router.pulse{animation:grPulse .8s ease}
+@keyframes grPulse{0%,100%{box-shadow:0 22px 52px -28px rgba(30,58,82,.34),0 1px 0 rgba(255,255,255,.9) inset}45%{box-shadow:0 22px 52px -26px rgba(30,58,82,.34),0 0 0 5px rgba(13,148,136,.14),0 1px 0 rgba(255,255,255,.9) inset}}
+@media(max-width:760px){
+  .dst-nav{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+  .dst-nav::-webkit-scrollbar{display:none}
+  .dst-item{flex:0 0 auto}
+  .dst-l1{white-space:nowrap}
+  .dst-right{margin-left:8px;gap:8px}
+  .gr-top{grid-template-columns:1fr;padding:20px}
+  .gr-meter{justify-self:start;width:auto;height:auto;display:flex;gap:6px;padding:8px 12px;border-radius:999px}
+  .gr-meter strong{font-size:17px}.gr-meter span{margin:0}
+  .gr-grid{padding:16px 14px 18px}.gr-q{padding:13px}
+  .gr-options,.gr-options.wide{grid-template-columns:1fr}
+  .gr-result{margin:0 14px 16px}.gr-result-meta{grid-template-columns:1fr}
+  .gr-footnote{margin:0 14px 16px}
+}
 </style>
 </head>
 <body>
 <header id="ds-topbar"></header>
 
 <main>
+<div class="guide-shell">
+<aside class="guide-quick" aria-label="快捷入口">
+  <div class="guide-quick-title">快捷入口</div>
+  <div class="guide-quick-note">读完想行动，从这里走。</div>
+  <div class="guide-quick-group">
+    <button class="q-main" type="button" onclick="openGuideQuiz()">找专属路线 <span class="q-arr">→</span></button>
+    <a href="calendar.html">学习地图 <span class="q-arr">→</span></a>
+    <a href="calendar.html?view=list">全部课程 <span class="q-arr">→</span></a>
+    <a href="preflight.html">出航前检查 <span class="q-arr">→</span></a>
+  </div>
+  <div class="guide-quick-group">
+    <a href="live.html">直播学习 <span class="q-arr">→</span></a>
+    <a href="discuss.html">广场求助 <span class="q-arr">→</span></a>
+    <a href="feed.html">干货手册 <span class="q-arr">→</span></a>
+  </div>
+</aside>
 <article class="letter">
 
   <div class="letter-head">
@@ -234,15 +288,61 @@ a.mod:hover .go{transform:translateX(3px)}
     <p>你刚进来，可能有点懵 —— 这么多课、这么多板块、这么多新词，该从哪儿开始？</p>
     <p>别急，<strong>第一步特别简单</strong>：先花 30 秒告诉我你的情况，我帮你把该走的路铺好。</p>
 
-    <!-- 第一步 · 找路线问卷入口 -->
-    <div class="gq-entry">
-      <div class="gq-entry-badge">第一步</div>
-      <div class="gq-entry-main">
-        <div class="gq-entry-t">先花 30 秒，找到你的专属学习路线</div>
-        <div class="gq-entry-d">答 4 个小问题，我直接帮你把路铺好 —— 是跟着地图一步步做，还是挑没掌握的补。</div>
+    <!-- 第一步 · 学习路线分流器 -->
+    <section class="guide-router" id="guideRouter" aria-label="学习路线分流问卷">
+      <div class="gr-top">
+        <div>
+          <div class="gr-badge">STEP 01 · ROUTE GATE</div>
+          <h2 class="gr-title">先定路线，再读指南</h2>
+          <p class="gr-sub">不用跳到别的页面。直接选 4 个答案，我会当场把你该走的学习路线定下来；读完下面这份指南，底部按钮会带你进入对应路线。</p>
+        </div>
+        <div class="gr-meter" aria-hidden="true"><strong>4</strong><span>题</span></div>
       </div>
-      <button class="gq-entry-btn" type="button" onclick="openGuideQuiz()">开始 →</button>
-    </div>
+      <div class="gr-grid">
+        <div class="gr-q" data-question="level">
+          <div class="gr-q-head"><span class="gr-num">01</span><div class="gr-q-title">你现在大概是什么基础？</div></div>
+          <div class="gr-options">
+            <button class="gr-opt" type="button" data-value="零基础"><span class="gr-opt-title">零基础</span><span class="gr-opt-note">还没正式写过代码</span></button>
+            <button class="gr-opt" type="button" data-value="有基础"><span class="gr-opt-title">用过 AI 工具</span><span class="gr-opt-note">但还没真正做出东西</span></button>
+            <button class="gr-opt" type="button" data-value="有产品经验"><span class="gr-opt-title">做过小作品</span><span class="gr-opt-note">想系统进阶 / 查缺补漏</span></button>
+            <button class="gr-opt" type="button" data-value="有编程经验"><span class="gr-opt-title">会写代码</span><span class="gr-opt-note">想把 AI 编程流程跑顺</span></button>
+          </div>
+        </div>
+        <div class="gr-q" data-question="goal">
+          <div class="gr-q-head"><span class="gr-num">02</span><div class="gr-q-title">你这次最想解决什么问题？</div></div>
+          <div class="gr-options">
+            <button class="gr-opt" type="button" data-value="follow"><span class="gr-opt-title">想跟着学</span><span class="gr-opt-note">需要一条默认主线</span></button>
+            <button class="gr-opt" type="button" data-value="build"><span class="gr-opt-title">想尽快做出来</span><span class="gr-opt-note">手上有业务 / 项目</span></button>
+            <button class="gr-opt" type="button" data-value="fix"><span class="gr-opt-title">查缺补漏</span><span class="gr-opt-note">哪里不会补哪里</span></button>
+            <button class="gr-opt" type="button" data-value="idea"><span class="gr-opt-title">找方向</span><span class="gr-opt-note">还没想清楚做什么</span></button>
+          </div>
+        </div>
+        <div class="gr-q" data-question="product">
+          <div class="gr-q-head"><span class="gr-num">03</span><div class="gr-q-title">你更想做出哪种产品？</div></div>
+          <div class="gr-options wide">
+            <button class="gr-opt" type="button" data-value="aiwebsite"><span class="gr-opt-title">网站 / 网页工具</span><span class="gr-opt-note">最适合起步</span></button>
+            <button class="gr-opt" type="button" data-value="miniprogram"><span class="gr-opt-title">微信小程序</span><span class="gr-opt-note">微信生态轻应用</span></button>
+            <button class="gr-opt" type="button" data-value="aiemployee"><span class="gr-opt-title">AI 员工</span><span class="gr-opt-note">自动处理重复工作</span></button>
+            <button class="gr-opt" type="button" data-value="workflow"><span class="gr-opt-title">自动化工作流</span><span class="gr-opt-note">把流程跑起来</span></button>
+            <button class="gr-opt" type="button" data-value="app"><span class="gr-opt-title">手机 App</span><span class="gr-opt-note">适合已有一点基础</span></button>
+            <button class="gr-opt" type="button" data-value="minigame"><span class="gr-opt-title">小游戏</span><span class="gr-opt-note">挑战更高</span></button>
+            <button class="gr-opt" type="button" data-value="automedia"><span class="gr-opt-title">AI 跑自媒体</span><span class="gr-opt-note">内容自动化</span></button>
+            <button class="gr-opt" type="button" data-value="idea"><span class="gr-opt-title">还没想好</span><span class="gr-opt-note">先帮我找需求</span></button>
+          </div>
+        </div>
+        <div class="gr-q" data-question="minutes">
+          <div class="gr-q-head"><span class="gr-num">04</span><div class="gr-q-title">你每天大概能投入多少时间？</div></div>
+          <div class="gr-options">
+            <button class="gr-opt" type="button" data-value="20"><span class="gr-opt-title">20 分钟左右</span><span class="gr-opt-note">碎片推进</span></button>
+            <button class="gr-opt" type="button" data-value="60"><span class="gr-opt-title">1 小时左右</span><span class="gr-opt-note">每天一小节</span></button>
+            <button class="gr-opt" type="button" data-value="120"><span class="gr-opt-title">2 小时以上</span><span class="gr-opt-note">适合连续实战</span></button>
+            <button class="gr-opt" type="button" data-value="0"><span class="gr-opt-title">不太固定</span><span class="gr-opt-note">按阶段推进</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="gr-result" id="routeResult" aria-live="polite"></div>
+      <p class="gr-footnote"><b>选完别急着跳走。</b>路线只是入口，下面这份学习指南会告诉你为什么这么走、怎么上第一座岛、卡住了该找谁。</p>
+    </section>
 
     <p>路铺好了，再回来听我把这趟航行讲清楚 —— 先看这个视频 👇</p>
 
@@ -269,38 +369,44 @@ a.mod:hover .go{transform:translateX(3px)}
     <h2><span class="ln">2</span>如何开始学习？</h2>
     <p>我们的课程被设计成一张航海图 —— <strong>一座岛，就是一个阶段</strong>。从"跑通第一个网页"到"把它部署上线"，再到"挂上支付收第一笔钱"。每学完一节，就点亮一座岛。</p>
 
-    <!-- 航海图（可点进学习地图） -->
-    <a class="map-enter" href="calendar.html" aria-label="进入学习地图">
+    <!-- 航海图（阅读展示，不在正文中跳转） -->
+    <div class="map-enter" aria-label="学习地图示意图">
       <img class="map-shot" src="assets/shot-learnmap.jpg" alt="你的学习地图：跑通第一个产品 → 做出能上线的 → 能收钱的 → 做大">
       <span class="map-pin">🗺️ 一座岛 = 一个阶段 ｜ ⛵ 小船 = 你学到哪了</span>
-      <span class="map-hint">↑ 这就是你的学习地图，点开进去 →</span>
-    </a>
+      <span class="map-hint">↑ 这就是你的学习地图</span>
+    </div>
 
     <p>点开一座岛，这个阶段的内容全在里面 —— 图文、视频、作业，照着顺序学。</p>
-    <a class="map-enter" href="calendar.html?view=list" aria-label="查看课程">
+    <div class="map-enter" aria-label="课程页示意图">
       <img class="map-shot" src="assets/shot-lesson.jpg" alt="一节课的样子：左边是这阶段的课程清单，右边是正文，学完点「标记已学完」">
-    </a>
+    </div>
 
     <!-- 出发前 · 准备装备（环境 / 工具自检） -->
     <p>不过别急着冲 —— 正式上岛前，先花十分钟把<strong>装备备齐</strong>：账号、开发环境、要用的工具，别让"环境没搞定"挡在第一步前面。</p>
-    <div class="mod-solo">
-      <a class="mod" href="preflight.html"><div class="mod-ic">🎒</div><div class="mod-b"><h4>出航前检查 · 备好你的装备 <span class="go">→</span></h4><p>对着清单把账号、开发环境、必备工具逐项搞定，约 10 分钟，齐了再上岛。</p></div></a>
+    <div class="feature-shot" aria-label="出航前检查功能截图">
+      <div class="feature-shot-frame">
+        <img src="assets/shot-preflight.png" alt="出航前检查：按路线自检账号、开发环境和必备工具">
+      </div>
+      <span class="feature-shot-cap"><b>出航前检查</b>对着清单把账号、开发环境、必备工具逐项搞定，约 10 分钟，齐了再上岛。</span>
     </div>
 
     <!-- 直播板块（单独引出） -->
     <p>光自己看还不够 —— <strong>每周还有直播</strong>：</p>
-    <div class="mod-solo">
-      <a class="mod" href="live.html"><div class="mod-ic">🔴</div><div class="mod-b"><h4>直播营地 <span class="go">→</span></h4><p>我每周直播带你拆一个真项目、当场回答"卡点"问题；错过了，也有回放。</p></div></a>
+    <div class="feature-shot" aria-label="直播营地功能截图">
+      <div class="feature-shot-frame">
+        <img src="assets/shot-live.png" alt="直播营地：每周直播、回放和卡点答疑">
+      </div>
+      <span class="feature-shot-cap"><b>直播营地</b>每周直播带你拆一个真项目、当场回答"卡点"问题；错过了，也有回放。</span>
     </div>
 
     <p>这些岛你得一座座走通、不跳关。要是你已经想好做哪种产品（小程序、网站、AI 员工……），可以挑一条专门为它铺好的航线，路上每一步都冲着"做出它"去；还没想好，就走默认那条完整路线，照样走得通。走通一条想换个方向，随时能再开一条新的。</p>
 
     <!-- 想换条路线 → 回到本页第一步问卷重选 -->
-    <a class="map-enter" href="javascript:void(0)" role="button" tabindex="0" aria-label="重新找航线" onclick="openGuideQuiz();return false;">
+    <div class="map-enter" aria-label="专属航线示意图">
       <img class="map-shot" src="assets/shot-route.jpg" alt="选「开发一个小程序」后的专属航线地图：扣子做 demo → 配工位 → 写核心功能 → 上线变现">
       <span class="map-pin">🧭 比如选「开发一个小程序」，地图就只留这条路要走的岛</span>
-      <span class="map-hint">👉 想换条路线？点这儿重新答几个问题 →</span>
-    </a>
+      <span class="map-hint">👉 想换条路线，左侧「找专属路线」随时可用</span>
+    </div>
 
     <p>你的任务不是"看完所有岛"，而是<strong>用最短的时间，登上第一座岛</strong>。</p>
     <p>哪怕它只是个"番茄钟"网页，哪怕它丑得没法看。只要你今晚能让它在浏览器里跑起来，你就完成了最重要的一步 —— <strong>你证明了"我能做到"</strong>。这种正反馈，比任何鸡汤都管用。</p>
@@ -309,9 +415,9 @@ a.mod:hover .go{transform:translateX(3px)}
     <p>一定会卡住。我当年学的时候，卡住的时间比顺畅的时间多得多。</p>
     <p>但在这里，你不用一个人硬扛：</p>
     <div class="mods">
-      <a class="mod" href="discuss.html"><div class="mod-ic">💬</div><div class="mod-b"><h4>先去广场 <span class="go">→</span></h4><p>广场上每天都有人在解决类似的问题，你遇到的坑，大概率有人刚爬出来。</p></div></a>
-      <a class="mod" href="discuss.html"><div class="mod-ic">🧑‍🏫</div><div class="mod-b"><h4>再找助教 <span class="go">→</span></h4><p>广场里随时能 @ 到助教——他们都是走过这条路的老学员，知道哪儿最容易摔跤。</p></div></a>
-      <a class="mod" href="feed.html"><div class="mod-ic">📚</div><div class="mod-b"><h4>翻翻干货 <span class="go">→</span></h4><p>报错、卡壳大多有人写过，先搜搜前人趟过的坑，少走弯路。</p></div></a>
+      <div class="mod"><div class="mod-ic">💬</div><div class="mod-b"><h4>先去广场</h4><p>广场上每天都有人在解决类似的问题，你遇到的坑，大概率有人刚爬出来。</p></div></div>
+      <div class="mod"><div class="mod-ic">🧑‍🏫</div><div class="mod-b"><h4>再找助教</h4><p>广场里随时能 @ 到助教——他们都是走过这条路的老学员，知道哪儿最容易摔跤。</p></div></div>
+      <div class="mod"><div class="mod-ic">📚</div><div class="mod-b"><h4>翻翻干货</h4><p>报错、卡壳大多有人写过，先搜搜前人趟过的坑，少走弯路。</p></div></div>
       <div class="mod"><div class="mod-ic">🤖</div><div class="mod-b"><h4>右下角的随身小助手</h4><p>卡住了，直接在那儿把问题甩给我；平时它也能带你一键跳回正在学的地方、推给你最新的直播动态。</p></div></div>
     </div>
 
@@ -337,6 +443,7 @@ a.mod:hover .go{transform:translateX(3px)}
   </div>
 
 </article>
+</div>
 </main>
 
 <div class="site-foot">深海圈 · AI 编程 · 学习指南 ｜ 右下角「刘小排」随时能问</div>
@@ -348,99 +455,135 @@ a.mod:hover .go{transform:translateX(3px)}
   if(approved)localStorage.setItem('ds_guide_seen','1');
 }catch(e){}})();</script>
 <script>
-/* ============ 学习指南 · 第一步「找路线」问卷（自包含）============
-   写 ds_experience(中文) / ds_motive / ds_daily_minutes；按「基础」分流出口：
-   有产品经验=老手 → 全部课程(查缺补漏)；新手 → 刘小排一对一问诊(diagnosis.html)，由它配专属路线。
-   产品方向「不」在问卷里选，交给刘小排问诊（营养师式）；预设产品路线仍在地图「切换航线」菜单备选。 */
+/* ============ 学习指南 · 首屏分流器（自包含）============ */
 (function(){
-  var QUIZ=[
-    {key:'level',q:'你现在大概是什么基础？',opts:[
-      {t:'零基础，还没正式写过代码',v:'零基础'},
-      {t:'用过 ChatGPT / 扣子，但还没真正做出过东西',v:'有基础'},
-      {t:'自己做出过小作品，想更系统地进阶',v:'有产品经验'}
-    ]},
-    {key:'goal',q:'你来这里，最想解决的是什么？',opts:[
-      {t:'有想法，但不知道从哪里开始',v:'stuck'},
-      {t:'手上有业务或项目，想尽快把它做出来',v:'biz'},
-      {t:'想跟上 AI 的节奏，系统补齐自己的能力',v:'keepup'},
-      {t:'先做出一个能用的小东西练手',v:'try'}
-    ]},
-    {key:'minutes',q:'你每天大概能投入多少时间？',opts:[
-      {t:'20 分钟左右',v:20},
-      {t:'1 小时左右',v:60},
-      {t:'2 小时以上',v:120},
-      {t:'不太固定',v:0}
-    ]}
-  ];
-  var ans={},cur=0,mask=null;
-  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function build(){
-    mask=document.createElement('div');mask.className='gq-mask';
-    mask.innerHTML='<div class="gq-card" role="dialog" aria-modal="true" aria-label="找路线问卷"><button class="gq-close" type="button" aria-label="关闭">✕</button><div class="gq-body"></div></div>';
-    document.body.appendChild(mask);
-    mask.querySelector('.gq-close').onclick=close;
-    mask.addEventListener('click',function(e){if(e.target===mask)close();});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mask.classList.contains('show'))close();});
+  var ans={};
+  var ROUTES={
+    full:{kind:'full',name:'学习地图完整路线',promise:'从第一座岛开始，按默认顺序完整走一遍。',first:'第一岛：跑通第一个产品',cta:'进入学习地图 · 从第一岛开始',href:'calendar.html'},
+    list:{kind:'list',name:'全部课程 · 查缺补漏',promise:'你已经有作品或明确短板，不需要从头走岛。',first:'打开全部课程，先补最卡的那一块',cta:'进入全部课程 · 开始查缺补漏',href:'calendar.html?view=list'},
+    idea:{kind:'route',key:'idea',name:'找产品需求',promise:'先把模糊想法收束成一个最该做的产品。',first:'第一站：选出一个值得先做的需求',cta:'进入「找产品需求」路线',href:'calendar.html'},
+    aiwebsite:{kind:'route',key:'aiwebsite',name:'上线你的第一个网站',promise:'从一句话需求，到一个有域名、能上线的网页工具。',first:'第一站：10 分钟做出你的第一个网站',cta:'进入「上线你的第一个网站」路线',href:'calendar.html'},
+    miniprogram:{kind:'route',key:'miniprogram',name:'开发一个小程序',promise:'从 0 到一个能上线、能变现的微信小程序。',first:'第一站：用扣子 5 分钟做出 demo',cta:'进入「开发一个小程序」路线',href:'calendar.html'},
+    aiemployee:{kind:'route',key:'aiemployee',name:'搭建你的 AI 员工',promise:'从用 AI 工具，升级到让 AI 替你自动干活。',first:'第一站：列出你的 AI 员工岗位清单',cta:'进入「搭建你的 AI 员工」路线',href:'calendar.html'},
+    workflow:{kind:'route',key:'workflow',name:'搭一套自动化工作流',promise:'把一件多步骤重复活，做成 AI 自动流水线。',first:'第一站：拆出一条可自动化流程',cta:'进入「自动化工作流」路线',href:'calendar.html'},
+    app:{kind:'route',key:'app',name:'开发一款手机 App',promise:'把产品搬上手机，上架应用商店。',first:'第一站：用 Expo 跑起 App 界面',cta:'进入「手机 App」路线',href:'calendar.html'},
+    minigame:{kind:'route',key:'minigame',name:'做出一个小游戏',promise:'做一个能在群里传播的小游戏，难度更高。',first:'第一站：用扣子做两个产品练手',cta:'进入「小游戏」路线',href:'calendar.html'},
+    automedia:{kind:'route',key:'automedia',name:'让 AI 替你跑自媒体',promise:'把内容运营托管给 AI，自动发、自动涨粉。',first:'第一站：确定一个可自动化的内容岗位',cta:'进入「AI 自媒体」路线',href:'calendar.html'}
+  };
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function dailyLabel(v){v=String(v);if(v==='20')return'每天 20 分钟左右';if(v==='60')return'每天 1 小时左右';if(v==='120')return'每天 2 小时以上';return'时间不固定，按阶段推进';}
+  function routeFor(){
+    if(ans.level==='有产品经验'||ans.goal==='fix')return ROUTES.list;
+    if(ans.goal==='follow')return ROUTES.full;
+    if(ans.goal==='idea'||ans.product==='idea')return ROUTES.idea;
+    return ROUTES[ans.product]||ROUTES.aiwebsite;
   }
-  function open(){if(!mask)build();ans={};cur=0;renderQ();mask.classList.add('show');}
-  function close(){if(mask)mask.classList.remove('show');}
-  function dots(){var s='';for(var i=0;i<QUIZ.length;i++){s+='<span class="gq-dot '+(i<cur?'done':(i===cur?'on':''))+'"></span>';}return s;}
-  function renderQ(){
-    var q=QUIZ[cur];
-    var opts=q.opts.map(function(o,i){return '<button class="gq-opt" type="button" data-i="'+i+'"><span class="gq-opt-tx"><span class="gq-opt-t">'+esc(o.t)+'</span>'+(o.n?'<span class="gq-opt-n">'+esc(o.n)+'</span>':'')+'</span><span class="gq-opt-arr">→</span></button>';}).join('');
-    mask.querySelector('.gq-body').innerHTML='<div class="gq-prog">'+dots()+'</div><div class="gq-step">第 '+(cur+1)+' / '+QUIZ.length+' 步</div><h3 class="gq-title">'+esc(q.q)+'</h3><div class="gq-opts">'+opts+'</div>'+(cur>0?'<button class="gq-back" type="button">← 上一步</button>':'');
-    var body=mask.querySelector('.gq-body');
-    body.querySelectorAll('.gq-opt').forEach(function(b){b.onclick=function(){
-      var o=q.opts[+b.dataset.i];
-      if(o.diag){close();location.href='diagnosis.html';return;}
-      ans[q.key]=o.v;
-      if(cur<QUIZ.length-1){cur++;renderQ();}else{renderResult();}
-    };});
-    var bk=body.querySelector('.gq-back');if(bk)bk.onclick=function(){cur--;renderQ();};
-  }
-  function renderResult(){
+  function saveRoute(route){
     try{
       if(ans.level)localStorage.setItem('ds_experience',ans.level);
       if(ans.goal)localStorage.setItem('ds_motive',ans.goal);
+      if(ans.product)localStorage.setItem('ds_product_goal',ans.product);
       if(ans.minutes!=null)localStorage.setItem('ds_daily_minutes',String(ans.minutes));
+      localStorage.removeItem('ds_route_custom');
+      if(route.kind==='route'){
+        var old=localStorage.getItem('ds_route');
+        localStorage.setItem('ds_route',route.key);
+        if(old!==route.key)localStorage.removeItem('ds_route_completed');
+      }else{
+        localStorage.removeItem('ds_route');
+        localStorage.removeItem('ds_route_completed');
+      }
     }catch(e){}
-    var vet=ans.level==='有产品经验',h;
-    if(vet){
-      /* 老手：去全部课程查缺补漏，不绑路线 */
-      try{localStorage.removeItem('ds_route');localStorage.removeItem('ds_route_completed');}catch(e){}
-      h='<div class="gq-result"><div class="gq-rs-ic">🎯</div><div class="gq-rs-t">你已经做出过东西了</div><div class="gq-rs-d">那就别从头啃了 —— 建议直接进<b>全部课程</b>，哪里不会补哪里，把缺的那块补上。<b>但先别急着走</b>，下面这封信还有几句要紧的。</div><button class="gq-rs-go" type="button" data-act="stay">✓ 好，接着把这封信看完</button><button class="gq-rs-alt" type="button" data-act="go">想直接去全部课程？这就去 →</button></div>';
-    }else{
-      /* 新手：产品方向交给刘小排——引导去一对一问诊配专属路线；默认仍留下看完信，页底大按钮即去问诊 */
-      h='<div class="gq-result"><div class="gq-rs-ic">🧭</div><div class="gq-rs-t">路线交给刘小排帮你配</div><div class="gq-rs-d">产品方向这块<b>不用自己纠结</b> —— 花两分钟跟<b>刘小排</b>聊聊你想做的东西，它会按你的情况，挑出该走的路、该补的课。<b>不用急</b>，先把这封信看完，页底随时能去找它。</div><button class="gq-rs-go" type="button" data-act="stay">✓ 好，先把这封信看完</button><button class="gq-rs-alt" type="button" data-act="go">或现在就去找刘小排配路线 →</button></div>';
-    }
-    mask.querySelector('.gq-body').innerHTML=h;
+  }
+  function complete(){
+    return ans.level&&ans.goal&&ans.product&&ans.minutes!=null;
+  }
+  function renderResult(){
+    if(!complete())return;
+    var route=routeFor();
+    saveRoute(route);
+    syncCta(route);
+    var result=document.getElementById('routeResult'), router=document.getElementById('guideRouter');
+    if(!result||!router)return;
+    var why=ans.goal==='fix'||ans.level==='有产品经验'
+      ? '你更适合先看全量课程，把缺的模块补齐。'
+      : ans.goal==='follow'
+      ? '你需要一条稳定主线，所以先走默认学习地图。'
+      : ans.goal==='idea'||ans.product==='idea'
+      ? '你现在最重要的不是多学几节课，而是先把产品方向定下来。'
+      : '你已经选了明确产品方向，所以路线会围绕这个产品交付来排。';
+    result.innerHTML=
+      '<div class="gr-result-cap">路线已生成</div>'+
+      '<div class="gr-result-title">路线已定：'+esc(route.name)+'</div>'+
+      '<p class="gr-result-text">'+esc(why)+' <b>先别急着走</b>，读完下面这份学习指南，底部按钮会带你进入这条路线。</p>'+
+      '<div class="gr-result-meta">'+
+        '<div class="gr-mini"><span class="gr-mini-k">第一步</span><span class="gr-mini-v">'+esc(route.first)+'</span></div>'+
+        '<div class="gr-mini"><span class="gr-mini-k">节奏</span><span class="gr-mini-v">'+esc(dailyLabel(ans.minutes))+'</span></div>'+
+      '</div>'+
+      '<div class="gr-actions"><button class="gr-read" type="button" id="grRead">好，继续读学习指南</button><button class="gr-reset" type="button" id="grReset">重新选择</button></div>';
+    router.classList.add('has-result');
+    document.getElementById('grRead').onclick=function(){scrollToGuideStart();showHint('路线已定，读完指南再从底部进入');};
+    document.getElementById('grReset').onclick=function(){resetAnswers();};
+  }
+  function select(button){
+    var q=button.closest('.gr-q');if(!q)return;
+    var key=q.getAttribute('data-question'), val=button.getAttribute('data-value');
+    ans[key]=key==='minutes'?Number(val):val;
+    q.querySelectorAll('.gr-opt').forEach(function(b){b.classList.toggle('is-selected',b===button);});
+    renderResult();
+  }
+  function resetAnswers(){
+    ans={};
+    document.querySelectorAll('.gr-opt.is-selected').forEach(function(b){b.classList.remove('is-selected');});
+    var router=document.getElementById('guideRouter'), result=document.getElementById('routeResult');
+    if(router)router.classList.remove('has-result');
+    if(result)result.innerHTML='';
+    try{
+      localStorage.removeItem('ds_experience');
+      localStorage.removeItem('ds_motive');
+      localStorage.removeItem('ds_product_goal');
+      localStorage.removeItem('ds_daily_minutes');
+      localStorage.removeItem('ds_route');
+      localStorage.removeItem('ds_route_completed');
+      localStorage.removeItem('ds_route_custom');
+    }catch(e){}
     syncCta();
-    var stay=mask.querySelector('[data-act="stay"]');if(stay)stay.onclick=stayAndRead;
-    var go=mask.querySelector('[data-act="go"]');if(go)go.onclick=function(){vet?goCourse():goDiagnose();};
   }
-  /* 方案A：填完不跳走——关弹窗、回到信的开头接着读；路线已存、页底大按钮已同步成你选的去向 */
-  function stayAndRead(){
-    close();syncCta();
-    try{var v=document.querySelector('.in-letter-video');if(v)v.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
-    showHint();
-  }
-  /* 把页底大按钮同步成去向：老手→全部课程；问诊过→定制路线地图；新手未问诊→先去找刘小排；没填→原样 */
-  function syncCta(){
+  function syncCta(route){
     var cta=document.getElementById('ctaGo');if(!cta)return;
-    var lv=null,custom=null,rt=null;try{lv=localStorage.getItem('ds_experience');custom=localStorage.getItem('ds_route_custom');rt=localStorage.getItem('ds_route');}catch(e){}
-    if(lv==='有产品经验'){cta.setAttribute('href','calendar.html?view=list');cta.innerHTML='进入全部课程 · 开始查缺补漏 <span class="arr">→</span>';}
-    else if(custom||rt==='diagnosis'){cta.setAttribute('href','calendar.html');cta.innerHTML='进入学习地图 · 走刘小排为你配的路线 <span class="arr">→</span>';}
-    else if(lv){cta.setAttribute('href','diagnosis.html');cta.innerHTML='先让刘小排帮你配条路线 <span class="arr">→</span>';}
+    if(!route){
+      try{
+        var rt=localStorage.getItem('ds_route'), lv=localStorage.getItem('ds_experience'), goal=localStorage.getItem('ds_motive');
+        if(lv==='有产品经验'||goal==='fix')route=ROUTES.list;
+        else if(rt&&ROUTES[rt])route=ROUTES[rt];
+        else if(lv||goal)route=ROUTES.full;
+      }catch(e){}
+    }
+    if(!route){
+      cta.setAttribute('href','calendar.html');
+      cta.innerHTML='进入学习地图 · 上第一座岛 <span class="arr">→</span>';
+      return;
+    }
+    cta.setAttribute('href',route.href);
+    cta.innerHTML=esc(route.cta)+' <span class="arr">→</span>';
   }
-  function showHint(){
-    var t=document.createElement('div');t.textContent='✓ 路线已定，接着往下看就好';
+  function scrollToGuideStart(){
+    try{var v=document.querySelector('.in-letter-video');if(v)v.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}
+  }
+  function showHint(text){
+    var t=document.createElement('div');t.textContent='✓ '+text;
     t.style.cssText='position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:130;background:#1f6f6a;color:#fff;font-size:14px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);opacity:0;transition:opacity .25s';
     document.body.appendChild(t);requestAnimationFrame(function(){t.style.opacity='1';});
-    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},2400);
+    setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},2200);
   }
-  function goDiagnose(){location.href='diagnosis.html';}
-  function goCourse(){location.href='calendar.html?view=list';}
-  window.openGuideQuiz=open;
+  function openGuideQuiz(){
+    var router=document.getElementById('guideRouter');if(!router)return;
+    router.scrollIntoView({behavior:'smooth',block:'start'});
+    router.classList.remove('pulse');
+    setTimeout(function(){router.classList.add('pulse');},80);
+  }
+  document.querySelectorAll('.guide-router .gr-opt').forEach(function(b){b.addEventListener('click',function(){select(b);});});
+  window.openGuideQuiz=openGuideQuiz;
   syncCta();
 })();
 </script>

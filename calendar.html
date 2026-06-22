@@ -31,7 +31,7 @@
 .app .km-head, .app #ds-topbar { transition: opacity .3s ease; }
 .app.diving .km-head { opacity: 0; pointer-events: none; }
 .app.diving #ds-topbar { opacity: 0; pointer-events: none; }
-.app.diving #kmWrap .island, .app.diving #routeIslands .route-isle, .app.diving .km-route, .app.diving #kmShip, .app.diving #kmWrap .sea-float { visibility: hidden; }
+.app.diving #kmWrap .island, .app.diving #routeIslands .route-isle, .app.diving .km-route, .app.diving #kmShip { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { #isleDive, .app .km-head, .app #ds-topbar { transition: none; } }
 </style>
 <style>
@@ -423,7 +423,7 @@ body.route-sea .sea-veil{ background:
 .km-fab .kf-prog-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#0d9488,#1bb3a3);transition:width .5s cubic-bezier(.22,1,.36,1)}
 .km-fab .kf-prog-tx{flex:none;font-size:11px;font-weight:600;color:#5c7a8a;white-space:nowrap}
 .km-fab .kf-prog-tx b{color:#1f6f6a;font-family:var(--font-mono)}
-/* 提醒：直播小黑板 + 本阶段作业（竖排）*/
+/* 提醒：直播 / 往期手册 / 本阶段作业（竖排）*/
 .km-fab .kf-rem{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;min-width:0}
 /* 直播 = 贴在海图角上的小黑板：深色板 + 木框 + 微微倾斜 + 粉笔字 */
 .km-fab .kf-live{position:relative;display:flex;align-items:center;gap:7px;width:100%;padding:7px 9px;border-radius:6px;background:linear-gradient(165deg,#34494c,#26393c);border:2px solid #b3854f;box-shadow:0 5px 12px -5px rgba(40,30,12,.55),inset 0 0 0 1px rgba(255,255,255,.05);transform:rotate(-1.4deg);transition:transform .16s,box-shadow .16s}
@@ -432,6 +432,11 @@ body.route-sea .sea-veil{ background:
 .km-fab .kf-flag i{width:5px;height:5px;border-radius:50%;background:#fff;animation:kmLivePulse 1.3s infinite}
 .km-fab .kf-tx{flex:1 1 auto;font-size:11px;font-weight:600;color:#e9f2ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
 .km-fab .kf-arr{flex:none;font-size:12px;font-weight:800;color:#9ed0c3}
+.km-fab .kf-manual{display:flex;align-items:center;gap:7px;width:100%;box-sizing:border-box;padding:6px 9px;border-radius:7px;background:rgba(255,255,255,.56);border:1px solid rgba(31,111,106,.22);color:#1f6f6a;transition:background .15s,border-color .15s,transform .15s}
+.km-fab .kf-manual:hover{background:rgba(232,246,245,.86);border-color:rgba(13,148,136,.45);transform:translateY(-1px)}
+.km-fab .kf-manual svg{flex:none;width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.km-fab .kf-manual span{flex:1 1 auto;min-width:0;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.km-fab .kf-manual i{flex:none;font-style:normal;font-size:12px;font-weight:800;color:#0d9488}
 .km-fab .kf-task{width:100%;box-sizing:border-box;font-size:11px;font-weight:600;color:#a9762a;background:rgba(200,152,84,.16);border:1px solid rgba(200,152,84,.4);border-radius:7px;padding:5px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .km-fab .kf-task.done{color:#1f6f6a;background:var(--teal-bg);border-color:rgba(13,148,136,.3)}
 /* 特写页「本岛全部标记已学」按钮（课程列表上方）*/
@@ -497,17 +502,72 @@ body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-
 .km-list-view .kd-fi-mark{margin-top:1px}
 .km-list-view .kd-fi-arrow{align-self:center}
 
-/* 海面占位：直播浮标 / 往期手册小岛，水彩风·纯装饰·不接数据；航线模式让位 */
-.km-wrap.route-mode>.sea-float{display:none}
-.sea-float{position:absolute;transform:translate(-50%,-50%);z-index:5;pointer-events:none;text-align:center;filter:drop-shadow(0 9px 11px rgba(30,80,90,.2));animation:seaBob 5.5s ease-in-out infinite}
-.sea-float .sf-art{width:100%;display:block}
-.sea-float .sf-label{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--deep-blue);background:rgba(253,250,240,.94);border:1px solid rgba(200,152,84,.6);border-radius:999px;padding:2px 11px;box-shadow:0 3px 8px -4px rgba(120,90,30,.4);white-space:nowrap}
-.sea-float .sf-dot{width:6px;height:6px;border-radius:50%;background:#ec4b43;box-shadow:0 0 0 2px rgba(236,75,67,.25);animation:sfDot 1.3s infinite}
-.sea-float .sf-ico{width:13px;height:13px;stroke:var(--teal-deep);fill:none;stroke-width:1.6}
-.sea-float .sf-soon{display:block;margin-top:3px;font-size:9.5px;color:var(--text-3);letter-spacing:.04em}
-@keyframes seaBob{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 6px))}}
-@keyframes sfDot{0%,100%{box-shadow:0 0 0 2px rgba(236,75,67,.25)}50%{box-shadow:0 0 0 4px rgba(236,75,67,.06)}}
-@media (prefers-reduced-motion:reduce){.sea-float{animation:none}}
+/* —— 列表态·模块大卡（一卡一模块·12 张；封面取自旧课程专区深色卡头，进度条/按钮仿官网课程列表卡）—— */
+.kmc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+body.km-list .km-list-view{max-width:1200px;width:100%;margin-left:auto;margin-right:auto}
+.kmc{display:flex;flex-direction:column;background:#fff;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px -7px rgba(30,80,90,.32);cursor:pointer;transition:transform .18s,box-shadow .18s}
+.kmc:hover{transform:translateY(-4px);box-shadow:0 20px 38px -20px rgba(13,148,136,.4)}
+.kmc:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.kmc-head{position:relative;display:flex;flex-direction:column;min-height:122px;padding:17px 17px 14px;overflow:hidden}
+.kmc-head.s1{background:linear-gradient(152deg,#13483a,#0a2a21)}
+.kmc-head.s2{background:linear-gradient(152deg,#1b3c5e,#0c1e38)}
+.kmc-head.s3{background:linear-gradient(152deg,#5c4317,#3a2a0b)}
+.kmc-head.s4{background:linear-gradient(152deg,#3f2d5e,#241a38)}
+.kmc-head.gray{background:linear-gradient(152deg,#3a4658,#1e2632)}
+.kmc-num{position:absolute;right:11px;top:-3px;z-index:0;font-family:var(--font-mono);font-size:72px;font-weight:800;font-style:italic;line-height:1;letter-spacing:-.03em;color:rgba(255,255,255,.085)}
+.kmc-tag{position:relative;z-index:1;font-size:11px;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.6);margin-bottom:7px}
+.kmc-title{position:relative;z-index:1;font-family:var(--font-display);font-size:17.5px;font-weight:700;line-height:1.3;letter-spacing:.01em;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kmc-author{position:relative;z-index:1;display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:10px}
+.kmc-av{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26)}
+.kmc-author>span{font-size:12px;color:rgba(255,255,255,.88)}
+.kmc-done{position:absolute;right:12px;bottom:12px;z-index:1;font-size:10.5px;font-weight:600;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:2px 8px}
+.kmc-body{display:flex;flex-direction:column;gap:8px;padding:12px 15px 15px}
+.kmc-cnt{font-size:12.5px;color:var(--text-2)}
+.kmc-bar{height:5px;border-radius:99px;background:#eef2f4;overflow:hidden}
+.kmc-bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),#2cc4b3);transition:width .5s}
+.kmc-bar>i.full{background:#34d399}
+.kmc-prog{font-size:11.5px;font-weight:500;color:var(--text-2)}
+.kmc-btn{display:flex;align-items:center;justify-content:center;gap:6px;height:36px;margin-top:2px;border-radius:9px;background:#f3f6f7;color:var(--text-2);font-family:var(--font-sans);font-size:13px;font-weight:600;transition:background .15s,color .15s}
+.kmc:hover .kmc-btn{background:#eafaf8;color:var(--teal-deep)}
+.kmc-btn>svg{width:14px;height:14px;flex:none;fill:currentColor}
+/* —— 列表态：去海面 + 浅色纯底 + 藏掉地图氛围件（继续学习黄卡）—— */
+body.km-list{background:#f5fafa}
+body.km-list .app>.wrap{background:#f5fafa}
+body.km-list .sea-layer,body.km-list .sea-veil{display:none}
+body.km-list #homeHero{display:none}
+/* —— 内容 tab 条：最新课程 / 直播回放 / 往期课程 / 深海圈航海 —— */
+.kml-tabs{display:inline-flex;gap:3px;margin:0;padding:5px;background:#eaf0f1;border-radius:12px;align-self:flex-start}
+.kml-tab{border:none;background:none;cursor:pointer;font-family:var(--font-sans);font-size:14px;font-weight:600;color:var(--text-2);padding:9px 20px;border-radius:9px;line-height:1;transition:color .15s,background .15s,box-shadow .15s}
+.kml-tab:hover:not(.on){color:var(--teal-deep)}
+.kml-tab.on{background:#fff;color:var(--deep-blue);box-shadow:0 2px 10px -4px rgba(15,30,50,.22)}
+.kml-tab:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.kml-panel{display:none}
+.kml-panel.show{display:block;animation:kmlFade .22s ease}
+@keyframes kmlFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* 深海圈航海：横向项目卡 */
+.kml-vc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.kmv{display:flex;gap:14px;background:#fff;border:1px solid var(--border-soft);border-radius:14px;padding:16px;box-shadow:0 2px 12px -7px rgba(30,80,90,.3);cursor:pointer;transition:transform .18s,box-shadow .18s}
+.kmv:hover{transform:translateY(-3px);box-shadow:0 18px 34px -20px rgba(13,148,136,.36)}
+.kmv-ic{flex:none;width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:24px}
+.kmv-ic.a{background:linear-gradient(150deg,#d8f3ee,#aee6dc)}
+.kmv-ic.b{background:linear-gradient(150deg,#dde8fb,#bcd2f5)}
+.kmv-ic.c{background:linear-gradient(150deg,#fde8d6,#f7d2ad)}
+.kmv-ic.d{background:linear-gradient(150deg,#e7e0fb,#cdbef4)}
+.kmv-body{flex:1;min-width:0}
+.kmv-name{display:flex;align-items:center;gap:7px;font-size:15.5px;font-weight:700;color:var(--deep-blue)}
+.kmv-badge{flex:none;font-size:10.5px;font-weight:600;color:var(--teal-deep);background:var(--teal-bg,#e8f6f5);border-radius:6px;padding:2px 7px}
+.kmv-desc{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-top:6px}
+.kmv-foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+.kmv-meta{font-size:12px;color:var(--text-3,#94a3b8)}
+.kmv-go{flex:none;font-size:12.5px;font-weight:600;color:var(--teal-deep)}
+/* 直播回放：占位空态 */
+.kml-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:60px 20px;text-align:center;color:var(--text-2)}
+.kml-empty>svg{width:42px;height:42px;opacity:.38}
+.kml-empty-tx{font-size:14px}
+.kml-empty-go{margin-top:3px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;background:var(--teal);border-radius:9px;padding:9px 18px;text-decoration:none;transition:background .15s}
+.kml-empty-go:hover{background:var(--teal-deep)}
+
+/* 海面只保留学习路径；直播和往期手册统一收进右下角行动卡。 */
 </style>
 </head>
 <body>
@@ -558,6 +618,7 @@ body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-
     <div class="kf-prog"><div class="kf-prog-bar"><i id="kmFabProgBar"></i></div><span class="kf-prog-tx" id="kmFabProgTx">—</span></div>
     <div class="kf-rem">
       <a class="kf-live" href="live.html"><span class="kf-flag"><i></i>正在直播</span><span class="kf-tx">小排老师正在直播</span><span class="kf-arr">→</span></a>
+      <a class="kf-manual" href="calendar.html?view=list&panel=past"><svg viewBox="0 0 16 16"><path d="M8 4.2C6.6 3.2 4.6 3 3 3.3v8.4c1.6-.3 3.6-.1 5 .9 1.4-1 3.4-1.2 5-.9V3.3c-1.6-.3-3.6-.1-5 .9z"/><path d="M8 4.2v8.3"/></svg><span>往期手册 / 课程回看</span><i>→</i></a>
       <span class="kf-task" id="kmFabTask"></span>
     </div>
   </div>
@@ -600,37 +661,6 @@ body.km-list .km-list-view{display:flex;flex-direction:column;flex:1 1 auto;min-
       <div class="lbl"><span class="pin">你在这里 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg></span>
         <div class="nm"><span class="lk">🔒 </span>让 AI 干活、把产品做大</div><div class="dt">共 17 节</div></div>
       <img data-src="assets/isle-4.webp?v=2" alt="">
-    </div>
-
-    <!-- 海面占位：直播浮标 / 往期手册小岛（水彩风·纯装饰·先不接数据；航线/列表模式自动让位）-->
-    <div class="sea-float" style="left:30%;top:24%;width:60px" aria-hidden="true">
-      <svg class="sf-art" viewBox="0 0 64 80" fill="none">
-        <ellipse cx="32" cy="64" rx="22" ry="6" fill="#9ed6cf" opacity=".55"/>
-        <ellipse cx="32" cy="64" rx="12" ry="3.2" fill="#74c0b8" opacity=".55"/>
-        <rect x="30.4" y="12" width="3.2" height="15" rx="1.6" fill="#9c7a45"/>
-        <circle cx="32" cy="10.5" r="4.6" fill="#ffce5e"/>
-        <path d="M19 41 Q19 26 32 26 Q45 26 45 41 Z" fill="#ef6f64"/>
-        <rect x="19" y="41" width="26" height="7.5" fill="#fbf3e3"/>
-        <path d="M19 48.5 Q19 64 32 64 Q45 64 45 48.5 Z" fill="#df574d"/>
-        <path d="M24 33 Q27 30 31.5 31" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
-      </svg>
-      <span class="sf-label"><i class="sf-dot"></i>直播</span>
-      <span class="sf-soon">即将开放</span>
-    </div>
-    <div class="sea-float" style="left:72%;top:20%;width:70px" aria-hidden="true">
-      <svg class="sf-art" viewBox="0 0 72 78" fill="none">
-        <ellipse cx="36" cy="60" rx="26" ry="7" fill="#9ed6cf" opacity=".55"/>
-        <path d="M13 55 Q17 41 36 41 Q55 41 59 55 Q50 61 36 61 Q22 61 13 55 Z" fill="#ecd6a6"/>
-        <path d="M13 55 Q22 59 36 59 Q50 59 59 55" stroke="#cdb277" stroke-width="1.2" opacity=".6"/>
-        <rect x="25" y="22" width="22" height="19" rx="2.5" fill="#5aa39b"/>
-        <rect x="25" y="22" width="22" height="19" rx="2.5" fill="none" stroke="#3f857d" stroke-width="1.1"/>
-        <path d="M36 23.5 V39.5" stroke="#f3faf8" stroke-width="1.5"/>
-        <path d="M29 28h4M39 28h4M29 32h4M39 32h4" stroke="#d4ece8" stroke-width="1" stroke-linecap="round"/>
-        <rect x="50" y="15" width="2.2" height="17" rx="1.1" fill="#9c7a45"/>
-        <path d="M52 16 L61 19 L52 22 Z" fill="#c89854"/>
-      </svg>
-      <span class="sf-label"><svg class="sf-ico" viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4.2C6.6 3.2 4.6 3 3 3.3v8.4c1.6-.3 3.6-.1 5 .9 1.4-1 3.4-1.2 5-.9V3.3c-1.6-.3-3.6-.1-5 .9z"/><path d="M8 4.2v8.3"/></svg>往期手册</span>
-      <span class="sf-soon">即将开放</span>
     </div>
 
     <img class="km-ship" id="kmShip" data-src="assets/ship-1.png" alt="" style="left:7%;top:87%;width:9.5%;display:none">
@@ -1522,38 +1552,123 @@ function showToast(msg) {
     });
   }
 
-  /* 单张课程卡：复用抽屉里的 kd-flow-item（状态 已学/在学/未解锁，点击走全局 gotoCourse/toggleCourse，与点开海岛看到的同一套卡）*/
-  function cardHtml(c, completed, nextCode) {
-    var done = completed.has(c.code), isCur = c.code === nextCode, st = done ? 'done' : (isCur ? 'current' : 'locked'), mark = done ? '✓' : (isCur ? '▸' : '');
-    return '<div class="kd-flow-item is-course ' + st + ' clickable" data-code="' + c.code + '" onclick="gotoCourse(\'' + c.code + '\',\'' + st + '\')">'
-      + '<span class="kd-fi-mark clickable-mark" title="' + (done ? '已学完 · 点击撤销' : '标记已学完') + '" onclick="event.stopPropagation();toggleCourse(\'' + c.code + '\')">' + mark + '</span>'
-      + '<span class="kd-fi-code">' + escapeHtml(c.code) + '</span>'
-      + '<span class="kd-fi-title">' + escapeHtml(cleanTitle(c.t)) + '</span>'
-      + '<span class="kd-fi-dur">' + (c.mins || 0) + 'min</span>'
-      + '<svg class="kd-fi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3l5 5-5 5"/></svg>'
+  /* 单张模块大卡（一卡一模块）：封面 = 深色渐变 + 编号 + 模块名（取自旧课程专区），下半 = 节数 + 进度条 + 按钮（仿官网课程列表卡）。点整卡 → 进该模块第一节未学的课 */
+  function moduleCardHtml(mk, stage, idx, completed) {
+    var mod = (typeof COURSE_MODULES !== 'undefined' && COURSE_MODULES[mk]) || { name: mk, sub: '' };
+    var nodes = COURSES.filter(function (c) { return c.module === mk; });
+    var n = nodes.length;
+    var doneN = nodes.filter(function (c) { return completed.has(c.code); }).length;
+    var pct = n ? Math.round(doneN / n * 100) : 0;
+    var num = ('0' + idx).slice(-2);
+    var tag = ((typeof STAGE_NAMES !== 'undefined' && STAGE_NAMES[stage]) || ('阶段' + stage)) + (mod.sub ? ' · ' + mod.sub : '');
+    var go = nodes.find(function (c) { return !completed.has(c.code); }) || nodes[0];
+    var goAttr = go ? ' onclick="gotoCourse(\'' + go.code + '\',\'current\')"' : '';
+    var progText = pct >= 100 ? '已学完 ✓' : (pct > 0 ? '已学习 ' + pct + '%' : '未开始');
+    return '<div class="kmc"' + goAttr + '>'
+      + '<div class="kmc-head s' + stage + '">'
+      +   '<span class="kmc-num">' + num + '</span>'
+      +   '<span class="kmc-tag">' + escapeHtml(tag) + '</span>'
+      +   '<div class="kmc-title">' + escapeHtml(mod.name) + '</div>'
+      +   '<div class="kmc-author"><span class="kmc-av">刘</span><span>刘小排</span></div>'
+      + '</div>'
+      + '<div class="kmc-body">'
+      +   '<div class="kmc-cnt">共 ' + n + ' 节 · 已学 ' + doneN + '/' + n + '</div>'
+      +   '<div class="kmc-bar"><i class="' + (pct >= 100 ? 'full' : '') + '" style="width:' + pct + '%"></i></div>'
+      +   '<div class="kmc-prog">' + escapeHtml(progText) + '</div>'
+      +   '<div class="kmc-btn"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l8.5-5.5z"/></svg>' + (pct > 0 ? '继续学习' : '开始学习') + '</div>'
+      + '</div>'
       + '</div>';
   }
+  /* 往期课程（演示数据）：复用 .kmc 卡 · 灰封面 · 进度满 · 回看 */
+  var PAST_COURSES = [
+    { num: '三', tag: '第三期', title: 'AI 编程实战手册', av: '刘', author: '刘小排', sub: '12 模块 77 节，从黑话翻译器到全栈上线', learned: '3208 人学过' },
+    { num: '二', tag: '第二期', title: '出海产品冷启动', av: '矿', author: '矿山', sub: '选品、落地页、SEO 与冷启动获客', learned: '2156 人学过' },
+    { num: '一', tag: '第一期', title: 'ChatGPT 应用开发', av: '刘', author: '刘小排', sub: 'Prompt 工程、API 接入，做出第一个 AI 小工具', learned: '1842 人学过' }
+  ];
+  function pastCardHtml(p) {
+    return '<div class="kmc">'
+      + '<div class="kmc-head gray">'
+      +   '<span class="kmc-num">' + p.num + '</span>'
+      +   '<span class="kmc-done">已结课</span>'
+      +   '<span class="kmc-tag">' + escapeHtml(p.tag) + '</span>'
+      +   '<div class="kmc-title">' + escapeHtml(p.title) + '</div>'
+      +   '<div class="kmc-author"><span class="kmc-av">' + escapeHtml(p.av) + '</span><span>' + escapeHtml(p.author) + '</span></div>'
+      + '</div>'
+      + '<div class="kmc-body">'
+      +   '<div class="kmc-cnt">' + escapeHtml(p.sub) + '</div>'
+      +   '<div class="kmc-bar"><i class="full" style="width:100%"></i></div>'
+      +   '<div class="kmc-prog">' + escapeHtml(p.learned) + ' · 已归档</div>'
+      +   '<div class="kmc-btn"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm.8 3v3.3l2.6 1.6-.8 1.3L7.2 9V4.5z"/></svg>回看课程</div>'
+      + '</div>'
+      + '</div>';
+  }
+  /* 深海圈航海（演示数据）：横向项目卡 */
+  var VOYAGE_LIST = [
+    { ic: 'a', emoji: '🧭', name: 'AI 产品出海航海', badge: '报名中', desc: '21 天组队实战：选一个海外细分需求，做出可付费的 AI 产品并冷启动。', meta: '21 天 · 1240 人上船' },
+    { ic: 'b', emoji: '📱', name: '微信小程序变现航海', badge: '报名中', desc: '14 天从 0 到上线：用 AI 快速做一个能跑通付费闭环的小程序。', meta: '14 天 · 980 人上船' },
+    { ic: 'c', emoji: '📣', name: '自媒体涨粉航海', badge: '', desc: '30 天用 AI 批量做内容：选题、脚本、剪辑到分发的完整工作流。', meta: '30 天 · 1560 人上船' },
+    { ic: 'd', emoji: '⚙️', name: 'AI 自动化工作流航海', badge: '', desc: '21 天把重复活儿交给 AI：搭一套属于自己的自动化 Agent 流水线。', meta: '21 天 · 760 人上船' }
+  ];
+  function voyageCardHtml(v) {
+    return '<div class="kmv">'
+      + '<div class="kmv-ic ' + v.ic + '">' + v.emoji + '</div>'
+      + '<div class="kmv-body">'
+      +   '<div class="kmv-name">' + escapeHtml(v.name) + (v.badge ? '<span class="kmv-badge">' + escapeHtml(v.badge) + '</span>' : '') + '</div>'
+      +   '<div class="kmv-desc">' + escapeHtml(v.desc) + '</div>'
+      +   '<div class="kmv-foot"><span class="kmv-meta">' + escapeHtml(v.meta) + '</span><span class="kmv-go">查看航线 →</span></div>'
+      + '</div>'
+      + '</div>';
+  }
+  var LIVE_PANEL_HTML = '<div class="kml-empty">'
+    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 9l-6 3 6 3z"/></svg>'
+    + '<div class="kml-empty-tx">往期直播回放整理中，敬请期待</div>'
+    + '<a class="kml-empty-go" href="live.html">去看正在直播 →</a>'
+    + '</div>';
+  function activePanel() {
+    try {
+      var p = (new URLSearchParams(location.search).get('panel') || '').toLowerCase();
+      return /^(new|live|past|voyage)$/.test(p) ? p : 'new';
+    } catch (e) { return 'new'; }
+  }
   function renderListView() {
-    if (typeof COURSES === 'undefined') return;
+    if (typeof COURSES === 'undefined' || typeof COURSE_STAGES === 'undefined') return;
     var completed = (typeof getCompleted === 'function') ? getCompleted() : new Set();
-    var next = COURSES.find(function (c) { return !completed.has(c.code); });
-    var nextCode = next ? next.code : null;
-    var ZH = ['一', '二', '三', '四'], html = '';
+    var active = activePanel();
+    /* 最新课程：12 模块平铺（按阶段顺序，不分岛）*/
+    var idx = 0, newCards = '';
     for (var s = 1; s <= 4; s++) {
-      var list = COURSES.filter(function (c) { return c.stage === s; });
-      if (!list.length) continue;
-      var name = (typeof STAGE_NAMES !== 'undefined' && STAGE_NAMES[s]) || (typeof COURSE_STAGES !== 'undefined' && COURSE_STAGES[s] && COURSE_STAGES[s].name) || ('第' + s + '阶段');
-      var badge = (typeof STAGE_BADGES !== 'undefined' && STAGE_BADGES[s]) ? (STAGE_BADGES[s].icon + ' ' + STAGE_BADGES[s].text) : '';
-      var doneN = list.filter(function (c) { return completed.has(c.code); }).length;
-      html += '<section class="klv-stage">'
-        + '<div class="klv-head"><span class="klv-num">第' + ZH[s - 1] + '岛</span>'
-        + '<h2 class="klv-name">' + escapeHtml(name) + '</h2>'
-        + (badge ? '<span class="klv-badge">' + escapeHtml(badge) + '</span>' : '')
-        + '<span class="klv-prog">已学 ' + doneN + '/' + list.length + ' 节</span></div>'
-        + '<div class="klv-grid">' + list.map(function (c) { return cardHtml(c, completed, nextCode); }).join('') + '</div>'
-        + '</section>';
+      var mods = (COURSE_STAGES[String(s)] && COURSE_STAGES[String(s)].modules) || [];
+      mods.forEach(function (mk) { idx++; newCards += moduleCardHtml(mk, s, idx, completed); });
     }
-    listHost.innerHTML = html;
+    var past = PAST_COURSES.map(pastCardHtml).join('');
+    var voyage = VOYAGE_LIST.map(voyageCardHtml).join('');
+    listHost.innerHTML =
+      '<div class="kml-tabs" role="tablist">'
+      + '<button class="kml-tab' + (active === 'new' ? ' on' : '') + '" type="button" data-panel="new">最新课程</button>'
+      + '<button class="kml-tab' + (active === 'live' ? ' on' : '') + '" type="button" data-panel="live">直播回放</button>'
+      + '<button class="kml-tab' + (active === 'past' ? ' on' : '') + '" type="button" data-panel="past">往期课程</button>'
+      + '<button class="kml-tab' + (active === 'voyage' ? ' on' : '') + '" type="button" data-panel="voyage">深海圈航海</button>'
+      + '</div>'
+      + '<div class="kml-panel' + (active === 'new' ? ' show' : '') + '" data-panel="new"><div class="kmc-grid">' + newCards + '</div></div>'
+      + '<div class="kml-panel' + (active === 'live' ? ' show' : '') + '" data-panel="live">' + LIVE_PANEL_HTML + '</div>'
+      + '<div class="kml-panel' + (active === 'past' ? ' show' : '') + '" data-panel="past"><div class="kmc-grid">' + past + '</div></div>'
+      + '<div class="kml-panel' + (active === 'voyage' ? ' show' : '') + '" data-panel="voyage"><div class="kml-vc-grid">' + voyage + '</div></div>';
+    bindListTabs();
+  }
+  function bindListTabs() {
+    listHost.querySelectorAll('.kml-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var k = t.dataset.panel;
+        listHost.querySelectorAll('.kml-tab').forEach(function (x) { x.classList.toggle('on', x === t); });
+        listHost.querySelectorAll('.kml-panel').forEach(function (p) { p.classList.toggle('show', p.dataset.panel === k); });
+        try {
+          var u = new URL(location.href);
+          if (k === 'new') u.searchParams.delete('panel');
+          else u.searchParams.set('panel', k);
+          history.replaceState(null, '', u.pathname + u.search + u.hash);
+        } catch (e) {}
+      });
+    });
   }
 
   /* 航线模式 → 藏开关、强制地图；默认全量图 → 按存的偏好显示地图/列表（列表开着时刷新内容）*/
@@ -1719,15 +1834,10 @@ function showToast(msg) {
         after(marks.length*230+450,function(){ var isls=qa('.km-wrap .island');
           if(isls[0]) isls[0].classList.add('sctour-glow'); if(isls[1]) isls[1].classList.add('sctour-unlock'); }); } },
     { sel:'#routeGenBtn', place:'bottom', closeFirst:true, nodim:true, cap:'你可以在这里定制你的专属学习路线',
-      play:function(){ var b=q('#routeGenBtn');
-        if(b){ var br=b.getBoundingClientRect(), rg=d.getElementById('sctour-ring');   /* 顶层金圈罩住找航线按钮：z9002 在问卷暗背景之上，不被父层层叠上下文困住 */
-          if(rg){ rg.style.display='block'; rg.style.left=(br.left-6)+'px'; rg.style.top=(br.top-6)+'px'; rg.style.width=(br.width+12)+'px'; rg.style.height=(br.height+12)+'px'; }
-          /* 顶层放一份按钮的清晰副本盖在原位：问卷弹出会把整个背景(含此按钮)打成毛玻璃，真按钮被父层层叠上下文困住抬不出来，故复制一份到 body 顶层(z9002，在问卷模糊之上)，按钮看着就清晰了。纯视觉、pointer-events:none，不接管点击 */
-          var oldc=d.getElementById('sctour-btnclone'); if(oldc) oldc.remove();
-          var cl=b.cloneNode(true); cl.id='sctour-btnclone'; cl.removeAttribute('onclick');
-          cl.style.cssText='position:fixed;margin:0;left:'+br.left+'px;top:'+br.top+'px;width:'+br.width+'px;height:'+br.height+'px;z-index:9002;pointer-events:none';
-          d.body.appendChild(cl); }
-        try{ if(typeof window.openQuiz==='function') after(260,window.openQuiz); }catch(e){} } },
+      play:function(){ var b=q('#routeGenBtn'); if(!b) return;
+        /* 只用顶层金圈高亮「切换航线」按钮，引导阶段不再自动弹出找航线问卷（原按钮副本是为对抗问卷弹出的毛玻璃，一并移除）*/
+        var br=b.getBoundingClientRect(), rg=d.getElementById('sctour-ring');
+        if(rg){ rg.style.display='block'; rg.style.left=(br.left-6)+'px'; rg.style.top=(br.top-6)+'px'; rg.style.width=(br.width+12)+'px'; rg.style.height=(br.height+12)+'px'; } } },
     { sel:'#kmFab', altSel:'#homeHero', place:'auto', last:true, closeFirst:true, cap:'右下角浮窗：随时跳回在学内容，还能看最新直播',
       play:function(){ var f=q('#kmFab'); if(!vis(f)) f=q('#homeHero'); if(!f) return;
         f.classList.add('sctour-glow');
@@ -1792,7 +1902,7 @@ function showToast(msg) {
     else if(t<40 && !d.getElementById('sctour-replay')){ setTimeout(function(){mountReplay(t+1);},120); } }
   function autoStart(t){ t=t||0; var isle=q('.km-wrap .island'), r=isle&&isle.getBoundingClientRect();
     if(isle&&r&&r.width>4){ start(); } else if(t<50){ setTimeout(function(){autoStart(t+1);},120); } }
-  function boot(){ mountReplay(); var seen=false; try{ seen=localStorage.getItem(DONE_KEY)==='1'; }catch(e){} var quiz=false; try{ quiz=new URLSearchParams(location.search).get('quiz')==='1'; }catch(e){} var diving=window.__AUTO_DIVE||document.body.classList.contains('dive-open')||quiz; if(!seen && !diving) setTimeout(autoStart,450); }   /* 潜水动画开着 / 带 ?quiz=1 从学习指南来时 不自动弹引导，避免顶掉问卷 */
+  function boot(){ mountReplay(); var seen=false; try{ seen=localStorage.getItem(DONE_KEY)==='1'; }catch(e){} var quiz=false; try{ quiz=new URLSearchParams(location.search).get('quiz')==='1'; }catch(e){} var listMode=false; try{ var _pv=new URLSearchParams(location.search).get('view'); listMode=(_pv==='list')||(localStorage.getItem('ds_map_view')==='list')||document.body.classList.contains('km-list'); }catch(e){} var diving=window.__AUTO_DIVE||document.body.classList.contains('dive-open')||quiz||listMode; if(!seen && !diving) setTimeout(autoStart,450); }   /* 潜水动画开着 / ?quiz=1 从学习指南来 / 列表态 时 不自动弹引导（引导教的是认识海图岛屿，列表态无岛）*/
   if(d.readyState==='complete'||d.readyState==='interactive') setTimeout(boot,300);
   else addEventListener('DOMContentLoaded',function(){ setTimeout(boot,300); });
 })();
